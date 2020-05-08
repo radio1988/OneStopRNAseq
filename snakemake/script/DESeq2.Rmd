@@ -12,7 +12,7 @@ params:
   min_lfc: 0.585
   indfilter: FALSE
   countFile: "../feature_count/counts.gene_id.s2.strict.txt"
-  annoFile: "~/github/bpipes/rnaseq/annotations/gencode.mm10.vM21/gencode.vM21.annotation.txt.gz"
+  annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.xlsx"
 ---
@@ -56,9 +56,9 @@ params:
 - independent filter disabled to have more stable behavior (todo, not used this time, res.shrink problem)
 
 ## Todo:
+- Include Kai functions
 - Combined histogram
 - Better MA plot
-- Include Kai functions
 
 
 ```{r setup, include=FALSE}
@@ -341,7 +341,16 @@ dim(cts)
 
 # Read Anno
 ```{r}
-anno <- read.table(annoFile,header=T)
+# from GitHub (must be raw, not zipped)
+getAnnotation <- function(urlpath) {
+  tmp <- tempfile()
+  download.file(urlpath, destfile = tmp, method = 'auto')
+  return(read.table(tmp, header = TRUE))
+}
+
+url <- 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt' 
+anno <- getAnnotation(url)
+# anno <- read.table(annoFile,header=T)
 colnames(anno)
 dim(anno)
 head(anno)

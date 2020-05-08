@@ -337,8 +337,8 @@ rule DESeq2:
         params=list(max_fdr={params.fdr}, min_lfc={params.lfc}, \
         countFile=\'../{input}\', \
         annoFile=\'{params.anno_tab}\', \
-        metaFile=\'{params.meta}\', \
-        contrastFile=\'{params.cont}\'           ), \
+        metaFile=\'../{params.meta}\', \
+        contrastFile=\'../{params.cont}\'           ), \
         output_file={params.o})" '
 
 
