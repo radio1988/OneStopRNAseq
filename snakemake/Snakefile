@@ -1,0 +1,381 @@
+configfile: "config.yaml"
+
+
+SAMPLES=config['SAMPLES']
+GENOME=config["GENOME"]
+INDEX=config["INDEX"]
+GTF=config["GTF"]
+STRAND=config["STRAND"]
+MODE=config["MODE"]
+
+MAX_FDR=config["MAX_FDR"]
+MIN_LFC=config["MIN_LFC"]
+
+# load modules (have to use """, to keep in one block)
+# - alias does not work, have to use $samstat
+shell.prefix("""
+            source /home/rl44w/.bash_profile
+            module load fastqc/0.11.5
+            module load java/1.8.0_77
+            module load star/2.5.3a
+            module load singularity/singularity-current
+            module load deeptools/3.0.2_py36_0
+            samstat="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samstat"
+            samtools="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samtools"
+            """)
+
+# Requirements
+# inputs in ./fastq/xxx.{fastq,fq}.gz
+# named as {sample}.{R1,R2}.{fastq,fq}.gz
+
+# SnakeMake Coding Notes:
+# input don't have to be used, just for draw nice DAG
+# 07/10/2019 randomized primary alignment
+
+
+rule all:
+    input:
+        # 1. everything listed here will be produced by the pipeline
+        # 2. feed {sample}
+        fastqc="fastqc/multiqc_report.html", # not in main workflow, so list here
+        bam_qc=expand("bam_qc/samstat/{sample}.bam.samstat.html", sample=SAMPLES), # feed {samples}
+        feature_count_strict=expand("feature_count/counts.gene_id.s{strand}.strict.txt", strand=STRAND), # feed {strand}
+        feature_count_liberal=expand("feature_count/counts.gene_id.s{strand}.liberal.txt", strand=STRAND), # feed {strand}
+        DESeq2=expand("DESeq2/DESeq2.s{strand}.html", strand=STRAND),
+        bamCoverage=expand("bigWig/{sample}.{mode}.cpm.bw", sample=SAMPLES, mode=MODE),
+        dag="Workflow_DAG.all.svg", # create DAG
+    params:
+        mem="1000"
+    shell:
+        "rm -rf mapped_reads/*_STARgenome mapped_reads/*tmp"
+
+
+rule fastqc:
+    # don't need input, if you agree on not checking them
+    # without output, output will not be created
+    output:
+        "fastqc/multiqc_report.html"
+    params:
+        mem="1000"
+    threads:
+        6
+    log:
+        "log/fastqc/fastqc.log"
+    shell:
+        # {input/output} don't have to be in command
+        # have to load module in one block
+        """
+        mkdir -p fastqc
+        mkdir -p fastqc/details
+        fastqc -t {threads} fastq/*q.gz -o fastqc/details &> {log}
+        multiqc fastqc/details -o fastqc &>> {log}
+        """
+
+
+rule star_idx:
+    input:
+        fa=GENOME,
+        gtf=GTF,
+    output:
+        INDEX+"/SA"
+    params:
+        mem="3000"
+    threads:
+        12
+    log:
+        "log/star_idx/star_idx.log"
+    shell:
+        """
+        mkdir -p {INDEX}
+
+        STAR --runThreadN {threads} \
+        --runMode genomeGenerate \
+        --genomeDir {INDEX} \
+        --genomeFastaFiles {input.fa} \
+        --sjdbGTFfile {input.gtf} &> {log}
+
+        mv Log.out {INDEX}
+        """
+
+
+rule star_map:
+    input:
+        index=INDEX+"/SA",
+        gtf=GTF,
+        r1="fastq/{sample}.R1.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
+        r2="fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
+    output:
+        bam=temp("mapped_reads/{sample}.bam"),
+        genome=temp(directory("mapped_reads/{sample}._STARgenome")),
+        tmp=temp(directory("mapped_reads/{sample}._STARtmp")),
+    params:
+        mem="3000",  # todo auto adjust based on {threads}
+        reads="fastq/{sample}.R1.fastq.gz fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
+    threads:
+        12
+    log:
+        "log/star_map/{sample}.star.log"
+    run:
+        # align; rename
+        shell("""STAR --runThreadN {threads} \
+        --genomeDir {INDEX} \
+        --sjdbGTFfile {input.gtf} \
+        --readFilesCommand zcat \
+        --readFilesIn {params.reads} \
+        --outFileNamePrefix mapped_reads/{wildcards.sample}. \
+        --outFilterType BySJout \
+        --outMultimapperOrder Random \
+        --outFilterMultimapNmax 200 \
+        --alignSJoverhangMin 8 \
+        --alignSJDBoverhangMin 3 \
+        --outFilterMismatchNmax 999 \
+        --outFilterMismatchNoverReadLmax 0.05 \
+        --alignIntronMin 20 \
+        --alignIntronMax 1000000 \
+        --alignMatesGapMax 1000000 \
+        --outFilterIntronMotifs RemoveNoncanonicalUnannotated \
+        --outSAMstrandField None \
+        --outSAMtype BAM Unsorted \
+        --quantMode GeneCounts \
+        --outReadsUnmapped Fastx \
+        &> {log}
+
+        mv mapped_reads/{wildcards.sample}*.out.bam mapped_reads/{wildcards.sample}.bam
+        
+        gzip -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
+        """)
+
+
+rule samtools_sort:
+    input:
+        "mapped_reads/{sample}.bam"
+    output:
+        "sorted_reads/{sample}.bam"
+    params:
+        mem="6200"
+    threads:
+        2
+    log:
+        "log/samtools_sort/{sample}.sort.log"
+    run:
+        shell("samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam &> {log}")
+
+
+rule samtools_index:
+    input:
+        "sorted_reads/{sample}.bam"
+    output:
+        "sorted_reads/{sample}.bam.bai"
+    params:
+        mem="4000"
+    threads:
+        2
+    log:
+        "log/samtools_index/{sample}.index.log"
+    shell:
+        "samtools index -@ {threads} {input} &> {log}"
+
+
+rule bam_qc:
+    input:
+        bam="sorted_reads/{sample}.bam",
+        bai="sorted_reads/{sample}.bam.bai"
+    output:
+        "bam_qc/samstat/{sample}.bam.samstat.html"
+    params:
+        mem="4000"
+    threads:
+        6
+    log:
+        idxstats="log/bam_qc/idxstats/{sample}.idxstats.log",
+        flagstat="log/bam_qc/flagstat/{sample}.flagstat.log",
+        stats="log/bam_qc/stats/{sample}.stats.log",
+        samstat="log/bam_qc/samstat/{sample}.samstat.log",
+    shell:
+        """
+        mkdir -p bam_qc 
+        mkdir -p bam_qc/idxstats
+        mkdir -p bam_qc/flagstat
+        mkdir -p bam_qc/stats
+        mkdir -p bam_qc/samstat
+        samtools idxstats {input.bam} > bam_qc/idxstats/{wildcards.sample}.idxstats.txt 2> {log.idxstats} &
+        samtools flagstat {input.bam} > bam_qc/flagstat/{wildcards.sample}.flagsat.txt 2> {log.flagstat} &
+        samtools stats {input.bam} > bam_qc/stats/{wildcards.sample}.stats.txt 2> {log.stats} &
+        $samstat {input.bam} && mv sorted_reads/{wildcards.sample}*.samstat.html bam_qc/samstat 2> {log.samstat}
+        """
+
+
+rule bamCoverage:
+    input:
+        bam="sorted_reads/{sample}.bam",
+        bai="sorted_reads/{sample}.bam.bai"
+    output:
+        "bigWig/{sample}.{mode}.cpm.bw"
+    threads:
+        8
+    params:
+        mem="4000",
+        common_strict="--outFileFormat bigwig --normalizeUsing CPM --minMappingQuality 20 --binSize 10 ",
+        common_liberal="--outFileFormat bigwig --normalizeUsing CPM --binSize 10 ",
+    log:
+        "log/bamCoverage/{sample}.{mode}.bamCoverage.log"
+    run:
+        if {wildcards.mode} == "strict":
+            shell("""
+            echo '{output}'
+
+            bamCoverage --bam {input.bam} \
+            -o  {output} \
+            --numberOfProcessors {threads} \
+            {params.common_strict} &> {log}
+            """)
+        else:
+            shell("""
+            echo '{output}'
+            
+            bamCoverage --bam {input.bam} \
+            -o  {output} \
+            --numberOfProcessors {threads} \
+            {params.common_liberal} &> {log}
+            """)
+
+
+
+rule feature_count:
+    input:
+        bams=expand("sorted_reads/{sample}.bam", sample=SAMPLES), # for star, faster counting
+        bais=expand("sorted_reads/{sample}.bam.bai", sample=SAMPLES),
+        gtf=GTF
+    output:
+        # PE/SE; mult/uniq; pe_strict/pe_liberal
+        strict="feature_count/counts.gene_id.s{strand}.strict.txt",
+        liberal="feature_count/counts.gene_id.s{strand}.liberal.txt",
+    params:
+        mem="4000",
+        common_uniq="-g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 ",
+        #common_mult="-g gene_id -M --minOverlap 1 --fracOverlap 0",
+        common_mult="-g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0",
+        pe_strict="-p -B -C ",
+        pe_liberal="-p",
+    threads:
+        4
+    log:
+        pe_strict="log/feature_count/counts.gene_id.s{strand}.uniq.pe_strict.log",
+        pe_liberal="log/feature_count/counts.gene_id.s{strand}.mult.pe_liberal.log",
+        se_uniq="log/feature_count/counts.gene_id.s{strand}.uniq.se.log",
+        se_mult="log/feature_count/counts.gene_id.s{strand}.mult.se.log",
+
+    run:
+        if config["PAIR_END"]:
+            shell("""
+            featureCounts -a {input.gtf} -o {output.strict} \
+            -T {threads} \
+            {params.common_uniq} {params.pe_strict} \
+            -s {wildcards.strand} \
+            {input.bams} &> {log.pe_strict} &
+
+            featureCounts -a {input.gtf} -o {output.liberal} \
+            -T {threads} \
+            {params.common_mult} {params.pe_liberal} \
+            -s {wildcards.strand} \
+            {input.bams} &> {log.pe_liberal}
+            """)
+        else:
+            shell("""
+            featureCounts -a {input.gtf} -o {output.strict} \
+            -T {threads} \
+            {params.common_uniq} \
+            -s {wildcards.strand} \
+            {input.bams} &> {log.se_uniq} &
+
+            featureCounts -a {input.gtf} -o {output.liberal} \
+            -T {threads} \
+            {params.common_mult} \
+            -s {wildcards.strand} \
+            {input.bams} &> {log.se_mult}
+            """)
+
+# -p: count Fragments rather than reads for Paired-end reads (remove this for SE data)
+# -C: exclude chimeric (most times, for cancer maybe not include this)
+# -d 50, -D 1000: including PE reads with fragment length in between, which is better than default 50-600
+# -T: num threads
+# -s: strand info, very important; use $i to perform all three possibilities, pick the correct one after counting
+# -Q: min MAPQ, if MAPQ from star, we need to be careful, because star ignores PE information, we might need to add addional step to rescue PE info. (https://github.com/alexdobin/STAR/issues/615)
+# -M: count multiple-mapping reads, based on NH, not useful for RNA-seq, may create misleading summary, by counting multi-mapping reads several times
+# -B: Only count read pairs that have both ends aligned.
+# --fracOverlap 0.2: 20% of read length
+# -–minOverlap 2: 2bp
+# Notes:
+# liberal overlap settings (--minOverlap 1 --fracOverlap 0) will give you more counted reads
+# samtools sorted bams are smaller, and faster to be counted, compared to unsorted bams/star sorted bams
+# star sorted bams are slow to count => use samtools sorted reads, delete star bam (set as temp)
+
+rule DESeq2:
+    input:
+        "feature_count/counts.gene_id.s{strand}.strict.txt"
+    output:
+        "DESeq2/DESeq2.s{strand}.html"
+    params:
+        mem="8000",
+        rmd="'script/DESeq2.Rmd'",
+        fdr=MAX_FDR,
+        lfc=MIN_LFC,
+        o="'../DESeq2/DESeq2.s{strand}.html'"
+    threads:
+        1
+    log:
+        "log/DESeq2/DESeq2.s{strand}.log"
+    benchmark:
+        "log/DESeq2/DESeq2.s{strand}.txt"
+    shell:
+        #Rscript -e rmarkdown::render({params.rmd})
+        'Rscript -e "rmarkdown::render({params.rmd}, params=list(max_fdr={params.fdr}, min_lfc={params.lfc}), output_file={params.o})" '
+
+
+rule test:
+    input:
+        "config.yaml"
+    output:
+        "test.out"
+    params:
+        cmd=config['MAX_FDR']
+    shell:
+        'echo test'
+        'echo {params.cmd}'
+
+
+
+# rule fpkm_tpm:
+#     input:
+#         count="feature_count/counts.gene_id.s{strand}.txt",
+#         anno_tab=config['ANNO_TAB']
+#     output:
+#         fpkm="fpkm_tpm/strand_{strand}/FPKM.xlsx",
+#         tpm='fpkm_tpm/strand_{strand}/TPM.xlsx',
+#     params:
+#         mem="4000"
+#     threads:
+#         2
+#     log:
+#         "log/fpkm_tpm/fpkm_tpm.{strand}.log"
+#     shell:
+#         """
+#         Rscript {config[FPKM]} {input.count} {input.anno_tab} fpkm_tpm/strand_{wildcards.strand} &> {log}
+#         """
+#         # {config[FPKM]} without quotes
+
+
+rule create_dag:
+    params:
+        mem="1000"  
+        # every job has to have this defined 
+        # to use snakemake --cluster 'bsub -q short -R "rusage[mem={params.mem}]" -n {threads}'
+    threads:
+        1
+    output:
+        "Workflow_DAG.all.svg"
+    log:
+        "log/create_dag/Workflow_DAG.all.svg.log"
+    shell:
+        "snakemake --dag all | dot -Tsvg > {output} 2> {log}"
+

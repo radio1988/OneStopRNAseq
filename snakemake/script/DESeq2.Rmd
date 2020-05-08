@@ -1,0 +1,507 @@
+---
+title: "DEseq2"
+author: "RuiLi, Kai Hu"
+date: "05/07/2020"
+output:
+  html_document:
+    toc: yes
+    code_folding: hide
+    toc_float: yes
+params: 
+  max_fdr: 0.05
+  min_lfc: 0.585
+  indfilter: FALSE
+  countFile: "../feature_count/counts.gene_id.s2.strict.txt"
+  annoFile: "~/github/bpipes/rnaseq/annotations/gencode.mm10.vM21/gencode.vM21.annotation.txt.gz"
+  metaFile: "../meta/meta.xlsx"
+  contrastFile:  "../meta/contrast.xlsx"
+---
+
+## Communication
+
+
+## Notes:
+
+
+## Code LOG:
+- included annotation
+- included merging
+- used TPM normalization
+- save seperate results into excel rather than csv to prevent gene name bug in excel
+- print cut-offs
+- export results in original order, not ordered by LFC nor FDR (more robust)
+- export significant results, too (FDR and |LFC|, not including edges)
+- better VolcanoPlot by setting Max Y to 50 (>50 set to 50)
+- better html output, skip nb, use html
+- both OneBigModel and SeperatedModels
+- fixed row.names (gencode id) bug
+- output both FPKM and TPM, 06/28/2019
+- both shrinked LFC and raw LFC in same output Excel, and both plots
+- add lib-size
+- Pvalue -> FDR in Volcano-plot, ylim 0,50, xlim fixing, smaller dots
+- **optional function to aggregate multi-loci genes (e.g. his1, his2a, his2b, his3, his4)**
+- Use gray scale for MA/Volcano-plots
+- Output COUNT.xlsx
+- volcano plot: up/down count
+- length in TPM and DEseq2 outputs after aggregating histone genes
+- Reverse SampleNAme:RPKM
+- hist log(count+1)
+- added optinal density scatterplot between length and |LFC|
+- fixed sig.xlsx index bug
+- Enhanced VolcanoPlot
+- Move csv to subfolder 'forMachine'
+- fixed Volcano-plot color
+- output rnk file for GSEA
+- save volcanoplot in PDF
+- independent filter disabled to have more stable behavior (todo, not used this time, res.shrink problem)
+
+## Todo:
+- Combined histogram
+- Better MA plot
+- Include Kai functions
+
+
+```{r setup, include=FALSE}
+library(DESeq2)
+library(ggplot2)
+library(viridis)
+library(MASS)
+library(scater)
+library(WriteXLS)
+require(plyr)
+library(gdata)
+library(dplyr)
+dir.create("../DESeq2", showWarnings = FALSE)
+knitr::opts_knit$set(root.dir = "../DESeq2")
+```
+
+
+## Params
+```{r}
+max_fdr <- params$max_fdr
+min_lfc <- params$min_lfc
+indfilter <- params$indfilter
+
+countFile <- params$countFile
+annoFile <- params$annoFile
+metaFile <- params$metaFile
+contrastFile <-params$contrastFile
+
+paste("Data file name:", countFile)
+paste("MetaData file name:", metaFile)
+paste("Contrast file name:", contrastFile)
+paste("Annotation file name:", annoFile)
+paste("FDR cut-off:", max_fdr)
+paste("Log2FC cut-off:", min_lfc)
+```
+
+## Functions
+```{r}
+readExcel <- function(fname){
+    df <- readxl::read_xlsx( fname, na='-', sheet=1)  # na term important
+    df <- data.frame(df)  #important
+    return (df)
+}
+
+
+get_density <- function(x, y, ...) {
+  dens <- MASS::kde2d(x, y, ...)
+  ix <- findInterval(x, dens$x)
+  iy <- findInterval(y, dens$y)
+  ii <- cbind(ix, iy)
+  return(dens$z[ii])
+}
+
+library(EnhancedVolcano)
+
+volcanoplot <- function(res, anno,
+                        lfcthresh=2, 
+                        sigthresh=max_fdr, 
+                        name='name', 
+                        labelsig=FALSE, 
+                        xlim=100, 
+                        ylim=1000, 
+                        textcx=1) {
+    res<-merge(data.frame(res), anno, by.x = 0, by.y=1, sort=F)
+    res$padj[is.na(res$padj)] <- 1
+    res$padj[res$padj < 10^(-ylim) & !is.na(res$padj)] <- 10^(-ylim) # y-axis top value 50
+    res$log2FoldChange[res$log2FoldChange > xlim] <- xlim
+    res$log2FoldChange[res$log2FoldChange < -xlim] <- -xlim
+    
+    pos <- subset(res, padj<sigthresh & log2FoldChange>lfcthresh)
+    neg <- subset(res, padj<sigthresh & log2FoldChange< -lfcthresh)
+    pos.n <- dim(pos)[1]
+    neg.n <- dim(neg)[1]
+    
+    title=paste("Volcano Plot",
+                name,
+                paste("Up:", pos.n, ", Down:", neg.n, sep = ""),
+                sep='\n')
+    
+    labelcut <- res$padj[order(res$padj)][100]
+    
+    p <- EnhancedVolcano(res,
+                    lab = res$Name,
+                    #selectLab = as.character(res$Name[which(res$padj<labelcut)]),
+                    #selectLab = c("FOS", "LDHA"),
+                    x = 'log2FoldChange',
+                    y = 'padj',
+                    title = title,
+                    xlab = bquote(~Log[2]~ "Fold Change"),
+                    ylab = bquote(~-Log[10]~italic(FDR)),
+                    #xlim = c(-6, 6),
+                    pCutoff = sigthresh,
+                    FCcutoff = lfcthresh,
+                    #pLabellingCutoff = labelcut,
+                    cutoffLineType = 'twodash',
+                    cutoffLineWidth = 0.8,
+                    transcriptPointSize = 1.0,
+                    transcriptLabSize = 2.0,
+                    # DrawConnectors = F,
+                    colAlpha = 0.5,
+                    legend=c("Negative",
+                             paste("|LFC|>",lfcthresh,sep=""),
+                             paste("FDR<",sigthresh,sep=""),
+                             "Both"),
+                    legendPosition = 'right',
+                    legendLabSize = 10,
+                    axisLabSize = 10,
+                    titleLabSize = 10,
+                    legendIconSize = 3.0)
+    library(gridExtra)
+    library(grid)
+    # plot in html
+    grid.arrange(p,
+                 ncol=1,
+                 top = textGrob(' ',
+                                just = c('center'),
+                                gp = gpar(fontsize = 32))
+    )
+    grid.rect(gp=gpar(fill=NA))
+    # save PDF
+    pdf(paste(name, "pdf", sep="."), width=8, height=6)
+    grid.arrange(p,
+                 ncol=1,
+                 top = textGrob(' ',
+                                just = c('center'),
+                                gp = gpar(fontsize = 32))
+    )
+    grid.rect(gp=gpar(fill=NA))
+    dev.off()
+}
+
+
+maplot <- function (res, thresh=max_fdr, labelsig=FALSE, textcx=1, ...) {
+    with(res, 
+         plot(baseMean, log2FoldChange, col="grey80", pch=20, cex=.5, log="x", ...))
+    with(subset(res, padj<max_fdr), 
+         points(baseMean, log2FoldChange, col="grey40", pch=20, cex=.5))
+    if (labelsig) {
+        require(calibrate)
+        with(subset(res, padj<max_fdr), 
+             textxy(baseMean, log2FoldChange, labs=Gene, cex=textcx, col=2))
+    }
+}
+
+
+
+process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='name', anno='anno.df', norm_exp="tpm.df"){
+    ## Summary
+    print(name)
+    print("\n>>> Summary using FDR cut-off only (LFC not used)")
+    summary(res, alpha=max_fdr)
+    
+    print("\n>>> Summary using both FDR and LFC_shrinked cut-off")
+    sig_idx <- res$padj<max_fdr & abs(res$log2FoldChange) > min_lfc
+    sig_idx[is.na(sig_idx)] <- FALSE
+    res_sig <- res[sig_idx,]
+    print(table(sig_idx))
+    
+    up_idx <- res$padj<max_fdr & res$log2FoldChange > min_lfc
+    up_idx[is.na(up_idx)] <- FALSE
+    res_sig <- res[up_idx,]
+    print(table(up_idx))
+    
+    down_idx <- res$padj<max_fdr & res$log2FoldChange < -min_lfc
+    down_idx[is.na(down_idx)] <- FALSE
+    res_sig <- res[down_idx,]
+    print(table(down_idx))
+    
+    hist(res$pvalue, breaks=50, col="grey", 
+         main = paste('Histogram of p-values (un-adjusted)', name, sep = "\n"), 
+         xlab = 'pvalues', ylab = 'Frequency')
+    
+    hist(res$padj, breaks=50, col="grey", 
+         main = paste('Histogram of Q-values (adjusted)', name, sep = "\n"), 
+         xlab = 'padj', ylab = 'Frequency')
+    
+    maplot(res, main=paste("MAplot", paste(name, "LFC_shrinked"), sep="\n"))
+    maplot(res2, main=paste("MAplot", paste(name, "LFC_raw"), sep="\n"))
+    
+    volcanoplot(res, anno, lfcthresh=min_lfc, sigthresh=max_fdr, 
+                textcx=.8,  name= paste(name, "LFC_shrinked"))
+    volcanoplot(res2, anno, lfcthresh=min_lfc, sigthresh=max_fdr, 
+                textcx=.8,name= paste(name, "LFC_raw"))
+    
+    res.df <- as.data.frame(res)
+    names(res.df)[2] <- "log2FoldChange_shrinked"
+    names(res.df)[3] <- "lfcSE_shrinked"
+
+    res2.df <- as.data.frame(res2)
+    names(res2.df)[2] <- "log2FoldChange_raw"
+    names(res2.df)[3] <- "lfcSE_raw"
+    res2.df <- res2.df[, c(2,3)]
+
+    resdata <- merge(res.df, res2.df, by=0, sort=F, all.x=T)
+    resdata <- merge(anno, resdata, by.x=1, by.y=1, sort=F, all.y=T)
+    resdata <- merge(resdata, norm_exp, by.x=1, by.y=0, all.x=T, sort=F)
+    head(resdata)
+    sig_idx <- resdata$padj<max_fdr & abs(resdata$log2FoldChange_shrinked) > min_lfc # important to put this line right before output sig.xlsx
+    sig_idx[is.na(sig_idx)] <- FALSE
+    resdata.sig <- resdata[sig_idx,]
+    head(resdata.sig)
+
+        
+    # For GSEA
+    rnk <- subset(resdata, select = c("Name","log2FoldChange_shrinked"))
+    colnames(rnk) <- c("# Name","log2FoldChange_shrinked")
+    rnk <- rnk[order(rnk$log2FoldChange_shrinked), ]
+    #head(rnk)
+    write.table(rnk, 
+                paste(name, 'rnk', sep = '.'), 
+                row.names = F, quote = F, sep='\t')
+    
+    ## Write results
+    # write.csv(resdata, row.names = FALSE,
+    #           file=paste(name, 'deseq2.csv', sep = '.'))  # for later analysis
+    WriteXLS(x = resdata,
+             ExcelFileName = paste(name, 'deseq2.xlsx', sep = '.'),
+             row.names = F, SheetNames = 'sheet1', na = '-')  # for user
+
+    WriteXLS(x = resdata.sig,
+             ExcelFileName = paste(name, 'deseq2.sig.FDR', max_fdr,
+                                   'LFC', min_lfc, 'xlsx', sep = '.'),
+             row.names = F, SheetNames = 'sheet1', na = '-')  # for user
+
+
+    # # Corrlelation of Length and LFC for Niraj (only after write excel, alters resdata)
+    # resdata.sig.cor <- cor.test(resdata.sig$Length, 
+    #                        resdata.sig$log2FoldChange_shrinked, 
+    #                        method = "spearman")
+    # title <- paste("Spearman Cor:", format(resdata.sig.cor$estimate, digits=2, nsmall=2),
+    #                "p-value:", format(resdata.sig.cor$p.value, digits=3, nsmall=3),
+    #                sep = " ")
+    # 
+    # resdata.sig$density <- get_density(resdata.sig$Length, resdata.sig$log2FoldChange_shrinked, n = 100)
+    # # set lim (careful, only after outputting excel)
+    # resdata.sig$log2FoldChange_shrinked[resdata.sig$log2FoldChange_shrinked > 10] <- 10
+    # resdata.sig$log2FoldChange_shrinked[resdata.sig$log2FoldChange_shrinked < -10] <- -10
+    # resdata.sig$Length[resdata.sig$Length > 20000] <- 20000
+    # ggplot(resdata.sig) + 
+    #     geom_point(aes(Length, log2FoldChange_shrinked, color = density)) +
+    #     scale_color_viridis() +
+    #     ggtitle(paste(paste("Sig-DEG for", name), title, sep = "\n") ) + 
+    #     ylim(-10, 10) +        
+    #     xlim(0,20000)
+
+}
+```
+
+
+
+## Read Data
+```{r}
+df <- read.table(countFile, 
+                 sep="\t", header=TRUE, 
+                 row.names = 1) # row.name in cts(matrix)
+# clean names
+colnames(df) <- gsub("\\.bam$", "", colnames(df))
+colnames(df) <- gsub("sorted_reads.", "", colnames(df))
+# dim(df)
+# head(df)
+
+# get cts
+cts <- df[, 6:ncol(df)]
+cts <- as.matrix(cts)
+head(cts)
+paste("lib-size in millions:")
+format(colSums(cts/1e6), digits=1)
+paste("Dim of data table:")
+dim(cts)
+```
+
+## Filtering
+```{r}
+expression_filter <- rowSums(cts) >= 1  # default 10
+cts <- cts[expression_filter, ]
+df <- df[expression_filter, ]
+paste("Dim after filtering:")
+dim(cts)
+```
+
+# Read Anno
+```{r}
+anno <- read.table(annoFile,header=T)
+colnames(anno)
+dim(anno)
+head(anno)
+```
+
+## COUNT output
+```{r}
+count <- data.frame(cts)
+colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
+count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
+# head(count_out)
+WriteXLS(x = count_out, 
+         ExcelFileName = 'COUNT.xlsx', row.names = F, SheetNames = 'sheet1', na = '-')
+```
+
+## TPM calculation
+```{r}
+tpm <- calculateTPM(cts, df$Length)
+tpm <- data.frame(tpm)
+colnames(tpm) <- paste(colnames(tpm),"TPM",  sep = ":")
+tpm_out <- merge(anno, tpm, by.x=1, by.y=0, all.y=T, sort=F)
+# head(tpm_out)
+# tail(tpm_out)
+WriteXLS(x = tpm_out, 
+         ExcelFileName = 'TPM.xlsx', row.names = F, SheetNames = 'sheet1', na = '-')
+```
+
+## FPKKM calculation
+```{r}
+fpkm <- calculateFPKM(cts, df$Length)
+fpkm <- data.frame(fpkm)
+colnames(fpkm) <- paste(colnames(fpkm), "FPKM", sep = ":")
+fpkm_out <- merge(anno, fpkm, by.x=1, by.y=0, all.y=T, sort=F)
+# head(fpkm_out)
+# tail(fpkm_out)
+WriteXLS(x = fpkm_out, 
+         ExcelFileName = 'FPKM.xlsx', row.names = F, SheetNames = 'sheet1', na = '-')
+```
+
+## Experiment Design from Meta Data
+```{r}
+meta.df <- readExcel(metaFile)
+meta.df <- meta.df[match(colnames(cts), meta.df$SAMPLE_LABEL), ]
+
+contrast.df <- readExcel(contrastFile)
+
+sample <- factor(meta.df$SAMPLE_LABEL)
+batch <- factor(meta.df$BATCH)
+group <- factor(meta.df$GROUP_LABEL)
+
+coldata <- data.frame(row.names=colnames(cts), 
+                      sample,
+                      group,
+                      batch
+                      )
+coldata
+```
+
+## Model fitting
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = cts, 
+                              colData = coldata, 
+                              design = ~  group + batch
+                              )  # converted to alph-order
+dds
+dds <-DESeq(dds)
+resultsNames(dds)
+saveRDS(dds, file = 'deseq2.dds.rds')
+```
+
+# QC Plots
+
+## Data transformation
+```{r}
+#vsd <- vst(dds, blind=FALSE)
+rld <- rlog(dds, blind=FALSE)
+counts <- counts(dds, normalized=0)
+logCounts <- log10(counts +1 )
+
+normed <- counts(dds, normalized=1)
+logNormed <- log10(normed+1)
+```
+
+## Histogram of Log10(Counts)
+```{r}
+hist(logCounts, main='log10(count+1)', 100)
+```
+
+## Dispersion plot
+```{r}
+plotDispEsts(dds, main="Dispersion plot")
+```
+
+
+## PCA plot
+```{r}
+library(ggplot2)
+library(ggrepel)
+
+pcaData <- plotPCA(rld, intgroup=c("group", "batch"), returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+
+pcaplot <- ggplot(pcaData, aes(PC1, PC2, color=group, shape=batch)) +
+    geom_point(size=3) +
+    #geom_text(aes(label=type),hjust=1, vjust=0) +
+    xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+    ylab(paste0("PC2: ",percentVar[2],"% variance"))
+
+### geom_label_repel
+pcaplot + 
+  geom_label_repel(aes(label = sample),
+                  box.padding   = 0.35, 
+                  point.padding = 0.5,
+                  segment.color = 'grey50') +
+  theme_classic()
+```
+
+
+
+## Sample Heatmap
+```{r}
+library("RColorBrewer")
+library('pheatmap')
+library("PoiClaClu")
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+poisd <- PoissonDistance(t(counts(dds)))
+samplePoisDistMatrix <- as.matrix( poisd$dd ) 
+rownames(samplePoisDistMatrix) <- paste( coldata$sample, sep="-" ) 
+colnames(samplePoisDistMatrix) <- NULL 
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(samplePoisDistMatrix,
+         clustering_distance_rows=poisd$dd,
+         clustering_distance_cols=poisd$dd,
+         col=colors, 
+         clustering_method='complete'
+        )
+
+```
+
+## DE analysis
+```{r, warning=F}
+for (i in 1:dim(contrast.df)[2]){
+  name1 <- contrast.df[1,i]
+  name2 <- contrast.df[2,i]
+  name <- paste(name1, name2, sep = "_vs_")
+  print(paste(">>>", i, name))
+  
+  contrast <- c("group", name1, name2)
+  res <- lfcShrink(dds, contrast = contrast, type = 'ashr')
+  res2 <- results(dds, contrast = contrast, independentFilter=indfilter)
+  process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = tpm)
+}
+```
+
+
+
+```{bash}
+mkdir -p forMachine
+mv *deseq2.csv forMachine
+
+mkdir -p rnk
+mv *.rnk rnk
+```

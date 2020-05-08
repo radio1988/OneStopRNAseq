@@ -1,0 +1,35 @@
+# Analysis Params
+SAMPLES:
+    - KO_D0_1_S2
+    - KO_D0_2_S8
+    - KO_D2_1_S4
+    - KO_D2_2_S10
+    - KO_D8_1_S6
+    - KO_D8_2_S12
+    - WT_D0_1_S1
+    - WT_D0_2_S7
+    - WT_D2_1_S3
+    - WT_D2_2_S9
+    - WT_D8_1_S5
+    - WT_D8_2_S11
+
+PAIR_END: True  # True/False
+
+GENOME: /project/umw_mccb/genome/mm10_chr19/mm10.chr19.fa
+#/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
+#/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/hg38.primary.fa
+
+INDEX: /project/umw_mccb/genome/mm10_chr19/star_idx
+#/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/star_idx/
+
+GTF: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.gtf
+#    /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v29.primary_assembly.annotation.fixed.gtf
+ANNO_TAB: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt.gz
+#  ~/github/bpipes/rnaseq/annotations/gencode.hu.v29/gencode.v29.primary_assembly.anno.txt.gz
+
+STRAND: [2]  # can run [0, 1, 2] to get all possible results, can also select one
+MODE: [ "strict"] # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
+
+# DE analysis
+MAX_FDR: 0.05
+MIN_LFC: 0.585 
