@@ -24,7 +24,7 @@ INDEX: /project/umw_mccb/genome/mm10_chr19/star_idx
 
 GTF: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.gtf
 #    /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v29.primary_assembly.annotation.fixed.gtf
-ANNO_TAB: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt.gz
+ANNO_TAB: /Users/rui/github/bpipes/rnaseq/annotations/gencode.mm10.vM21/gencode.vM21.annotation.txt.gz
 #  ~/github/bpipes/rnaseq/annotations/gencode.hu.v29/gencode.v29.primary_assembly.anno.txt.gz
 
 STRAND: [2]  # can run [0, 1, 2] to get all possible results, can also select one
@@ -33,3 +33,5 @@ MODE: [ "strict"] # liberal: Multi-Mapping, No fragment size reqirement; strict:
 # DE analysis
 MAX_FDR: 0.05
 MIN_LFC: 0.585 
+META: "meta/meta.xlsx"
+CONTRAST: "meta/contrast.xlsx"

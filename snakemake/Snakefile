@@ -5,6 +5,7 @@ SAMPLES=config['SAMPLES']
 GENOME=config["GENOME"]
 INDEX=config["INDEX"]
 GTF=config["GTF"]
+ANNO_TAB=config["ANNO_TAB"]
 STRAND=config["STRAND"]
 MODE=config["MODE"]
 
@@ -320,6 +321,9 @@ rule DESeq2:
         rmd="'script/DESeq2.Rmd'",
         fdr=MAX_FDR,
         lfc=MIN_LFC,
+        anno_tab=ANNO_TAB,
+        meta=config["META"],
+        cont=config["CONTRAST"],
         o="'../DESeq2/DESeq2.s{strand}.html'"
     threads:
         1
@@ -329,7 +333,13 @@ rule DESeq2:
         "log/DESeq2/DESeq2.s{strand}.txt"
     shell:
         #Rscript -e rmarkdown::render({params.rmd})
-        'Rscript -e "rmarkdown::render({params.rmd}, params=list(max_fdr={params.fdr}, min_lfc={params.lfc}), output_file={params.o})" '
+        'Rscript -e "rmarkdown::render({params.rmd}, \
+        params=list(max_fdr={params.fdr}, min_lfc={params.lfc}, \
+        countFile=\'../{input}\', \
+        annoFile=\'{params.anno_tab}\', \
+        metaFile=\'{params.meta}\', \
+        contrastFile=\'{params.cont}\'           ), \
+        output_file={params.o})" '
 
 
 rule test:
