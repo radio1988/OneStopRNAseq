@@ -34,7 +34,7 @@ shell.prefix("""
 # 07/10/2019 randomized primary alignment
 
 
-rule all:
+rule targets:
     input:
         # 1. everything listed here will be produced by the pipeline
         # 2. feed {sample}

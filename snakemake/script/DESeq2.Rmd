@@ -54,6 +54,7 @@ params:
 - output rnk file for GSEA
 - save volcanoplot in PDF
 - independent filter disabled to have more stable behavior (todo, not used this time, res.shrink problem)
+- fixed packages for R4.0
 
 ## Todo:
 - Include Kai functions
@@ -64,13 +65,21 @@ params:
 ```{r setup, include=FALSE}
 library(DESeq2)
 library(ggplot2)
-library(viridis)
+library(ashr)
+#library(viridis)
 library(MASS)
 library(scater)
 library(WriteXLS)
 require(plyr)
 library(gdata)
 library(dplyr)
+library(EnhancedVolcano)
+library(ggplot2)
+library(ggrepel)
+library(RColorBrewer)
+library(pheatmap)
+library(PoiClaClu)
+
 dir.create("../DESeq2", showWarnings = FALSE)
 knitr::opts_knit$set(root.dir = "../DESeq2")
 ```
@@ -112,7 +121,6 @@ get_density <- function(x, y, ...) {
   return(dens$z[ii])
 }
 
-library(EnhancedVolcano)
 
 volcanoplot <- function(res, anno,
                         lfcthresh=2, 
@@ -155,8 +163,8 @@ volcanoplot <- function(res, anno,
                     #pLabellingCutoff = labelcut,
                     cutoffLineType = 'twodash',
                     cutoffLineWidth = 0.8,
-                    transcriptPointSize = 1.0,
-                    transcriptLabSize = 2.0,
+                    pointSize = 1.0,
+                    labSize = 2.0,
                     # DrawConnectors = F,
                     colAlpha = 0.5,
                     legend=c("Negative",
@@ -447,9 +455,6 @@ plotDispEsts(dds, main="Dispersion plot")
 
 ## PCA plot
 ```{r}
-library(ggplot2)
-library(ggrepel)
-
 pcaData <- plotPCA(rld, intgroup=c("group", "batch"), returnData=TRUE)
 percentVar <- round(100 * attr(pcaData, "percentVar"))
 
@@ -472,9 +477,6 @@ pcaplot +
 
 ## Sample Heatmap
 ```{r}
-library("RColorBrewer")
-library('pheatmap')
-library("PoiClaClu")
 colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
 poisd <- PoissonDistance(t(counts(dds)))
 samplePoisDistMatrix <- as.matrix( poisd$dd ) 
@@ -514,3 +516,8 @@ mv *deseq2.csv forMachine
 mkdir -p rnk
 mv *.rnk rnk
 ```
+
+```{r}
+sessionInfo()
+```
+
