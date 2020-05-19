@@ -27,11 +27,31 @@ GTF: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.gtf
 ANNO_TAB: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt
 # gencode.v29.primary_assembly.anno.txt.gz
 
-STRAND: [2]  # can run [0, 1, 2] to get all possible results, can also select one
-MODE: [ "strict"] # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
+STRAND: [0, 1, 2]  # can run [0, 1, 2] to get all possible results, can also select one # todo auto select
+MODE: "strict" # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
 
 # DE analysis
 MAX_FDR: 0.05
 MIN_LFC: 0.585 
 META: "meta/meta.xlsx"
 CONTRAST: "meta/contrast.xlsx"
+
+
+# GSEA
+GSEA_NPLOTS: 100  # not implemented
+GSEA_PLOT_SVG: TRUE  # not implemented
+GSEA_DBS:  # not implemented
+  - c1.all.v7.1.symbols.gmt
+  - c2.cgp.v7.1.symbols.gmt
+  - c2.cp.v7.1.symbols.gmt
+  - c3.all.v7.1.symbols.gmt
+  - c4.all.v7.1.symbols.gmt
+  - c5.bp.v7.1.symbols.gmt
+  - c5.cc.v7.1.symbols.gmt
+  - c5.mf.v7.1.symbols.gmt
+  - c6.all.v7.1.symbols.gmt
+  - c7.all.v7.1.symbols.gmt
+  - h.all.v7.1.symbols.gmt
+
+# Starting point
+START: "FASTQ" # FASTQ, BAM, COUNT

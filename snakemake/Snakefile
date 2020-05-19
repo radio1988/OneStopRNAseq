@@ -38,17 +38,26 @@ rule targets:
     input:
         # 1. everything listed here will be produced by the pipeline
         # 2. feed {sample}
-        fastqc="fastqc/multiqc_report.html", # not in main workflow, so list here
-        bam_qc=expand("bam_qc/samstat/{sample}.bam.samstat.html", sample=SAMPLES), # feed {samples}
-        feature_count_strict=expand("feature_count/counts.gene_id.s{strand}.strict.txt", strand=STRAND), # feed {strand}
-        feature_count_liberal=expand("feature_count/counts.gene_id.s{strand}.liberal.txt", strand=STRAND), # feed {strand}
-        DESeq2=expand("DESeq2/DESeq2.s{strand}.html", strand=STRAND),
-        bamCoverage=expand("bigWig/{sample}.{mode}.cpm.bw", sample=SAMPLES, mode=MODE),
+        fastqc=("fastqc/multiqc_report.html" 
+            if config["START"] == "FASTQ" 
+            else "Workflow_DAG.all.svg"),
+        bam_qc=(expand("bam_qc/samstat/{sample}.bam.samstat.html", sample=SAMPLES) 
+            if config["START"] in ["FASTQ", "BAM"]  
+            else "Workflow_DAG.all.svg"),
+        bamCoverage=(expand("bigWig/{sample}.{mode}.cpm.bw", sample=SAMPLES, mode=MODE) 
+            if config["START"] in ["FASTQ", "BAM"]  
+            else "Workflow_DAG.all.svg"),
+        feature_count_strict=(expand("feature_count/counts.s{strand}.strict.txt", strand=STRAND)
+            if config["START"] in ["FASTQ", "BAM"]  and config["MODE"] == "strict"
+            else "Workflow_DAG.all.svg"),
+        feature_count_liberal=(expand("feature_count/counts.s{strand}.liberal.txt", strand=STRAND)       
+            if config["START"] in ["FASTQ", "BAM"]  and config["MODE"] == "liberal"
+            else "Workflow_DAG.all.svg"),
+        DESeq2="DESeq2/DESeq2.html",
+        # GSEA = ..., 
         dag="Workflow_DAG.all.svg", # create DAG
     params:
-        mem="1000"
-    shell:
-        "rm -rf mapped_reads/*_STARgenome mapped_reads/*tmp"
+        mem_mb="1000"
 
 
 rule fastqc:
@@ -57,11 +66,15 @@ rule fastqc:
     output:
         "fastqc/multiqc_report.html"
     params:
-        mem="1000"
+        mem_mb="1000"
+    priority:
+        50
     threads:
         6
     log:
         "log/fastqc/fastqc.log"
+    benchmark:
+        "log/fastqc/fastqc.tsv"
     shell:
         # {input/output} don't have to be in command
         # have to load module in one block
@@ -80,11 +93,13 @@ rule star_idx:
     output:
         INDEX+"/SA"
     params:
-        mem="3000"
+        mem_mb="3000"
     threads:
         12
     log:
         "log/star_idx/star_idx.log"
+    benchmark:
+        "log/star_idx/star_idx.tsv"
     shell:
         """
         mkdir -p {INDEX}
@@ -106,16 +121,18 @@ rule star_map:
         r1="fastq/{sample}.R1.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
         r2="fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
     output:
-        bam=temp("mapped_reads/{sample}.bam"),
+        bam="mapped_reads/{sample}.bam",
         genome=temp(directory("mapped_reads/{sample}._STARgenome")),
         tmp=temp(directory("mapped_reads/{sample}._STARtmp")),
     params:
-        mem="3000",  # todo auto adjust based on {threads}
+        mem_mb="3000",  # todo auto adjust based on {threads}
         reads="fastq/{sample}.R1.fastq.gz fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
     threads:
         12
     log:
-        "log/star_map/{sample}.star.log"
+        "log/mapped_reads/{sample}.star.log"
+    benchmark:
+        "log/mapped_reads/{sample}.star.tsv"
     run:
         # align; rename
         shell("""STAR --runThreadN {threads} \
@@ -152,12 +169,16 @@ rule samtools_sort:
         "mapped_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam"
+    # group:
+    #     "sort"
     params:
-        mem="6200"
+        mem_mb="3000"
     threads:
         2
     log:
         "log/samtools_sort/{sample}.sort.log"
+    benchmark:
+        "log/samtools_sort/{sample}.sort.tsv"
     run:
         shell("samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam &> {log}")
 
@@ -167,12 +188,16 @@ rule samtools_index:
         "sorted_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam.bai"
+    # group:
+    #     "sort"
     params:
-        mem="4000"
+        mem_mb="3000"
     threads:
-        2
+        1
     log:
         "log/samtools_index/{sample}.index.log"
+    benchmark:
+        "log/samtools_index/{sample}.index.tsv"
     shell:
         "samtools index -@ {threads} {input} &> {log}"
 
@@ -184,14 +209,16 @@ rule bam_qc:
     output:
         "bam_qc/samstat/{sample}.bam.samstat.html"
     params:
-        mem="4000"
+        mem_mb="4000"
     threads:
-        6
+        4
     log:
         idxstats="log/bam_qc/idxstats/{sample}.idxstats.log",
         flagstat="log/bam_qc/flagstat/{sample}.flagstat.log",
         stats="log/bam_qc/stats/{sample}.stats.log",
         samstat="log/bam_qc/samstat/{sample}.samstat.log",
+    benchmark:
+        "log/bam_qc/benchmark/{sample}.bam_qc.tsv",
     shell:
         """
         mkdir -p bam_qc 
@@ -215,11 +242,15 @@ rule bamCoverage:
     threads:
         8
     params:
-        mem="4000",
+        mem_mb="4000",
         common_strict="--outFileFormat bigwig --normalizeUsing CPM --minMappingQuality 20 --binSize 10 ",
         common_liberal="--outFileFormat bigwig --normalizeUsing CPM --binSize 10 ",
+    priority:
+        0
     log:
         "log/bamCoverage/{sample}.{mode}.bamCoverage.log"
+    benchmark:
+        "log/bamCoverage/{sample}.{mode}.bamCoverage.tsv"
     run:
         if {wildcards.mode} == "strict":
             shell("""
@@ -244,15 +275,15 @@ rule bamCoverage:
 
 rule feature_count:
     input:
-        bams=expand("sorted_reads/{sample}.bam", sample=SAMPLES), # for star, faster counting
-        bais=expand("sorted_reads/{sample}.bam.bai", sample=SAMPLES),
+        bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES), # sort by name -> faster
         gtf=GTF
     output:
-        # PE/SE; mult/uniq; pe_strict/pe_liberal
-        strict="feature_count/counts.gene_id.s{strand}.strict.txt",
-        liberal="feature_count/counts.gene_id.s{strand}.liberal.txt",
+        count="feature_count/counts.s{strand}.strict.txt" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt",
+        summary="feature_count/counts.s{strand}.strict.txt.summary" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt.summary"
+    priority:
+        100
     params:
-        mem="4000",
+        mem_mb="4000",
         common_uniq="-g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 ",
         #common_mult="-g gene_id -M --minOverlap 1 --fracOverlap 0",
         common_mult="-g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0",
@@ -261,35 +292,43 @@ rule feature_count:
     threads:
         4
     log:
-        pe_strict="log/feature_count/counts.gene_id.s{strand}.uniq.pe_strict.log",
-        pe_liberal="log/feature_count/counts.gene_id.s{strand}.mult.pe_liberal.log",
-        se_uniq="log/feature_count/counts.gene_id.s{strand}.uniq.se.log",
-        se_mult="log/feature_count/counts.gene_id.s{strand}.mult.se.log",
+        pe_strict="log/feature_count/counts.s{strand}.pe_strict.log",
+        pe_liberal="log/feature_count/counts.s{strand}.pe_liberal.log",
+        se_uniq="log/feature_count/counts.s{strand}.uniq.se.log",
+        se_mult="log/feature_count/counts.s{strand}.mult.se.log",
+    benchmark:
+        "log/feature_count/benchmark.s{strand}.tsv"
 
     run:
         if config["PAIR_END"]:
-            shell("""
-            featureCounts -a {input.gtf} -o {output.strict} \
-            -T {threads} \
-            {params.common_uniq} {params.pe_strict} \
-            -s {wildcards.strand} \
-            {input.bams} &> {log.pe_strict} &
-
-            featureCounts -a {input.gtf} -o {output.liberal} \
-            -T {threads} \
-            {params.common_mult} {params.pe_liberal} \
-            -s {wildcards.strand} \
-            {input.bams} &> {log.pe_liberal}
-            """)
+            if config["MODE"] == "strict":
+                shell("""
+                featureCounts -a {input.gtf} -o {output.count} \
+                -T {threads} \
+                {params.common_uniq} {params.pe_strict} \
+                -s {wildcards.strand} \
+                {input.bams} &> {log.pe_strict} &
+                """)
+            elif config["MODE"] == "liberal":
+                shell("""
+                featureCounts -a {input.gtf} -o {output.count} \
+                -T {threads} \
+                {params.common_mult} {params.pe_liberal} \
+                -s {wildcards.strand} \
+                {input.bams} &> {log.pe_liberal}
+                """)
+            else:
+                print ("MODE err, not liberal nor strict")
         else:
             shell("""
-            featureCounts -a {input.gtf} -o {output.strict} \
+            # strict
+            featureCounts -a {input.gtf} -o {output.count} \
             -T {threads} \
             {params.common_uniq} \
             -s {wildcards.strand} \
             {input.bams} &> {log.se_uniq} &
-
-            featureCounts -a {input.gtf} -o {output.liberal} \
+            # liberal
+            featureCounts -a {input.gtf} -o {output.count} \
             -T {threads} \
             {params.common_mult} \
             -s {wildcards.strand} \
@@ -311,26 +350,49 @@ rule feature_count:
 # samtools sorted bams are smaller, and faster to be counted, compared to unsorted bams/star sorted bams
 # star sorted bams are slow to count => use samtools sorted reads, delete star bam (set as temp)
 
+
+rule auto_detect_strand:
+    input:
+        expand("feature_count/counts.s{strand}.strict.txt.summary", strand=STRAND) 
+        if config["MODE"] == "strict" 
+        else expand("feature_count/counts.s{strand}.liberal.txt.summary", strand=STRAND)
+    output:
+        "feature_count/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count/counts.liberal.txt"
+    threads:
+        1
+    params:
+        mem_mb=1000
+    log:
+        "log/feature_count/auto_detect_strand.log"
+    script:
+        "script/auto_detect_strand.py"
+
+
+
+
+
 rule DESeq2:
     input:
-        "feature_count/counts.gene_id.s{strand}.strict.txt"
+        "feature_count/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count/counts.liberal.txt"
     output:
-        "DESeq2/DESeq2.s{strand}.html"
+        "DESeq2/DESeq2.html"
     params:
-        mem="8000",
+        mem_mb="8000",
         rmd="'script/DESeq2.Rmd'",
         fdr=MAX_FDR,
         lfc=MIN_LFC,
         anno_tab=ANNO_TAB,
         meta=config["META"],
         cont=config["CONTRAST"],
-        o="'../DESeq2/DESeq2.s{strand}.html'"
+        o="'../DESeq2/DESeq2.html'"
+    priority: 
+        100
     threads:
         1
     log:
-        "log/DESeq2/DESeq2.s{strand}.log"
+        "log/DESeq2/DESeq2.log"
     benchmark:
-        "log/DESeq2/DESeq2.s{strand}.txt"
+        "log/DESeq2/DESeq2.tsv"
     shell:
         #Rscript -e rmarkdown::render({params.rmd})
         'Rscript -e "rmarkdown::render({params.rmd}, \
@@ -340,6 +402,67 @@ rule DESeq2:
         metaFile=\'../{params.meta}\', \
         contrastFile=\'../{params.cont}\'           ), \
         output_file={params.o})" '
+
+
+rule GSEA:
+    input: 
+        "DESeq2/DESeq2.s2.html"
+    output:
+        directory("gsea/WT_D8_vs_WT_D0/")
+    params:
+        mem_mb="6200",
+        svg=config["GSEA_PLOT_SVG"],
+        nplot=config["GSEA_NPLOTS"]
+    threads:
+        2
+    log:
+        "log/gsea/gsea.log"
+    benchmark:
+        "log/gsea/gsea.tsv"
+    shell:
+        """
+        module purge
+        module load  openjdk/11+28  # java 11
+        path=script/GSEA_4.0.3
+        dbs=(c1.all.v7.1.symbols.gmt
+            c2.cgp.v7.1.symbols.gmt
+            c2.cp.v7.1.symbols.gmt
+            c3.all.v7.1.symbols.gmt
+            c4.all.v7.1.symbols.gmt
+            c5.bp.v7.1.symbols.gmt
+            c5.cc.v7.1.symbols.gmt
+            c5.mf.v7.1.symbols.gmt
+            c6.all.v7.1.symbols.gmt
+            c7.all.v7.1.symbols.gmt
+            h.all.v7.1.symbols.gmt) 
+        nplots=100  # 1000
+        plot_svg=TRUE
+        nperm=1000  # 1000
+        set_max=500
+        set_min=15
+
+        mkdir -p gsea
+
+        for i in {0..10}
+        do 
+            db=${dbs[$i]}
+            label_exp=`basename $rnk_file`
+            label_exp=${label_exp/\.rnk/}
+            label_db=${db/\.symbols\.gmt/}
+            db=script/gsea_db/database/$db
+            echo ">>>" rnk $rnk_file
+            echo label_exp $label_exp
+            echo label_db $label_db
+            echo db $db
+
+            $path/gsea-cli.sh GSEAPreranked \
+                -gmx $db -rnk $rnk_file -rpt_label $label_db \
+                -norm meandiv -nperm $nperm  -scoring_scheme classic \
+                -create_svgs $plot_svg -make_sets true  -rnd_seed 1 -zip_report false \
+                -set_max $set_max -set_min $set_min \
+                -plot_top_x $nplots -out ./gsea/$label_exp/
+        done
+        """
 
 
 rule test:
@@ -363,7 +486,7 @@ rule test:
 #         fpkm="fpkm_tpm/strand_{strand}/FPKM.xlsx",
 #         tpm='fpkm_tpm/strand_{strand}/TPM.xlsx',
 #     params:
-#         mem="4000"
+#         mem_mb="4000"
 #     threads:
 #         2
 #     log:
@@ -377,9 +500,9 @@ rule test:
 
 rule create_dag:
     params:
-        mem="1000"  
+        mem_mb="1000"  
         # every job has to have this defined 
-        # to use snakemake --cluster 'bsub -q short -R "rusage[mem={params.mem}]" -n {threads}'
+        # to use snakemake --cluster 'bsub -q short -R "rusage[mem_mb={params.mem_mb}]" -n {threads}'
     threads:
         1
     output:
@@ -388,4 +511,8 @@ rule create_dag:
         "log/create_dag/Workflow_DAG.all.svg.log"
     shell:
         "snakemake --dag all | dot -Tsvg > {output} 2> {log}"
+
+rule reset:
+    shell:
+        "rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ lsf.log Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2"
 

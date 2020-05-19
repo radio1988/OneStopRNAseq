@@ -55,6 +55,10 @@ params:
 - save volcanoplot in PDF
 - independent filter disabled to have more stable behavior (todo, not used this time, res.shrink problem)
 - fixed packages for R4.0
+- url bug fixed
+- intercept removed
+- todo: complex contrast
+- space in output PDF fname removed 
 
 ## Todo:
 - Include Kai functions
@@ -247,9 +251,9 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     maplot(res2, main=paste("MAplot", paste(name, "LFC_raw"), sep="\n"))
     
     volcanoplot(res, anno, lfcthresh=min_lfc, sigthresh=max_fdr, 
-                textcx=.8,  name= paste(name, "LFC_shrinked"))
+                textcx=.8,  name= paste(name, "LFC_shrinked", sep="."))
     volcanoplot(res2, anno, lfcthresh=min_lfc, sigthresh=max_fdr, 
-                textcx=.8,name= paste(name, "LFC_raw"))
+                textcx=.8,name= paste(name, "LFC_raw", sep="."))
     
     res.df <- as.data.frame(res)
     names(res.df)[2] <- "log2FoldChange_shrinked"
@@ -356,8 +360,7 @@ getAnnotation <- function(urlpath) {
   return(read.table(tmp, header = TRUE))
 }
 
-url <- 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt' 
-anno <- getAnnotation(url)
+anno <- getAnnotation(annoFile)
 # anno <- read.table(annoFile,header=T)
 colnames(anno)
 dim(anno)
@@ -421,7 +424,7 @@ coldata
 ```{r}
 dds <- DESeqDataSetFromMatrix(countData = cts, 
                               colData = coldata, 
-                              design = ~  group + batch
+                              design = ~  0 + group + batch
                               )  # converted to alph-order
 dds
 dds <-DESeq(dds)
