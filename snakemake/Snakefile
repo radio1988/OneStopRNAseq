@@ -8,9 +8,18 @@ GTF=config["GTF"]
 ANNO_TAB=config["ANNO_TAB"]
 STRAND=config["STRAND"]
 MODE=config["MODE"]
-
 MAX_FDR=config["MAX_FDR"]
 MIN_LFC=config["MIN_LFC"]
+
+
+
+# get CONTRASTS from meta/contrast.xlsx
+import pandas as pd
+df=pd.read_excel(config["CONTRAST"])
+CONTRASTS = []
+for j in range(df.shape[1]):
+    CONTRASTS.append(df.iloc[0,j] + "_vs_" + df.iloc[1,j])
+print(CONTRASTS)
 
 # load modules (have to use """, to keep in one block)
 # - alias does not work, have to use $samstat
@@ -21,8 +30,10 @@ shell.prefix("""
             module load star/2.5.3a
             module load singularity/singularity-current
             module load deeptools/3.0.2_py36_0
+
             samstat="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samstat"
             samtools="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samtools"
+
             """)
 
 # Requirements
@@ -54,7 +65,7 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM"]  and config["MODE"] == "liberal"
             else "Workflow_DAG.all.svg"),
         DESeq2="DESeq2/DESeq2.html",
-        # GSEA = ..., 
+        GSEA = expand("gsea/{contrast}/{db}.finished", contrast=CONTRASTS, db=config["GSEA_DBS"]),
         dag="Workflow_DAG.all.svg", # create DAG
     params:
         mem_mb="1000"
@@ -162,6 +173,10 @@ rule star_map:
         
         gzip -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
         """)
+
+# rule star_align:
+#     input:
+
 
 
 rule samtools_sort:
@@ -365,7 +380,7 @@ rule auto_detect_strand:
     log:
         "log/feature_count/auto_detect_strand.log"
     script:
-        "script/auto_detect_strand.py"
+        "script/auto_detect_strand.py" # todo: improvement needed
 
 
 
@@ -373,7 +388,7 @@ rule auto_detect_strand:
 
 rule DESeq2:
     input:
-        "feature_count/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count/counts.liberal.txt"
+        "feature_count/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count/counts.liberal.txt" # todo: use {mode} wildcards
     output:
         "DESeq2/DESeq2.html"
     params:
@@ -404,66 +419,41 @@ rule DESeq2:
         output_file={params.o})" '
 
 
+
+
+
 rule GSEA:
     input: 
-        "DESeq2/DESeq2.s2.html"
+        rnk="DESeq2/rnk/{contrast}.rnk",
+        db="script/gsea_db/{db}"
     output:
-        directory("gsea/WT_D8_vs_WT_D0/")
+        touch("gsea/{contrast}/{db}.finished")
+        #directory("gsea/{contrast}/{db}")
+        #directory(lambda wildcards: "gsea/"+wildcards['contrast']+wildcards['db'][:-12])
     params:
         mem_mb="6200",
         svg=config["GSEA_PLOT_SVG"],
-        nplot=config["GSEA_NPLOTS"]
+        nplot=config["GSEA_NPLOTS"],
+        label_db=lambda wildcards: wildcards["db"][:-12]
     threads:
         2
     log:
-        "log/gsea/gsea.log"
+        "log/gsea/{contrast}.{db}.log"
     benchmark:
-        "log/gsea/gsea.tsv"
-    shell:
-        """
-        module purge
-        module load  openjdk/11+28  # java 11
-        path=script/GSEA_4.0.3
-        dbs=(c1.all.v7.1.symbols.gmt
-            c2.cgp.v7.1.symbols.gmt
-            c2.cp.v7.1.symbols.gmt
-            c3.all.v7.1.symbols.gmt
-            c4.all.v7.1.symbols.gmt
-            c5.bp.v7.1.symbols.gmt
-            c5.cc.v7.1.symbols.gmt
-            c5.mf.v7.1.symbols.gmt
-            c6.all.v7.1.symbols.gmt
-            c7.all.v7.1.symbols.gmt
-            h.all.v7.1.symbols.gmt) 
-        nplots=100  # 1000
-        plot_svg=TRUE
-        nperm=1000  # 1000
-        set_max=500
-        set_min=15
+        "log/gsea/{contrast}.{db}.tsv"
+    # run:
+    #     print('test')
+    run:
+        shell("echo {params.label_db}")
+        shell("mkdir -p gsea && mkdir -p gsea/{wildcards.contrast}")
+        shell("""module purge;             module load  openjdk/11+28; script/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
+            -gmx {input.db} -rnk {input.rnk} -rpt_label {wildcards.db} \
+            -norm meandiv -nperm 1000  -scoring_scheme classic \
+            -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
+            -set_max 15000 -set_min 15 \
+            -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &> {log}""")
 
-        mkdir -p gsea
-
-        for i in {0..10}
-        do 
-            db=${dbs[$i]}
-            label_exp=`basename $rnk_file`
-            label_exp=${label_exp/\.rnk/}
-            label_db=${db/\.symbols\.gmt/}
-            db=script/gsea_db/database/$db
-            echo ">>>" rnk $rnk_file
-            echo label_exp $label_exp
-            echo label_db $label_db
-            echo db $db
-
-            $path/gsea-cli.sh GSEAPreranked \
-                -gmx $db -rnk $rnk_file -rpt_label $label_db \
-                -norm meandiv -nperm $nperm  -scoring_scheme classic \
-                -create_svgs $plot_svg -make_sets true  -rnd_seed 1 -zip_report false \
-                -set_max $set_max -set_min $set_min \
-                -plot_top_x $nplots -out ./gsea/$label_exp/
-        done
-        """
-
+# todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
 
 rule test:
     input:

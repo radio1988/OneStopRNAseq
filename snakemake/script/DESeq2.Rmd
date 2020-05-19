@@ -83,6 +83,8 @@ library(ggrepel)
 library(RColorBrewer)
 library(pheatmap)
 library(PoiClaClu)
+library(gridExtra)
+library(grid)
 
 dir.create("../DESeq2", showWarnings = FALSE)
 knitr::opts_knit$set(root.dir = "../DESeq2")
@@ -180,8 +182,7 @@ volcanoplot <- function(res, anno,
                     axisLabSize = 10,
                     titleLabSize = 10,
                     legendIconSize = 3.0)
-    library(gridExtra)
-    library(grid)
+
     # plot in html
     grid.arrange(p,
                  ncol=1,
@@ -278,6 +279,7 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     rnk <- subset(resdata, select = c("Name","log2FoldChange_shrinked"))
     colnames(rnk) <- c("# Name","log2FoldChange_shrinked")
     rnk <- rnk[order(rnk$log2FoldChange_shrinked), ]
+    rnk[, 1] <- toupper(rnk[, 1])
     #head(rnk)
     write.table(rnk, 
                 paste(name, 'rnk', sep = '.'), 
