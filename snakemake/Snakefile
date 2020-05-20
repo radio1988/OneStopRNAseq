@@ -19,20 +19,20 @@ df=pd.read_excel(config["CONTRAST"])
 CONTRASTS = []
 for j in range(df.shape[1]):
     CONTRASTS.append(df.iloc[0,j] + "_vs_" + df.iloc[1,j])
-print(CONTRASTS)
+#print(CONTRASTS)
 
 # load modules (have to use """, to keep in one block)
 # - alias does not work, have to use $samstat
 shell.prefix("""
-            source /home/rl44w/.bash_profile
-            module load fastqc/0.11.5
-            module load java/1.8.0_77
-            module load star/2.5.3a
+            #source /home/rl44w/.bash_profile
+            #module load fastqc/0.11.5
+            #module load java/1.8.0_77
+            #module load star/2.5.3a
             module load singularity/singularity-current
-            module load deeptools/3.0.2_py36_0
+            #module load deeptools/3.0.2_py36_0
 
             samstat="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samstat"
-            samtools="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samtools"
+            #samtools="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samtools"
 
             """)
 
@@ -74,27 +74,48 @@ rule targets:
 rule fastqc:
     # don't need input, if you agree on not checking them
     # without output, output will not be created
+    input:
+        r1="fastq/{sample}.R1.fastq.gz" 
+            if config["PAIR_END"] 
+            else "fastq/{sample}.fastq.gz",
+        r2="fastq/{sample}.R2.fastq.gz" 
+            if config["PAIR_END"] 
+            else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
+    output:
+        r1="fastqc/details/{sample}.R1_fastqc.html" if config["PAIR_END"] else "fastqc/details/{sample}_fastqc.html",
+        r2="fastqc/details/{sample}.R2_fastqc.html" if config["PAIR_END"] else "fastqc/details/{sample}_fastqc.html", # trick snakemake to skip r2
+    params:
+        mem_mb="2000"
+    priority:
+        0
+    threads:
+        1
+    log:
+        "log/fastqc/{sample}.log"
+    benchmark:
+        "log/fastqc/{sample}.tsv"
+    run:
+        shell("mkdir -p fastqc && mkdir -p fastqc/details")
+        if config["PAIR_END"]:
+            shell("fastqc -t {threads} {input} -o fastqc/details &> {log}")
+        else:
+            shell("fastqc -t {threads} {input.r1} -o fastqc/details &> {log}")
+
+
+rule multiqc:
+    input:
+        r1=expand("fastqc/details/{sample}.R1_fastqc.html", sample=SAMPLES) 
+            if config["PAIR_END"] 
+            else "fastq/{sample}_fastqc.html",
+        r2=expand("fastqc/details/{sample}.R2_fastqc.html", sample=SAMPLES) 
+            if config["PAIR_END"] 
+            else "fastq/{sample}_fastqc.html", # trick snakemake to skip r2
     output:
         "fastqc/multiqc_report.html"
-    params:
-        mem_mb="1000"
-    priority:
-        50
-    threads:
-        6
     log:
-        "log/fastqc/fastqc.log"
-    benchmark:
-        "log/fastqc/fastqc.tsv"
+        "log/multiqc/multiqc.log"
     shell:
-        # {input/output} don't have to be in command
-        # have to load module in one block
-        """
-        mkdir -p fastqc
-        mkdir -p fastqc/details
-        fastqc -t {threads} fastq/*q.gz -o fastqc/details &> {log}
-        multiqc fastqc/details -o fastqc &>> {log}
-        """
+        "multiqc fastqc/details -o fastqc &> {log}"
 
 
 rule star_idx:
@@ -184,6 +205,8 @@ rule samtools_sort:
         "mapped_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam"
+    conda:
+      "envs/samtools.yaml"
     # group:
     #     "sort"
     params:
@@ -194,8 +217,8 @@ rule samtools_sort:
         "log/samtools_sort/{sample}.sort.log"
     benchmark:
         "log/samtools_sort/{sample}.sort.tsv"
-    run:
-        shell("samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam &> {log}")
+    shell:
+        "samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam &> {log}"
 
 
 rule samtools_index:
@@ -203,6 +226,8 @@ rule samtools_index:
         "sorted_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam.bai"
+    conda:
+      "envs/samtools.yaml"
     # group:
     #     "sort"
     params:
@@ -295,6 +320,8 @@ rule feature_count:
     output:
         count="feature_count/counts.s{strand}.strict.txt" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt",
         summary="feature_count/counts.s{strand}.strict.txt.summary" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt.summary"
+    # conda:
+    #   "envs/subread.yaml"  # not compatible with 'run'
     priority:
         100
     params:
@@ -390,7 +417,8 @@ rule DESeq2:
     input:
         "feature_count/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count/counts.liberal.txt" # todo: use {mode} wildcards
     output:
-        "DESeq2/DESeq2.html"
+        "DESeq2/DESeq2.html",
+        expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS)
     params:
         mem_mb="8000",
         rmd="'script/DESeq2.Rmd'",
@@ -424,10 +452,11 @@ rule DESeq2:
 
 rule GSEA:
     input: 
+        deseq2="DESeq2/DESeq2.html", # to keep ordering
         rnk="DESeq2/rnk/{contrast}.rnk",
         db="script/gsea_db/{db}"
     output:
-        touch("gsea/{contrast}/{db}.finished")
+        touch("gsea/{contrast}/{db}.finished")  # todo: premature killed jobs create junk sub folders, confusing to users
         #directory("gsea/{contrast}/{db}")
         #directory(lambda wildcards: "gsea/"+wildcards['contrast']+wildcards['db'][:-12])
     params:
@@ -446,7 +475,8 @@ rule GSEA:
     run:
         shell("echo {params.label_db}")
         shell("mkdir -p gsea && mkdir -p gsea/{wildcards.contrast}")
-        shell("""module purge;             module load  openjdk/11+28; script/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
+        shell("""#module purge;             module load  openjdk/11+28; 
+            script/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
             -gmx {input.db} -rnk {input.rnk} -rpt_label {wildcards.db} \
             -norm meandiv -nperm 1000  -scoring_scheme classic \
             -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
@@ -504,5 +534,5 @@ rule create_dag:
 
 rule reset:
     shell:
-        "rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ lsf.log Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2"
+        "rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ lsf.log Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2 gsea"
 

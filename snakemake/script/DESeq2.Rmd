@@ -431,7 +431,7 @@ dds <- DESeqDataSetFromMatrix(countData = cts,
 dds
 dds <-DESeq(dds)
 resultsNames(dds)
-saveRDS(dds, file = 'deseq2.dds.rds')
+#saveRDS(dds, file = 'deseq2.dds.rds')
 ```
 
 # QC Plots
@@ -523,6 +523,7 @@ mv *.rnk rnk
 ```
 
 ```{r}
+save.image(file="../DESeq2/RSession")
 sessionInfo()
 ```
 
