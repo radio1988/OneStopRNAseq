@@ -22,7 +22,7 @@ GENOME: genome/mm10_chr19/mm10.chr19.fa
 INDEX: genome/mm10_chr19/star_idx
 #/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/star_idx/
 
-GTF: genome/gencode.vM21.annotation.gtf
+GTF: genome/mm10_chr19/genecode.vM21.chr19.gtf
 #    /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v29.primary_assembly.annotation.fixed.gtf
 ANNO_TAB: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt
 # gencode.v29.primary_assembly.anno.txt.gz

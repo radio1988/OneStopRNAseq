@@ -11,6 +11,8 @@ MODE=config["MODE"]
 MAX_FDR=config["MAX_FDR"]
 MIN_LFC=config["MIN_LFC"]
 
+# priority 0-100, default 0
+
 
 
 # get CONTRASTS from meta/contrast.xlsx
@@ -27,11 +29,12 @@ shell.prefix("""
             #source /home/rl44w/.bash_profile
             #module load fastqc/0.11.5
             #module load java/1.8.0_77
-            #module load star/2.5.3a
+            module load star/2.5.3a
             module load singularity/singularity-current
             #module load deeptools/3.0.2_py36_0
+            # conda activate osr  # have to create conda env osr first
 
-            samstat="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samstat"
+            samstat="singularity exec envs/hand_sandbox.simg samstat"
             #samtools="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samtools"
 
             """)
@@ -82,12 +85,16 @@ rule fastqc:
             if config["PAIR_END"] 
             else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
     output:
-        r1="fastqc/details/{sample}.R1_fastqc.html" if config["PAIR_END"] else "fastqc/details/{sample}_fastqc.html",
-        r2="fastqc/details/{sample}.R2_fastqc.html" if config["PAIR_END"] else "fastqc/details/{sample}_fastqc.html", # trick snakemake to skip r2
+        r1="fastqc/details/{sample}.R1_fastqc.html" 
+            if config["PAIR_END"] 
+            else "fastqc/details/{sample}_fastqc.html",
+        r2="fastqc/details/{sample}.R2_fastqc.html" 
+            if config["PAIR_END"] 
+            else "fastqc/details/{sample}_fastqc.html", # trick snakemake to skip r2
+    priority:
+        10
     params:
         mem_mb="2000"
-    priority:
-        0
     threads:
         1
     log:
@@ -106,14 +113,22 @@ rule multiqc:
     input:
         r1=expand("fastqc/details/{sample}.R1_fastqc.html", sample=SAMPLES) 
             if config["PAIR_END"] 
-            else "fastq/{sample}_fastqc.html",
+            else expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES),
         r2=expand("fastqc/details/{sample}.R2_fastqc.html", sample=SAMPLES) 
             if config["PAIR_END"] 
-            else "fastq/{sample}_fastqc.html", # trick snakemake to skip r2
+            else expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES), # trick snakemake to skip r2
+    priority:
+        10
+    params:
+        mem_mb="2000"
+    threads:
+        1
     output:
         "fastqc/multiqc_report.html"
     log:
         "log/multiqc/multiqc.log"
+    benchmark:
+        "log/multiqc/multiqc.tsv"
     shell:
         "multiqc fastqc/details -o fastqc &> {log}"
 
@@ -125,9 +140,9 @@ rule star_idx:
     output:
         INDEX+"/SA"
     params:
-        mem_mb="3000"
+        mem_mb="6000"
     threads:
-        12
+        6
     log:
         "log/star_idx/star_idx.log"
     benchmark:
@@ -150,12 +165,14 @@ rule star_map:
     input:
         index=INDEX+"/SA",
         gtf=GTF,
-        r1="fastq/{sample}.R1.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
-        r2="fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
+        r1="fastq/{sample}.R1.fastq.gz" 
+            if config["PAIR_END"] 
+            else "fastq/{sample}.fastq.gz",
+        r2="fastq/{sample}.R2.fastq.gz" 
+            if config["PAIR_END"] 
+            else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
     output:
-        bam="mapped_reads/{sample}.bam",
-        genome=temp(directory("mapped_reads/{sample}._STARgenome")),
-        tmp=temp(directory("mapped_reads/{sample}._STARtmp")),
+        bam="mapped_reads/{sample}.bam"
     params:
         mem_mb="3000",  # todo auto adjust based on {threads}
         reads="fastq/{sample}.R1.fastq.gz fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
@@ -205,8 +222,8 @@ rule samtools_sort:
         "mapped_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam"
-    conda:
-      "envs/samtools.yaml"
+    # conda:
+    #   "envs/samtools.yaml"
     # group:
     #     "sort"
     params:
@@ -419,6 +436,8 @@ rule DESeq2:
     output:
         "DESeq2/DESeq2.html",
         expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS)
+    conda:
+        "envs/r.yaml"
     params:
         mem_mb="8000",
         rmd="'script/DESeq2.Rmd'",
@@ -530,9 +549,10 @@ rule create_dag:
     log:
         "log/create_dag/Workflow_DAG.all.svg.log"
     shell:
-        "snakemake --dag all | dot -Tsvg > {output} 2> {log}"
+        "snakemake --dag targets | dot -Tsvg > {output} 2> {log}"
 
 rule reset:
     shell:
-        "rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ lsf.log Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2 gsea"
+        "rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ \
+        lsf.log Log.out Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2 gsea .snakemake"
 
