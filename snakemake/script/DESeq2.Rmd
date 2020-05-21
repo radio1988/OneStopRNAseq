@@ -243,11 +243,11 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     res_sig <- res[down_idx,]
     print(table(down_idx))
     
-    hist(res$pvalue, breaks=50, col="grey", 
+    hist(res$pvalue, breaks=50, col="grey80", 
          main = paste('Histogram of p-values (un-adjusted)', name, sep = "\n"), 
          xlab = 'pvalues', ylab = 'Frequency')
     
-    hist(res$padj, breaks=50, col="grey", 
+    hist(res$padj, breaks=50, col="grey40", 
          main = paste('Histogram of Q-values (adjusted)', name, sep = "\n"), 
          xlab = 'padj', ylab = 'Frequency')
     
@@ -351,7 +351,7 @@ dim(cts)
 
 ## Filtering
 ```{r}
-expression_filter <- rowSums(cts) >= 1  # default 10
+expression_filter <- rowSums(cts) >= 10  # default 10
 cts <- cts[expression_filter, ]
 df <- df[expression_filter, ]
 paste("Dim after filtering:")
@@ -429,10 +429,17 @@ coldata
 
 ## Model fitting
 ```{r}
-dds <- DESeqDataSetFromMatrix(countData = cts, 
-                              colData = coldata, 
-                              design = ~  0 + group + batch
-                              )  # converted to alph-order
+if (length(levels(batch)) > 1){
+  dds <- DESeqDataSetFromMatrix(countData = cts, 
+                                colData = coldata, 
+                                design = ~  0 + group + batch
+  )  # converted to alph-order
+}else{
+  dds <- DESeqDataSetFromMatrix(countData = cts, 
+                                colData = coldata, 
+                                design = ~  0 + group
+  )  # converted to alph-order
+}
 dds
 dds <-DESeq(dds)
 resultsNames(dds)
@@ -465,20 +472,27 @@ plotDispEsts(dds, main="Dispersion plot")
 
 ## PCA plot
 ```{r}
-pcaData <- plotPCA(rld, intgroup=c("group", "batch"), returnData=TRUE)
-percentVar <- round(100 * attr(pcaData, "percentVar"))
-
-ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
+plotQC_PCA <- function(dds) {
+  vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
+  
+  pcaData <- plotPCA(vsd, intgroup = 'group', returnData=TRUE) # labeling fixed
+  percentVar <- round(100 * attr(pcaData, 'percentVar'))
+  
+  ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
   geom_point(size = 3) +
   xlab(paste0("PC1: ", percentVar[1], "% variance")) +
   ylab(paste0("PC2: ", percentVar[2], "% variance")) +
   geom_label_repel(aes(label = sample),
-                   box.padding = 0.35,
-                   point.padding = 1,
-                   segment.color = 'grey50',
-                   show.legend = FALSE) + # if TRUE, legend display might not be correct
+                    box.padding = 0.35,
+                    point.padding = 1,
+                    segment.color = 'grey50',
+                    show.legend = FALSE) + # if TRUE, legend display might not be correct
   theme_classic()
+}
+
+plotQC_PCA(dds)
 ```
+
 
 
 
