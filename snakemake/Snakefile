@@ -467,9 +467,6 @@ rule DESeq2:
         output_file={params.o})" '
 
 
-
-
-
 rule GSEA:
     input: 
         deseq2= "Snakefile" # dummy assume existing
@@ -540,6 +537,15 @@ rule test:
 #         Rscript {config[FPKM]} {input.count} {input.anno_tab} fpkm_tpm/strand_{wildcards.strand} &> {log}
 #         """
 #         # {config[FPKM]} without quotes
+
+
+rule rmat:
+    input:
+        "sorted_reads/{sample}.bam"
+    output:
+        touch("rmat/{sample}.finished")
+    shell:
+        "echo rmat"
 
 
 rule create_dag:
