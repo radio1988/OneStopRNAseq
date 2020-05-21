@@ -1,0 +1,25 @@
+*.DS_Store
+
+# large files
+genome/
+fastq/
+envs/hand_sandbox.simg
+
+# results
+DESeq2/
+gsea/
+mapped_reads/
+sorted_reads/
+bigWig/
+feature_count/
+bam_qc/
+log/
+nohup.out
+lsf.log
+report.html
+Workflow_DAG.all.svg
+trash/
+workflow.cwl
+pull2mac.sh
+push2hpc.sh
+hpc2mccb.sh
