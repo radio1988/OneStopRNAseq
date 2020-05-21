@@ -28,7 +28,7 @@ ANNO_TAB: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.
 # gencode.v29.primary_assembly.anno.txt.gz
 
 STRAND: [0, 1, 2]  # can run [0, 1, 2] to get all possible results, can also select one # todo auto select
-MODE: "liberal" # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
+MODE: "strict" # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
 
 # DE analysis
 MAX_FDR: 0.05
@@ -58,4 +58,4 @@ RNKS:
   - name2
 
 # Starting point
-START: "BAM" # FASTQ, BAM, COUNT, RNK
+START: "FASTQ" # FASTQ, BAM, COUNT, RNK

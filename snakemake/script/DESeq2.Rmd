@@ -468,18 +468,15 @@ plotDispEsts(dds, main="Dispersion plot")
 pcaData <- plotPCA(rld, intgroup=c("group", "batch"), returnData=TRUE)
 percentVar <- round(100 * attr(pcaData, "percentVar"))
 
-pcaplot <- ggplot(pcaData, aes(PC1, PC2, color=group, shape=batch)) +
-    geom_point(size=3) +
-    #geom_text(aes(label=type),hjust=1, vjust=0) +
-    xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-    ylab(paste0("PC2: ",percentVar[2],"% variance"))
-
-### geom_label_repel
-pcaplot + 
+ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
+  geom_point(size = 3) +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
   geom_label_repel(aes(label = sample),
-                  box.padding   = 0.35, 
-                  point.padding = 0.5,
-                  segment.color = 'grey50') +
+                   box.padding = 0.35,
+                   point.padding = 1,
+                   segment.color = 'grey50',
+                   show.legend = FALSE) + # if TRUE, legend display might not be correct
   theme_classic()
 ```
 
@@ -499,7 +496,6 @@ pheatmap(samplePoisDistMatrix,
          col=colors, 
          clustering_method='complete'
         )
-
 ```
 
 ## DE analysis

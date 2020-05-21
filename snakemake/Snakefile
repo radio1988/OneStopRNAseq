@@ -1,4 +1,5 @@
 configfile: "config.yaml"
+localrules: targets, create_dag
 
 
 SAMPLES=config['SAMPLES']
@@ -23,20 +24,16 @@ for j in range(df.shape[1]):
     CONTRASTS.append(df.iloc[0,j] + "_vs_" + df.iloc[1,j])
 #print(CONTRASTS)
 
+
 # load modules (have to use """, to keep in one block)
 # - alias does not work, have to use $samstat
 shell.prefix("""
-            #source /home/rl44w/.bash_profile
-            #module load fastqc/0.11.5
-            #module load java/1.8.0_77
-            # module load star/2.5.3a
+            module load star/2.5.3a
             module load singularity/singularity-current
-            #module load deeptools/3.0.2_py36_0
             # conda activate osr  # have to create conda env osr first
 
             samstat="singularity exec envs/hand_sandbox.simg samstat"
-            #samtools="singularity exec /project/umw_mccb/singularity/hand_sandbox.simg samtools"
-
+            #samtools="singularity exec envs/hand_sandbox.simg samtools"
             """)
 
 # Requirements
@@ -62,13 +59,17 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM"]  
             else "Workflow_DAG.all.svg"),
         feature_count_strict=(expand("feature_count/counts.s{strand}.strict.txt", strand=STRAND)
-            if config["START"] in ["FASTQ", "BAM"]  and config["MODE"] == "strict"
+            if config["START"] in ["FASTQ", "BAM"] and config["MODE"] == "strict"
             else "Workflow_DAG.all.svg"),
         feature_count_liberal=(expand("feature_count/counts.s{strand}.liberal.txt", strand=STRAND)       
-            if config["START"] in ["FASTQ", "BAM"]  and config["MODE"] == "liberal"
+            if config["START"] in ["FASTQ", "BAM"] and config["MODE"] == "liberal"
             else "Workflow_DAG.all.svg"),
-        DESeq2="DESeq2/DESeq2.html",
-        GSEA = expand("gsea/{contrast}/{db}.finished", contrast=CONTRASTS, db=config["GSEA_DBS"]),
+        DESeq2="DESeq2/DESeq2.html"
+            if config["START"] in ["FASTQ", "BAM", "COUNT"]
+            else "Workflow_DAG.all.svg",
+        GSEA = expand("gsea/{contrast}/{db}.finished", contrast=CONTRASTS, db=config["GSEA_DBS"])
+            if config["START"] in ["FASTQ", "BAM", "COUNT"]
+            else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
         dag="Workflow_DAG.all.svg", # create DAG
     params:
         mem_mb="1000"
@@ -436,8 +437,8 @@ rule DESeq2:
     output:
         "DESeq2/DESeq2.html",
         expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS)
-    conda:
-        "envs/r.yaml"
+    # conda:
+    #     "envs/r.yaml"
     params:
         mem_mb="8000",
         rmd="'script/DESeq2.Rmd'",
@@ -471,8 +472,12 @@ rule DESeq2:
 
 rule GSEA:
     input: 
-        deseq2="DESeq2/DESeq2.html", # to keep ordering
-        rnk="DESeq2/rnk/{contrast}.rnk",
+        deseq2= "Snakefile" # dummy assume existing
+            if config["START"] == "RNK" 
+            else "DESeq2/DESeq2.html" , # to keep ordering
+        rnk="meta/{contrast}.rnk"  # contrast just a name, alias for rnk
+            if config["START"] == "RNK" 
+            else "DESeq2/rnk/{contrast}.rnk",
         db="script/gsea_db/{db}"
     output:
         touch("gsea/{contrast}/{db}.finished")  # todo: premature killed jobs create junk sub folders, confusing to users
@@ -555,4 +560,5 @@ rule reset:
     shell:
         "rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ \
         lsf.log Log.out Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2 gsea .snakemake"
+        "; snakemake --unlock"
 
