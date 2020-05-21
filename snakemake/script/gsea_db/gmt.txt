@@ -1,2 +1,0 @@
-/project/umw_mccb/Rui/tools/GSEA_4.0.1/database/h.all.v7.0.symbols.gmt
-/project/umw_mccb/Rui/tools/GSEA_4.0.1/database/c1.all.v7.0.symbols.gmt
