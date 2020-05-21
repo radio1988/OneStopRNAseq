@@ -7,6 +7,13 @@
 - install anaconda
 - install osr env
 
+# Essential parts
+- Snakefile
+- config.yaml
+- envs/
+- submit.sh
+- README.md
+
 # Running
 - conda activate osr
 - submit jobs
