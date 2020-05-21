@@ -428,12 +428,21 @@ rule auto_detect_strand:
         "script/auto_detect_strand.py" # todo: improvement needed
 
 
-
+def DESeq2_input(config):
+    if config["START"] in ["FASTQ", "BAM"]:
+        if config["MODE"] == "strict":
+            return("feature_count/counts.strict.txt")
+        elif config["MODE"] == "liberal":
+            return("feature_count/counts.liberal.txt")
+        else:
+            raise Exception("START config not valid")
+    elif config["START"] in ["COUNT"]:
+        return(config["COUNT_FILE"])
 
 
 rule DESeq2:
     input:
-        "feature_count/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count/counts.liberal.txt" # todo: use {mode} wildcards
+        DESeq2_input(config)
     output:
         "DESeq2/DESeq2.html",
         expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS)

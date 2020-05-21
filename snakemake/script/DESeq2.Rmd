@@ -11,7 +11,7 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   indfilter: FALSE
-  countFile: "../feature_count/counts.s0.strict.txt"
+  countFile: "../feature_count/counts.strict.txt"
   annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.v29.primary_assembly.anno.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.xlsx"

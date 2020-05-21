@@ -52,10 +52,15 @@ GSEA_DBS:  # not implemented
   # - c6.all.v7.1.symbols.gmt
   # - c7.all.v7.1.symbols.gmt
   # - h.all.v7.1.symbols.gmt
+
+
+# Starting point
+START: "FASTQ" # FASTQ, BAM, COUNT, RNK
+
 # If start from RNK
 RNKS:
   - name1  # under ./meta/name1.rnk
   - name2
 
-# Starting point
-START: "FASTQ" # FASTQ, BAM, COUNT, RNK
+# If start from COUNT
+COUNT_FILE: "meta/COUNT.txt"
