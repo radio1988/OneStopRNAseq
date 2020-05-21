@@ -29,7 +29,7 @@ shell.prefix("""
             #source /home/rl44w/.bash_profile
             #module load fastqc/0.11.5
             #module load java/1.8.0_77
-            module load star/2.5.3a
+            # module load star/2.5.3a
             module load singularity/singularity-current
             #module load deeptools/3.0.2_py36_0
             # conda activate osr  # have to create conda env osr first

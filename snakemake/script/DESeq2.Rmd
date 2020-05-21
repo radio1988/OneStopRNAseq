@@ -11,7 +11,7 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   indfilter: FALSE
-  countFile: "../feature_count/counts.gene_id.s2.strict.txt"
+  countFile: "../feature_count/counts.s2.strict.txt"
   annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.xlsx"
@@ -67,19 +67,21 @@ params:
 
 
 ```{r setup, include=FALSE}
+library(BiocManager)
 library(DESeq2)
+library(scater)
+library(EnhancedVolcano)
+library(ggrepel)
+
+
 library(ggplot2)
 library(ashr)
 #library(viridis)
 library(MASS)
-library(scater)
 library(WriteXLS)
-require(plyr)
+library(plyr)
 library(gdata)
 library(dplyr)
-library(EnhancedVolcano)
-library(ggplot2)
-library(ggrepel)
 library(RColorBrewer)
 library(pheatmap)
 library(PoiClaClu)
@@ -87,6 +89,7 @@ library(gridExtra)
 library(grid)
 
 dir.create("../DESeq2", showWarnings = FALSE)
+
 knitr::opts_knit$set(root.dir = "../DESeq2")
 ```
 
@@ -169,8 +172,8 @@ volcanoplot <- function(res, anno,
                     #pLabellingCutoff = labelcut,
                     cutoffLineType = 'twodash',
                     cutoffLineWidth = 0.8,
-                    pointSize = 1.0,
-                    labSize = 2.0,
+                    # pointSize = 1.0, # todo: fix incomparibility in R3.5 and R4
+                    # labSize = 2.0,
                     # DrawConnectors = F,
                     colAlpha = 0.5,
                     legend=c("Negative",
@@ -331,6 +334,8 @@ df <- read.table(countFile,
 # clean names
 colnames(df) <- gsub("\\.bam$", "", colnames(df))
 colnames(df) <- gsub("sorted_reads.", "", colnames(df))
+colnames(df) <- gsub("mapped_reads.", "", colnames(df))
+
 # dim(df)
 # head(df)
 
@@ -516,7 +521,7 @@ for (i in 1:dim(contrast.df)[2]){
 
 ```{bash}
 mkdir -p forMachine
-mv *deseq2.csv forMachine
+#mv *deseq2.csv forMachine
 
 mkdir -p rnk
 mv *.rnk rnk
