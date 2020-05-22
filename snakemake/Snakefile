@@ -44,6 +44,7 @@ shell.prefix("""
 # input don't have to be used, just for draw nice DAG
 # 07/10/2019 randomized primary alignment
 
+ruleorder: create_dag > rMATS 
 
 rule targets:
     input:
@@ -70,6 +71,9 @@ rule targets:
         GSEA = expand("gsea/{contrast}/{db}.finished", contrast=CONTRASTS, db=config["GSEA_DBS"])
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
+        AltSplice="rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt"
+            if config['AltSplice']
+            else "Workflow_DAG.all.svg",
         dag="Workflow_DAG.all.svg", # create DAG
     params:
         mem_mb="1000"
@@ -393,21 +397,20 @@ rule feature_count:
             -s {wildcards.strand} \
             {input.bams} &> {log}
             """)
-
-# -p: count Fragments rather than reads for Paired-end reads (remove this for SE data)
-# -C: exclude chimeric (most times, for cancer maybe not include this)
-# -d 50, -D 1000: including PE reads with fragment length in between, which is better than default 50-600
-# -T: num threads
-# -s: strand info, very important; use $i to perform all three possibilities, pick the correct one after counting
-# -Q: min MAPQ, if MAPQ from star, we need to be careful, because star ignores PE information, we might need to add addional step to rescue PE info. (https://github.com/alexdobin/STAR/issues/615)
-# -M: count multiple-mapping reads, based on NH, not useful for RNA-seq, may create misleading summary, by counting multi-mapping reads several times
-# -B: Only count read pairs that have both ends aligned.
-# --fracOverlap 0.2: 20% of read length
-# -–minOverlap 2: 2bp
-# Notes:
-# liberal overlap settings (--minOverlap 1 --fracOverlap 0) will give you more counted reads
-# samtools sorted bams are smaller, and faster to be counted, compared to unsorted bams/star sorted bams
-# star sorted bams are slow to count => use samtools sorted reads, delete star bam (set as temp)
+            # -p: count Fragments rather than reads for Paired-end reads (remove this for SE data)
+            # -C: exclude chimeric (most times, for cancer maybe not include this)
+            # -d 50, -D 1000: including PE reads with fragment length in between, which is better than default 50-600
+            # -T: num threads
+            # -s: strand info, very important; use $i to perform all three possibilities, pick the correct one after counting
+            # -Q: min MAPQ, if MAPQ from star, we need to be careful, because star ignores PE information, we might need to add addional step to rescue PE info. (https://github.com/alexdobin/STAR/issues/615)
+            # -M: count multiple-mapping reads, based on NH, not useful for RNA-seq, may create misleading summary, by counting multi-mapping reads several times
+            # -B: Only count read pairs that have both ends aligned.
+            # --fracOverlap 0.2: 20% of read length
+            # -–minOverlap 2: 2bp
+            # Notes:
+            # liberal overlap settings (--minOverlap 1 --fracOverlap 0) will give you more counted reads
+            # samtools sorted bams are smaller, and faster to be counted, compared to unsorted bams/star sorted bams
+            # star sorted bams are slow to count => use samtools sorted reads, delete star bam (set as temp)
 
 
 rule auto_detect_strand:
@@ -526,47 +529,33 @@ rule test:
         'echo {params.cmd}'
 
 
-
-# rule fpkm_tpm:
-#     input:
-#         count="feature_count/counts.gene_id.s{strand}.txt",
-#         anno_tab=config['ANNO_TAB']
-#     output:
-#         fpkm="fpkm_tpm/strand_{strand}/FPKM.xlsx",
-#         tpm='fpkm_tpm/strand_{strand}/TPM.xlsx',
-#     params:
-#         mem_mb="4000"
-#     threads:
-#         2
-#     log:
-#         "log/fpkm_tpm/fpkm_tpm.{strand}.log"
-#     shell:
-#         """
-#         Rscript {config[FPKM]} {input.count} {input.anno_tab} fpkm_tpm/strand_{wildcards.strand} &> {log}
-#         """
-#         # {config[FPKM]} without quotes
-
-
 rule rMATS:
     input:
-        bam=expand("sorted_reads/{sample}.bam", sample=SAMPLES),
+        bam=expand("sorted_reads/{sample}.bam", sample=SAMPLES), # placeholder
         gtf=GTF
     output:
-        "rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt"
+        "rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt" # placeholder
+            if config['AltSplice']
+            else "Workflow_DAG.all.svg"
+    conda:
+      "envs/rmats.yaml"
     params:
-        b1="sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam",
-        b2="sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam",
-        type=("paired" if config['PAIR_END'] else "single"),
-        analysis=("P" if config['PAIR_END'] else "U"),
+        b1="sorted_reads/KO_D8_1_S6.bam,sorted_reads/WT_D8_1_S5.bam,sorted_reads/KO_D8_2_S12.bam,sorted_reads/WT_D8_2_S11.bam", # placeholder
+        b2="sorted_reads/KO_D0_1_S2.bam,sorted_reads/WT_D0_1_S1.bam,sorted_reads/KO_D0_2_S8.bam,sorted_reads/WT_D0_2_S7.bam", # placeholder
+        type="paired" if config['PAIR_END'] else "single",
+        analysis="P" if config['PAIR_END'] else "U"
     shell:
-        "source activate rmat; conda update -y pysam; \
-         python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1}} -b2 {params.b2} \
-         -gtf {input.gtf} -o rMATS -t paired -len 100 -c 0.1 -analysis {params.analysis} -libType fr-unstranded \
-        "
-# python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 sorted_reads/KO_D8_1_S6.bam,sorted_reads/KO_D8_2_S12.bam,sorted_reads/WT_D8_1_S5.bam,sorted_reads/WT_D8_2_S11.bam \
-# -b2  sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam,sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam \
-# -gtf genome/mm10_chr19/genecode.vM21.chr19.gtf -o rMATS -t paired -len 100 -c 0.0001 -analysis paired -libType fr-unstranded 
- 
+        "python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1} -b2 {params.b2} \
+         -gtf {input.gtf} -o rMATS -t paired -len 100 -c 0.1 -analysis {params.analysis} -libType fr-unstranded "
+        # conda: snakemake --use-conda -p -j 5 rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt
+
+        # python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 sorted_reads/KO_D8_1_S6.bam,sorted_reads/KO_D8_2_S12.bam,sorted_reads/WT_D8_1_S5.bam,sorted_reads/WT_D8_2_S11.bam -b2  sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam,sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam -gtf genome/mm10_chr19/genecode.vM21.chr19.gtf -o rMATS -t paired -len 100 -c 0.0001 -analysis paired -libType fr-unstranded
+
+        # "singularity exec ~/singularity/hand_sandbox/ \
+        # /opt/anaconda3/envs/rmat/bin/python /opt/bin/rMATS.4.0.2/rMATS-turbo-Linux-UCS4/rmats.py \
+        # --b1 b1.txt --b2 b2.txt \
+        # --gtf Homo_sapiens.GRCh37.75.gtf \
+        # --od rMATS  -t {params.type}} --readLength 100 --cstat 0.0001 --libType fr-unstranded"
 
 
 rule create_dag:
