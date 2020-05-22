@@ -27,7 +27,7 @@ ANNO_TAB: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.
 # mouse: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt
 # view all options from: https://github.com/hukai916/Collections
 
-STRAND: [0, 1, 2]  # can run [0, 1, 2] to get all possible results, can also select one # todo auto select
+STRAND: [0, 1, 2]  # can run [0, 1, 2] to get all possible results, then workflow auto inferrs the correct one # todo refine auto select
 MODE: "strict" # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
 
 # DE analysis
@@ -35,7 +35,6 @@ MAX_FDR: 0.05
 MIN_LFC: 0.585 
 META: "meta/meta.xlsx"
 CONTRAST: "meta/contrast.xlsx"
-
 
 # GSEA
 GSEA_NPLOTS: 100  # not implemented
@@ -64,3 +63,7 @@ RNKS:
 
 # If start from COUNT
 COUNT_FILE: "meta/COUNT.txt"
+
+# Optinoal Analysis
+AltSplice: True
+ReadLength: 100  # todo: auto detect, assuming all libraries same length

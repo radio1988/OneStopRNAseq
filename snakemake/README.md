@@ -28,3 +28,6 @@
 	- meta/meta.xlsx
 	- meta/contrast.xlsx 
 - set `START` flag in `config.yaml` as `FASTQ`
+
+## Caveats
+- must copy script folder to let DESeq2 save results into the correct location
