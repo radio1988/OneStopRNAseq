@@ -173,7 +173,7 @@ rule star_map:
             if config["PAIR_END"] 
             else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
     output:
-        bam="mapped_reads/{sample}.bam"
+        bam=temp("mapped_reads/{sample}.bam")
     params:
         mem_mb="3000",  # todo auto adjust based on {threads}
         reads="fastq/{sample}.R1.fastq.gz fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
@@ -266,6 +266,8 @@ rule bam_qc:
         bai="sorted_reads/{sample}.bam.bai"
     output:
         "bam_qc/samstat/{sample}.bam.samstat.html"
+    priority:
+        0
     params:
         mem_mb="4000"
     threads:
@@ -344,18 +346,15 @@ rule feature_count:
         100
     params:
         mem_mb="4000",
-        common_uniq="-g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 ",
+        common_uniq=" -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 ",
         #common_mult="-g gene_id -M --minOverlap 1 --fracOverlap 0",
-        common_mult="-g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0",
-        pe_strict="-p -B -C ",
-        pe_liberal="-p",
+        common_mult=" -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 ",
+        pe_strict=" -p -B -C ",
+        pe_liberal=" -p",
     threads:
         4
     log:
-        pe_strict="log/feature_count/counts.s{strand}.pe_strict.log",
-        pe_liberal="log/feature_count/counts.s{strand}.pe_liberal.log",
-        se_uniq="log/feature_count/counts.s{strand}.uniq.se.log",
-        se_mult="log/feature_count/counts.s{strand}.mult.se.log",
+        "log/feature_count/counts.s{strand}.log"
     benchmark:
         "log/feature_count/benchmark.s{strand}.tsv"
 
@@ -367,7 +366,7 @@ rule feature_count:
                 -T {threads} \
                 {params.common_uniq} {params.pe_strict} \
                 -s {wildcards.strand} \
-                {input.bams} &> {log.pe_strict} &
+                {input.bams} &> {log}
                 """)
             elif config["MODE"] == "liberal":
                 shell("""
@@ -375,7 +374,7 @@ rule feature_count:
                 -T {threads} \
                 {params.common_mult} {params.pe_liberal} \
                 -s {wildcards.strand} \
-                {input.bams} &> {log.pe_liberal}
+                {input.bams} &> {log}
                 """)
             else:
                 print ("MODE err, not liberal nor strict")
@@ -386,13 +385,13 @@ rule feature_count:
             -T {threads} \
             {params.common_uniq} \
             -s {wildcards.strand} \
-            {input.bams} &> {log.se_uniq} &
+            {input.bams} &> {log}
             # liberal
             featureCounts -a {input.gtf} -o {output.count} \
             -T {threads} \
             {params.common_mult} \
             -s {wildcards.strand} \
-            {input.bams} &> {log.se_mult}
+            {input.bams} &> {log}
             """)
 
 # -p: count Fragments rather than reads for Paired-end reads (remove this for SE data)
@@ -548,13 +547,26 @@ rule test:
 #         # {config[FPKM]} without quotes
 
 
-rule rmat:
+rule rMATS:
     input:
-        "sorted_reads/{sample}.bam"
+        bam=expand("sorted_reads/{sample}.bam", sample=SAMPLES),
+        gtf=GTF
     output:
-        touch("rmat/{sample}.finished")
+        "rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt"
+    params:
+        b1="sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam",
+        b2="sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam",
+        type=("paired" if config['PAIR_END'] else "single"),
+        analysis=("P" if config['PAIR_END'] else "U"),
     shell:
-        "echo rmat"
+        "source activate rmat; conda update -y pysam; \
+         python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1}} -b2 {params.b2} \
+         -gtf {input.gtf} -o rMATS -t paired -len 100 -c 0.1 -analysis {params.analysis} -libType fr-unstranded \
+        "
+# python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 sorted_reads/KO_D8_1_S6.bam,sorted_reads/KO_D8_2_S12.bam,sorted_reads/WT_D8_1_S5.bam,sorted_reads/WT_D8_2_S11.bam \
+# -b2  sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam,sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam \
+# -gtf genome/mm10_chr19/genecode.vM21.chr19.gtf -o rMATS -t paired -len 100 -c 0.0001 -analysis paired -libType fr-unstranded 
+ 
 
 
 rule create_dag:
