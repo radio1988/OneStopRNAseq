@@ -1,0 +1,105 @@
+#
+## this is a configuration file for processingUnique.sam script
+#
+## it will contain all the necessary informations for
+# 
+## AS event file name
+## data type (single-end or paired-end)
+## base of the experiment
+## list of sam files
+## etc..
+## 
+#
+
+####################################
+### readLength
+### 
+-readLength = READLENGTH
+#
+
+####################################
+### junctionLength: it can be calculated as 
+###   junctionLength = 2*(readLength-anchorLength)
+#
+### For example, if your readLength is 50 and you ran tophat with -a/--min-anchor-length 8
+### junction length becomes 2*(50-8) = 84
+#
+-junctionLength = JUNCTIONLENGTH
+#
+
+#####################################
+### AS file name
+### AS event file names
+### it currently support 5 AS event types
+### full path here
+#
+-SE = SEPATH
+-MXE = MXEPATH
+-A5SS = A5SSPATH
+-A3SS = A3SSPATH
+-RI = RIPATH
+#
+
+####################################
+### experiment name
+-experiment = RNASeq
+#
+
+
+####################################
+### base name for sample_1 and sample_2
+-base_1 = SAMPLE_1
+-base_2 = SAMPLE_2
+#
+
+
+######################################
+### data type
+### single-end or paired-end
+#
+#-dataType = single
+#-dataType = paired
+-dataType = SEPE
+#
+
+
+######################################
+### library type
+### fr_unstranded, fr_firststrand, fr_secondstrand
+#
+#-libType = fr-unstranded
+#-libType = fr-firststrand
+#-libType = fr-secondstrand
+-libType = LIBTYPE
+
+
+######################################
+### sam file folder
+### user can put all sam files in the same place (probably using "symbolic link") 
+#
+-samDir = SAMFOLDER
+
+######################################
+### out file folder
+### MATS input file will be in this folder
+#
+-outDir = OUTFOLDER
+
+
+#
+#####################################
+### sam file name
+###
+#-input_1 = unique.ESRP.1.sam
+-input_1 = INPUT_1
+#-input_2 = unique.EV.1.sam
+-input_2 = INPUT_2
+
+
+###################################
+### alert email
+### email address to receive pipleline progress (error, warning, or end of process)
+### change this to your email address
+-email = yourmail@domain.com
+#
+#

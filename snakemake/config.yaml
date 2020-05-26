@@ -54,7 +54,7 @@ GSEA_DBS:  # not implemented
 
 
 # Starting point
-START: "FASTQ" # FASTQ, BAM, COUNT, RNK
+START: "COUNT" # FASTQ, BAM, COUNT, RNK
 
 # If start from RNK
 RNKS:
@@ -65,5 +65,12 @@ RNKS:
 COUNT_FILE: "meta/COUNT.txt"
 
 # Optinoal Analysis
-AltSplice: True
-ReadLength: 100  # todo: auto detect, assuming all libraries same length
+# Alternative Splicing analysis
+ALT_SPLICE: True  # perform AS analysis or not
+READ_LENGTH: 100  # affect rMATs analysis todo: auto detect, assuming all libraries same length
+AS_CONTRAST: "meta/altSplicing.contrast.xlsx"
+
+RMATS_STRANDNESS:
+  {"0" : "fr-unstranded",
+  "1" : "fr-firststrand", 
+  "2" : "fr-secondstrand"}

@@ -1,0 +1,9 @@
+name: rmat 
+
+channels:
+  - bioconda
+
+dependencies:
+  - python=2.7
+  - pysam
+  - scipy
