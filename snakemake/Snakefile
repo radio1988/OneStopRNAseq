@@ -1,5 +1,6 @@
 configfile: "config.yaml"
-localrules: targets, create_dag
+
+#localrules: targets, create_dag
 
 
 SAMPLES=config['SAMPLES']
@@ -20,10 +21,20 @@ import sys
 import re
 
 # Get contrast name for DESeq2
+# todo: fix svg
 df=pd.read_excel(config["CONTRAST"])
 CONTRASTS = []
 for j in range(df.shape[1]):
-    CONTRASTS.append(df.iloc[0,j] + "_vs_" + df.iloc[1,j])
+    c1 = df.iloc[0,j]
+    c2 = df.iloc[1,j]
+    c1 = c1.replace(" ", "")
+    c2 = c2.replace(" ", "")
+    c1 = re.sub(";$", "", c1)  # remove extra ;
+    c2 = re.sub(";$", "", c2)
+    c1 = re.sub(";", ".", c1)  # remove extra ;
+    c2 = re.sub(";", ".", c2)
+    CONTRASTS.append(c1 + "_vs_" + c2)
+# print("CONTRASTS:", CONTRASTS)
 
 # Get contrast for rMATS
 df2 = pd.read_excel(config['AS_CONTRAST'])
@@ -49,7 +60,7 @@ for j in range(df2.shape[1]):
     C1S.append(c1s)
     C2S.append(c2s)
 ASCN = df2.shape[1] # alternative splicing contrast count
-# sys.exit("test")
+print("ASCN", ASCN)
 
 
 # load modules (have to use """, to keep in one block)
@@ -663,10 +674,12 @@ rule create_dag:
 
 
 rule reset:
-    shell:
-        "rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ \
-        lsf.log Log.out Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2 gsea .snakemake"
-        "; snakemake --unlock"
+    log: 
+        "log/reset.log"
+    run:
+        shell("rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.0/ rMATS.1/ rMATS.2/ rMATS.3/ rMATS.4/ rMATS.5/ rMATS.6/ rMATS.7/ \
+        lsf.log Log.out Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2 gsea &> {log}")
+        shell("snakemake --unlock -j 1 &>> {log}")
 
 
 rule test:

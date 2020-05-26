@@ -42,19 +42,19 @@ GSEA_PLOT_SVG: TRUE  # not implemented
 GSEA_DBS:  # not implemented
   - c1.all.v7.1.symbols.gmt
   - c2.cgp.v7.1.symbols.gmt
-  # - c2.cp.v7.1.symbols.gmt
-  # - c3.all.v7.1.symbols.gmt
-  # - c4.all.v7.1.symbols.gmt
-  # - c5.bp.v7.1.symbols.gmt
-  # - c5.cc.v7.1.symbols.gmt
-  # - c5.mf.v7.1.symbols.gmt
-  # - c6.all.v7.1.symbols.gmt
-  # - c7.all.v7.1.symbols.gmt
-  # - h.all.v7.1.symbols.gmt
+  - c2.cp.v7.1.symbols.gmt
+  - c3.all.v7.1.symbols.gmt
+  - c4.all.v7.1.symbols.gmt
+  - c5.bp.v7.1.symbols.gmt
+  - c5.cc.v7.1.symbols.gmt
+  - c5.mf.v7.1.symbols.gmt
+  - c6.all.v7.1.symbols.gmt
+  - c7.all.v7.1.symbols.gmt
+  - h.all.v7.1.symbols.gmt
 
 
 # Starting point
-START: "COUNT" # FASTQ, BAM, COUNT, RNK
+START: "FASTQ" # FASTQ, BAM, COUNT, RNK
 
 # If start from RNK
 RNKS:
@@ -65,11 +65,12 @@ RNKS:
 COUNT_FILE: "meta/COUNT.txt"
 
 # Optinoal Analysis
-# Alternative Splicing analysis
-ALT_SPLICE: True  # perform AS analysis or not
-READ_LENGTH: 100  # affect rMATs analysis todo: auto detect, assuming all libraries same length
-AS_CONTRAST: "meta/altSplicing.contrast.xlsx"
 
+# Alternative Splicing analysis (rMATS)
+ALT_SPLICE: TRUE  # perform AS analysis or not
+READ_LENGTH: None  # affect rMATs analysis todo: auto detect, assuming all libraries same length
+# todo: must provide read length if start from BAM hint: bam_qc/stats/* :: maximum length: 100
+AS_CONTRAST: "meta/altSplicing.contrast.xlsx"
 RMATS_STRANDNESS:
   {"0" : "fr-unstranded",
   "1" : "fr-firststrand", 

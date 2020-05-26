@@ -522,6 +522,8 @@ for (i in 1:dim(contrast.df)[2]){
   name2 <- gsub(";$", "", name2)
   name1s <- strsplit(name1, ";") [[1]]
   name2s <- strsplit(name2, ";") [[1]]
+  name1 <- gsub(";", ".", name1)
+  name2 <- gsub(";", ".", name2)
   
   name <- paste(name1, name2, sep = "_vs_")
   print(paste(">>>", i, name))
