@@ -1,7 +1,7 @@
 ---
 title: "DEseq2"
 author: "RuiLi, Kai Hu"
-date: "05/21/2020"
+date: "05/25/2020"
 output:
   html_document:
     toc: yes
@@ -12,7 +12,7 @@ params:
   min_lfc: 0.585
   indfilter: FALSE
   countFile: "../feature_count/counts.strict.txt"
-  annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.v29.primary_assembly.anno.txt'
+  annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.xlsx"
 ---
@@ -94,7 +94,7 @@ volcanoplot <- function(res, anno, name='name',
   # If Annotation file is wrong, No annotation match
   res0 <- res
   res<-merge(data.frame(res0), anno, by.x = 0, by.y=1, all.x=T, sort=F)
-  if (sum(anno[, 1] %in% row.names(res)) < 1) {
+  if (sum(anno[, 1] %in% row.names(res0)) < 1) {
     warning(
       c("\nThe annotation file and the count filt does have no match in gene-id:\n", 
         "count table gene-id: ", head(row.names(res0), 1), 
@@ -511,13 +511,31 @@ corrplot(corr,
 
 ## DE analysis
 ```{r, warning=T}
+gsub("group", "", resultsNames(dds))
+
 for (i in 1:dim(contrast.df)[2]){
   name1 <- contrast.df[1,i]
   name2 <- contrast.df[2,i]
+  name1 <- gsub(" ", "", name1)
+  name2 <- gsub(" ", "", name2)
+  name1 <- gsub(";$", "", name1)
+  name2 <- gsub(";$", "", name2)
+  name1s <- strsplit(name1, ";") [[1]]
+  name2s <- strsplit(name2, ";") [[1]]
+  
   name <- paste(name1, name2, sep = "_vs_")
   print(paste(">>>", i, name))
   
-  contrast <- c("group", name1, name2)
+  # contrast <- c("group", name1, name2)
+  
+  poss <- match(name1s, gsub("group", "", resultsNames(dds)))
+  negs <- match(name2s, gsub("group", "", resultsNames(dds)))
+  contrast <- rep(0, length(resultsNames(dds)))
+  contrast[poss] <- 1/length(poss)
+  contrast[negs] <- -1/length(negs)
+  print(data.frame(resNames=gsub("group", "", resultsNames(dds)), 
+                   contrast=contrast))
+  
   res <- lfcShrink(dds, contrast = contrast, type = 'ashr')
   res2 <- results(dds, contrast = contrast, independentFilter=indfilter)
   process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = tpm)
