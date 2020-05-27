@@ -22,45 +22,107 @@ import re
 
 # Get contrast name for DESeq2
 # todo: fix svg
-df=pd.read_excel(config["CONTRAST"])
-CONTRASTS = []
-for j in range(df.shape[1]):
-    c1 = df.iloc[0,j]
-    c2 = df.iloc[1,j]
-    c1 = c1.replace(" ", "")
-    c2 = c2.replace(" ", "")
-    c1 = re.sub(";$", "", c1)  # remove extra ;
-    c2 = re.sub(";$", "", c2)
-    c1 = re.sub(";", ".", c1)  # remove extra ;
-    c2 = re.sub(";", ".", c2)
-    CONTRASTS.append(c1 + "_vs_" + c2)
-# print("CONTRASTS:", CONTRASTS)
+def get_contrast_fnames (fname):
+    df=pd.read_excel(fname)
+    CONTRASTS = []
+    for j in range(df.shape[1]):
+        c1 = df.iloc[0,j]
+        c2 = df.iloc[1,j]
+        c1 = c1.replace(" ", "")
+        c2 = c2.replace(" ", "")
+        c1 = re.sub(";$", "", c1)  # remove extra ;
+        c2 = re.sub(";$", "", c2)
+        c1 = re.sub(";", ".", c1)  # remove extra ;
+        c2 = re.sub(";", ".", c2)
+        CONTRASTS.append(c1 + "_vs_" + c2)
+    # CONTRATS = ['KO_D8_vs_KO_D0', 'WT_D8.KO_D8_vs_WT_D0.KO_D0', 'KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8']
+    return (CONTRASTS)
 
-# Get contrast for rMATS
-df2 = pd.read_excel(config['AS_CONTRAST'])
-# print("reading", config['AS_CONTRAST'])
-C1 = []; C2 =[]; C1S = []; C2S = []
-for j in range(df2.shape[1]):
-    c1 = df2.iloc[0, j].strip()
-    c2 = df2.iloc[1, j].strip()
-    c1 = c1.replace(" ", "")
-    c2 = c2.replace(" ", "")
-    c1 = re.sub(";$", "", c1)  # remove extra ;
-    c2 = re.sub(";$", "", c2)
-    c1s = c1.split(";")
-    c2s = c2.split(";")
-    c1s = [ "sorted_reads/"+x+".bam" for x in c1s]
-    c2s = [ "sorted_reads/"+x+".bam" for x in c2s]
-    c1 = ",".join(c1s)
-    c2 = ",".join(c2s)
-    # print(c1, c1s)
-    # print(c2, c2s)
-    C1.append(c1)
-    C2.append(c2)
-    C1S.append(c1s)
-    C2S.append(c2s)
-ASCN = df2.shape[1] # alternative splicing contrast count
-print("ASCN", ASCN)
+
+def get_contrast_groups (fname):
+    df2=pd.read_excel(fname)
+    C1S = []; C2S = []
+    for j in range(df2.shape[1]):
+        c1 = df2.iloc[0, j].strip()
+        c2 = df2.iloc[1, j].strip()
+        c1 = c1.replace(" ", "")
+        c2 = c2.replace(" ", "")
+        c1 = re.sub(";$", "", c1)  # remove extra ;
+        c2 = re.sub(";$", "", c2)
+        c1s = c1.split(";")
+        c2s = c2.split(";")
+        C1S.append(c1s)
+        C2S.append(c2s)
+    return ([C1S, C2S])
+
+
+def get_dict_from_meta (fname):
+    df = pd.read_excel(fname)
+    d = {}
+    for i in range(df.shape[0]):
+        sample = df.iloc[i, 0]
+        group = df.iloc[i, 1]
+        if group in d:
+            d[group].append(sample)
+        else:
+            d[group] = []
+            d[group].append(sample)
+    return (d)
+
+
+def swap_list_element(l, d):
+    return [swap_list_element(x, d) if isinstance(x, list) else d.get(x, x) for x in l]
+    
+def flatten(l):
+    flat_list = [item for sublist in l for item in sublist]
+    return (flat_list)
+
+def collapseL2(L3):
+    L2 = []
+    for l in L3:
+        L2.append(flatten(l))
+    return (L2)
+
+def s2b(S):
+    K = flatten(S)
+    V = ["sorted_reads/"+x+".bam" for x in K]
+    return (dict(zip(K, V)))
+
+def G2B_workflow(G, g2s):
+    S = swap_list_element(G, g2s)
+    S = collapseL2(S)
+    s2b_dict = s2b(S)
+    BS = swap_list_element(S, s2b_dict)
+    B = [",".join(x) for x in BS]
+    return (BS, B)
+
+
+
+# for DESeq2
+if config['START'] in ["FASTQ", "BAM", "COUNT"]:
+    CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
+    print("CONTRASTS_DE:\n", CONTRASTS_DE)
+
+# for rMATS
+if config['START'] in ["FASTQ", "BAM"]:
+    G = get_contrast_groups(config['CONTRAST_AS'])
+    print("\nGRPUPS:\n", G[0], "\nVS\n", G[1])
+
+    g2s = get_dict_from_meta(config['META'])
+    print("\nGroup To Sample Mapping:\n", g2s)
+
+    B1S, B1 = G2B_workflow(G[0], g2s)
+    B2S, B2 = G2B_workflow(G[1], g2s)
+
+    print("\nrMATS -b1:\n", B1)
+    # print("B1S:", B1S)
+    print("rMATS -b2:\n", B2)
+    # print("B2S:", B2S)
+
+    # Get contrast for rMATS
+    df2 = pd.read_excel(config['CONTRAST_AS'])
+    ASCN = df2.shape[1] # alternative splicing contrast count
+    print("ASCN", ASCN)
 
 
 # load modules (have to use """, to keep in one block)
@@ -106,11 +168,11 @@ rule targets:
         DESeq2="DESeq2/DESeq2.html"
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else "Workflow_DAG.all.svg",
-        GSEA = expand("gsea/{contrast}/{db}.finished", contrast=CONTRASTS, db=config["GSEA_DBS"])
+        GSEA = expand("gsea/{contrast}/{db}.finished", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
         rMATS=expand("rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt", ascn=range(ASCN))
-            if config['ALT_SPLICE'] and config["START"] in ["FASTQ"]
+            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ"]  # todo: estimate read length from BAM
             else "Workflow_DAG.all.svg",
         dag="Workflow_DAG.all.svg", # create DAG
     params:
@@ -487,7 +549,7 @@ rule DESeq2:
         DESeq2_input(config)
     output:
         "DESeq2/DESeq2.html",
-        expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS)
+        expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
     # conda:
     #     "envs/r.yaml"
     params:
@@ -497,7 +559,7 @@ rule DESeq2:
         lfc=MIN_LFC,
         anno_tab=ANNO_TAB,
         meta=config["META"],
-        cont=config["CONTRAST"],
+        cont=config["CONTRAST_DE"],
         o="'../DESeq2/DESeq2.html'"
     priority: 
         100
@@ -617,21 +679,19 @@ rule rMATS:
     #todo: rMATS4.0(sandbox failed because of apt dependency, still got partial results)
     #todo: update to docker: simple to install, faster, recommended on website
     input:
-        b1=lambda wildcards: C1S[int(wildcards['ascn'])],
-        b2=lambda wildcards: C2S[int(wildcards['ascn'])],
+        b1=lambda wildcards: B1S[int(wildcards['ascn'])],
+        b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
         length_file="meta/read_length.txt", 
         strand_file="meta/strandness.detected.txt"
     output:
         "rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt" # placeholder
-            if config['ALT_SPLICE']
-            else "Workflow_DAG.all.svg"
     conda:
       "envs/rmats.yaml"
     params:
         mem_mb="8000",
-        b1=lambda wildcards: C1[int(wildcards['ascn'])], 
-        b2=lambda wildcards: C2[int(wildcards['ascn'])], 
+        b1=lambda wildcards: B1[int(wildcards['ascn'])], 
+        b2=lambda wildcards: B2[int(wildcards['ascn'])], 
         type="paired" if config['PAIR_END'] else "single",  # todo, rMATS3 has a single end bug
         analysis="P" if config['PAIR_END'] else "U", 
         length=read_length, 
