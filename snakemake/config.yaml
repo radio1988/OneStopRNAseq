@@ -27,7 +27,9 @@ ANNO_TAB: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.
 # mouse: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt
 # view all options from: https://github.com/hukai916/Collections
 
-STRAND: [0, 1, 2]  # can run [0, 1, 2] to get all possible results, then workflow auto inferrs the correct one # todo refine auto select
+STRAND: [2]  # can input [0, 1, 2] to get all possible results, then workflow auto inferrs the correct one 
+# [2] if you know it's reverse, [1] if you know it's forward, [0] if you know it's un-stranded
+# todo refine auto select
 MODE: "strict" # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
 
 # DE analysis
@@ -40,21 +42,21 @@ CONTRAST_DE: "meta/contrast.de.xlsx"
 GSEA_NPLOTS: 100  # not implemented
 GSEA_PLOT_SVG: True  # not implemented
 GSEA_DBS:  # not implemented
-  - c1.all.v7.1.symbols.gmt
-  - c2.cgp.v7.1.symbols.gmt
-  - c2.cp.v7.1.symbols.gmt
-  - c3.all.v7.1.symbols.gmt
-  - c4.all.v7.1.symbols.gmt
+  # - c1.all.v7.1.symbols.gmt
+  # - c2.cgp.v7.1.symbols.gmt
+  # - c2.cp.v7.1.symbols.gmt
+  # - c3.all.v7.1.symbols.gmt
+  # - c4.all.v7.1.symbols.gmt
   - c5.bp.v7.1.symbols.gmt
-  - c5.cc.v7.1.symbols.gmt
-  - c5.mf.v7.1.symbols.gmt
-  - c6.all.v7.1.symbols.gmt
-  - c7.all.v7.1.symbols.gmt
+  # - c5.cc.v7.1.symbols.gmt
+  # - c5.mf.v7.1.symbols.gmt
+  # - c6.all.v7.1.symbols.gmt
+  # - c7.all.v7.1.symbols.gmt
   - h.all.v7.1.symbols.gmt
 
 
 # Starting point
-START: "FASTQ" # FASTQ, BAM, COUNT, RNK
+START: "COUNT" # FASTQ, BAM, COUNT, RNK
 
 # Only if start from COUNT
 COUNT_FILE: "meta/COUNT.txt"  # must have same format as feature_count output c1-c7 meta, c7- count
@@ -68,7 +70,7 @@ RNKS:
 
 # Alternative Splicing analysis (rMATS)
 AS_ANALYSIS: True  # perform AS analysis or not
-READ_LENGTH: None  # affect rMATs analysis todo: auto detect, assuming all libraries same length
+READ_LENGTH: 101  # any int if you know, e.g. 100, None to autodetect, affect rMATs analysis todo: auto detect, assuming all libraries same length
 # todo: must provide read length if start from BAM hint: bam_qc/stats/* :: maximum length: 100
 CONTRAST_AS: "meta/contrast.as.xlsx"
 RMATS_STRANDNESS:

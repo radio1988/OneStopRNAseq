@@ -102,6 +102,8 @@ def G2B_workflow(G, g2s):
 if config['START'] in ["FASTQ", "BAM", "COUNT"]:
     CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
     print("CONTRASTS_DE:\n", CONTRASTS_DE)
+else:
+    CONTRASTS_DE = ["placeholder"]
 
 # for rMATS
 if config['START'] in ["FASTQ", "BAM"]:
@@ -123,6 +125,13 @@ if config['START'] in ["FASTQ", "BAM"]:
     df2 = pd.read_excel(config['CONTRAST_AS'])
     ASCN = df2.shape[1] # alternative splicing contrast count
     print("ASCN", ASCN)
+else:
+    B1 = "placeholder.bam"
+    B1S = ["placeholder"]
+    B2 = B1
+    B2S = B1S
+    ASCN = 0
+
 
 
 # load modules (have to use """, to keep in one block)
@@ -144,7 +153,7 @@ shell.prefix("""
 # input don't have to be used, just for draw nice DAG
 # 07/10/2019 randomized primary alignment
 
-ruleorder: create_dag > rMATS 
+ruleorder: create_dag > rMATS > DESeq2 > GSEA > fastqc > bam_qc > bamCoverage > feature_count > reset > samtools_sort > samtools_index
 
 rule targets:
     input:
@@ -541,6 +550,8 @@ def DESeq2_input(config):
             raise Exception("START config not valid")
     elif config["START"] in ["COUNT"]:
         return(config["COUNT_FILE"])
+    else:
+        return("placeholder" )
 
 
 rule DESeq2:
@@ -683,7 +694,7 @@ rule rMATS:
         b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
         length_file="meta/read_length.txt", 
-        strand_file="meta/strandness.detected.txt"
+        strand_file="meta/strandness.detected.txt" if len(config['STRAND']) > 1 else "Snakefile" # assume Snakefile always there as placeholder
     output:
         "rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt" # placeholder
     conda:
@@ -694,8 +705,8 @@ rule rMATS:
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
         type="paired" if config['PAIR_END'] else "single",  # todo, rMATS3 has a single end bug
         analysis="P" if config['PAIR_END'] else "U", 
-        length=read_length, 
-        strandness=strandness
+        length=config['READ_LENGTH'] if config['READ_LENGTH'] else read_length, 
+        strandness=strandness if len(config['STRAND']) > 1 else config['STRAND']
     threads:
         1  # todo: multi thread for rMATS4
     log:
@@ -719,6 +730,7 @@ rule rMATS:
 
 
 rule create_dag:
+    # todo: fix bug
     params:
         mem_mb="1000"  
         # every job has to have this defined 
