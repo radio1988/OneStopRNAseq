@@ -101,17 +101,17 @@ def G2B_workflow(G, g2s):
 # for DESeq2
 if config['START'] in ["FASTQ", "BAM", "COUNT"]:
     CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
-    print("CONTRASTS_DE:\n", CONTRASTS_DE)
+    #print("CONTRASTS_DE:\n", CONTRASTS_DE)
 else:
     CONTRASTS_DE = ["placeholder"]
 
 # for rMATS
 if config['START'] in ["FASTQ", "BAM"]:
     G = get_contrast_groups(config['CONTRAST_AS'])
-    print("\nGRPUPS:\n", G[0], "\nVS\n", G[1])
+    #print("\nGRPUPS:\n", G[0], "\nVS\n", G[1])
 
     g2s = get_dict_from_meta(config['META'])
-    print("\nGroup To Sample Mapping:\n", g2s)
+    #print("\nGroup To Sample Mapping:\n", g2s)
 
     B1S, B1 = G2B_workflow(G[0], g2s)
     B2S, B2 = G2B_workflow(G[1], g2s)
@@ -124,7 +124,7 @@ if config['START'] in ["FASTQ", "BAM"]:
     # Get contrast for rMATS
     df2 = pd.read_excel(config['CONTRAST_AS'])
     ASCN = df2.shape[1] # alternative splicing contrast count
-    print("ASCN", ASCN)
+    #print("ASCN", ASCN)
 else:
     B1 = "placeholder.bam"
     B1S = ["placeholder"]
@@ -181,7 +181,7 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
         rMATS=expand("rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt", ascn=range(ASCN))
-            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ"]  # todo: estimate read length from BAM
+            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
             else "Workflow_DAG.all.svg",
         dag="Workflow_DAG.all.svg", # create DAG
     params:
@@ -403,6 +403,7 @@ rule bam_qc:
         samtools flagstat {input.bam} > bam_qc/flagstat/{wildcards.sample}.flagsat.txt 2> {log.flagstat} &
         samtools stats {input.bam} > bam_qc/stats/{wildcards.sample}.stats.txt 2> {log.stats} &
         $samstat {input.bam} && mv sorted_reads/{wildcards.sample}*.samstat.html bam_qc/samstat 2> {log.samstat}
+        wait
         """
 
 
@@ -522,7 +523,7 @@ rule feature_count:
             # star sorted bams are slow to count => use samtools sorted reads, delete star bam (set as temp)
 
 
-rule strandness_detection:
+rule strand_detection:
     input:
         expand("feature_count/counts.s{strand}.strict.txt.summary", strand=STRAND) 
         if config["MODE"] == "strict" 
@@ -632,11 +633,44 @@ rule GSEA:
 
 
 
-rule read_length_detection:
+# rule read_length_detection_fq: (not needed because can be detected from BAM)
+#     input:
+#         expand("fastqc/details/{sample}.{r}_fastqc.html", sample=SAMPLES, r=["R1", "R2"])
+#             if config['PAIR_END']
+#             else expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES) # todo: test with single end reads
+#     output:
+#         "meta/read_length.txt"
+#     params:
+#         mem_mb="1000",
+#     threads:
+#         1
+#     log:
+#         "log/read_length_detection/read_length_detection.log"
+#     benchmark:
+#         "log/read_length_detection/read_length_detection.tsv"
+#     run:
+#         import re
+#         import statistics
+#         lengths = []
+#         for f in input:
+#             p = re.compile("Sequence length</td><td>(\d*)</td></tr>")
+#             for i, line in enumerate(open(f, "r")):
+#                 for match in re.finditer(p, line):
+#                     lengths.append(match.group(1))
+#         lengths = list(map(int, lengths))
+#         if(len(set(lengths))!=1):
+#             sys.exit("Not all fastq files have the same length")
+        
+#         median_length = int(statistics.median(lengths))
+#         print(output[0])
+#         with open(output[0], "w") as out:
+#             out.write(str(median_length))
+
+rule read_length_detection_bam:
     input:
-        expand("fastqc/details/{sample}.{r}_fastqc.html", sample=SAMPLES, r=["R1", "R2"])
-            if config['PAIR_END']
-            else expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES) # todo: test with single end reads
+        expand("bam_qc/stats/{sample}.stats.txt", sample=SAMPLES)
+            if config['START'] in ["FASTQ", "BAM"]
+            else "BAM file not provided. AND can't be generated from FASTQ, because FASTQ not provided"
     output:
         "meta/read_length.txt"
     params:
@@ -644,15 +678,15 @@ rule read_length_detection:
     threads:
         1
     log:
-        "log/read_length_detection/read_length_detection.log"
+        "log/read_length_detection_bam/read_length_detection_bam.log"
     benchmark:
-        "log/read_length_detection/read_length_detection.tsv"
+        "log/read_length_detection_bam/read_length_detection_bam.tsv"
     run:
         import re
         import statistics
         lengths = []
         for f in input:
-            p = re.compile("Sequence length</td><td>(\d*)</td></tr>")
+            p = re.compile("SN      average length: (\d*)")
             for i, line in enumerate(open(f, "r")):
                 for match in re.finditer(p, line):
                     lengths.append(match.group(1))
@@ -665,14 +699,13 @@ rule read_length_detection:
         with open(output[0], "w") as out:
             out.write(str(median_length))
 
-
-def strandness (x):
+def get_strandness (x):
     with open("meta/strandness.detected.txt", "r") as file:
         txt = file.readline()
-    print("meta/strandness.detected.txt:", txt)
+    #print("meta/strandness.detected.txt:", txt)
     p = re.compile("counts.s(.)\.[liberal|strict]")
     res = p.search(txt)
-    print("strand code:", res.group(1))
+    #print("strand code:", res.group(1))
     if res.group(1) is None:
         sys.exit("strandness detection wrong")
     strand = (config['RMATS_STRANDNESS'][res.group(1)])
@@ -682,7 +715,7 @@ def strandness (x):
 def read_length(x):
     with open("meta/read_length.txt", "r") as file:
         txt = file.readline()
-    print("read length", int(txt))
+    #print("read length", int(txt))
     return (int(txt))
 
 
@@ -693,10 +726,10 @@ rule rMATS:
         b1=lambda wildcards: B1S[int(wildcards['ascn'])],
         b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
-        length_file="meta/read_length.txt", 
-        strand_file="meta/strandness.detected.txt" if len(config['STRAND']) > 1 else "Snakefile" # assume Snakefile always there as placeholder
+        length_file= "Snakefile" if config['READ_LENGTH'] else "meta/read_length.txt" , # Snakefile is placeholder by-passing read_length detection
+        strand_file="meta/strandness.detected.txt" if len(config['STRAND']) > 1 else "Snakefile" # placeholder to skip this for dag creation
     output:
-        "rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt" # placeholder
+        "rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt" # todo: entire list, or folder
     conda:
       "envs/rmats.yaml"
     params:
@@ -706,7 +739,7 @@ rule rMATS:
         type="paired" if config['PAIR_END'] else "single",  # todo, rMATS3 has a single end bug
         analysis="P" if config['PAIR_END'] else "U", 
         length=config['READ_LENGTH'] if config['READ_LENGTH'] else read_length, 
-        strandness=strandness if len(config['STRAND']) > 1 else config['STRAND']
+        strandness=get_strandness if len(config['STRAND']) > 1 else "Snakefile" # placeholder to skip this for dag creation
     threads:
         1  # todo: multi thread for rMATS4
     log:
