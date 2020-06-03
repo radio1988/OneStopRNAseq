@@ -785,8 +785,6 @@ rule reset:
     run:
         shell("rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.0/ rMATS.1/ rMATS.2/ rMATS.3/ rMATS.4/ rMATS.5/ rMATS.6/ rMATS.7/ \
         lsf.log Log.out Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2 gsea &> {log}")
-        shell("snakemake --unlock -j 1 &>> {log}")
-
 
 rule test:
     input:
