@@ -18,7 +18,7 @@ PAIR_END: True  # True/False
 GENOME: genome/mm10_chr19/mm10.chr19.fa
 #/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
 #/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/hg38.primary.fa
-INDEX: genome/mm10_chr19/star_idx
+INDEX: genome/mm10_chr19/mm10.chr19.star_idx
 #/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/star_idx/
 GTF: genome/mm10_chr19/genecode.vM21.chr19.gtf
 #    /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v29.primary_assembly.annotation.fixed.gtf
