@@ -116,9 +116,9 @@ if config['START'] in ["FASTQ", "BAM"]:
     B1S, B1 = G2B_workflow(G[0], g2s)
     B2S, B2 = G2B_workflow(G[1], g2s)
 
-    print("\nrMATS -b1:\n", B1)
+    # print("\nrMATS -b1:\n", B1)
     # print("B1S:", B1S)
-    print("rMATS -b2:\n", B2)
+    # print("rMATS -b2:\n", B2)
     # print("B2S:", B2S)
 
     # Get contrast for rMATS
@@ -137,11 +137,11 @@ else:
 # load modules (have to use """, to keep in one block)
 # - alias does not work, have to use $samstat
 shell.prefix("""
-            module load star/2.5.3a
-            module load singularity/singularity-current
+            # module load star/2.5.3a
+            # module load singularity/singularity-current
             # conda activate osr  # have to create conda env osr first
 
-            samstat="singularity exec envs/hand_sandbox.simg samstat"
+            samstat="singularity exec $HOME/singularity/hand_sandbox samstat"
             #samtools="singularity exec envs/hand_sandbox.simg samtools"
             """)
 
@@ -252,7 +252,7 @@ rule star_idx:
         fa=GENOME,
         gtf=GTF,
     output:
-        INDEX+"/SA"
+        directory(INDEX)
     params:
         mem_mb="6000"
     threads:
@@ -270,14 +270,12 @@ rule star_idx:
         --genomeDir {INDEX} \
         --genomeFastaFiles {input.fa} \
         --sjdbGTFfile {input.gtf} &> {log}
-
-        mv Log.out {INDEX}
         """
 
 
 rule star_map:
     input:
-        index=INDEX+"/SA",
+        index=INDEX,
         gtf=GTF,
         r1="fastq/{sample}.R1.fastq.gz" 
             if config["PAIR_END"] 
@@ -323,11 +321,11 @@ rule star_map:
 
         mv mapped_reads/{wildcards.sample}*.out.bam mapped_reads/{wildcards.sample}.bam
         
-        gzip -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
+        pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
         """)
 
-# rule star_align:
-#     input:
+        # test
+        # STAR --runThreadN 4 --genomeDir genome/mm10_chr19/osr_idx/ --sjdbGTFfile genome/mm10_chr19/genecode.vM21.chr19.gtf --readFilesCommand zcat --readFilesIn fastq/KO_D0_1_S2.R1.fastq.gz fastq/KO_D0_1_S2.R2.fastq.gz 
 
 
 
