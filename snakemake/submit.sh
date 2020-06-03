@@ -6,7 +6,8 @@
 # --cluster 'bsub -q long -o lsf.log -R "rusage[mem={params.mem}]" -n {threads} -R span[hosts=1] -W 168:00' && snakemake --report report.html &
 
 
-snakemake -p -k --jobs 999 --use-conda --latency-wait 300 \
+snakemake -p -k --jobs 999 \
+--use-singularity --use-conda --latency-wait 300 \
 --cluster 'bsub -q short -o lsf.log -R "rusage[mem={params.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00'
 
 snakemake --report report.html 
@@ -32,3 +33,8 @@ snakemake --report report.html
 # conda activate osr
 # snakemake --use-conda -k -p --jobs 999 --latency-wait 300 --cluster ’bsub -q short -o lsf.log -R ‘rusage[mem={params.mem_mb}]’ -n {threads} -R span[hosts=1] -W 4:00' > log.snakemake.txt 2>&1 && snakemake --report report.html
 # touch /home/kh45w/project/umw_hira_goel/OneStopRNAseq/users/89/Example_study1_02.22.06-05.28.2020/log_ssh2/analysis1.txt
+
+
+# Note:
+# Most works with singularity
+# rMAT needs py2.7, thus --use-conda necessary

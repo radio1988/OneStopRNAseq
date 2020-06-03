@@ -1,5 +1,5 @@
 configfile: "config.yaml"
-container: "docker://continuumio/miniconda3:4.4.10"  # only effective when --use-singularity
+container: "envs/hand_sandbox"  # only effective when --use-singularity
 
 #localrules: targets, create_dag
 
@@ -142,7 +142,7 @@ shell.prefix("""
             # module load singularity/singularity-current
             # conda activate osr  # have to create conda env osr first
 
-            samstat="singularity exec envs/hand_sandbox samstat"
+            #samstat="singularity exec envs/hand_sandbox samstat"
             #samtools="singularity exec envs/hand_sandbox.simg samtools"
             """)
 
@@ -401,7 +401,7 @@ rule bam_qc:
         samtools idxstats {input.bam} > bam_qc/idxstats/{wildcards.sample}.idxstats.txt 2> {log.idxstats} &
         samtools flagstat {input.bam} > bam_qc/flagstat/{wildcards.sample}.flagsat.txt 2> {log.flagstat} &
         samtools stats {input.bam} > bam_qc/stats/{wildcards.sample}.stats.txt 2> {log.stats} &
-        $samstat {input.bam} && mv sorted_reads/{wildcards.sample}*.samstat.html bam_qc/samstat 2> {log.samstat}
+        samstat {input.bam} && mv sorted_reads/{wildcards.sample}*.samstat.html bam_qc/samstat 2> {log.samstat}
         wait
         """
 
@@ -535,7 +535,7 @@ rule strand_detection:
     params:
         mem_mb=1000
     log:
-        "log/feature_count/auto_detect_strand.log"
+        "log/strand_detection.log"
     script:
         "script/strandness_detection.py" # todo: improvement needed
 
@@ -748,7 +748,7 @@ rule rMATS:
     benchmark:
         "log/rMATS/rMATS.{ascn}.tsv"
     shell:
-        "python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1} -b2 {params.b2} \
+        "python2 envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1} -b2 {params.b2} \
          -gtf {input.gtf} -o rMATS.{wildcards.ascn} \
          -t {params.type} -len {params.length} -c 0.1 -analysis {params.analysis} -libType {params.strandness} &> {log}"
         # conda: snakemake --use-conda -p -j 5 rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt

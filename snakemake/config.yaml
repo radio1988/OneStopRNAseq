@@ -70,8 +70,9 @@ RNKS:
 
 # Alternative Splicing analysis (rMATS)
 AS_ANALYSIS: True  # perform AS analysis or not
-READ_LENGTH: None  # any int if you know, e.g. 100; None triggers autodetect; affect rMATs analysis; assuming all libraries same length
+READ_LENGTH: 100  # any int if you know, e.g. 100; None triggers autodetect; affect rMATs analysis; assuming all libraries same length
 # todo: must provide read length if start from BAM hint: bam_qc/stats/* :: maximum length: 100
+# todo: auto detect from bam
 CONTRAST_AS: "meta/contrast.as.xlsx"
 RMATS_STRANDNESS:
   {"0" : "fr-unstranded",

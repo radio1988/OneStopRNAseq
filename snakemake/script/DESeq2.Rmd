@@ -11,10 +11,10 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   indfilter: FALSE
-  countFile: "../feature_count/counts.strict.txt"
+  countFile: "../meta/COUNT.txt"
   annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
   metaFile: "../meta/meta.xlsx"
-  contrastFile:  "../meta/contrast.xlsx"
+  contrastFile:  "../meta/contrast.de.xlsx"
 ---
 
 ## Notes:

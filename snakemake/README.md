@@ -6,6 +6,7 @@
 - install singularity
 - install anaconda
 - install osr env: `conda env create -n osr -f envs/env.yaml` 
+- download and put hand_sandbox/ under envs/
 
 # Essential parts
 - Snakefile
@@ -67,7 +68,10 @@
 - handle gsea err
 
 ## Log:
-test success on Mac, Rui-HPCC-snakemake, Rui-HPCC-test_run
+- test success on Mac, Rui-HPCC-snakemake, Rui-HPCC-test_run
+- test on u18 VM: 
+	- test with osr (new)
+		- star index output error 
 
 
 
