@@ -1,4 +1,5 @@
 configfile: "config.yaml"
+container: "docker://continuumio/miniconda3:4.4.10"  # only effective when --use-singularity
 
 #localrules: targets, create_dag
 
@@ -141,7 +142,7 @@ shell.prefix("""
             # module load singularity/singularity-current
             # conda activate osr  # have to create conda env osr first
 
-            samstat="singularity exec $HOME/singularity/hand_sandbox samstat"
+            samstat="singularity exec envs/hand_sandbox samstat"
             #samtools="singularity exec envs/hand_sandbox.simg samtools"
             """)
 
@@ -244,7 +245,7 @@ rule multiqc:
     benchmark:
         "log/multiqc/multiqc.tsv"
     shell:
-        "multiqc fastqc/details -o fastqc &> {log}"
+        "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &> {log}"
 
 
 rule star_idx:
@@ -571,6 +572,8 @@ rule DESeq2:
         meta=config["META"],
         cont=config["CONTRAST_DE"],
         o="'../DESeq2/DESeq2.html'"
+    container:
+        "envs/hand_sandbox"
     priority: 
         100
     threads:

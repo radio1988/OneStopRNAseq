@@ -1,0 +1,11 @@
+envs/hand_sandbox/ created by Rui manually
+
+Software and Versions inside image:
+STAR 2.7.3a
+samtools v1.9
+featureCounts v2.0.1  (subread )
+
+java 11.0.7
+FastQC v0.11.9
+
+conda 4.8.3
