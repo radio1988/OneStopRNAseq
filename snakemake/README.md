@@ -1,7 +1,7 @@
 # Easy RNAseq Analysis with *oneStopRNAseq*
 
 
-# Install (for HPCC)
+# Install (for any user on HPCC)
 
 - load singularity: `module load singularity/singularity-current`
 - install anaconda
@@ -40,13 +40,13 @@
 │   ├── gencode.vM21.chr19.gtf *
 ```
 
-# Running (for HPCC)
+# Running Example Dataset(for Kai on HPCC)
 ```
 ## Preps ##
 mkdir analysis && cd analysis
-$snakemake=/project/umw_mccb/OneStopRNAseq/rui/test_run
-ln -s $snakemake/Snakefile 
+snakemake=/project/umw_mccb/OneStopRNAseq/rui/test_run
 
+ln -s $snakemake/Snakefile 
 ln -s $snakemake/envs/
 ln -s $snakemake/genome/
 ln -s $snakemake/submit.sh 
@@ -76,7 +76,10 @@ nohup submit.sh &
 	- set `START: "FASTQ"`
 	- set `STRAND: [0, 1, 2]` (for testing, June 03)
 	- set `READ_LENGTH: 100` (for testing, June 03)
+- Absolute Path
+	- /project/umw_yong-xu_wang/singularity/ hand_sandbox.simg
 
+	
 ## Start from BAM
 
 ## Start from COUNT
