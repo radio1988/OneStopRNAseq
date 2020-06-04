@@ -40,7 +40,7 @@
 │   ├── gencode.vM21.chr19.gtf *
 ```
 
-# Running Example Dataset(for Kai on HPCC)
+# Running Example Dataset(on HPCC)
 ```
 ## Preps ##
 mkdir analysis && cd analysis
@@ -77,17 +77,18 @@ nohup submit.sh &
 	- set `STRAND: [0, 1, 2]` (for testing, June 03)
 	- set `READ_LENGTH: 100` (for testing, June 03)
 - Absolute Path
-	- /project/umw_yong-xu_wang/singularity/ hand_sandbox.simg
+	- /project/umw_yong-xu_wang/singularity/hand_sandbox.simg
 
 	
 ## Start from BAM
 
 ## Start from COUNT
 
-## Start from 
+## Start from RNK
 
 ## Caveats
 - must copy script folder to let DESeq2 save results into the correct location
+- must use --use-singularity and --use-conda, and rmat conda env takes some time to init, singularity 4GB to download
 
 
 ## todo:
