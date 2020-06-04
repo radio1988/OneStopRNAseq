@@ -1,5 +1,6 @@
 configfile: "config.yaml"
 #container: "envs/hand_sandbox.simg"  # only effective when --use-singularity
+# removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
 
 #localrules: targets, create_dag
 
