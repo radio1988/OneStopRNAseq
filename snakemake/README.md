@@ -1,46 +1,68 @@
 # Easy RNAseq Analysis with *oneStopRNAseq*
 
 
-# Install
+# Install (for HPCC)
 
-- install singularity
+- load singularity: `module load singularity/singularity-current`
 - install anaconda
-- install osr env: `conda env create -n osr -f envs/env.yaml` 
-- download and put hand_sandbox/ under envs/
-
-# Essential parts
-- Snakefile
-- config.yaml
-- envs/
-- genome/
-- meta/
-- script/
-- submit.sh
-- README.md
-
-# Running
-- `mkdir analysis`
-- ln -s ../snakemake/Snakefile 
-- ln -s ../snakemake/config.yaml 
-- ln -s ../snakemake/meta/
-- ln -s ../snakemake/envs/
-- ln -s ../snakemake/genome/
-- ln -s ../snakemake/submit.sh 
-- ln -s ../snakemake/fastq/
-- cp -r ../snakemake/script/ .
+- create a conda env called `osr`: `conda env create -n osr -f envs/env.yaml`
+- download code and example data: `git clone git@github.com:radio1988/OneStopRNAseq.git`
+- download hand_sandbox.simg and put softlink under `envs/`: `ln -s /home/rl44w/singularity/hand_sandbox.simg`
 
 
-- `source activate /home/rl44w/anaconda3/envs/osr`
-- submit jobs 
+# Folder structure
+- essential for execution of example workflow marked *
 
-	```
-	kill previous running submission job
-	snakemake --unlock -j 1 # if you have run this pipeline before and exitted or stopped
-	nohup snakemake -k --jobs 999 --use-conda --latency-wait 300 \
-	--cluster 'bsub -q short -o lsf.log -R "rusage[mem={params.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00' && snakemake --report report.html &
-	```
 
-## Start from FASTQ
+```
+├── .gitignore
+├── README.md
+├── Snakefile *
+├── config.yaml *
+├── submit.sh *
+├── LICENSE.md 
+├── envs
+│   ├── hand_sandbox.simg *
+│   ├── env.yaml * 
+│   ├── rmats.yaml *
+│   ├── gsea_db *
+│   ├── rMATS.3.2.5 *
+│   ├── GSEA_4.0.3 *
+├── scripts
+│   ├── DESeq2.Rmd *
+│   ├── strandness_detection.py *
+├── meta
+│   ├── contrast.as.xlsx *
+│   ├── contrast.de.xlsx *
+│   ├── meta.xlsx *
+├── genome/mm10_chr19/
+│   ├── mm10.chr19.fa *
+│   ├── gencode.vM21.chr19.gtf *
+```
+
+# Running (for HPCC)
+```
+## Preps ##
+mkdir analysis && cd analysis
+$snakemake=/project/umw_mccb/OneStopRNAseq/rui/test_run
+ln -s $snakemake/Snakefile 
+
+ln -s $snakemake/envs/
+ln -s $snakemake/genome/
+ln -s $snakemake/submit.sh 
+cp $snakemake/config.yaml .
+cp -r $snakemake/meta .
+cp -r $snakemake/fastq .
+cp -r $snakemake/script/ . # have to cp, softlink has problems (todo: fix)
+
+## Running ##
+source activate /home/rl44w/anaconda3/envs/osr
+# If applicable, kill previous running submitted job, then 'snakemake --unlock -j 1'
+nohup submit.sh &
+```
+
+
+## Start from FASTQ (For Kai's initial test)
 - provide fastq files under fastq/
 	- {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
 	- {sample}.fastq.gz for SE reads
@@ -48,8 +70,12 @@
 	- {sample}
 - write meta data
 	- meta/meta.xlsx
-	- meta/contrast.xlsx 
-- set `START` flag in `config.yaml` as `FASTQ`
+	- meta/contrast.de.xlsx 
+	- meta/contrast.as.xlsx 
+- modify `config.yaml`
+	- set `START: "FASTQ"`
+	- set `STRAND: [0, 1, 2]` (for testing, June 03)
+	- set `READ_LENGTH: 100` (for testing, June 03)
 
 ## Start from BAM
 
@@ -62,16 +88,12 @@
 
 
 ## todo:
-- contrast.de.xlsx  contrast.as.xlsx
-- use same contrast format for rMATS, at group level
 - an easier way to link and run workflow: now script/ needs cp 
 - handle gsea err
 
 ## Log:
 - test success on Mac, Rui-HPCC-snakemake, Rui-HPCC-test_run
-- test on u18 VM: 
-	- test with osr (new)
-		- star index output error 
+- test on u18 VM: success from FQ, with `READ_LENGTH: 100`
 
 
 
