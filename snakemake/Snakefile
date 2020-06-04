@@ -377,6 +377,8 @@ rule bam_qc:
         bai="sorted_reads/{sample}.bam.bai"
     output:
         "bam_qc/samstat/{sample}.bam.samstat.html"
+    container:
+        "envs/hand_sandbox.simg"
     priority:
         0
     params:
