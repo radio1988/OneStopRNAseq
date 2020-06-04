@@ -1,5 +1,5 @@
 configfile: "config.yaml"
-container: "envs/hand_sandbox"  # only effective when --use-singularity
+container: "envs/hand_sandbox.simg"  # only effective when --use-singularity
 
 #localrules: targets, create_dag
 
@@ -141,7 +141,6 @@ shell.prefix("""
             # module load star/2.5.3a
             # module load singularity/singularity-current
             # conda activate osr  # have to create conda env osr first
-
             #samstat="singularity exec envs/hand_sandbox samstat"
             #samtools="singularity exec envs/hand_sandbox.simg samtools"
             """)
@@ -573,7 +572,7 @@ rule DESeq2:
         cont=config["CONTRAST_DE"],
         o="'../DESeq2/DESeq2.html'"
     container:
-        "envs/hand_sandbox"
+        "envs/hand_sandbox.simg"
     priority: 
         100
     threads:
