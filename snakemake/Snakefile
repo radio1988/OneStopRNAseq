@@ -1,5 +1,5 @@
 configfile: "config.yaml"
-container: "envs/hand_sandbox.simg"  # only effective when --use-singularity
+#container: "envs/hand_sandbox.simg"  # only effective when --use-singularity
 
 #localrules: targets, create_dag
 
