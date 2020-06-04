@@ -95,8 +95,15 @@ nohup submit.sh &
 - handle gsea err
 
 ## Log:
-- test success on Mac, Rui-HPCC-snakemake, Rui-HPCC-test_run
-- test on u18 VM: success from FQ, with `READ_LENGTH: 100`
-
+- test from FQ, with `READ_LENGTH: 100`  `STRAND: [0, 1, 2]`
+	- `--use-singularity --use-conda`
+		- success on u18 VM: 
+		- always fail on Mac: STAR zero mapping
+		- fails on HPCC, unless removing gloabal singularity line in header
+	- `--use-singularity` with gloabal singularity (less interference)
+		- success on u18 VM: 
+		- Mac: not working, singularity poor MAC support?
+		- HPCC: works, except rMATS, not set up properlly 
+		- 
 
 

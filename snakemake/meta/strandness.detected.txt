@@ -1,1 +1,0 @@
-feature_count/counts.s2.strict.txt.summary
