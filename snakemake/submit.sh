@@ -2,6 +2,7 @@
 # run with: nohup bash submit.sh &
 
 module load singularity/singularity-current
+conda activate osr
 
 snakemake -p -k --jobs 999 \
 --use-singularity --use-conda --latency-wait 300 \
