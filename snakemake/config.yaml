@@ -30,13 +30,13 @@ ANNO_TAB: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.
 STRAND: [0, 1, 2]  # can input [0, 1, 2] to get all possible results, then workflow auto inferrs the correct one 
 # [2] if you know it's reverse, [1] if you know it's forward, [0] if you know it's un-stranded
 # todo refine auto select
-MODE: "strict" # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
+MODE: strict # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
 
 # DE analysis
 MAX_FDR: 0.05
 MIN_LFC: 0.585 
-META: "meta/meta.xlsx"
-CONTRAST_DE: "meta/contrast.de.xlsx"
+META: meta/meta.xlsx
+CONTRAST_DE: meta/contrast.de.xlsx
 
 # GSEA
 GSEA_NPLOTS: 100  # not implemented
@@ -56,10 +56,10 @@ GSEA_DBS:  # not implemented
 
 
 # Starting point
-START: "FASTQ" # FASTQ, BAM, COUNT, RNK
+START: FASTQ # FASTQ, BAM, COUNT, RNK
 
 # Only if start from COUNT
-COUNT_FILE: "meta/COUNT.txt"  # must have same format as feature_count output c1-c7 meta, c7- count
+COUNT_FILE: meta/COUNT.txt  # must have same format as feature_count output c1-c7 meta, c7- count
 
 # Only if start from RNK
 RNKS:
@@ -73,8 +73,8 @@ AS_ANALYSIS: True  # perform AS analysis or not
 READ_LENGTH: 100  # any int if you know, e.g. 100; None triggers autodetect; affect rMATs analysis; assuming all libraries same length
 # todo: must provide read length if start from BAM hint: bam_qc/stats/* :: maximum length: 100
 # todo: auto detect from bam
-CONTRAST_AS: "meta/contrast.as.xlsx"
+CONTRAST_AS: meta/contrast.as.xlsx
 RMATS_STRANDNESS:
-  {"0" : "fr-unstranded",
-  "1" : "fr-firststrand", 
-  "2" : "fr-secondstrand"}
+  {0 : fr-unstranded,
+  1 : fr-firststrand, 
+  2 : fr-secondstrand}

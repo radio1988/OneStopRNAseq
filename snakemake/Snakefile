@@ -711,7 +711,7 @@ def get_strandness (x):
     #print("strand code:", res.group(1))
     if res.group(1) is None:
         sys.exit("strandness detection wrong")
-    strand = (config['RMATS_STRANDNESS'][res.group(1)])
+    strand = (config['RMATS_STRANDNESS'][int(res.group(1))])
     return (strand)
 
 
