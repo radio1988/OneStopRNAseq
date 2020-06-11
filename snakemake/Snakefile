@@ -21,6 +21,7 @@ MIN_LFC=config["MIN_LFC"]
 import pandas as pd
 import sys
 import re
+import os
 
 # Get contrast name for DESeq2
 # todo: fix svg
@@ -594,6 +595,21 @@ rule DESeq2:
         contrastFile=\'../{params.cont}\'           ), \
         output_file={params.o})" '
 
+## GSEA prep (toupper if contain lower, timestamp will change only if contain_lower)
+files = os.listdir("meta")
+for fname in files:
+    fname='meta/'+fname
+    if fname.endswith("rnk"):
+        inputFile = open(fname, 'r')
+        content = inputFile.read()
+        contain_lower = False
+        for line in content:
+            if any(letter.islower() for letter in line):
+                contain_lower = True
+                break
+        if contain_lower:
+            with open(fname, 'w') as outputFile:
+                outputFile.write(content.upper())        
 
 rule GSEA:
     input: 
