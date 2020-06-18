@@ -15,6 +15,8 @@ snakemake -p -k --jobs 999 \
 
 snakemake --report report.html 
 
+tar zcvf gsea/ gsea.tar.gz
+
 
 ## Handy commands for development
 # rm -rf lsf.log nohup.out meta/read_length.txt   meta/strandness.detected.txt log/ Workflow_DAG.all.svg     may*  DESeq2/ gsea/ report.html bigWig/ feature_count/ bam_qc/ rMATS*/
