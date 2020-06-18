@@ -15,7 +15,7 @@ snakemake -p -k --jobs 999 \
 
 snakemake --report report.html 
 
-tar zcvf gsea/ gsea.tar.gz
+tar zcvf  gsea.tar.gz gsea/
 
 
 ## Handy commands for development
