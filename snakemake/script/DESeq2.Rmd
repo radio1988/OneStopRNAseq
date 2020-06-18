@@ -1,7 +1,7 @@
 ---
-title: "DEseq2"
+title: "DE Analysis and Standard Visualizations"
 author: "RuiLi, Kai Hu"
-date: "05/25/2020"
+date: "06/18/2020"
 output:
   html_document:
     toc: yes
@@ -11,7 +11,7 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   indfilter: FALSE
-  countFile: "../feature_count/counts.s0.strict.txt"
+  countFile: "../meta/COUNT.txt"
   annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.de.xlsx"
@@ -19,9 +19,10 @@ params:
 
 ## Notes:
 - Please use TPM.xlsx for normalized expression values
-- Please use LFC_shrinked for Log2FoldChange
+- Please use LFC_shrinked for Log2FoldChange, LFC_raw is not recommended
 - Please use FDR for significance filtering, not p-values
 - Please search for "Warning" in the report for possible problems
+- Please see PDF files under DESeq2/ folder for plots
 
 ```{r setup, include=F}
 # Bioconductor
@@ -74,9 +75,9 @@ paste("Log2FC cut-off:", min_lfc)
 ## Functions
 ```{r}
 readExcel <- function(fname){
-    df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
-    df <- data.frame(df)  #important
-    return (df)
+  df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
+  df <- data.frame(df)  #important
+  return (df)
 }
 
 get_density <- function(x, y, ...) {
@@ -115,10 +116,6 @@ volcanoplot <- function(res, anno, name='name',
   neg <- subset(res, padj<sigthresh & log2FoldChange< -lfcthresh)
   pos.n <- dim(pos)[1]
   neg.n <- dim(neg)[1]
-  title=paste("Volcano Plot",
-              name,
-              paste("Up:", pos.n, ", Down:", neg.n, sep = ""),
-              sep='\n')
   
   #labelcut <- res$padj[order(res$padj)][100] 
   
@@ -128,7 +125,8 @@ volcanoplot <- function(res, anno, name='name',
                        #selectLab = c("FOS", "LDHA"), # mark selected genes
                        x = 'log2FoldChange',
                        y = 'padj',
-                       title = title,
+                       title = name,
+                       subtitle = paste("Up:", pos.n, ", Down:", neg.n, sep = ""),
                        xlab = bquote(~Log[2]~ "Fold Change"),
                        ylab = bquote(~-Log[10]~italic(FDR)),
                        #xlim = c(-6, 6),
@@ -140,25 +138,22 @@ volcanoplot <- function(res, anno, name='name',
                        # pointSize = 1.0, # todo: fix incomparibility in R3.5 and R4
                        # labSize = 2.0,
                        # DrawConnectors = F,
-                       colAlpha = 0.5,
-                       legend=c("Negative",
-                                paste("|LFC|>",lfcthresh,sep=""),
-                                paste("FDR<",sigthresh,sep=""),
-                                "Both"),
+                       legend = c("NS","Log2 FC","P","P & Log2 FC"),
+                       legendLabels = c('NS', expression(Log[2]~FC),
+                                        "FDR", expression(FDR~and~Log[2]~FC)),
                        legendPosition = 'right',
                        legendLabSize = 10,
                        axisLabSize = 10,
-                       titleLabSize = 10,
                        legendIconSize = 3.0)
   
-  # plot in html
-  grid.arrange(p,
-               ncol=1,
-               top = textGrob(' ',
-                              just = c('center'),
-                              gp = gpar(fontsize = 32))
-  )
-  grid.rect(gp=gpar(fill=NA))
+  # # plot in html
+  # grid.arrange(p,
+  #              ncol=1,
+  #              top = textGrob(' ',
+  #                             just = c('center'),
+  #                             gp = gpar(fontsize = 32))
+  # )
+  # grid.rect(gp=gpar(fill=NA))
   
   # save PDF
   pdf(paste(name, "pdf", sep="."), width=8, height=6)
@@ -175,15 +170,15 @@ volcanoplot <- function(res, anno, name='name',
 
 maplot <- function (res, thresh=max_fdr, labelsig=FALSE, textcx=1, ...) {
   # todo: improve visualization
-    with(res, 
-         plot(baseMean, log2FoldChange, col="grey80", pch=20, cex=.5, log="x", ...))
+  with(res, 
+       plot(baseMean, log2FoldChange, col="grey80", pch=20, cex=.5, log="x", ...))
+  with(subset(res, padj<max_fdr), 
+       points(baseMean, log2FoldChange, col="grey40", pch=20, cex=.5))
+  if (labelsig) {
+    require(calibrate)
     with(subset(res, padj<max_fdr), 
-         points(baseMean, log2FoldChange, col="grey40", pch=20, cex=.5))
-    if (labelsig) {
-        require(calibrate)
-        with(subset(res, padj<max_fdr), 
-             textxy(baseMean, log2FoldChange, labs=Gene, cex=textcx, col=2))
-    }
+         textxy(baseMean, log2FoldChange, labs=Gene, cex=textcx, col=2))
+  }
 }
 
 zscore <- function(matrix){
@@ -212,8 +207,9 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                   cluster_cols = F, 
                   border_color = NA,
                   cutree_rows = nclass, 
-                  show_rownames = F)
-    
+                  show_rownames = F, 
+                  filename = "test.pdf")
+
     ## Print out gene classification (https://www.biostars.org/p/287512/)
     # cutree manually
     gene_classes <- sort(cutree(p$tree_row, k=nclass))
@@ -235,29 +231,24 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
     row.names(annotation_row) <- row.names(classification)
     annotation_row$class <- as.character(annotation_row$class)
     # output final plot
-    p2 <- pheatmap(df, 
+    p2 <- pheatmap(df,
                    main = main,
                    border_color = NA,
-                   cluster_cols = F, 
-                   cutree_rows = nclass, 
-                   show_rownames = F, 
+                   cluster_cols = F,
+                   cutree_rows = nclass,
+                   show_rownames = F,
                    annotation_row = annotation_row,
                    filename = paste(fname, "pdf", sep = "."))
-  }else{
-        p <- pheatmap(df, 
-                  main = main,
-                  cluster_cols = F, 
-                  cluster_rows = F, 
-                  border_color = NA,
-                  show_rownames = F)
-        p2 <- pheatmap(df, 
-                  main = main,
-                  cluster_cols = F, 
-                  cluster_rows = F, 
-                  border_color = NA,
-                  show_rownames = F,
-                  filename = paste(fname, "pdf", sep = "."))
-  }
+  }else if (dim(df)[1] > 0){
+    # output final plot
+    p2 <- pheatmap(df,
+                   main = main,
+                   cluster_cols = F,
+                   cluster_rows = F,
+                   border_color = NA,
+                   show_rownames = F,
+                   filename = paste(fname, "pdf", sep = "."))
+  }else{ print("no sig DEG for heatmap")}
 }
 
 
@@ -343,12 +334,12 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     
     ##  Plots
     hist(res$pvalue, breaks=50, col="grey80", # todo: improve vis
-         main = paste('Histogram of p-values (un-adjusted)', name, sep = "\n"), 
+         main = paste('Histogram of p-values', name, sep = "\n"), 
          xlab = 'pvalues', ylab = 'Frequency')
     
     hist(res$padj, breaks=50, col="grey", 
-         main = paste('Histogram of Q-values (adjusted)', name, sep = "\n"), 
-         xlab = 'padj', ylab = 'Frequency')
+         main = paste('Histogram of FDR', name, sep = "\n"), 
+         xlab = 'FDR', ylab = 'Frequency')
     
     maplot(res, main=paste("MAplot", paste(name, "LFC_shrinked"), sep="\n")) # todo: improve vis
     maplot(res2, main=paste("MAplot", paste(name, "LFC_raw"), sep="\n"))
@@ -365,6 +356,8 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     Heatmap(zscore.df, nclass = 2,
             fname = paste(name, "heatmap", sep="."),
             main = paste(name, "LFC >", min_lfc, "FDR <", max_fdr ))
+    # dev.off()
+
 
 }
 ```
@@ -386,7 +379,7 @@ cts <- as.matrix(cts)
 
 # Report Summary
 print(paste("lib-size in millions:"))
-print(format(colSums(cts/1e6), digits=1))
+print(format(colSums(cts/1e6), digits=2))
 print(paste("Dim of input data:"))
 print(dim(cts))
 
@@ -405,8 +398,9 @@ paste("Removed samples with less than ", min_colsum, "reads/fragments across all
 
 paste("Data dim after filtering:")
 dim(cts)
-print("Head of filtered data:")
-head(cts)
+# print("Head of filtered data:")
+# head(cts)
+boxplot(log10(cts+1), las=2, main = "library size after filtering")
 ```
 
 ## Read Anno
@@ -543,7 +537,7 @@ plotQC_PCA <- function(dds) {
   vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
   
   pcaData <- plotPCA(vsd, intgroup = 'group', returnData=TRUE) # labeling fixed
-  percentVar <- round(100 * attr(pcaData, 'percentVar'))
+  percentVar <- round(100 * attr(pcaData, 'percentVar'), 1)
   
   ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
   geom_point(size = 3) +
@@ -562,7 +556,7 @@ plotQC_PCA_no_label <- function(dds) {
   vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
   
   pcaData <- plotPCA(vsd, intgroup = 'group', returnData=TRUE) # labeling fixed
-  percentVar <- round(100 * attr(pcaData, 'percentVar'))
+  percentVar <- round(100 * attr(pcaData, 'percentVar'), 1)
   
   ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
   geom_point(size = 3) +
@@ -570,6 +564,14 @@ plotQC_PCA_no_label <- function(dds) {
   ylab(paste0("PC2: ", percentVar[2], "% variance")) +
   theme_classic()
 }
+
+pdf("sample_PCA.labeled.pdf")
+plotQC_PCA(dds)
+dev.off()
+
+pdf("sample_PCA.pdf")
+plotQC_PCA_no_label(dds)
+dev.off()
 
 plotQC_PCA(dds)
 plotQC_PCA_no_label(dds)
@@ -588,31 +590,54 @@ samplePoisDistMatrix <- as.matrix( poisd$dd )
 rownames(samplePoisDistMatrix) <- coldata$sample
 colnames(samplePoisDistMatrix) <- NULL 
 colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+
 pheatmap(samplePoisDistMatrix,
          clustering_distance_rows=poisd$dd,
          clustering_distance_cols=poisd$dd,
          col=colors, 
-         clustering_method='complete'
-        )
+         clustering_method='complete', 
+         legend = F, 
+         filename = "sample_poisson_distance.pdf")
+
+pheatmap(samplePoisDistMatrix,
+         clustering_distance_rows=poisd$dd,
+         clustering_distance_cols=poisd$dd,
+         col=colors, 
+         clustering_method='complete',
+         legend = F)
 ```
 
 ### Sample Heatmap (Spearman Corr Based)
-- todo: change label style
 ```{r}
 corr <- cor(counts(dds), method="spearman")
-#corr <- round(corr, 2)
-corrplot(corr, 
-         method="color", type="upper", add=F,  # add-on to previous plot
-         is.corr=F,  # flexible coloring if False
-         order="hclust", hclust.method="complete",
-         tl.pos="n"
-)
-corrplot(corr, 
-         method="number", type="lower", add=T,  # add-on to previous plot
-         is.corr=T,  # flexible coloring if False
-         order="hclust", hclust.method="complete",
-         tl.pos="lt"
-)
+spearman_corrplot <- function(corr){
+  #corr <- round(corr, 2)
+  corrplot(corr, 
+           method="square", type="upper", add=F,  # add-on to previous plot
+           is.corr=T,  # flexible coloring if False
+           order="hclust", hclust.method="complete",
+           tl.pos="lt", diag = T)
+  
+  if (dim(corr)[1]<12){
+    corrplot(corr, 
+             method="number", type="lower", add=T,  # add-on to previous plot
+             is.corr=T,  # flexible coloring if False
+             order="hclust", hclust.method="complete",
+             tl.pos="n", diag = F, cl.pos = "n")
+  }else{
+    corrplot(corr, 
+             method="pie", type="lower", add=T,  # add-on to previous plot
+             is.corr=T,  # flexible coloring if False
+             order="hclust", hclust.method="complete",
+             tl.pos="n", diag = F, cl.pos = "n")
+  }
+}
+
+pdf(paste("sample_spearman_corr", "pdf", sep="."))
+spearman_corrplot(corr)
+dev.off()
+
+spearman_corrplot(corr)
 ```
 
 ## DE analysis
@@ -649,6 +674,8 @@ for (i in 1:dim(contrast.df)[2]){
   process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = tpm)
 }
 ```
+
+
 
 ## Log
 ```{r}
