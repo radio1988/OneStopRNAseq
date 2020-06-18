@@ -11,7 +11,7 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   indfilter: FALSE
-  countFile: "../meta/COUNT.txt"
+  countFile: "../feature_count/counts.s0.strict.txt"
   annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.de.xlsx"
@@ -186,6 +186,80 @@ maplot <- function (res, thresh=max_fdr, labelsig=FALSE, textcx=1, ...) {
     }
 }
 
+zscore <- function(matrix){
+  return( t(scale(t(matrix))))
+}
+
+rename_num_vector_by_order <- function(l){
+  # l have to be a vector of numbers
+  # output vector of roman numbers ordered by appearance in the input vector
+  # e.g. c(2,3,3,2,1) -> c(I, II, II, I, III)
+  # test rename_num_vector_by_order(c(2,3,3,2,1))
+  u <- unique(l)
+  n=0
+  for (i in u){
+    n = n+1; 
+    l <- replace(l, l==i, as.character(as.roman(n)))
+  }
+  return(l)
+}
+
+Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
+  if (dim(df)[1] > nclass){
+    # Heatmap Pre-plot to get hclust
+    p <- pheatmap(df, 
+                  main = main,
+                  cluster_cols = F, 
+                  border_color = NA,
+                  cutree_rows = nclass, 
+                  show_rownames = F)
+    
+    ## Print out gene classification (https://www.biostars.org/p/287512/)
+    # cutree manually
+    gene_classes <- sort(cutree(p$tree_row, k=nclass))
+    gene_classes <- data.frame(gene_classes) 
+    classification <- merge(gene_classes, df, by = 0)
+    row.names(classification) <- classification$Row.names
+    # Re-order original data (genes) to match ordering in heatmap (top-to-bottom)
+    idx <- rownames(df[p$tree_row[["order"]],])
+    classification <- classification[idx,] 
+    # rename gene classes
+    classification$gene_classes <- rename_num_vector_by_order(classification$gene_classes)
+    # save excel
+    WriteXLS(classification, row.names = F,
+             paste(fname,"gene_class.xlsx", sep = "."))
+    # get class label
+    annotation_row = data.frame(
+      class = classification$gene_classes
+    )
+    row.names(annotation_row) <- row.names(classification)
+    annotation_row$class <- as.character(annotation_row$class)
+    # output final plot
+    p2 <- pheatmap(df, 
+                   main = main,
+                   border_color = NA,
+                   cluster_cols = F, 
+                   cutree_rows = nclass, 
+                   show_rownames = F, 
+                   annotation_row = annotation_row,
+                   filename = paste(fname, "pdf", sep = "."))
+  }else{
+        p <- pheatmap(df, 
+                  main = main,
+                  cluster_cols = F, 
+                  cluster_rows = F, 
+                  border_color = NA,
+                  show_rownames = F)
+        p2 <- pheatmap(df, 
+                  main = main,
+                  cluster_cols = F, 
+                  cluster_rows = F, 
+                  border_color = NA,
+                  show_rownames = F,
+                  filename = paste(fname, "pdf", sep = "."))
+  }
+}
+
 
 process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='name', anno='anno.df', norm_exp="tpm.df"){
     ## Summary
@@ -283,6 +357,14 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
                 textcx=.8,  name= paste(name, "LFC_shrinked", sep="."))
     volcanoplot(res2, anno, lfcthresh=min_lfc, sigthresh=max_fdr,
                 textcx=.8,name= paste(name, "LFC_raw", sep="."))
+    
+    n1 <- dim(resdata.sig)[2]
+    n2 <- dim(norm_exp)[2]
+    zscore.df <- zscore(resdata.sig[, (n1-n2+1):n1])
+    colnames(zscore.df) <- gsub (":TPM", "", colnames(zscore.df))
+    Heatmap(zscore.df, nclass = 2,
+            fname = paste(name, "heatmap", sep="."),
+            main = paste(name, "LFC >", min_lfc, "FDR <", max_fdr ))
 
 }
 ```
@@ -314,9 +396,13 @@ print(dim(cts))
 ```{r}
 min_rowsum <- 10
 expression_filter <- rowSums(cts) >= min_rowsum  # default 10
-cts <- cts[expression_filter, ]
-df <- df[expression_filter, ]
+min_colsum <- 2e4
+sample_filter <- colSums(cts) >= min_colsum
+cts <- cts[expression_filter, sample_filter]
+df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
 paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples")
+paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes")
+
 paste("Data dim after filtering:")
 dim(cts)
 print("Head of filtered data:")
@@ -438,9 +524,11 @@ resultsNames(dds)
 
 ### Histogram of Log10(Counts)
 ```{r}
-tmp <- log10(counts(dds) + 1)
-hist(tmp, main = 'Histogram of log10(count + 1)', 100) # by default, use non-normalized data by counts function
-unlink(tmp)
+log1p_count <- log10(counts(dds) + 1)
+hist(log1p_count, 
+     main = 'Histogram of log10(count + 1)', 
+     xlab = "log10(count+1)",
+     100) # by default, use non-normalized data by counts function
 ```
 
 ### Dispersion plot
@@ -465,12 +553,29 @@ plotQC_PCA <- function(dds) {
                     box.padding = 0.35,
                     point.padding = 1,
                     segment.color = 'grey50',
+                   segment.alpha = 0.5,
                     show.legend = FALSE) + # if TRUE, legend display might not be correct
   theme_classic()
 }
 
+plotQC_PCA_no_label <- function(dds) {
+  vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
+  
+  pcaData <- plotPCA(vsd, intgroup = 'group', returnData=TRUE) # labeling fixed
+  percentVar <- round(100 * attr(pcaData, 'percentVar'))
+  
+  ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
+  geom_point(size = 3) +
+  xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+  ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+  theme_classic()
+}
+
 plotQC_PCA(dds)
+plotQC_PCA_no_label(dds)
 ```
+
+
 
 
 
@@ -492,6 +597,7 @@ pheatmap(samplePoisDistMatrix,
 ```
 
 ### Sample Heatmap (Spearman Corr Based)
+- todo: change label style
 ```{r}
 corr <- cor(counts(dds), method="spearman")
 #corr <- round(corr, 2)
