@@ -391,13 +391,18 @@ min_rowsum <- 10
 expression_filter <- rowSums(cts) >= min_rowsum  # default 10
 min_colsum <- 2e4
 sample_filter <- colSums(cts) >= min_colsum
-cts <- cts[expression_filter, sample_filter]
-df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
-paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples")
-paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes")
-
-paste("Data dim after filtering:")
-dim(cts)
+if (sum(expression_filter) > 2 & sum(sample_filter >= 4)){
+  cts <- cts[expression_filter, sample_filter]
+  df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
+  paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples")
+  paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes")
+  
+  paste("Data dim after filtering:")
+  dim(cts)
+}else{
+  print("Library size too small: too few genes/samples would be left after filtering, so skipped filtering.")
+  print("Please interpret results with caution")
+}
 # print("Head of filtered data:")
 # head(cts)
 boxplot(log10(cts+1), las=2, main = "library size after filtering")
