@@ -138,7 +138,7 @@ volcanoplot <- function(res, anno, name='name',
                        # pointSize = 1.0, # todo: fix incomparibility in R3.5 and R4
                        # labSize = 2.0,
                        # DrawConnectors = F,
-                       legend = c("NS","Log2 FC","P","P & Log2 FC"),
+                       # legend = c("NS","Log2 FC","P","P & Log2 FC"),
                        legendLabels = c('NS', expression(Log[2]~FC),
                                         "FDR", expression(FDR~and~Log[2]~FC)),
                        legendPosition = 'right',
