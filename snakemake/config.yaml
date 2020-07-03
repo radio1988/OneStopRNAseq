@@ -56,10 +56,11 @@ GSEA_DBS:  # not implemented
 
 
 # Starting point
-START: FASTQ # FASTQ, BAM, COUNT, RNK
+START: COUNT # FASTQ, BAM, COUNT, RNK
 
 # Only if start from COUNT
-COUNT_FILE: meta/COUNT.txt  # must have same format as feature_count output c1-c7 meta, c7- count
+COUNT_FILE: meta/COUNT.xlsx  # must have same format as feature_count output c1-c7 meta, c7- count
+# both txt and xlsx supported, xlsx will be converted to meta/count.xlsx.txt
 
 # Only if start from RNK
 RNKS:
