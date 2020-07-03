@@ -603,21 +603,6 @@ rule DESeq2:
         contrastFile=\'../{params.cont}\'           ), \
         output_file={params.o})" &> {log}'
 
-## GSEA prep (toupper if contain lower, timestamp will change only if contain_lower)
-files = os.listdir("meta")
-for fname in files:
-    fname='meta/'+fname
-    if fname.endswith("rnk"):
-        inputFile = open(fname, 'r')
-        content = inputFile.read()
-        contain_lower = False
-        for line in content:
-            if any(letter.islower() for letter in line):
-                contain_lower = True
-                break
-        if contain_lower:
-            with open(fname, 'w') as outputFile:
-                outputFile.write(content.upper())        
 
 rule GSEA:
     input: 
@@ -646,15 +631,17 @@ rule GSEA:
     # run:
     #     print('test')
     run:
-        shell("echo {params.label_db}")
-        shell("mkdir -p gsea && mkdir -p gsea/{wildcards.contrast}")
+        shell("echo {params.label_db} > {log}")
+        shell("mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}")
+        # to upper letter for all gene_names in RNK file (todo: toupper for user defined non-human GSEA db)
+        shell("python script/capslock.py {input.rnk} &>> {log}")
         shell("""#module purge;             module load  openjdk/11+28; 
             envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
             -gmx {input.db} -rnk {input.rnk} -rpt_label {wildcards.db} \
             -norm meandiv -nperm 1000  -scoring_scheme classic \
             -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
             -set_max 15000 -set_min 15 \
-            -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &> {log}""")
+            -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &>> {log}""")
 
 # todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
 
@@ -810,7 +797,7 @@ rule reset:
         "log/reset.log"
     run:
         shell("rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.*/ gsea.tar.gz \
-        lsf.log Log.out meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count log nohup.out DESeq2 gsea &> {log}")
+        lsf.log Log.out meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea &> {log}")
 
 rule test:
     input:
