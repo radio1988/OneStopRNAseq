@@ -391,7 +391,7 @@ min_rowsum <- 10
 expression_filter <- rowSums(cts) >= min_rowsum  # default 10
 min_colsum <- 2e4
 sample_filter <- colSums(cts) >= min_colsum
-if (sum(expression_filter) > 2 & sum(sample_filter >= 4)){
+if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
   cts <- cts[expression_filter, sample_filter]
   df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
   paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples")
