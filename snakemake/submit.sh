@@ -1,21 +1,22 @@
 #!/bin/bash
 # run with: nohup bash submit.sh &
 
-module load singularity/singularity-current
-conda activate osr
+module load singularity/singularity-current > nohup.out   2>&1 
+conda activate osr >> nohup.out  2>&1 
 
 snakemake -p -k --jobs 999 \
---use-singularity --use-conda --latency-wait 300 \
---cluster 'bsub -q short -o lsf.log -R "rusage[mem={params.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00'
-
+--use-singularity \
+--use-conda \
+--latency-wait 300 \
+--cluster 'bsub -q short -o lsf.log -R "rusage[mem={params.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00' >> nohup.out  2>&1 
 
 # Rui Note: 2020/06/03/18:21
 # Most works with singularity
-# rMAT needs py2.7, thus --use-conda necessary
+# rMAT needs py2.7, thus --use-conda necessary, skip to remove conda download overhead
 
-snakemake --report report.html 
+snakemake --report report.html > report.log  2>&1
 
-tar zcvf  gsea.tar.gz gsea/
+[ -d 'gsea/' ] && tar zcvf  gsea.tar.gz gsea/ > gsea.tar.gz.log && rm -f gsea.tar.gz.log
 
 
 ## Handy commands for development
