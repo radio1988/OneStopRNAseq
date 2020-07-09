@@ -186,6 +186,7 @@ rule targets:
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
             else "Workflow_DAG.all.svg",
         dag="Workflow_DAG.all.svg", # create DAG
+#        organize_results="log/oranize_results.finished",
     params:
         mem_mb="1000"
 
@@ -233,14 +234,14 @@ rule multiqc:
         r2=expand("fastqc/details/{sample}.R2_fastqc.html", sample=SAMPLES) 
             if config["PAIR_END"] 
             else expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES), # trick snakemake to skip r2
+    output:
+        "fastqc/multiqc_report.html"
     priority:
         10
     params:
         mem_mb="2000"
     threads:
         1
-    output:
-        "fastqc/multiqc_report.html"
     log:
         "log/multiqc/multiqc.log"
     benchmark:
@@ -254,7 +255,7 @@ rule star_idx:
         fa=GENOME,
         gtf=GTF,
     output:
-        directory(INDEX)
+        INDEX+"/SAindex"
     params:
         mem_mb="6000"
     threads:
@@ -265,19 +266,21 @@ rule star_idx:
         "log/star_idx/star_idx.tsv"
     shell:
         """
-        mkdir -p {INDEX}
+        #mkdir -p {INDEX}
+        whoami > {log}
+        which STAR >> {log}
 
         STAR --runThreadN {threads} \
         --runMode genomeGenerate \
         --genomeDir {INDEX} \
         --genomeFastaFiles {input.fa} \
-        --sjdbGTFfile {input.gtf} &> {log}
+        --sjdbGTFfile {input.gtf} &>> {log}
         """
 
 
 rule star_map:
     input:
-        index=INDEX,
+        index=INDEX+"/SAindex",
         gtf=GTF,
         r1="fastq/{sample}.R1.fastq.gz" 
             if config["PAIR_END"] 
@@ -286,7 +289,7 @@ rule star_map:
             if config["PAIR_END"] 
             else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
     output:
-        bam=temp("mapped_reads/{sample}.bam")
+        bam="mapped_reads/{sample}.bam"
     params:
         mem_mb="3000",  # todo auto adjust based on {threads}
         reads="fastq/{sample}.R1.fastq.gz fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
@@ -296,9 +299,10 @@ rule star_map:
         "log/mapped_reads/{sample}.star.log"
     benchmark:
         "log/mapped_reads/{sample}.star.tsv"
-    run:
+    shell:
         # align; rename
-        shell("""STAR --runThreadN {threads} \
+        """which STAR > {log}
+        STAR --runThreadN {threads} \
         --genomeDir {INDEX} \
         --sjdbGTFfile {input.gtf} \
         --readFilesCommand zcat \
@@ -319,12 +323,12 @@ rule star_map:
         --outSAMtype BAM Unsorted \
         --quantMode GeneCounts \
         --outReadsUnmapped Fastx \
-        &> {log}
+        >> {log} 2>&1
 
-        mv mapped_reads/{wildcards.sample}*.out.bam mapped_reads/{wildcards.sample}.bam
-        
+        mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam
         pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
-        """)
+        
+        """
 
         # test
         # STAR --runThreadN 4 --genomeDir genome/mm10_chr19/osr_idx/ --sjdbGTFfile genome/mm10_chr19/genecode.vM21.chr19.gtf --readFilesCommand zcat --readFilesIn fastq/KO_D0_1_S2.R1.fastq.gz fastq/KO_D0_1_S2.R2.fastq.gz 
@@ -336,12 +340,8 @@ rule samtools_sort:
         "mapped_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam"
-    # conda:
-    #   "envs/samtools.yaml"
-    # group:
-    #     "sort"
     params:
-        mem_mb="3000"
+        mem_mb="3100"
     threads:
         2
     log:
@@ -349,7 +349,7 @@ rule samtools_sort:
     benchmark:
         "log/samtools_sort/{sample}.sort.tsv"
     shell:
-        "samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam &> {log}"
+        "samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam > {log} 2>&1"
 
 
 rule samtools_index:
@@ -357,10 +357,6 @@ rule samtools_index:
         "sorted_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam.bai"
-    # conda:
-    #   "envs/samtools.yaml"
-    # group:
-    #     "sort"
     params:
         mem_mb="3000"
     threads:
@@ -410,6 +406,7 @@ rule bam_qc:
 
 
 rule bamCoverage:
+    # osr
     input:
         bam="sorted_reads/{sample}.bam",
         bai="sorted_reads/{sample}.bam.bai"
@@ -456,8 +453,6 @@ rule feature_count:
     output:
         count="feature_count/counts.s{strand}.strict.txt" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt",
         summary="feature_count/counts.s{strand}.strict.txt.summary" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt.summary"
-    # conda:
-    #   "envs/subread.yaml"  # not compatible with 'run'
     priority:
         100
     params:
@@ -572,6 +567,8 @@ rule DESeq2:
     output:
         "DESeq2/DESeq2.html",
         expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
+    container:
+        "envs/hand_sandbox.simg"
     # conda:
     #     "envs/r.yaml"
     params:
@@ -583,8 +580,6 @@ rule DESeq2:
         meta=config["META"],
         cont=config["CONTRAST_DE"],
         o="'../DESeq2/DESeq2.html'"
-    container:
-        "envs/hand_sandbox.simg"
     priority: 
         100
     threads:
@@ -630,18 +625,20 @@ rule GSEA:
         "log/gsea/{contrast}.{db}.tsv"
     # run:
     #     print('test')
-    run:
-        shell("echo {params.label_db} > {log}")
-        shell("mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}")
+    shell:
+        """echo {params.label_db} > {log}
+        
+        mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}
+
         # to upper letter for all gene_names in RNK file (todo: toupper for user defined non-human GSEA db)
-        shell("python script/capslock.py {input.rnk} &>> {log}")
-        shell("""#module purge;             module load  openjdk/11+28; 
-            envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
-            -gmx {input.db} -rnk {input.rnk} -rpt_label {wildcards.db} \
-            -norm meandiv -nperm 1000  -scoring_scheme classic \
-            -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
-            -set_max 15000 -set_min 15 \
-            -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &>> {log}""")
+        python script/capslock.py {input.rnk} &>> {log}
+
+        envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
+        -gmx {input.db} -rnk {input.rnk} -rpt_label {wildcards.db} \
+        -norm meandiv -nperm 1000  -scoring_scheme classic \
+        -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
+        -set_max 15000 -set_min 15 \
+        -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &>> {log}"""
 
 # todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
 
@@ -792,21 +789,23 @@ rule create_dag:
         "snakemake --dag targets | dot -Tsvg > {output} 2> {log}"
 
 
+# rule organize_results:
+#     input:
+#         mapping=expand("mapped_reads/{sample}.bam", sample=config['SAMPLES']),
+#     output:
+#         touch("log/oranize_results.finished")
+#     params:
+#         mem_mb="1000"
+#     log:
+#         "log/organize_results.log"
+#     shell:
+#         "gzip -f mapped_reads/*.Unmapped.out.mate*"
+# 
+
 rule reset:
     log: 
         "log/reset.log"
-    run:
-        shell("rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.*/ gsea.tar.gz \
-        lsf.log Log.out meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea &> {log}")
-
-rule test:
-    input:
-        "config.yaml"
-    output:
-        "test.out"
-    params:
-        cmd=config['MAX_FDR']
     shell:
-        'echo test'
-        'echo {params.cmd}'
+        """rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.*/ gsea.tar.gz \
+        lsf.log Log.out meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea &> {log} """
 
