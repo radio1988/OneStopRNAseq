@@ -86,14 +86,38 @@ nohup submit.sh &
 
 ## Start from RNK
 
-## Caveats
-- must copy script folder to let DESeq2 save results into the correct location
-- must use --use-singularity and --use-conda, and rmat conda env takes some time to init, singularity 4GB to download
+
+# Development Note
+## Workflow
+- develop in HPCC: `/project/umw_mccb/OneStopRNAseq/rui/develop/`
+	- mount folder to Mac for GUI
+	- use u18 to update simg
+	- git commit all function level changes
+	- delete Mac version (Mac support for STAR is bad)
+- deliver to Kai: `/project/umw_mccb/OneStopRNAseq/rui/delivery`
 
 
-## todo:
+## Caveats and todo
 - an easier way to link and run workflow: now script/ needs cp 
 - handle gsea err
+- Read Length detection from BAM 
+- must copy script folder to let DESeq2 save results into the correct location
+- must use --use-singularity and --use-conda; rmat conda env takes some time to init; 
+- singularity 4GB to download
+- Mac can't run STAR, evey tried singularity image build from u18
+- √ osr and singularity(2.7.1) both have STAR, conda STAR(2.7.4) bad: now use conda
+
+## Todo
+1. DEXseq
+2. TE
+3. add custom genome and gtf
+
+1. GSEA upload, auto-capslock
+2. rMATS filter
+3. sample names can't be numbers, must be strings
+4. √ some rules, e.g. DEseq2 not using singularity image
+
+
 
 ## Log:
 - test from FQ, with `READ_LENGTH: 100`  `STRAND: [0, 1, 2]`
