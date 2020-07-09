@@ -1,7 +1,7 @@
 ---
 title: "DE Analysis and Standard Visualizations"
 author: "RuiLi, Kai Hu"
-date: "06/18/2020"
+date: "07/09/2020"
 output:
   html_document:
     toc: yes
@@ -11,7 +11,7 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   indfilter: FALSE
-  countFile: "../meta/COUNT.txt"
+  countFile: "../feature_count/counts.strict.txt"
   annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.de.xlsx"
@@ -352,6 +352,7 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     n1 <- dim(resdata.sig)[2]
     n2 <- dim(norm_exp)[2]
     zscore.df <- zscore(resdata.sig[, (n1-n2+1):n1])
+    rownames(zscore.df) <- resdata.sig[,1]
     colnames(zscore.df) <- gsub (":TPM", "", colnames(zscore.df))
     Heatmap(zscore.df, nclass = 2,
             fname = paste(name, "heatmap", sep="."),

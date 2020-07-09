@@ -1,7 +1,0 @@
-1. DEXseq
-2. TE
-
-
-1. GSEA upload, auto-capslock
-2. rMATS filter
-3. sample names can't be numbers, must be strings
