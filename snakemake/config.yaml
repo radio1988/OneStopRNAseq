@@ -16,15 +16,27 @@ SAMPLES:
 PAIR_END: True  # True/False
 
 GENOME: genome/mm10_chr19/mm10.chr19.fa
-#/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
+#genome/mm10_chr19/mm10.chr19.fa
 #/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/hg38.primary.fa
-INDEX: genome/mm10_chr19/mm10.chr19.star_idx
-#/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/star_idx/
+#/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
+#/project/umw_mccb/Rui/genomes/yeast/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
+
+INDEX: genome/mm10_chr19/star_idx
+#genome/mm10_chr19/star_idx
+#/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/star_idx
+#/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/star_idx
+#/project/umw_mccb/Rui/genomes/yeast/star_idx
+
 GTF: genome/mm10_chr19/gencode.vM21.chr19.gtf
-#    /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v29.primary_assembly.annotation.fixed.gtf
+#genome/mm10_chr19/gencode.vM21.chr19.gtf
+#/project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v29.primary_assembly.annotation.fixed.gtf
+#/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.gtf
+#/project/umw_mccb/Rui/genomes/yeast/Saccharomyces_cerevisiae.R64-1-1.90.gtf
+
 ANNO_TAB: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt
 # human: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.v29.primary_assembly.anno.txt
 # mouse: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt
+# yeast: https://raw.githubusercontent.com/hukai916/Collections/master/Saccharomyces_cerevisiae.R64-1-1.90.anno.txt
 # view all options from: https://github.com/hukai916/Collections
 
 STRAND: [0, 1, 2]  # can input [0, 1, 2] to get all possible results, then workflow auto inferrs the correct one 
@@ -56,7 +68,7 @@ GSEA_DBS:  # not implemented
 
 
 # Starting point
-START: COUNT # FASTQ, BAM, COUNT, RNK
+START: FASTQ # FASTQ, BAM, COUNT, RNK
 
 # Only if start from COUNT
 COUNT_FILE: meta/COUNT.xlsx  # must have same format as feature_count output c1-c7 meta, c7- count
