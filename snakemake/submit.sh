@@ -1,8 +1,9 @@
 #!/bin/bash
 # run with: nohup bash submit.sh &
 
+module purge
 module load singularity/singularity-current > nohup.out   2>&1 
-conda activate osr >> nohup.out  2>&1 
+source activate osr >> nohup.out  2>&1 
 
 snakemake -p -k --jobs 999 \
 --use-singularity \
@@ -16,7 +17,7 @@ snakemake -p -k --jobs 999 \
 
 snakemake --report report.html > report.log  2>&1
 
-[ -d 'gsea/' ] && tar zcvf  gsea.tar.gz gsea/ > gsea.tar.gz.log && rm -f gsea.tar.gz.log
+[ -d 'gsea/' ] && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz
 
 
 ## Handy commands for development
