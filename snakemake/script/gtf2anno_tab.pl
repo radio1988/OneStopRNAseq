@@ -17,8 +17,12 @@ while(<GTF>){
 
     my($name) = $_ =~ /gene_name([^;]+);/;
     my($id) = $_ =~ /gene_id ([^;]+);/;
-    my($type) = $_ =~ /gene_biotype ([^;]+);/;
+    my($type) = $_ =~ /gene_type ([^;]+);/;  # change: now for mouse gencode mm10
     if (length($type) == 0){$type = "-"}
+
+    $name =~ s/^\s+//;
+    $id =~ s/^\s+//;
+    $type =~ s/^\s+//;
 
     $id2name{$id} = "$name\t$type";
 }
