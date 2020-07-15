@@ -11,8 +11,9 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   indfilter: FALSE
-  countFile: "../feature_count/counts.strict.txt"
-  annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
+  countFile: "../feature_count/TE_included.txt"
+  #annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
+  annoFile: '/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt.gz'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.de.xlsx"
 ---
@@ -374,6 +375,10 @@ colnames(df) <- gsub("\\.bam$", "", colnames(df))
 colnames(df) <- gsub("sorted_reads.", "", colnames(df))
 colnames(df) <- gsub("mapped_reads.", "", colnames(df))
 
+# convert to int
+df[, 6:ncol(df)] <- sapply(df[, 6:ncol(df)], as.integer)
+
+
 # get cts
 cts <- df[, 6:ncol(df)]
 cts <- as.matrix(cts)
@@ -419,7 +424,12 @@ getAnnotation <- function(urlpath) {
 }
 
 paste("Getting data from", annoFile)
-anno <- getAnnotation(annoFile)
+
+if (grepl('https://', annoFile)){
+  anno <- getAnnotation(annoFile)
+}else{
+  anno <- read.table(annoFile, sep = "\t", header = T)
+}
 print("Dimention of annotation table: ")
 dim(anno)
 head(anno)

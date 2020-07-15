@@ -185,6 +185,9 @@ rule targets:
         rMATS=expand("rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt", ascn=range(ASCN))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
             else "Workflow_DAG.all.svg",
+        SalmonTE="SalmonTE_output/EXPR.csv"
+            if config['TE_ANALYSIS']
+            else "Workflow_DAG.all.svg",
         dag="Workflow_DAG.all.svg", # create DAG
 #        organize_results="log/oranize_results.finished",
     params:
@@ -279,6 +282,7 @@ rule star_idx:
 
 
 rule star_map:
+    # use conda star2.7.4, good on HPC, bad on Mac
     input:
         index=INDEX+"/SAindex",
         gtf=GTF,
@@ -341,7 +345,7 @@ rule samtools_sort:
     output:
         "sorted_reads/{sample}.bam"
     params:
-        mem_mb="3100"
+        mem_mb="4000"
     threads:
         2
     log:
@@ -538,12 +542,63 @@ rule strand_detection:
         "script/strandness_detection.py" # todo: improvement needed
 
 
+
+
+
+rule SalmonTE:
+    # only start from Fastq
+    input:
+        r1=expand("fastq/{sample}.R1.fastq.gz", sample=SAMPLES),
+        r2=expand("fastq/{sample}.R2.fastq.gz", sample=SAMPLES)
+    output:
+        "SalmonTE_output/EXPR.csv"
+    params:
+        mem_mb="8000",
+        ref=config['TE_REFERENCE']
+    threads:
+        4
+    log:
+        'log/SalmonTE/salmonte_count.log'
+    benchmark:
+        'log/SalmonTE/salmonte_count.tsv'
+    shell:
+        """
+        python envs/SalmonTE/SalmonTE.py quant \
+        --reference={params.ref} --exprtype=count \
+        --num_threads={threads} \
+        {input.r1} {input.r2}
+        """
+
+rule Merge_TE_and_Gene:
+    input:
+        gene="feature_count/counts.strict.txt",
+        te="SalmonTE_output/EXPR.csv"
+    output:
+        "feature_count/TE_included.txt"
+    params:
+        mem_mb="8000"
+    threads:
+        1
+    log:
+        "log/merge_te_and_gene/merge_te_and_gene.log"
+    benchmark:
+        "log/merge_te_and_gene/merge_te_and_gene.tsv"
+    run:
+        """
+        python script/merge_featureCount_and_SalmonTE.py \
+        {input.gene} {input.te} {output}
+        """
+
+
 def DESeq2_input(config):
     if config["START"] in ["FASTQ", "BAM"]:
         if config["MODE"] == "strict":
-            return("feature_count/counts.strict.txt")
+            if config["TE_ANALYSIS"]:
+                return("feature_count/TE_included.txt")
+            else:
+                return("feature_count/counts.strict.txt")
         elif config["MODE"] == "liberal":
-            return("feature_count/counts.liberal.txt")
+            return("feature_count/counts.liberal.txt") # todo add TE support
         else:
             raise Exception("START config not valid")
     elif config["START"] in ["COUNT"]:
@@ -558,7 +613,6 @@ def DESeq2_input(config):
             
     else:
         return("placeholder" )
-
 
 rule DESeq2:
     # todo: complicated contrasts
@@ -803,9 +857,9 @@ rule create_dag:
 # 
 
 rule reset:
-    log: 
-        "log/reset.log"
     shell:
-        """rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.*/ gsea.tar.gz \
-        lsf.log Log.out meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea &> {log} """
+        """
+        rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.*/ gsea.tar.gz SalmonTE_output \
+        lsf.log Log.out report.log meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea
+        """
 
