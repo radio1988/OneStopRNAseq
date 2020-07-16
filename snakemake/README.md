@@ -108,14 +108,17 @@ nohup submit.sh &
 - √ osr and singularity(2.7.1) both have STAR, conda STAR(2.7.4) bad: now use conda
 
 ## Todo
-1. DEXseq
-2. TE
-3. add custom genome and gtf
+- DESeq2 bug: no p-value histogram after the first one, just output as pdf?
+- upgrade the latest GenCode for Human and Mouse, Add TE to anno file
+- add custom genome and gtf
+- rMATS in singularity to speed up overhead
+- SalmonTE in github? in singularity? add installment code?
 
-1. GSEA upload, auto-capslock
+1. GSEA-DB upload
 2. rMATS filter
 3. sample names can't be numbers, must be strings
-4. √ some rules, e.g. DEseq2 not using singularity image
+
+
 
 
 
