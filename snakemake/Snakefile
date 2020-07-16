@@ -566,7 +566,7 @@ rule SalmonTE:
         python envs/SalmonTE/SalmonTE.py quant \
         --reference={params.ref} --exprtype=count \
         --num_threads={threads} \
-        {input.r1} {input.r2}
+        {input.r1} {input.r2} > {log} 2>&1
         """
 
 rule Merge_TE_and_Gene:
@@ -650,7 +650,7 @@ rule DESeq2:
         annoFile=\'{params.anno_tab}\', \
         metaFile=\'../{params.meta}\', \
         contrastFile=\'../{params.cont}\'           ), \
-        output_file={params.o})" &> {log}'
+        output_file={params.o})" > {log} 2>&1'
 
 
 rule GSEA:
