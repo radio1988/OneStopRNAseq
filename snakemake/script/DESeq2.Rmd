@@ -13,7 +13,7 @@ params:
   indfilter: FALSE
   countFile: "../feature_count/TE_included.txt"
   #annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
-  annoFile: '/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt.gz'
+  annoFile: '/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.de.xlsx"
 ---
@@ -208,8 +208,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                   cluster_cols = F, 
                   border_color = NA,
                   cutree_rows = nclass, 
-                  show_rownames = F, 
-                  filename = "test.pdf")
+                  show_rownames = F)
 
     ## Print out gene classification (https://www.biostars.org/p/287512/)
     # cutree manually
@@ -420,14 +419,16 @@ boxplot(log10(cts+1), las=2, main = "library size after filtering")
 getAnnotation <- function(urlpath) {
   tmp <- tempfile()
   download.file(urlpath, destfile = tmp, method = 'auto')
-  return(read.table(tmp, header = TRUE))
+  return(read.table(tmp, sep="\t", header = TRUE))
 }
 
 paste("Getting data from", annoFile)
 
 if (grepl('https://', annoFile)){
+  print("downloading remote annoFile")
   anno <- getAnnotation(annoFile)
 }else{
+  print("reading local annoFile")
   anno <- read.table(annoFile, sep = "\t", header = T)
 }
 print("Dimention of annotation table: ")

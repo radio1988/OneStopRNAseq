@@ -33,8 +33,9 @@ GTF: genome/mm10_chr19/gencode.vM21.chr19.gtf
 #/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.gtf
 #/project/umw_mccb/Rui/genomes/yeast/Saccharomyces_cerevisiae.R64-1-1.90.gtf
 
-ANNO_TAB: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt.gz
-# https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt
+ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/gencode.mm10.vM21.annotation.txt
+# mouse with TE: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/gencode.mm10.vM21.annotation.txt
+# mouse with TE: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt # reading error
 # human: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.v29.primary_assembly.anno.txt
 # mouse: https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt
 # yeast: https://raw.githubusercontent.com/hukai916/Collections/master/Saccharomyces_cerevisiae.R64-1-1.90.anno.txt
@@ -100,4 +101,5 @@ TE_REFERENCE: mm # mm, hs, dm, dr
 # mm : Mus musculus
 # dm : Drosophila melanogaster
 # dr : Danio rerio
+
 

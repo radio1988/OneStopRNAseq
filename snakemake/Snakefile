@@ -583,10 +583,10 @@ rule Merge_TE_and_Gene:
         "log/merge_te_and_gene/merge_te_and_gene.log"
     benchmark:
         "log/merge_te_and_gene/merge_te_and_gene.tsv"
-    run:
+    shell:
         """
         python script/merge_featureCount_and_SalmonTE.py \
-        {input.gene} {input.te} {output}
+        {input.gene} {input.te} {output} > {log} 2>&1
         """
 
 
@@ -637,7 +637,7 @@ rule DESeq2:
     priority: 
         100
     threads:
-        1
+        2
     log:
         "log/DESeq2/DESeq2.log"
     benchmark:
@@ -732,6 +732,7 @@ rule GSEA:
 #             out.write(str(median_length))
 
 rule read_length_detection_bam:
+    # todo: not finished yet
     input:
         expand("bam_qc/stats/{sample}.stats.txt", sample=SAMPLES)
             if config['START'] in ["FASTQ", "BAM"]
