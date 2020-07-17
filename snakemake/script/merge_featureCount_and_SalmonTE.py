@@ -40,7 +40,8 @@ sf_file = find_sf(os.path.dirname(sys.argv[2]))
 sf = pd.read_csv(sf_file, sep="\t")
 empty.loc[:, "Length"] = sf.loc[:, "Length"]
 te = pd.concat([te_anno, empty, te_num], axis=1)
-
+print("SalmonTE: ", te.columns)
+print("featureCounts: ", genes.columns)
 te.columns = genes.columns
 
 # Merge and Output

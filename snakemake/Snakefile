@@ -164,30 +164,43 @@ rule targets:
         fastqc=("fastqc/multiqc_report.html" 
             if config["START"] == "FASTQ" 
             else "Workflow_DAG.all.svg"),
+
         bam_qc=(expand("bam_qc/samstat/{sample}.bam.samstat.html", sample=SAMPLES) 
             if config["START"] in ["FASTQ", "BAM"]  
             else "Workflow_DAG.all.svg"),
+
+        QoRTs=expand("bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK", sample=SAMPLES),
+
+        QoRTs_MultiPlot="bam_qc/QoRTs_MultiPlot/plot-basic.pdf",
+
         bamCoverage=(expand("bigWig/{sample}.{mode}.cpm.bw", sample=SAMPLES, mode=MODE) 
             if config["START"] in ["FASTQ", "BAM"]  
             else "Workflow_DAG.all.svg"),
+
         feature_count_strict=(expand("feature_count/counts.s{strand}.strict.txt", strand=STRAND)
             if config["START"] in ["FASTQ", "BAM"] and config["MODE"] == "strict"
             else "Workflow_DAG.all.svg"),
+
         feature_count_liberal=(expand("feature_count/counts.s{strand}.liberal.txt", strand=STRAND)       
             if config["START"] in ["FASTQ", "BAM"] and config["MODE"] == "liberal"
             else "Workflow_DAG.all.svg"),
+
         DESeq2="DESeq2/DESeq2.html"
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else "Workflow_DAG.all.svg",
+
         GSEA = expand("gsea/{contrast}/{db}.finished", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
-        rMATS=expand("rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt", ascn=range(ASCN))
+
+        rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
             else "Workflow_DAG.all.svg",
+
         SalmonTE="SalmonTE_output/EXPR.csv"
             if config['TE_ANALYSIS']
             else "Workflow_DAG.all.svg",
+
         dag="Workflow_DAG.all.svg", # create DAG
 #        organize_results="log/oranize_results.finished",
     params:
@@ -408,6 +421,50 @@ rule bam_qc:
         wait
         """
 
+rule QoRTs:
+    input:
+        bam="sorted_reads/{sample}.bam",
+        gtf=config['GTF']
+    output:
+        "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
+    container:
+        "envs/hand_sandbox.simg"
+    params:
+        mem_mb="16600"
+        # todo: add strand support
+    threads:
+        1
+    log:
+        "log/QoRTs/QoRTs.{sample}.log"
+    benchmark:
+        "log/QoRTs/QoRTs.{sample}.tsv"
+    shell:
+        """
+        mkdir -p bam_qc/
+        mkdir -p bam_qc/QoRTs/
+        java -Xmx16G -jar envs/hartleys-QoRTs-099881f/QoRTs.jar QC \
+        {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
+        """
+
+rule QoRTs_MultiPlot:
+    input:
+        expand("bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK", sample=SAMPLES)
+    output:
+        "bam_qc/QoRTs_MultiPlot/plot-basic.pdf"
+    container:
+        "envs/hand_sandbox.simg"
+    params:
+        mem_mb="8000"
+    threads:
+        2
+    log:
+        "log/QoRTs/multiplot.log"
+    benchmark:
+        "log/QoRTs/multiplot.tsv"
+    shell:
+        """
+        Rscript script/QoRT.R
+        """
 
 rule bamCoverage:
     # osr
@@ -543,6 +600,27 @@ rule strand_detection:
 
 
 
+rule SalmonTE_prep:
+    input:
+        r1=expand("fastq/{sample}.R1.fastq.gz", sample=SAMPLES),
+        r2=expand("fastq/{sample}.R2.fastq.gz", sample=SAMPLES)    
+    output:
+        r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
+        r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
+    params:
+        mem_mb="1000"
+    threads:
+        1
+    shell:
+        """
+        rm -rf fastq_salmon
+        mkdir -p fastq_salmon
+        cd fastq_salmon/
+        for f in ../fastq/*gz;do ln -s $f;done
+        rename .R1 _1 *
+        rename .R2 _2 *
+        cd ..
+        """
 
 
 rule SalmonTE:
@@ -553,22 +631,16 @@ rule SalmonTE:
     output:
         "SalmonTE_output/EXPR.csv"
     params:
-        mem_mb="8000",
+        mem_mb="3000",
         ref=config['TE_REFERENCE']
     threads:
-        4
+        12
     log:
         'log/SalmonTE/salmonte_count.log'
     benchmark:
         'log/SalmonTE/salmonte_count.tsv'
     shell:
         """
-        mkdir -p fastq_salmon
-        cd fastq_salmon/
-        for f in ../fastq/*gz;do ln -s $f;done
-        rename .R1 _1 *
-        rename .R2 _2 *
-        cd ..
         python envs/SalmonTE/SalmonTE.py quant \
         --reference={params.ref} --exprtype=count \
         --num_threads={threads} \
@@ -801,7 +873,7 @@ rule rMATS:
         length_file= "Snakefile" if config['READ_LENGTH'] else "meta/read_length.txt" , # Snakefile is placeholder by-passing read_length detection
         strand_file="meta/strandness.detected.txt" if len(config['STRAND']) > 1 else "Snakefile" # placeholder to skip this for dag creation
     output:
-        "rMATS.{ascn}/MATS_output/RI.MATS.ReadsOnTargetAndJunctionCounts.txt" # todo: entire list, or folder
+        "rMATS.{ascn}/summary.txt"
     conda:
       "envs/rmats.yaml"
     params:
