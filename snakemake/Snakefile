@@ -465,7 +465,8 @@ rule QoRTs_MultiPlot:
         "log/QoRTs/multiplot.tsv"
     shell:
         """
-        Rscript script/QoRT.R # needs QoRT package in R
+        python script/meta_to_decoder.py &> {log}
+        Rscript script/QoRT.R &>> {log}# needs QoRT package in R
         """
 
 rule bamCoverage:
@@ -871,6 +872,7 @@ rule rMATS:
         b1=lambda wildcards: B1S[int(wildcards['ascn'])],
         b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
+        # todo: might have bugs: rMATS will re-run if Snakefile got updated
         length_file= "Snakefile" if config['READ_LENGTH'] else "meta/read_length.txt" , # Snakefile is placeholder by-passing read_length detection
         strand_file="meta/strandness.detected.txt" if len(config['STRAND']) > 1 else "Snakefile" # placeholder to skip this for dag creation
     output:
@@ -944,6 +946,7 @@ rule reset:
     shell:
         """
         rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.*/ gsea.tar.gz SalmonTE_output \
-        lsf.log Log.out report.log meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea
+        lsf.log Log.out report.log meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea \
+        meta/decoder.txt
         """
 
