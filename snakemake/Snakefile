@@ -169,9 +169,13 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM"]  
             else "Workflow_DAG.all.svg"),
 
-        QoRTs=expand("bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK", sample=SAMPLES),
+        QoRTs=(expand("bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK", sample=SAMPLES)
+            if config["START"] in ["FASTQ", "BAM"]  
+            else "Workflow_DAG.all.svg"),
 
-        QoRTs_MultiPlot="bam_qc/QoRTs_MultiPlot/plot-basic.pdf",
+        QoRTs_MultiPlot=("bam_qc/QoRTs_MultiPlot/plot-basic.pdf"
+            if config["START"] in ["FASTQ", "BAM"]  
+            else "Workflow_DAG.all.svg"),
 
         bamCoverage=(expand("bigWig/{sample}.{mode}.cpm.bw", sample=SAMPLES, mode=MODE) 
             if config["START"] in ["FASTQ", "BAM"]  
@@ -197,9 +201,9 @@ rule targets:
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
             else "Workflow_DAG.all.svg",
 
-        SalmonTE="SalmonTE_output/EXPR.csv"
-            if config['TE_ANALYSIS']
-            else "Workflow_DAG.all.svg",
+        SalmonTE=("SalmonTE_output/EXPR.csv"
+            if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
+            else "Workflow_DAG.all.svg"),
 
         dag="Workflow_DAG.all.svg", # create DAG
 #        organize_results="log/oranize_results.finished",
@@ -669,7 +673,7 @@ rule Merge_TE_and_Gene:
 def DESeq2_input(config):
     if config["START"] in ["FASTQ", "BAM"]:
         if config["MODE"] == "strict":
-            if config["TE_ANALYSIS"]:
+            if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
                 return("feature_count/TE_included.txt")
             else:
                 return("feature_count/counts.strict.txt")
@@ -686,7 +690,6 @@ def DESeq2_input(config):
             return("meta/COUNT.xlsx.txt")
         else:
             raise NameError('COUNT file not txt nor xlsx format, Exit')
-            
     else:
         return("placeholder" )
 
