@@ -427,8 +427,6 @@ rule QoRTs:
         gtf=config['GTF']
     output:
         "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
-    container:
-        "envs/hand_sandbox.simg"
     params:
         mem_mb="16600"
         # todo: add strand support
@@ -463,7 +461,7 @@ rule QoRTs_MultiPlot:
         "log/QoRTs/multiplot.tsv"
     shell:
         """
-        Rscript script/QoRT.R
+        Rscript script/QoRT.R # needs QoRT package in R
         """
 
 rule bamCoverage:
@@ -891,9 +889,13 @@ rule rMATS:
     benchmark:
         "log/rMATS/rMATS.{ascn}.tsv"
     shell:
-        "python2 envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1} -b2 {params.b2} \
-         -gtf {input.gtf} -o rMATS.{wildcards.ascn} \
-         -t {params.type} -len {params.length} -c 0.1 -analysis {params.analysis} -libType {params.strandness} &> {log}"
+        """
+        rm -rf rMATS.{wildcards.ascn}
+        mkdir -p rMATS.{wildcards.ascn}
+        python2 envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1} -b2 {params.b2} \
+        -gtf {input.gtf} -o rMATS.{wildcards.ascn} \
+        -t {params.type} -len {params.length} -c 0.1 -analysis {params.analysis} -libType {params.strandness} &> {log}
+        """
         # conda: snakemake --use-conda -p -j 5 rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt
 
         # python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 sorted_reads/KO_D8_1_S6.bam,sorted_reads/KO_D8_2_S12.bam,sorted_reads/WT_D8_1_S5.bam,sorted_reads/WT_D8_2_S11.bam -b2  sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam,sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam -gtf genome/mm10_chr19/genecode.vM21.chr19.gtf -o rMATS -t paired -len 100 -c 0.0001 -analysis paired -libType fr-unstranded
