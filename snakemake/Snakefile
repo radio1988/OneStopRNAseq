@@ -548,8 +548,8 @@ rule strand_detection:
 rule SalmonTE:
     # only start from Fastq
     input:
-        r1=expand("fastq/{sample}.R1.fastq.gz", sample=SAMPLES),
-        r2=expand("fastq/{sample}.R2.fastq.gz", sample=SAMPLES)
+        r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
+        r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
     output:
         "SalmonTE_output/EXPR.csv"
     params:
@@ -563,6 +563,12 @@ rule SalmonTE:
         'log/SalmonTE/salmonte_count.tsv'
     shell:
         """
+        mkdir -p fastq_salmon
+        cd fastq_salmon/
+        for f in ../fastq/*gz;do ln -s $f;done
+        rename .R1 _1 *
+        rename .R2 _2 *
+        cd ..
         python envs/SalmonTE/SalmonTE.py quant \
         --reference={params.ref} --exprtype=count \
         --num_threads={threads} \
