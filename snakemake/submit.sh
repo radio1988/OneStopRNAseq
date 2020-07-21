@@ -17,7 +17,7 @@ snakemake -p -k --jobs 999 \
 
 snakemake --report report.html > report.log  2>&1
 
-[ -d 'gsea/' ] && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz
+bsub -W 4:00 -q short "[ -d 'gsea/' ] && rm -f gsea/gsea.tar.gz && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz && mv gsea.tar.gz gsea"
 
 
 ## Handy commands for development
