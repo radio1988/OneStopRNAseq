@@ -2,11 +2,14 @@
 # run with: nohup bash submit.sh &
 
 module purge
-module load singularity/singularity-2.5.2 > nohup.out   2>&1 
-#module load singularity/singularity-current > nohup.out   2>&1 
+module load singularity/singularity-current > nohup.out   2>&1 
+#module load graphviz/2.26.0  fastqc/0.11.5 # temp fix
 source activate osr >> nohup.out  2>&1 
 
+
+# singularity > envmodules > conda > osr
 snakemake -p -k --jobs 999 \
+--use-envmodules \
 --use-singularity \
 --use-conda \
 --latency-wait 300 \

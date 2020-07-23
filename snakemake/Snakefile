@@ -238,13 +238,13 @@ rule fastqc:
         "log/fastqc/{sample}.log"
     benchmark:
         "log/fastqc/{sample}.tsv"
-    run:
-        shell("mkdir -p fastqc && mkdir -p fastqc/details")
-        if config["PAIR_END"]:
-            shell("fastqc -t {threads} {input} -o fastqc/details &> {log}")
-        else:
-            shell("fastqc -t {threads} {input.r1} -o fastqc/details &> {log}")
-
+    container:
+        "envs/hand_sandbox.simg"
+    envmodules:
+        "fastqc/0.11.5"
+    shell:
+        "mkdir -p fastqc && mkdir -p fastqc/details && "
+        "fastqc -t {threads} {input} -o fastqc/details &> {log}"
 
 rule multiqc:
     input:
@@ -266,6 +266,8 @@ rule multiqc:
         "log/multiqc/multiqc.log"
     benchmark:
         "log/multiqc/multiqc.tsv"
+    container:
+        "envs/hand_sandbox.simg"
     shell:
         "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &> {log}"
 
@@ -284,6 +286,10 @@ rule star_idx:
         "log/star_idx/star_idx.log"
     benchmark:
         "log/star_idx/star_idx.tsv"
+    #container:
+    #    "envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
+    envmodules:
+        "star/2.7.5a"
     shell:
         """
         #mkdir -p {INDEX}
@@ -320,6 +326,10 @@ rule star_map:
         "log/mapped_reads/{sample}.star.log"
     benchmark:
         "log/mapped_reads/{sample}.star.tsv"
+    #container:
+    #    "envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
+    envmodules:
+        "star/2.7.5a"
     shell:
         # align; rename
         """which STAR > {log}
@@ -365,6 +375,10 @@ rule samtools_sort:
         mem_mb="4000"
     threads:
         2
+    container:
+        "envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
+    envmodules:
+        "samtools/1.9"
     log:
         "log/samtools_sort/{sample}.sort.log"
     benchmark:
@@ -386,6 +400,10 @@ rule samtools_index:
         "log/samtools_index/{sample}.index.log"
     benchmark:
         "log/samtools_index/{sample}.index.tsv"
+    container:
+        "envs/hand_sandbox.simg" 
+    envmodules:
+        "samtools/1.9"
     shell:
         "samtools index -@ {threads} {input} &> {log}"
 
@@ -440,6 +458,8 @@ rule QoRTs:
         "log/QoRTs/QoRTs.{sample}.log"
     benchmark:
         "log/QoRTs/QoRTs.{sample}.tsv"
+    #container:
+    #    "envs/hand_sandbox.simg" # file access issue
     shell:
         """
         mkdir -p bam_qc/
@@ -488,6 +508,7 @@ rule bamCoverage:
         "log/bamCoverage/{sample}.{mode}.bamCoverage.log"
     benchmark:
         "log/bamCoverage/{sample}.{mode}.bamCoverage.tsv"
+    # not installed in hand_sandbox yet
     run:
         if {wildcards.mode} == "strict":
             shell("""
@@ -532,7 +553,6 @@ rule feature_count:
         "log/feature_count/counts.s{strand}.log"
     benchmark:
         "log/feature_count/benchmark.s{strand}.tsv"
-
     run:
         if config["PAIR_END"]:
             if config["MODE"] == "strict":
@@ -872,7 +892,7 @@ rule rMATS:
         b1=lambda wildcards: B1S[int(wildcards['ascn'])],
         b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
-        # todo: might have bugs: rMATS will re-run if Snakefile got updated
+        # note: rMATS will re-run if Snakefile got updated
         length_file= "Snakefile" if config['READ_LENGTH'] else "meta/read_length.txt" , # Snakefile is placeholder by-passing read_length detection
         strand_file="meta/strandness.detected.txt" if len(config['STRAND']) > 1 else "Snakefile" # placeholder to skip this for dag creation
     output:
@@ -925,6 +945,8 @@ rule create_dag:
         "Workflow_DAG.all.svg"
     log:
         "log/create_dag/Workflow_DAG.all.svg.log"
+    envmodules:
+        "graphviz/2.26.0"
     shell:
         "snakemake --dag targets | dot -Tsvg > {output} 2> {log}"
 
