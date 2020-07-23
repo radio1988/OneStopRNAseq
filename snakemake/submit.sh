@@ -2,7 +2,8 @@
 # run with: nohup bash submit.sh &
 
 module purge
-module load singularity/singularity-current > nohup.out   2>&1 
+module load singularity/singularity-2.5.2 > nohup.out   2>&1 
+#module load singularity/singularity-current > nohup.out   2>&1 
 source activate osr >> nohup.out  2>&1 
 
 snakemake -p -k --jobs 999 \
