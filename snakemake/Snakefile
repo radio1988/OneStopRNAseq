@@ -758,7 +758,7 @@ rule GSEA:
         deseq2= "Snakefile" # dummy assume existing
             if config["START"] == "RNK" 
             else "DESeq2/DESeq2.html" , # to keep ordering
-        rnk="meta/{contrast}.rnk"  # contrast just a name, alias for rnk
+        rnk="meta/{contrast}.rnk.txt"  # contrast just a name, alias for rnk
             if config["START"] == "RNK" 
             else "DESeq2/rnk/{contrast}.rnk",
         db="envs/gsea_db/{db}"
