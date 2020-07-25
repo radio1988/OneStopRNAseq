@@ -3,25 +3,24 @@
 
 module purge
 module load singularity/singularity-current > nohup.out   2>&1 
-#module load graphviz/2.26.0  fastqc/0.11.5 # temp fix
 source activate osr >> nohup.out  2>&1 
 
 
-# singularity > envmodules > conda > osr
+# envmodules > singularity > conda > osr
 snakemake -p -k --jobs 999 \
 --use-envmodules \
 --use-singularity \
 --use-conda \
 --latency-wait 300 \
---cluster 'bsub -q long -o lsf.log -R "rusage[mem={params.mem_mb}]" -n {threads} -R span[hosts=1] -W 144:00' >> nohup.out  2>&1 
+--cluster 'bsub -q short -o lsf.log -R "rusage[mem={params.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00' >> nohup.out  2>&1 
 
 # Rui Note: 2020/06/03/18:21
 # Most works with singularity
 # rMAT needs py2.7, thus --use-conda necessary, skip to remove conda download overhead
 
-snakemake --report report.html > report.log  2>&1
+# snakemake --report report.html > report.log  2>&1
 
-bsub -W 4:00 -q short "[ -d 'gsea/' ] && rm -f gsea/gsea.tar.gz && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz && mv gsea.tar.gz gsea"
+# bsub -W 4:00 -q short "[ -d 'gsea/' ] && rm -f gsea/gsea.tar.gz && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz && mv gsea.tar.gz gsea"
 
 
 ## Handy commands for development

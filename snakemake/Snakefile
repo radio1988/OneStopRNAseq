@@ -197,9 +197,9 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-        rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
-            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
-            else "Workflow_DAG.all.svg",
+       # rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
+       #     if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
+       #     else "Workflow_DAG.all.svg",
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
@@ -243,8 +243,9 @@ rule fastqc:
     envmodules:
         "fastqc/0.11.5"
     shell:
-        "mkdir -p fastqc && mkdir -p fastqc/details && "
-        "fastqc -t {threads} {input} -o fastqc/details &> {log}"
+        "mkdir -p fastqc && mkdir -p fastqc/details; "
+        "which fastqc &> {log};"
+        "fastqc -t {threads} {input} -o fastqc/details &>> {log}"
 
 rule multiqc:
     input:
@@ -269,7 +270,8 @@ rule multiqc:
     container:
         "envs/hand_sandbox.simg"
     shell:
-        "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &> {log}"
+        "which multiqc &> {log};"
+        "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log}"
 
 
 rule star_idx:
@@ -293,8 +295,8 @@ rule star_idx:
     shell:
         """
         #mkdir -p {INDEX}
-        whoami > {log}
-        which STAR >> {log}
+        whoami > {log};
+        which STAR >> {log};
 
         STAR --runThreadN {threads} \
         --runMode genomeGenerate \
@@ -332,7 +334,8 @@ rule star_map:
         "star/2.7.5a"
     shell:
         # align; rename
-        """which STAR > {log}
+        """
+        which STAR > {log};
         STAR --runThreadN {threads} \
         --genomeDir {INDEX} \
         --sjdbGTFfile {input.gtf} \
@@ -358,7 +361,6 @@ rule star_map:
 
         mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam
         pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
-        
         """
 
         # test
@@ -384,7 +386,8 @@ rule samtools_sort:
     benchmark:
         "log/samtools_sort/{sample}.sort.tsv"
     shell:
-        "samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam > {log} 2>&1"
+        "which samtools &> {log};"
+        "samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam &>> {log}"
 
 
 rule samtools_index:
@@ -405,7 +408,8 @@ rule samtools_index:
     envmodules:
         "samtools/1.9"
     shell:
-        "samtools index -@ {threads} {input} &> {log}"
+        "which samtools &> {log};"
+        "samtools index -@ {threads} {input} &>> {log}"
 
 
 rule bam_qc:
@@ -439,7 +443,8 @@ rule bam_qc:
         samtools idxstats {input.bam} > bam_qc/idxstats/{wildcards.sample}.idxstats.txt 2> {log.idxstats} &
         samtools flagstat {input.bam} > bam_qc/flagstat/{wildcards.sample}.flagsat.txt 2> {log.flagstat} &
         samtools stats {input.bam} > bam_qc/stats/{wildcards.sample}.stats.txt 2> {log.stats} &
-        samstat {input.bam} && mv sorted_reads/{wildcards.sample}*.samstat.html bam_qc/samstat 2> {log.samstat}
+        which samstat &> {log.samstat}
+        samstat {input.bam} && mv sorted_reads/{wildcards.sample}*.samstat.html bam_qc/samstat &>> {log.samstat}
         wait
         """
 
@@ -464,8 +469,9 @@ rule QoRTs:
         """
         mkdir -p bam_qc/
         mkdir -p bam_qc/QoRTs/
+        which java &> {log}
         java -Xmx16G -jar envs/hartleys-QoRTs-099881f/QoRTs.jar QC \
-        {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
+        {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
         """
 
 rule QoRTs_MultiPlot:
@@ -485,7 +491,8 @@ rule QoRTs_MultiPlot:
         "log/QoRTs/multiplot.tsv"
     shell:
         """
-        python script/meta_to_decoder.py &> {log}
+        which python && which Rscript &> {log}
+        python script/meta_to_decoder.py &>> {log}
         Rscript script/QoRT.R &>> {log}# needs QoRT package in R
         """
 
@@ -514,19 +521,23 @@ rule bamCoverage:
             shell("""
             echo '{output}'
 
+            which bamCoverage &> {log}
+
             bamCoverage --bam {input.bam} \
             -o  {output} \
             --numberOfProcessors {threads} \
-            {params.common_strict} &> {log}
+            {params.common_strict} &>> {log}
             """)
         else:
             shell("""
             echo '{output}'
+
+            which bamCoverage &> {log}
             
             bamCoverage --bam {input.bam} \
             -o  {output} \
             --numberOfProcessors {threads} \
-            {params.common_liberal} &> {log}
+            {params.common_liberal} &>> {log}
             """)
 
 
@@ -557,36 +568,40 @@ rule feature_count:
         if config["PAIR_END"]:
             if config["MODE"] == "strict":
                 shell("""
+                which featureCounts &> {log}
                 featureCounts -a {input.gtf} -o {output.count} \
                 -T {threads} \
                 {params.common_uniq} {params.pe_strict} \
                 -s {wildcards.strand} \
-                {input.bams} &> {log}
+                {input.bams} &>> {log}
                 """)
             elif config["MODE"] == "liberal":
                 shell("""
+                which featureCounts &> {log}
                 featureCounts -a {input.gtf} -o {output.count} \
                 -T {threads} \
                 {params.common_mult} {params.pe_liberal} \
                 -s {wildcards.strand} \
-                {input.bams} &> {log}
+                {input.bams} &>> {log}
                 """)
             else:
                 print ("MODE err, not liberal nor strict")
         else:
             shell("""
             # strict
+            which featureCounts &> {log}
             featureCounts -a {input.gtf} -o {output.count} \
             -T {threads} \
             {params.common_uniq} \
             -s {wildcards.strand} \
-            {input.bams} &> {log}
+            {input.bams} &>> {log}
             # liberal
+            which featureCounts &> {log}
             featureCounts -a {input.gtf} -o {output.count} \
             -T {threads} \
             {params.common_mult} \
             -s {wildcards.strand} \
-            {input.bams} &> {log}
+            {input.bams} &>> {log}
             """)
             # -p: count Fragments rather than reads for Paired-end reads (remove this for SE data)
             # -C: exclude chimeric (most times, for cancer maybe not include this)
@@ -758,7 +773,7 @@ rule GSEA:
         deseq2= "Snakefile" # dummy assume existing
             if config["START"] == "RNK" 
             else "DESeq2/DESeq2.html" , # to keep ordering
-        rnk="meta/{contrast}.rnk.txt"  # contrast just a name, alias for rnk
+        rnk="meta/{contrast}"  # contrast just a name, alias for rnk
             if config["START"] == "RNK" 
             else "DESeq2/rnk/{contrast}.rnk",
         db="envs/gsea_db/{db}"
@@ -777,6 +792,8 @@ rule GSEA:
         "log/gsea/{contrast}.{db}.log"
     benchmark:
         "log/gsea/{contrast}.{db}.tsv"
+    envmodules:
+        "openjdk/11+28"
     # run:
     #     print('test')
     shell:
@@ -786,6 +803,8 @@ rule GSEA:
 
         # to upper letter for all gene_names in RNK file (todo: toupper for user defined non-human GSEA db)
         python script/capslock.py {input.rnk} &>> {log}
+        
+        which java &>> {log}
 
         envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
         -gmx {input.db} -rnk {input.rnk} -rpt_label {wildcards.db} \
@@ -948,7 +967,9 @@ rule create_dag:
     envmodules:
         "graphviz/2.26.0"
     shell:
-        "snakemake --dag targets | dot -Tsvg > {output} 2> {log}"
+        "snakemake --dag targets > dag 2> {log};"
+        "which dot &>> {log};"
+        "cat dag|dot -Tsvg > {output} 2>> {log}"
 
 
 # rule organize_results:
@@ -970,5 +991,6 @@ rule reset:
         rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.*/ gsea.tar.gz SalmonTE_output \
         lsf.log Log.out report.log meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea \
         meta/decoder.txt
+        snakemake -j 1 --unlock
         """
 
