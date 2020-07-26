@@ -211,7 +211,7 @@ rule targets:
 
         dag="Workflow_DAG.all.svg", # create DAG
 #        organize_results="log/oranize_results.finished",
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
 
 
@@ -234,7 +234,7 @@ rule fastqc:
             else "fastqc/details/{sample}_fastqc.html", # trick snakemake to skip r2
     priority:
         10
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
         1
@@ -263,7 +263,7 @@ rule multiqc:
         "fastqc/multiqc_report.html"
     priority:
         10
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
         1
@@ -284,7 +284,7 @@ rule star_idx:
         gtf=GTF,
     output:
         INDEX+"/SAindex"
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 3200   
     threads:
         12
@@ -323,8 +323,9 @@ rule star_map:
             else "fastq/{sample}.fastq.gz", # trick snakemake to skip r2
     output:
         bam="mapped_reads/{sample}.bam"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 3000   ,
     params:
-        mem_mb=lambda wildcards, attempt: attempt * 3000   
         reads="fastq/{sample}.R1.fastq.gz fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
     threads:
         12
@@ -377,7 +378,7 @@ rule samtools_sort:
         "mapped_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam"
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 3600   
     threads:
         2
@@ -399,7 +400,7 @@ rule samtools_index:
         "sorted_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam.bai"
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
         1
@@ -426,7 +427,7 @@ rule bam_qc:
         "envs/hand_sandbox.simg"
     priority:
         0
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
         4
@@ -458,7 +459,7 @@ rule QoRTs:
         gtf=config['GTF']
     output:
         "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
         # todo: add strand support
     threads:
@@ -485,8 +486,8 @@ rule QoRTs_MultiPlot:
         "bam_qc/QoRTs_MultiPlot/plot-basic.pdf"
     container:
         "envs/hand_sandbox.simg"
-    params:
-        mem_mb=lambda wildcards, attempt: attempt * 8000 
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 8000   ,
     threads:
         2
     log:
@@ -509,8 +510,9 @@ rule bamCoverage:
         "bigWig/{sample}.{mode}.cpm.bw"
     threads:
         8
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 300,
+    params:
         common_strict="--outFileFormat bigwig --normalizeUsing CPM --minMappingQuality 20 --binSize 10 ",
         common_liberal="--outFileFormat bigwig --normalizeUsing CPM --binSize 10 ",
     priority:
@@ -555,8 +557,9 @@ rule feature_count:
         summary="feature_count/counts.s{strand}.strict.txt.summary" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt.summary"
     priority:
         100
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 300,
+    params:
         common_uniq=" -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 ",
         #common_mult="-g gene_id -M --minOverlap 1 --fracOverlap 0",
         common_mult=" -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 ",
@@ -633,7 +636,7 @@ rule strand_detection:
         "meta/strandness.detected.txt"
     threads:
         1
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 300
     log:
         "log/strand_detection.log"
@@ -651,7 +654,7 @@ rule SalmonTE_prep:
     output:
         r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
         r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 300
     threads:
         1
@@ -674,8 +677,9 @@ rule SalmonTE:
         r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
     output:
         "SalmonTE_output/EXPR.csv"
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 100,
+    params:
         ref=config['TE_REFERENCE']
     threads:
         12
@@ -697,7 +701,7 @@ rule Merge_TE_and_Gene:
         te="SalmonTE_output/EXPR.csv"
     output:
         "feature_count/TE_included.txt"
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     threads:
         1
@@ -746,8 +750,9 @@ rule DESeq2:
         "envs/hand_sandbox.simg"
     # conda:
     #     "envs/r.yaml"
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000,
+    params:
         rmd="'script/DESeq2.Rmd'",
         fdr=MAX_FDR,
         lfc=MIN_LFC,
@@ -787,8 +792,9 @@ rule GSEA:
         touch("gsea/{contrast}/{db}.finished")  # todo: premature killed jobs create junk sub folders, confusing to users
         #directory("gsea/{contrast}/{db}")
         #directory(lambda wildcards: "gsea/"+wildcards['contrast']+wildcards['db'][:-12])
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 12000,
     params:
-        mem_mb=lambda wildcards, attempt: attempt * 4000,
         svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
         label_db=lambda wildcards: wildcards["db"][:-12]
@@ -864,7 +870,7 @@ rule read_length_detection_bam:
             else "BAM file not provided. AND can't be generated from FASTQ, because FASTQ not provided"
     output:
         "meta/read_length.txt"
-    params:
+    resources:
         mem_mb="1000",
     threads:
         1
@@ -924,8 +930,9 @@ rule rMATS:
         "rMATS.{ascn}/summary.txt"
     conda:
       "envs/rmats.yaml"
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 8000, # todo: check and reduce
+    params:
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
         type="paired" if config['PAIR_END'] else "single",  # todo, rMATS3 has a single end bug
@@ -960,7 +967,7 @@ rule rMATS:
 
 rule create_dag:
     # todo: fix bug
-    params:
+    resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     threads:
         1

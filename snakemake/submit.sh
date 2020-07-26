@@ -14,8 +14,8 @@ snakemake -p -k --jobs 999 \
 --use-singularity \
 --use-conda  --conda-prefix "/project/umw_mccb/OneStopRNAseq/conda/" \
 --latency-wait 300 \
---ri --restart-times 3 \
---cluster 'bsub -q short -o lsf.log -R "rusage[mem={params.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00' >> nohup.out  2>&1 
+--ri --restart-times 2 \
+--cluster 'bsub -q short -o lsf.log -R "rusage[mem={resources.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00' >> nohup.out  2>&1 
 
 # Rui Note: 2020/06/03/18:21
 # Most works with singularity
