@@ -25,6 +25,7 @@ import pandas as pd
 import sys
 import re
 import os
+import math
 
 # Get contrast name for DESeq2
 # todo: fix svg
@@ -201,8 +202,8 @@ rule targets:
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
         rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
-       #     if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
-       #     else "Workflow_DAG.all.svg",
+            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
+            else "Workflow_DAG.all.svg",
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
@@ -211,7 +212,7 @@ rule targets:
         dag="Workflow_DAG.all.svg", # create DAG
 #        organize_results="log/oranize_results.finished",
     params:
-        mem_mb="1000"
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
 
 
 rule fastqc:
@@ -234,7 +235,7 @@ rule fastqc:
     priority:
         10
     params:
-        mem_mb="2000"
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
         1
     log:
@@ -263,7 +264,7 @@ rule multiqc:
     priority:
         10
     params:
-        mem_mb="2000"
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
         1
     log:
@@ -284,7 +285,7 @@ rule star_idx:
     output:
         INDEX+"/SAindex"
     params:
-        mem_mb="3400"
+        mem_mb=lambda wildcards, attempt: attempt * 3200   
     threads:
         12
     log:
@@ -323,7 +324,7 @@ rule star_map:
     output:
         bam="mapped_reads/{sample}.bam"
     params:
-        mem_mb="3000",  # todo auto adjust based on {threads}
+        mem_mb=lambda wildcards, attempt: attempt * 3000   
         reads="fastq/{sample}.R1.fastq.gz fastq/{sample}.R2.fastq.gz" if config["PAIR_END"] else "fastq/{sample}.fastq.gz",
     threads:
         12
@@ -377,7 +378,7 @@ rule samtools_sort:
     output:
         "sorted_reads/{sample}.bam"
     params:
-        mem_mb="4000"
+        mem_mb=lambda wildcards, attempt: attempt * 3600   
     threads:
         2
     container:
@@ -399,7 +400,7 @@ rule samtools_index:
     output:
         "sorted_reads/{sample}.bam.bai"
     params:
-        mem_mb="3000"
+        mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
         1
     log:
@@ -426,7 +427,7 @@ rule bam_qc:
     priority:
         0
     params:
-        mem_mb="4000"
+        mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
         4
     log:
@@ -458,7 +459,7 @@ rule QoRTs:
     output:
         "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
     params:
-        mem_mb="16600"
+        mem_mb=lambda wildcards, attempt: attempt * 4000
         # todo: add strand support
     threads:
         1
@@ -485,7 +486,7 @@ rule QoRTs_MultiPlot:
     container:
         "envs/hand_sandbox.simg"
     params:
-        mem_mb="8000"
+        mem_mb=lambda wildcards, attempt: attempt * 8000 
     threads:
         2
     log:
@@ -509,7 +510,7 @@ rule bamCoverage:
     threads:
         8
     params:
-        mem_mb="4000",
+        mem_mb=lambda wildcards, attempt: attempt * 300,
         common_strict="--outFileFormat bigwig --normalizeUsing CPM --minMappingQuality 20 --binSize 10 ",
         common_liberal="--outFileFormat bigwig --normalizeUsing CPM --binSize 10 ",
     priority:
@@ -555,7 +556,7 @@ rule feature_count:
     priority:
         100
     params:
-        mem_mb="4000",
+        mem_mb=lambda wildcards, attempt: attempt * 300,
         common_uniq=" -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 ",
         #common_mult="-g gene_id -M --minOverlap 1 --fracOverlap 0",
         common_mult=" -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 ",
@@ -633,9 +634,11 @@ rule strand_detection:
     threads:
         1
     params:
-        mem_mb=1000
+        mem_mb=lambda wildcards, attempt: attempt * 300
     log:
         "log/strand_detection.log"
+    benchmark:
+        "log/strand_detection.tsv"
     script:
         "script/strandness_detection.py" # todo: improvement needed
 
@@ -649,7 +652,7 @@ rule SalmonTE_prep:
         r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
         r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
     params:
-        mem_mb="1000"
+        mem_mb=lambda wildcards, attempt: attempt * 300
     threads:
         1
     shell:
@@ -672,7 +675,7 @@ rule SalmonTE:
     output:
         "SalmonTE_output/EXPR.csv"
     params:
-        mem_mb="3000",
+        mem_mb=lambda wildcards, attempt: attempt * 100,
         ref=config['TE_REFERENCE']
     threads:
         12
@@ -695,7 +698,7 @@ rule Merge_TE_and_Gene:
     output:
         "feature_count/TE_included.txt"
     params:
-        mem_mb="8000"
+        mem_mb=lambda wildcards, attempt: attempt * 1000,
     threads:
         1
     log:
@@ -744,7 +747,7 @@ rule DESeq2:
     # conda:
     #     "envs/r.yaml"
     params:
-        mem_mb="8000",
+        mem_mb=lambda wildcards, attempt: attempt * 2000,
         rmd="'script/DESeq2.Rmd'",
         fdr=MAX_FDR,
         lfc=MIN_LFC,
@@ -785,7 +788,7 @@ rule GSEA:
         #directory("gsea/{contrast}/{db}")
         #directory(lambda wildcards: "gsea/"+wildcards['contrast']+wildcards['db'][:-12])
     params:
-        mem_mb="8000",
+        mem_mb=lambda wildcards, attempt: attempt * 4000,
         svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
         label_db=lambda wildcards: wildcards["db"][:-12]
@@ -922,7 +925,7 @@ rule rMATS:
     conda:
       "envs/rmats.yaml"
     params:
-        mem_mb="8000",
+        mem_mb=lambda wildcards, attempt: attempt * 8000, # todo: check and reduce
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
         type="paired" if config['PAIR_END'] else "single",  # todo, rMATS3 has a single end bug
@@ -958,9 +961,7 @@ rule rMATS:
 rule create_dag:
     # todo: fix bug
     params:
-        mem_mb="1000"  
-        # every job has to have this defined 
-        # to use snakemake --cluster 'bsub -q short -R "rusage[mem_mb={params.mem_mb}]" -n {threads}'
+        mem_mb=lambda wildcards, attempt: attempt * 1000,
     threads:
         1
     output:
