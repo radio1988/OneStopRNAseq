@@ -1,3 +1,6 @@
+from snakemake.utils import min_version
+min_version("5.17.0")
+
 configfile: "config.yaml"
 #container: "envs/hand_sandbox.simg"  # only effective when --use-singularity
 # removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
@@ -197,7 +200,7 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-       # rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
+        rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
        #     if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
        #     else "Workflow_DAG.all.svg",
 
@@ -281,9 +284,9 @@ rule star_idx:
     output:
         INDEX+"/SAindex"
     params:
-        mem_mb="6000"
+        mem_mb="3400"
     threads:
-        6
+        12
     log:
         "log/star_idx/star_idx.log"
     benchmark:
