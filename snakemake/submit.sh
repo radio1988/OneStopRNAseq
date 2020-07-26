@@ -1,5 +1,7 @@
 #!/bin/bash
-# run with: nohup bash submit.sh &
+# run with:
+# nohup bash submit.sh &
+# OR: bsub -q long -W 24:00 'bash submit.sh'
 
 module purge
 module load singularity/singularity-current > nohup.out   2>&1 
@@ -10,17 +12,18 @@ source activate osr >> nohup.out  2>&1
 snakemake -p -k --jobs 999 \
 --use-envmodules \
 --use-singularity \
---use-conda \
+--use-conda  --conda-prefix "/project/umw_mccb/OneStopRNAseq/conda/" \
 --latency-wait 300 \
+--ri \
 --cluster 'bsub -q short -o lsf.log -R "rusage[mem={params.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00' >> nohup.out  2>&1 
 
 # Rui Note: 2020/06/03/18:21
 # Most works with singularity
 # rMAT needs py2.7, thus --use-conda necessary, skip to remove conda download overhead
 
-# snakemake --report report.html > report.log  2>&1
+snakemake --report report.html > report.log  2>&1
 
-# bsub -W 4:00 -q short "[ -d 'gsea/' ] && rm -f gsea/gsea.tar.gz && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz && mv gsea.tar.gz gsea"
+bsub -W 4:00 -q short "[ -d 'gsea/' ] && rm -f gsea/gsea.tar.gz && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz && mv gsea.tar.gz gsea"
 
 
 ## Handy commands for development
