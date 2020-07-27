@@ -21,7 +21,7 @@ else
     PREFS_PROP=
 fi;
 
-exec java --module-path="${prefix}/modules" -Xmx12g \
+exec java --module-path="${prefix}/modules" -Xmx11g \
     -Djava.awt.headless=true $PREFS_PROP \
     @"${prefix}/gsea.args" \
     --patch-module="jide.common=${prefix}/lib/jide-components-3.7.4.jar:${prefix}/lib/jide-dock-3.7.4.jar:${prefix}/lib/jide-grids-3.7.4.jar" \

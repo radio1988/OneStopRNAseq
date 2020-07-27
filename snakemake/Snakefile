@@ -201,9 +201,9 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-        rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
-            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
-            else "Workflow_DAG.all.svg",
+     #   rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
+     #       if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
+     #       else "Workflow_DAG.all.svg",
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
@@ -789,8 +789,8 @@ rule GSEA:
             else "DESeq2/rnk/{contrast}.rnk",
         db="envs/gsea_db/{db}"
     output:
-        touch("gsea/{contrast}/{db}.finished")  # todo: premature killed jobs create junk sub folders, confusing to users
-        #directory("gsea/{contrast}/{db}")
+        touch("gsea/{contrast}/{db}.finished"),  # todo: premature killed jobs create junk sub folders, confusing to users
+        directory("gsea/{contrast}/{db}.GseaPreranked")
         #directory(lambda wildcards: "gsea/"+wildcards['contrast']+wildcards['db'][:-12])
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
@@ -809,7 +809,8 @@ rule GSEA:
     # run:
     #     print('test')
     shell:
-        """echo {params.label_db} > {log}
+        """
+        echo {params.label_db} > {log}
         
         mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}
 
@@ -823,7 +824,11 @@ rule GSEA:
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
         -set_max 15000 -set_min 15 \
-        -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &>> {log}"""
+        -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &>> {log}
+
+        mv gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/ gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/   # if gsea fails, might still have problems, not sure
+        
+        """
 
 # todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
 

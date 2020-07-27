@@ -16,21 +16,24 @@ SAMPLES:
 PAIR_END: True  # True/False
 
 GENOME: genome/mm10_chr19/mm10.chr19.fa 
+GENOME: project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
 #test: genome/mm10_chr19/mm10.chr19.fa
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/hg38.primary.fa
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
 #yeast: /project/umw_mccb/Rui/genomes/yeast/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
 
 INDEX: genome/mm10_chr19/star_idx
+INDEX: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/star_idx
 #test: genome/mm10_chr19/star_idx
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/star_idx
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/star_idx
 #yeast: /project/umw_mccb/Rui/genomes/yeast/star_idx
 
 GTF: genome/mm10_chr19/gencode.vM21.chr19.gtf
+GTF: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf
 #test: genome/mm10_chr19/gencode.vM21.chr19.gtf
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v34.primary_assembly.annotation.gtf
-#mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.anno.txt
+#mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf
 #yeast: /project/umw_mccb/Rui/genomes/yeast/Saccharomyces_cerevisiae.R64-1-1.90.gtf
 
 ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/mm10.gencode.vm25.te_included.anno.txt
@@ -54,17 +57,17 @@ CONTRAST_DE: meta/contrast.de.xlsx
 GSEA_NPLOTS: 100  # not implemented
 GSEA_PLOT_SVG: True  # not implemented
 GSEA_DBS:  # not implemented
-  # - c1.all.v7.1.symbols.gmt
-  # - c2.cgp.v7.1.symbols.gmt
-  # - c2.cp.v7.1.symbols.gmt
-  # - c3.all.v7.1.symbols.gmt
-  # - c4.all.v7.1.symbols.gmt
+  - c1.all.v7.1.symbols.gmt
+  - c2.cgp.v7.1.symbols.gmt
+  - c2.cp.v7.1.symbols.gmt
+  - c3.all.v7.1.symbols.gmt
+  - c4.all.v7.1.symbols.gmt
   - c5.bp.v7.1.symbols.gmt
-  # - c5.cc.v7.1.symbols.gmt
-  # - c5.mf.v7.1.symbols.gmt
-  # - c6.all.v7.1.symbols.gmt
-  # - c7.all.v7.1.symbols.gmt
-  # - h.all.v7.1.symbols.gmt  # todo: gsea err handling
+  - c5.cc.v7.1.symbols.gmt
+  - c5.mf.v7.1.symbols.gmt
+  - c6.all.v7.1.symbols.gmt
+  - c7.all.v7.1.symbols.gmt
+  - h.all.v7.1.symbols.gmt  # todo: gsea err handling
 
 
 # Starting point
@@ -72,7 +75,8 @@ START: FASTQ # FASTQ, BAM, COUNT, RNK
 
 # Only if start from COUNT
 COUNT_FILE: meta/COUNT.xlsx  # must have same format as feature_count output c1-c7 meta, c7- count
-# both txt and xlsx supported, xlsx will be converted to meta/count.xlsx.txt
+# both txt and xlsx supported, meta/COUNT.xlsx will be converted to meta/COUNT.xlsx.txt
+# meta/COUNT.txt will be read as is
 
 # Only if start from RNK
 RNKS:
