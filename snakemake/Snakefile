@@ -379,7 +379,7 @@ rule samtools_sort:
     output:
         "sorted_reads/{sample}.bam"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 3600   
+        mem_mb=lambda wildcards, attempt: attempt * 5000 
     threads:
         2
     container:
@@ -511,7 +511,7 @@ rule bamCoverage:
     threads:
         8
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 300,
+        mem_mb=lambda wildcards, attempt: attempt * 1000,
     params:
         common_strict="--outFileFormat bigwig --normalizeUsing CPM --minMappingQuality 20 --binSize 10 ",
         common_liberal="--outFileFormat bigwig --normalizeUsing CPM --binSize 10 ",
