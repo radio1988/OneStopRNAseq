@@ -201,9 +201,12 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-     #   rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
-     #       if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
-     #       else "Workflow_DAG.all.svg",
+        rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
+            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
+            else "Workflow_DAG.all.svg",
+
+        DEXSeq_count=expand("COUNT_DEXSeq/{sample}_count.txt", sample=SAMPLES),
+        DEXSeq="res_dexseq/DEXSeq.html",
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
@@ -969,6 +972,56 @@ rule rMATS:
         # --gtf Homo_sapiens.GRCh37.75.gtf \
         # --od rMATS  -t {params.type}} --readLength 100 --cstat 0.0001 --libType fr-unstranded"
 
+DEXSeq_GFF = config["DEXSeq_GFF"]
+
+rule prep_count:
+    input:
+        "sorted_reads/{sample}.bam"
+    output:
+        "COUNT_DEXSeq/{sample}_count.txt"
+    #conda:
+    #    "envs/dexseq.yaml"
+    shell:
+        "python script/dexseq_count.py -f bam {DEXSeq_GFF} {input} {output}"
+
+rule dexseq:
+    input:
+        count_files = expand("COUNT_DEXSeq/{sample}_count.txt", sample = SAMPLES)
+        #meta = "meta/meta.xlsx", # constant input files better store in params directive
+        #contrast = "meta/contrast.de.xlsx"
+    output:
+        "res_dexseq/DEXSeq.html"
+    resources:
+         mem_mb=lambda wildcards, attempt: attempt * 20000
+    params:
+        rmd="'script/DEXSeq.Rmd'",
+        #fdr=MAX_FDR,
+        #lfc=MIN_LFC,
+        #anno_tab=ANNO_TAB,
+        meta=config["META"],
+        contrast=config["CONTRAST_DE"],
+        gffFile=config["DEXSeq_GFF"],
+    #container:
+    #    "envs/hand_sandbox.simg"
+    priority:
+        100
+    threads:
+        1
+    log:
+        "log/DEXSeq/DEXSeq.log"
+    benchmark:
+        "log/DEXSeq/DEXSeq.tsv"
+    shell:
+        "mkdir -p res_dexseq;"
+        "source /home/kh45w/src/anaconda3/etc/profile.d/conda.sh;"
+        "conda activate r4.0.0;"
+        'Rscript -e "rmarkdown::render({params.rmd}, \
+                                        params=list( \
+                                            countFile=\'{input.count_files}\', \
+                                            gffFile=\'{params.gffFile}\', \
+                                            metaFile=\'../{params.meta}\', \
+                                            contrastFile=\'../{params.contrast}\'), \
+                                            output_file=\'../res_dexseq/DEXSeq.html\')" &> {log}'
 
 rule create_dag:
     # todo: fix bug
