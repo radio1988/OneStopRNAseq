@@ -205,8 +205,8 @@ rule targets:
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
             else "Workflow_DAG.all.svg",
 
-        DEXSeq_count=expand("COUNT_DEXSeq/{sample}_count.txt", sample=SAMPLES),
-        DEXSeq="res_dexseq/DEXSeq.html",
+        DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES),
+        DEXSeq="DEXSeq/DEXSeq.finished",
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
@@ -978,33 +978,33 @@ rule prep_count:
     input:
         "sorted_reads/{sample}.bam"
     output:
-        "COUNT_DEXSeq/{sample}_count.txt"
+        "DEXSeq_count/{sample}_count.txt"
     #conda:
     #    "envs/dexseq.yaml"
     shell:
         "python script/dexseq_count.py -f bam {DEXSeq_GFF} {input} {output}"
 
-rule dexseq:
+rule DEXSeq:
     input:
-        count_files = expand("COUNT_DEXSeq/{sample}_count.txt", sample = SAMPLES)
-        #meta = "meta/meta.xlsx", # constant input files better store in params directive
-        #contrast = "meta/contrast.de.xlsx"
-    output:
-        "res_dexseq/DEXSeq.html"
-    resources:
-         mem_mb=lambda wildcards, attempt: attempt * 20000
-    params:
-        rmd="'script/DEXSeq.Rmd'",
-        #fdr=MAX_FDR,
-        #lfc=MIN_LFC,
-        #anno_tab=ANNO_TAB,
+        count_files = expand("DEXSeq_count/{sample}_count.txt", sample = SAMPLES),
         meta=config["META"],
         contrast=config["CONTRAST_DE"],
         gffFile=config["DEXSeq_GFF"],
+    output:
+        touch("DEXSeq/DEXSeq.finished")
+    resources:
+         mem_mb=lambda wildcards, attempt: attempt * 16000
+    params:
+        rmd="'script/dexseq.r'",
+        #fdr=MAX_FDR,
+        #lfc=MIN_LFC,
+        #anno_tab=ANNO_TAB,
+    envmodules:
+        "R/3.5.2_gcc8.1.0"
     #container:
     #    "envs/hand_sandbox.simg"
-    priority:
-        100
+    #conda:  # R3.2 problem
+    #    "envs/dexseq.yaml"
     threads:
         1
     log:
@@ -1012,16 +1012,8 @@ rule dexseq:
     benchmark:
         "log/DEXSeq/DEXSeq.tsv"
     shell:
-        "mkdir -p res_dexseq;"
-        "source /home/kh45w/src/anaconda3/etc/profile.d/conda.sh;"
-        "conda activate r4.0.0;"
-        'Rscript -e "rmarkdown::render({params.rmd}, \
-                                        params=list( \
-                                            countFile=\'{input.count_files}\', \
-                                            gffFile=\'{params.gffFile}\', \
-                                            metaFile=\'../{params.meta}\', \
-                                            contrastFile=\'../{params.contrast}\'), \
-                                            output_file=\'../res_dexseq/DEXSeq.html\')" &> {log}'
+        "mkdir -p DEXSeq \n"
+        "Rscript script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {input.count_files} &> {log}"
 
 rule create_dag:
     # todo: fix bug
