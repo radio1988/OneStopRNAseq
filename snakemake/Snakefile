@@ -212,6 +212,10 @@ rule targets:
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
             else "Workflow_DAG.all.svg"),
 
+        GATK_ASE=(expand("GATK_ASEReadCounter/{sample}.table", sample=SAMPLES)
+            if config["ASE_ANALYSIS"]
+            else "Workflow_DAG.all.svg"),
+
         dag="Workflow_DAG.all.svg", # create DAG
 #        organize_results="log/oranize_results.finished",
     resources:
@@ -1014,6 +1018,63 @@ rule DEXSeq:
     shell:
         "mkdir -p DEXSeq \n"
         "Rscript script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {input.count_files} &> {log}"
+
+rule genome_faidx:
+    input:
+        config['GENOME']
+    output:
+        config['GENOME']+'.fai'
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt *4000
+    threads:
+        1
+    log:
+        "log/genome_faidx/faidx.log"
+    shell:
+        "samtools faidx {input}  &> {log}"
+
+
+rule GATK_CreateSequenceDictionary:
+    input:
+        config['GENOME'],
+    output:
+        re.sub( "fa$", "dict", config['GENOME'])
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 16000
+    envmodules:
+        "java/1.8.0_171"
+    threads:
+        1
+    log:
+        "log/GATK_CreateSequenceDictionary/GATK_CreateSequenceDictionary.log"
+    benchmark:
+        "log/GATK_CreateSequenceDictionary/GATK_CreateSequenceDictionary.tsv"
+    shell:
+        "./envs/gatk-4.1.8.1/gatk CreateSequenceDictionary -R {input} &> {log}"
+
+
+rule GATK_ASEReadCounter:
+    input:
+        genome=config['GENOME'],
+        genome_idx=config['GENOME']+'.fai',
+        genome_ref=re.sub( "fa$", "dict", config['GENOME']),
+        bam="sorted_reads/{sample}.bam",
+        vcf=config['VCF']
+    output:
+        table="GATK_ASEReadCounter/{sample}.table"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 16000
+    envmodules:
+        "java/1.8.0_171"
+    threads:
+        1
+    log:
+        "log/GATK_ASEReadCounter/{sample}.log"
+    benchmark:
+        "log/GATK_ASEReadCounter/{sample}.tsv"
+    shell:
+        "./envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output}"
+        
 
 rule create_dag:
     # todo: fix bug

@@ -15,21 +15,21 @@ SAMPLES:
 
 PAIR_END: True  # True/False
 
-GENOME: genome/mm10_chr19/mm10.chr19.fa 
-GENOME: project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
+#GENOME: genome/mm10_chr19/mm10.chr19.fa 
+GENOME: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
 #test: genome/mm10_chr19/mm10.chr19.fa
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/hg38.primary.fa
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
 #yeast: /project/umw_mccb/Rui/genomes/yeast/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
 
-INDEX: genome/mm10_chr19/star_idx
+#INDEX: genome/mm10_chr19/star_idx
 INDEX: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/star_idx
 #test: genome/mm10_chr19/star_idx
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/star_idx
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/star_idx
 #yeast: /project/umw_mccb/Rui/genomes/yeast/star_idx
 
-GTF: genome/mm10_chr19/gencode.vM21.chr19.gtf
+#GTF: genome/mm10_chr19/gencode.vM21.chr19.gtf
 GTF: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf
 #test: genome/mm10_chr19/gencode.vM21.chr19.gtf
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v34.primary_assembly.annotation.gtf
@@ -104,4 +104,9 @@ TE_REFERENCE: mm # mm, hs, dm, dr
 # dm : Drosophila melanogaster
 # dr : Danio rerio
 
+DEXSeq_GFF: "/project/umw_mccb/OneStopRNAseq/kai/DEXSeq/gff/gencode.vM21.annotation.DEXSeq.gff"
 
+
+# For ASE
+ASE_ANALYSIS: True
+VCF: genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
