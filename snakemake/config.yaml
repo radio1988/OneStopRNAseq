@@ -109,4 +109,4 @@ DEXSeq_GFF: "/project/umw_mccb/OneStopRNAseq/kai/DEXSeq/gff/gencode.vM21.annotat
 
 # For ASE
 ASE_ANALYSIS: True
-VCF: genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
+VCF: genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf.gz
