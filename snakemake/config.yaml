@@ -1,19 +1,32 @@
 # Analysis Params
 SAMPLES:
-    - KO_D0_1_S2
-    - KO_D0_2_S8
-    - KO_D2_1_S4
-    - KO_D2_2_S10
-    - KO_D8_1_S6
-    - KO_D8_2_S12
-    - WT_D0_1_S1
-    - WT_D0_2_S7
-    - WT_D2_1_S3
-    - WT_D2_2_S9
-    - WT_D8_1_S5
-    - WT_D8_2_S11
+    - KO_D0_1_S2.R1
+    - KO_D0_2_S8.R1
+    - KO_D2_1_S4.R1
+    - KO_D2_2_S10.R1
+    - KO_D8_1_S6.R1
+    - KO_D8_2_S12.R1
+    - WT_D0_1_S1.R1
+    - WT_D0_2_S7.R1
+    - WT_D2_1_S3.R1
+    - WT_D2_2_S9.R1
+    - WT_D8_1_S5.R1
+    - WT_D8_2_S11.R1
 
-PAIR_END: True  # True/False
+    # - KO_D0_1_S2
+    # - KO_D0_2_S8
+    # - KO_D2_1_S4
+    # - KO_D2_2_S10
+    # - KO_D8_1_S6
+    # - KO_D8_2_S12
+    # - WT_D0_1_S1
+    # - WT_D0_2_S7
+    # - WT_D2_1_S3
+    # - WT_D2_2_S9
+    # - WT_D8_1_S5
+    # - WT_D8_2_S11
+
+PAIR_END: False  # True/False
 
 #GENOME: genome/mm10_chr19/mm10.chr19.fa 
 GENOME: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa

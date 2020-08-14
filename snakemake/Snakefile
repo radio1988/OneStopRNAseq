@@ -206,7 +206,7 @@ rule targets:
             else "Workflow_DAG.all.svg",
 
         DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES),
-        DEXSeq="DEXSeq/DEXSeq.finished",
+        DEXSeq=expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE),
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
@@ -936,7 +936,7 @@ rule rMATS:
         b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
         # note: rMATS will re-run if Snakefile got updated
-        length_file= "Snakefile" if config['READ_LENGTH'] else "meta/read_length.txt" , # Snakefile is placeholder by-passing read_length detection
+        length_file= "Workflow_DAG.all.svg" if config['READ_LENGTH'] else "meta/read_length.txt" , # Workflow_DAG.all.svg is placeholder by-passing read_length detection
         strand_file="meta/strandness.detected.txt" if len(config['STRAND']) > 1 else "Snakefile" # placeholder to skip this for dag creation
     output:
         "rMATS.{ascn}/summary.txt"
@@ -983,6 +983,12 @@ rule prep_count:
         "sorted_reads/{sample}.bam"
     output:
         "DEXSeq_count/{sample}_count.txt"
+    resources:
+         mem_mb=lambda wildcards, attempt: attempt * 16000
+    log:
+        "log/DEXSeq/prep_count.{sample}.log"
+    benchmark:
+        "log/DEXSeq/prep_count.{sample}.tsv"
     #conda:
     #    "envs/dexseq.yaml"
     shell:
@@ -995,7 +1001,8 @@ rule DEXSeq:
         contrast=config["CONTRAST_DE"],
         gffFile=config["DEXSeq_GFF"],
     output:
-        touch("DEXSeq/DEXSeq.finished")
+#        touch("DEXSeq/DEXSeq.finished"),
+        expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE)
     resources:
          mem_mb=lambda wildcards, attempt: attempt * 16000
     params:
@@ -1073,7 +1080,7 @@ rule GATK_ASEReadCounter:
     benchmark:
         "log/GATK_ASEReadCounter/{sample}.tsv"
     shell:
-        "./envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output}"
+        "./envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} &> {log}"
         
 
 rule create_dag:
