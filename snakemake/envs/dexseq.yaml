@@ -1,0 +1,17 @@
+name: dexseq_test
+
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  # conda-forge
+  - r-base=4.0.2
+  - r-readxl
+  - r-writexl
+  - r-tidyverse 
+  - r-dplyr
+  - r-biocmanager
+  # bioconda 
+  - bioconductor-dexseq 
+
