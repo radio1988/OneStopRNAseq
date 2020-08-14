@@ -1010,12 +1010,12 @@ rule DEXSeq:
         #fdr=MAX_FDR,
         #lfc=MIN_LFC,
         #anno_tab=ANNO_TAB,
-    envmodules:
-        "R/3.5.2_gcc8.1.0"
+    # envmodules:
+    #    "R/3.5.2_gcc8.1.0" # only works for Rui, after he installed packages
     #container:
     #    "envs/hand_sandbox.simg"
-    #conda:  # R3.2 problem
-    #    "envs/dexseq.yaml"
+    conda:
+        "envs/dexseq.yaml"
     threads:
         1
     log:
