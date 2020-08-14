@@ -467,7 +467,7 @@ rule QoRTs:
     output:
         "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
+        mem_mb=lambda wildcards, attempt: attempt * 8000
         # todo: add strand support
     threads:
         1
