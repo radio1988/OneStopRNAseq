@@ -1,4 +1,4 @@
-name: dexseq_test
+name: dexseq
 
 channels:
   - conda-forge
@@ -8,10 +8,8 @@ dependencies:
   # conda-forge
   - r-base=4.0.2
   - r-readxl
-  - r-writexl
-  - r-tidyverse 
+  - r-writexls
   - r-dplyr
-  - r-biocmanager
+
   # bioconda 
   - bioconductor-dexseq 
-
