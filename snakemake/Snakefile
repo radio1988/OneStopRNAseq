@@ -1004,7 +1004,7 @@ rule DEXSeq:
 #        touch("DEXSeq/DEXSeq.finished"),
         expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE)
     resources:
-         mem_mb=lambda wildcards, attempt: attempt * 16000
+         mem_mb=lambda wildcards, attempt: attempt * 8000
     params:
         rmd="'script/dexseq.r'",
         #fdr=MAX_FDR,
@@ -1017,13 +1017,14 @@ rule DEXSeq:
     conda:
         "envs/dexseq.yaml"
     threads:
-        1
+        4
     log:
         "log/DEXSeq/DEXSeq.log"
     benchmark:
         "log/DEXSeq/DEXSeq.tsv"
     shell:
         "mkdir -p DEXSeq \n"
+        "which Rscript &> {log} \n"
         "Rscript script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {input.count_files} &> {log}"
 
 rule genome_faidx:
