@@ -178,6 +178,9 @@ for (i in 1:tem) {
   pdf(paste(outDir, name, ".MA.pdf", sep=""))
   plotMA( dxr, cex=0.8 ,  alpha = maxFDR) # contain NA error message
   dev.off()
+
+  # DEXSeqHTML(dxr, path=outDir, file=paste(name, ".report.html", sep=""), 
+  #        fitExpToVar="condition", FDR=maxFDR) # not working properlly
   
   # Visualization:
   ## plot for top 5 genes ranked by pvalue
@@ -189,29 +192,19 @@ for (i in 1:tem) {
     #print(paste("Below is for contrast: ", name, sep=""))
     
     ## plotDEXseq
-    # name_tmp <- paste(name, gene, "top", k, "standard.pdf", sep=".")
-    # print(paste("saving: ", outDir, name_tmp, sep=""))
-    # pdf(paste(outDir, name_tmp, sep=""))
-    # plotDEXSeq( dxr, gene, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )
-    # dev.off()
-    # ## Transcripts (most useful)
-    # name_tmp <- paste(name, gene, "top", k, "transcript.pdf", sep=".")
-    # print(paste("saving: ", outDir, name_tmp, sep=""))
-    # pdf(paste(outDir, name_tmp, sep=""))
-    # plotDEXSeq(dxr, gene, displayTranscripts=TRUE, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2 )
-    # dev.off()
     ## Normalized counts
     name_tmp <- paste(name, gene, "top", k, "normalized_counts.pdf", sep=".")
     print(paste("saving: ", outDir, name_tmp, sep=""))
     pdf(paste(outDir, name_tmp, sep=""))
-    plotDEXSeq(dxr, gene, expression=FALSE, norCounts=TRUE,displayTranscripts=TRUE,
+    plotDEXSeq(dxr, gene, expression=FALSE, norCounts=TRUE, displayTranscripts=TRUE,
                legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2)
     dev.off()
-    # ## Fitted splicing
-    # name_tmp <- paste(name, gene, "top", k, "fitted_splicing.pdf", sep=".")
-    # print(paste("saving: ", outDir, name_tmp, sep=""))
-    # pdf(paste(outDir, name_tmp, sep=""))
-    # plotDEXSeq(dxr, gene, expression=FALSE, splicing=TRUE, legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2)
-    # dev.off()
+    ## relative_exon_usage.pdf
+    name_tmp <- paste(name, gene, "top", k, "relative_exon_usage.pdf", sep=".")
+    print(paste("saving: ", outDir, name_tmp, sep=""))
+    pdf(paste(outDir, name_tmp, sep=""))
+    plotDEXSeq(dxr, gene, expression=FALSE, splicing=TRUE, displayTranscripts=TRUE,
+      legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2)
+    dev.off()
   }
 }
