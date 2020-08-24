@@ -1004,7 +1004,7 @@ rule DEXSeq:
 #        touch("DEXSeq/DEXSeq.finished"),
         expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE)
     resources:
-         mem_mb=lambda wildcards, attempt: attempt * 8000
+         mem_mb=lambda wildcards, attempt: attempt * 4000
     params:
         rmd="'script/dexseq.r'",
         #fdr=MAX_FDR,
@@ -1017,7 +1017,7 @@ rule DEXSeq:
     conda:
         "envs/dexseq.yaml"
     threads:
-        4
+        8
     log:
         "log/DEXSeq/DEXSeq.log"
     benchmark:
