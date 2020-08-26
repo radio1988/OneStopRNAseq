@@ -8,7 +8,7 @@ suppressPackageStartupMessages(library(WriteXLS))
 suppressPackageStartupMessages(library(BiocParallel))
 sessionInfo()
 
-BPPARAM = MulticoreParam(workers=4)
+BPPARAM = MulticoreParam(workers=8)
 
 readExcel <- function(fname){
   df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
@@ -16,15 +16,43 @@ readExcel <- function(fname){
   return (df)
 }
 
+plotDEXSeq_norCounts <- function(dxr, gene, outDir, name_tmp) {
+	pdf(paste(outDir, name_tmp, sep=""))
+	plotDEXSeq(dxr, gene, expression=FALSE, norCounts=TRUE, displayTranscripts=TRUE,
+	  legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2)
+	dev.off()
+}
+
+plotDEXSeq_relative_exon_usage <- function(dxr, gene, outDir, name_tmp) {
+	pdf(paste(outDir, name_tmp, sep=""))
+	plotDEXSeq(dxr, gene, expression=FALSE, splicing=TRUE, displayTranscripts=TRUE,
+	  legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2)
+	dev.off()
+}
+
+plotDispEstsWrapper <- function(dxd, outDir, name){
+	pdf(paste(outDir, name, ".disp.pdf", sep=""))
+	plotDispEsts( dxd )
+	dev.off()
+}
+
+plotMAWrapper <- function(dxd, ourDir, name){
+	pdf(paste(outDir, name, ".MA.pdf", sep=""))
+	plotMA( dxr, cex=0.8 ,  alpha = maxFDR) # contain NA error message
+	dev.off()
+}
+
 outDir <- "./DEXSeq/"
+dir.create(outDir, showWarnings = FALSE)
 args = commandArgs(trailingOnly=TRUE)
 
-
+# Read ARGS
 if (length(args) < 2){
     # development
     metaFile <- 'meta/meta.xlsx'  
     contrastFile <- './meta/contrast.de.xlsx'
     gffFile <- '/project/umw_mccb/OneStopRNAseq/kai/DEXSeq/gff/gencode.v34.primary_assembly.annotation.DEXSeq.gff'
+    gffFile <- 'gencode.v34.primary_assembly.annotation.DEXSeq.gff'
     countFile <- 'DEXSeq_count/N052611_Alb_Dex_count.txt DEXSeq_count/N052611_Alb_count.txt DEXSeq_count/N052611_Dex_count.txt DEXSeq_count/N052611_untreated_count.txt DEXSeq_count/N061011_Alb_Dex_count.txt DEXSeq_count/N061011_Alb_count.txt DEXSeq_count/N061011_Dex_count.txt DEXSeq_count/N061011_untreated_count.txt DEXSeq_count/N080611_Alb_Dex_count.txt DEXSeq_count/N080611_Alb_count.txt DEXSeq_count/N080611_Dex_count.txt DEXSeq_count/N080611_untreated_count.txt DEXSeq_count/N61311_Alb_Dex_count.txt DEXSeq_count/N61311_Alb_count.txt DEXSeq_count/N61311_Dex_count.txt DEXSeq_count/N61311_untreated_count.txt'
   }else{
     # production
@@ -35,8 +63,8 @@ if (length(args) < 2){
   }
 
 
-# min_count_per_exon <- 10000  # test, maybe not valid for DEXSeq if larger than 1
-maxFDR <- 0.1
+min_count_per_exon <- 10000  # test, maybe not valid for DEXSeq if larger than 1
+maxFDR <- 0.05  # todo: read config
 #minLFC <- 0.585
 
 countFile <- gsub(' +',' ',countFile) 
@@ -56,10 +84,10 @@ contrast.df <- readExcel(contrastFile)
 print(contrast.df)
 
 ## name1 should be treated group
-tem <- dim(contrast.df)[2]
-for (i in 1:tem) {
-  name1 <- contrast.df[1,i]
-  name2 <- contrast.df[2,i]
+for (i in 1:dim(contrast.df)[2]) {
+  # parse names
+  name1 <- contrast.df[1, i]
+  name2 <- contrast.df[2, i]
   name1 <- gsub(" ", "", name1)
   name2 <- gsub(" ", "", name2)
   name1 <- gsub(";$", "", name1)
@@ -69,7 +97,6 @@ for (i in 1:tem) {
   name1 <- gsub(";", ".", name1)
   name2 <- gsub(";", ".", name2)
   name <- paste(name1, name2, sep = "_vs_")
-  
   cat(paste("\n\n>>> for contrast", i, ":", name, "\n"))
   
   sample <- factor(meta.df$SAMPLE_LABEL)
@@ -79,7 +106,6 @@ for (i in 1:tem) {
   condition_col <- c()
   batch_col     <- c()
   countFiles    <- unlist(strsplit(countFile, " "))
-  #countFiles    <- paste("./", unlist(strsplit(countFile, " ")), sep="")
   countFilesSubset <- c()
   
   for (i2 in 1:length(sample)) {
@@ -105,28 +131,26 @@ for (i in 1:tem) {
                             batch     = batch_col)
   
   # Print sampleTable:
+  print('countFilesSubset:')
+  print(countFilesSubset)
   cat("\nsample table: \n")
   print(sampleTable)
   cat("\n")
-  
-  # Run DEXseq analysis below for each sampleTable:
-  
-
-  
-  # Read in data for DEXSeq analysis:
+    
+  # Read data
   print(paste("reading:", countFilesSubset))
   dxd = DEXSeqDataSetFromHTSeq(
     countFilesSubset,
     sampleData=sampleTable,
     design= ~ sample + exon + condition:exon,
     flattenedfile=gffFile )
-
   print(dxd)
 
-  # print(paste("Removing bins/exons with less than ", min_count_per_exon, "reads"))
-  # dxd <- dxd[rowSums(featureCounts(dxd)) >= min_count_per_exon, ]  # test: correct ?
-  # print(dxd)
-  #print(head(geneIDs(dxd), 3))
+  # Filter data (skipped to keep figures in results correct)
+  print(paste("Removing bins/exons with less than ", min_count_per_exon, "reads"))
+  dxd <- dxd[rowSums(featureCounts(dxd)) >= min_count_per_exon, ]
+  print(dxd)
+  print(head(geneIDs(dxd), 3))
   print(head(featureCounts(dxd), 5))
   
   print("Estimate size factors..")
@@ -134,11 +158,13 @@ for (i in 1:tem) {
   
   ## if only one batch, don't apply model, otherwise DEXSeq error:
   print("Estimate Dispersion and performing statistical test..")
-  if (unique(batch) == 1) {
+  if (length(unique(batch)) == 1) {
+  	print("No Batch Effect")
     dxd = estimateDispersions(dxd, BPPARAM=BPPARAM)
     dxd = testForDEU(dxd, BPPARAM=BPPARAM)
     dxd = estimateExonFoldChanges( dxd, fitExpToVar="condition", BPPARAM=BPPARAM)
   } else {
+  	print("With Batch Effect")
     formulaFullModel    =  ~ sample + exon + batch:exon + condition:exon
     formulaReducedModel =  ~ sample + exon + batch:exon 
     dxd = estimateDispersions(dxd, formula = formulaFullModel, BPPARAM=BPPARAM)
@@ -152,12 +178,11 @@ for (i in 1:tem) {
   # Summarize result:
   cat("\nSummarize result:\n")
   dxr = DEXSeqResults(dxd)
+  save.image(file=paste("contrast", i, "RData", sep='.'))
   
   # Some statistics:
-  ## How many DEXs with a FDR of 10%?
   cat(paste("\n\nnum of DE exons with FDR <", maxFDR, "\n"))
   print(table(dxr$padj < maxFDR))
-  ## How many genes?
   cat(paste("\n\nnum of DE genes with FDR <", maxFDR, "\n"))
   print(table(tapply(dxr$padj < maxFDR, dxr$groupID, any)))
   
@@ -169,15 +194,9 @@ for (i in 1:tem) {
   print(paste("Saving results to:", fname))
   WriteXLS(df_dxr, row.names = F, fname)
   
-  # PlotMA plot:
-  # plotMA(dxr) # comment out becase for small testset might pop error
-  pdf(paste(outDir, name, ".disp.pdf", sep=""))
-  plotDispEsts( dxd )
-  dev.off()
-
-  pdf(paste(outDir, name, ".MA.pdf", sep=""))
-  plotMA( dxr, cex=0.8 ,  alpha = maxFDR) # contain NA error message
-  dev.off()
+  # QC plots:
+  try(plotDispEstsWrapper(dxd, outDir, name))
+  try(plotMAWrapper(dxd, ourDir, name))
 
   # DEXSeqHTML(dxr, path=outDir, file=paste(name, ".report.html", sep=""), 
   #        fitExpToVar="condition", FDR=maxFDR) # not working properlly
@@ -189,22 +208,20 @@ for (i in 1:tem) {
   
   for (k in 1:5) {
     gene <- geneList[k]
-    #print(paste("Below is for contrast: ", name, sep=""))
-    
-    ## plotDEXseq
-    ## Normalized counts
+
     name_tmp <- paste(name, gene, "top", k, "normalized_counts.pdf", sep=".")
+    name_tmp <- gsub("\\+", "_", name_tmp)
+    name_tmp <- gsub("\\.", "_", name_tmp)
+    name_tmp <- gsub("_pdf$", ".pdf", name_tmp)
     print(paste("saving: ", outDir, name_tmp, sep=""))
-    pdf(paste(outDir, name_tmp, sep=""))
-    plotDEXSeq(dxr, gene, expression=FALSE, norCounts=TRUE, displayTranscripts=TRUE,
-               legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2)
-    dev.off()
+    try(plotDEXSeq_norCounts(dxr, gene, outDir, name_tmp))
+
     ## relative_exon_usage.pdf
     name_tmp <- paste(name, gene, "top", k, "relative_exon_usage.pdf", sep=".")
+    name_tmp <- gsub("\\+", "_", name_tmp)
+    name_tmp <- gsub("\\.", "_", name_tmp)
+    name_tmp <- gsub("_pdf$", ".pdf", name_tmp)
     print(paste("saving: ", outDir, name_tmp, sep=""))
-    pdf(paste(outDir, name_tmp, sep=""))
-    plotDEXSeq(dxr, gene, expression=FALSE, splicing=TRUE, displayTranscripts=TRUE,
-      legend=TRUE, cex.axis=1.2, cex=1.3, lwd=2)
-    dev.off()
+    try(plotDEXSeq_relative_exon_usage(dxr, gene, outDir, name_tmp))
   }
 }
