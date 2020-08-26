@@ -51,7 +51,7 @@ args = commandArgs(trailingOnly=TRUE)
 if (length(args) < 2){
     # development
     metaFile <- 'meta/meta.xlsx'  
-    contrastFile <- './meta/contrast.de.xlsx'
+    contrastFile <- './meta/contrast.as.xlsx'
     gffFile <- '/project/umw_mccb/OneStopRNAseq/kai/DEXSeq/gff/gencode.v34.primary_assembly.annotation.DEXSeq.gff'
     gffFile <- 'gencode.v34.primary_assembly.annotation.DEXSeq.gff'
     #countFile <- 'DEXSeq_count/N052611_Alb_Dex_count.txt DEXSeq_count/N052611_Alb_count.txt DEXSeq_count/N052611_Dex_count.txt DEXSeq_count/N052611_untreated_count.txt DEXSeq_count/N061011_Alb_Dex_count.txt DEXSeq_count/N061011_Alb_count.txt DEXSeq_count/N061011_Dex_count.txt DEXSeq_count/N061011_untreated_count.txt DEXSeq_count/N080611_Alb_Dex_count.txt DEXSeq_count/N080611_Alb_count.txt DEXSeq_count/N080611_Dex_count.txt DEXSeq_count/N080611_untreated_count.txt DEXSeq_count/N61311_Alb_Dex_count.txt DEXSeq_count/N61311_Alb_count.txt DEXSeq_count/N61311_Dex_count.txt DEXSeq_count/N61311_untreated_count.txt'
@@ -65,7 +65,7 @@ if (length(args) < 2){
 
 
 
-min_count_per_exon <- 0  # test, maybe not valid for DEXSeq if larger than 1
+min_count_per_exon <- 0  # for test, must be zero, or DEXSeq exon plot skip exons
 maxFDR <- 0.05  # todo: read config
 #minLFC <- 0.585
 
@@ -102,8 +102,8 @@ for (i in 1:dim(contrast.df)[2]) { # test
   name2 <- gsub(";$", "", name2)
   name1s <- strsplit(name1, ";") [[1]]
   name2s <- strsplit(name2, ";") [[1]]
-  name1 <- gsub(";", ".", name1)
-  name2 <- gsub(";", ".", name2)
+  name1 <- gsub(";", "_", name1)
+  name2 <- gsub(";", "_", name2)
   name <- paste(name1, name2, sep = "_vs_")
   cat(paste("\n\n>>> for contrast", i, ":", name, "\n"))
 
@@ -111,8 +111,17 @@ for (i in 1:dim(contrast.df)[2]) { # test
                             condition = meta.df$GROUP_LABEL,
                             batch     = meta.df$BATCH)
 
-  idx <- sampleTable$condition %in% c(name1, name2)
+  idx <- sampleTable$condition %in% c(name1s, name2s)
   sampleTableSubset <- sampleTable[idx, ]
+
+  # for complex condition contrast
+  if (length(name1s)> 1){
+  	sampleTableSubset$condition[sampleTableSubset$condition %in% name1s] <- name1
+  	# todo: fix batch 
+  }
+  if (length(name2s)>1){
+  	sampleTableSubset$condition[sampleTableSubset$condition %in% name2s] <- name2
+  }
   countFilesSubset <- countFile[idx]
   
   # Print sampleTable:
@@ -166,7 +175,7 @@ for (i in 1:dim(contrast.df)[2]) { # test
   # Summarize result:
   cat("\nSummarize result:\n")
   dxr = DEXSeqResults(dxd)
-  save.image(file=paste(outDir, "contrast", i, ".RData", sep=''))
+  save.image(file=paste(outDir, "contrast", i, ".", name, ".RData", sep=''))
   
   # Some statistics:
   cat(paste("\n\nnum of DE exons with FDR <", maxFDR, "\n"))
