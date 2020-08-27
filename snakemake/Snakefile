@@ -205,9 +205,9 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-        # rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
-        #     if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
-        #     else "Workflow_DAG.all.svg",
+        rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
+            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
+            else "Workflow_DAG.all.svg",
 
         DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES),
         DEXSeq=expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX),
@@ -1092,7 +1092,7 @@ rule rMATS:
         b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
         # note: rMATS will re-run if Snakefile got updated
-        length_file= "Workflow_DAG.all.svg" if config['READ_LENGTH'] else "meta/read_length.txt" , # Workflow_DAG.all.svg is placeholder by-passing read_length detection
+        length_file= "Workflow_DAG.all.svg" if config['READ_LENGTH'] else "meta/read_length.txt" , # todo: bam read length auto detection
         strand_file="meta/strandness.detected.txt",
     output:
         "rMATS.{ascn}/summary.txt"
@@ -1107,6 +1107,7 @@ rule rMATS:
         analysis="P" if config['PAIR_END'] else "U", 
         length=config['READ_LENGTH'] if config['READ_LENGTH'] else read_length, 
         strandness=get_strandness,
+        MAX_FDR=MAX_FDR
     threads:
         1  # todo: multi thread for rMATS4
     log:
@@ -1119,7 +1120,7 @@ rule rMATS:
         mkdir -p rMATS.{wildcards.ascn}
         python2 envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1} -b2 {params.b2} \
         -gtf {input.gtf} -o rMATS.{wildcards.ascn} \
-        -t {params.type} -len {params.length} -c 0.1 -analysis {params.analysis} -libType {params.strandness} &> {log}
+        -t {params.type} -len {params.length} -c {params.MAX_FDR} -analysis {params.analysis} -libType {params.strandness} &> {log}
         """
 
 
@@ -1176,7 +1177,7 @@ rule DEXSeq:
          mem_mb=lambda wildcards, attempt: attempt * 8000
     params:
         rmd="'script/dexseq.r'",
-        #fdr=MAX_FDR,
+        # fdr=MAX_FDR, # todo: add MAX_FDR
         #lfc=MIN_LFC,
         #anno_tab=ANNO_TAB,
     # envmodules:
