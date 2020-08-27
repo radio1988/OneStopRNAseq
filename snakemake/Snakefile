@@ -1181,7 +1181,8 @@ def get_strandness_for_dexseq (x):
 rule prep_count:
     input:
         bam="sorted_reads/{sample}.bam",
-        strandFile="meta/strandness.detected.txt"
+        strandFile="meta/strandness.detected.txt", 
+        gff=DEXSeq_GFF
     output:
         "DEXSeq_count/{sample}_count.txt"
     params:
