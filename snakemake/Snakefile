@@ -1121,21 +1121,58 @@ rule rMATS:
 
 DEXSeq_GFF = config["DEXSeq_GFF"]
 
-rule prep_count:
-    input:
-        "sorted_reads/{sample}.bam"
-    output:
-        "DEXSeq_count/{sample}_count.txt"
-    resources:
-         mem_mb=lambda wildcards, attempt: attempt * 16000
-    log:
-        "log/DEXSeq/prep_count.{sample}.log"
-    benchmark:
-        "log/DEXSeq/prep_count.{sample}.tsv"
-    #conda:
-    #    "envs/dexseq.yaml"
-    shell:
-        "python script/dexseq_count.py -f bam {DEXSeq_GFF} {input} {output}"
+def get_strandness_for_dexseq (x):
+    book = {0 : '-s no', 1 : '-s yes', 2 : '-s reverse'}
+    with open("meta/strandness.detected.txt", "r") as file:
+        txt = file.readline()
+    #print("meta/strandness.detected.txt:", txt)
+    p = re.compile("counts.s(.)\.[liberal|strict]")
+    res = p.search(txt)
+    #print("strand code:", res.group(1))
+    if res.group(1) is None:
+        sys.exit("strandness detection wrong")
+    strand = book[int(res.group(1))]
+    return (strand)
+
+# rule prep_count
+if config['PAIR_END']:
+    rule prep_count:
+        input:
+            "sorted_reads/{sample}.bam"
+        output:
+            "DEXSeq_count/{sample}_count.txt"
+        params:
+            strand=get_strandness_for_dexseq if len(config['STRAND']) > 1 else "Snakefile"
+        resources:
+             mem_mb=lambda wildcards, attempt: attempt * 16000
+        log:
+            "log/DEXSeq/prep_count.{sample}.log"
+        benchmark:
+            "log/DEXSeq/prep_count.{sample}.tsv"
+        #conda:
+        #    "envs/dexseq.yaml"
+        shell:
+            "python script/dexseq_count.py -f bam -a config['MAPQ'] -p yes -r pos {params.strand} {DEXSeq_GFF} {input} {output}"  
+            # todo: maybe -r name (sort by name) is faster
+else:
+    rule prep_count:
+        input:
+            "sorted_reads/{sample}.bam"
+        output:
+            "DEXSeq_count/{sample}_count.txt"
+        params:
+            strand=get_strandness_for_dexseq if len(config['STRAND']) > 1 else "Snakefile"
+        resources:
+             mem_mb=lambda wildcards, attempt: attempt * 16000
+        log:
+            "log/DEXSeq/prep_count.{sample}.log"
+        benchmark:
+            "log/DEXSeq/prep_count.{sample}.tsv"
+        #conda:
+        #    "envs/dexseq.yaml"
+        shell:
+            "python script/dexseq_count.py -f bam -a config['MAPQ'] {params.strand} {DEXSeq_GFF} {input} {output}"  
+            # todo: maybe -r name (sort by name) is faster
 
 rule DEXSeq:
     input:
@@ -1224,7 +1261,9 @@ rule GATK_ASEReadCounter:
     benchmark:
         "log/GATK_ASEReadCounter/{sample}.tsv"
     shell:
-        "./envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} &> {log}"
+        "./envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} \
+        -U ALLOW_N_CIGAR_READS -minDepth 10 --minMappingQuality 15 --minBaseQuality 10 \
+        &> {log}"  # todo: more thoughts on detailed parameters, e.g.    -drf DuplicateRead -U ALLOW_N_CIGAR_READS
         
 
 rule create_dag:
