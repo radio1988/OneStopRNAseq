@@ -112,6 +112,10 @@ if config['START'] in ["FASTQ", "BAM", "COUNT"]:
 else:
     CONTRASTS_DE = ["placeholder"]
 
+# for DEXSeq
+CONTRASTS_DE_for_DEX = [l.replace('.','_') for l in CONTRASTS_DE]
+
+
 # for rMATS
 if config['START'] in ["FASTQ", "BAM"]:
     G = get_contrast_groups(config['CONTRAST_AS'])
@@ -206,11 +210,11 @@ rule targets:
         #     else "Workflow_DAG.all.svg",
 
         DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES),
-        DEXSeq=expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE),
+        DEXSeq=expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX),
 
-        # SalmonTE=("SalmonTE_output/EXPR.csv"
-        #     if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
-        #     else "Workflow_DAG.all.svg"),
+        SalmonTE=("SalmonTE_output/EXPR.csv"
+            if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
+            else "Workflow_DAG.all.svg"),
 
         GATK_ASE=(expand("GATK_ASEReadCounter/{sample}.table", sample=SAMPLES)
             if config["ASE_ANALYSIS"]
@@ -1071,6 +1075,15 @@ def read_length(x):
     return (int(txt))
 
 
+# rule rMATS
+# conda: snakemake --use-conda -p -j 5 rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt
+# python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 sorted_reads/KO_D8_1_S6.bam,sorted_reads/KO_D8_2_S12.bam,sorted_reads/WT_D8_1_S5.bam,sorted_reads/WT_D8_2_S11.bam -b2  sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam,sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam -gtf genome/mm10_chr19/genecode.vM21.chr19.gtf -o rMATS -t paired -len 100 -c 0.0001 -analysis paired -libType fr-unstranded
+# v 3.5 have no pvalues, must use 4.0
+# "singularity exec ~/singularity/hand_sandbox/ \
+# /opt/anaconda3/envs/rmat/bin/python /opt/bin/rMATS.4.0.2/rMATS-turbo-Linux-UCS4/rmats.py \
+# --b1 b1.txt --b2 b2.txt \
+# --gtf Homo_sapiens.GRCh37.75.gtf \
+# --od rMATS  -t {params.type}} --readLength 100 --cstat 0.0001 --libType fr-unstranded"
 rule rMATS:
     #todo: rMATS4.0(sandbox failed because of apt dependency, still got partial results)
     #todo: update to docker: simple to install, faster, recommended on website
@@ -1080,7 +1093,7 @@ rule rMATS:
         gtf=GTF, 
         # note: rMATS will re-run if Snakefile got updated
         length_file= "Workflow_DAG.all.svg" if config['READ_LENGTH'] else "meta/read_length.txt" , # Workflow_DAG.all.svg is placeholder by-passing read_length detection
-        strand_file="meta/strandness.detected.txt" if len(config['STRAND']) > 1 else "Snakefile" # placeholder to skip this for dag creation
+        strand_file="meta/strandness.detected.txt",
     output:
         "rMATS.{ascn}/summary.txt"
     conda:
@@ -1093,7 +1106,7 @@ rule rMATS:
         type="paired" if config['PAIR_END'] else "single",  # todo, rMATS3 has a single end bug
         analysis="P" if config['PAIR_END'] else "U", 
         length=config['READ_LENGTH'] if config['READ_LENGTH'] else read_length, 
-        strandness=get_strandness if len(config['STRAND']) > 1 else "Snakefile" # placeholder to skip this for dag creation
+        strandness=get_strandness,
     threads:
         1  # todo: multi thread for rMATS4
     log:
@@ -1108,16 +1121,7 @@ rule rMATS:
         -gtf {input.gtf} -o rMATS.{wildcards.ascn} \
         -t {params.type} -len {params.length} -c 0.1 -analysis {params.analysis} -libType {params.strandness} &> {log}
         """
-        # conda: snakemake --use-conda -p -j 5 rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt
 
-        # python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 sorted_reads/KO_D8_1_S6.bam,sorted_reads/KO_D8_2_S12.bam,sorted_reads/WT_D8_1_S5.bam,sorted_reads/WT_D8_2_S11.bam -b2  sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam,sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam -gtf genome/mm10_chr19/genecode.vM21.chr19.gtf -o rMATS -t paired -len 100 -c 0.0001 -analysis paired -libType fr-unstranded
-
-        # v 3.5 have no pvalues, must use 4.0
-        # "singularity exec ~/singularity/hand_sandbox/ \
-        # /opt/anaconda3/envs/rmat/bin/python /opt/bin/rMATS.4.0.2/rMATS-turbo-Linux-UCS4/rmats.py \
-        # --b1 b1.txt --b2 b2.txt \
-        # --gtf Homo_sapiens.GRCh37.75.gtf \
-        # --od rMATS  -t {params.type}} --readLength 100 --cstat 0.0001 --libType fr-unstranded"
 
 DEXSeq_GFF = config["DEXSeq_GFF"]
 
@@ -1134,45 +1138,30 @@ def get_strandness_for_dexseq (x):
     strand = book[int(res.group(1))]
     return (strand)
 
-# rule prep_count
-if config['PAIR_END']:
-    rule prep_count:
-        input:
-            "sorted_reads/{sample}.bam"
-        output:
-            "DEXSeq_count/{sample}_count.txt"
-        params:
-            strand=get_strandness_for_dexseq if len(config['STRAND']) > 1 else "Snakefile"
-        resources:
-             mem_mb=lambda wildcards, attempt: attempt * 16000
-        log:
-            "log/DEXSeq/prep_count.{sample}.log"
-        benchmark:
-            "log/DEXSeq/prep_count.{sample}.tsv"
-        #conda:
-        #    "envs/dexseq.yaml"
-        shell:
-            "python script/dexseq_count.py -f bam -a config['MAPQ'] -p yes -r pos {params.strand} {DEXSeq_GFF} {input} {output}"  
-            # todo: maybe -r name (sort by name) is faster
-else:
-    rule prep_count:
-        input:
-            "sorted_reads/{sample}.bam"
-        output:
-            "DEXSeq_count/{sample}_count.txt"
-        params:
-            strand=get_strandness_for_dexseq if len(config['STRAND']) > 1 else "Snakefile"
-        resources:
-             mem_mb=lambda wildcards, attempt: attempt * 16000
-        log:
-            "log/DEXSeq/prep_count.{sample}.log"
-        benchmark:
-            "log/DEXSeq/prep_count.{sample}.tsv"
-        #conda:
-        #    "envs/dexseq.yaml"
-        shell:
-            "python script/dexseq_count.py -f bam -a config['MAPQ'] {params.strand} {DEXSeq_GFF} {input} {output}"  
-            # todo: maybe -r name (sort by name) is faster
+rule prep_count:
+    input:
+        bam="sorted_reads/{sample}.bam",
+        strandFile="meta/strandness.detected.txt"
+    output:
+        "DEXSeq_count/{sample}_count.txt"
+    params:
+        strand=get_strandness_for_dexseq,
+        readType=('-p yes -r pos'
+            if config['PAIR_END']
+            else ' '), 
+        MAPQ=10
+    resources:
+         mem_mb=lambda wildcards, attempt: attempt * 16000
+    log:
+        "log/DEXSeq/prep_count.{sample}.log"
+    benchmark:
+        "log/DEXSeq/prep_count.{sample}.tsv"
+    #conda:
+    #    "envs/dexseq.yaml"
+    shell:
+        "python script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output}"  
+        # todo: maybe -r name (sort by name) is faster
+
 
 rule DEXSeq:
     input:
@@ -1181,8 +1170,8 @@ rule DEXSeq:
         contrast=config["CONTRAST_DE"],
         gffFile=config["DEXSeq_GFF"],
     output:
-#        touch("DEXSeq/DEXSeq.finished"),
-        expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE)
+        #touch("DEXSeq/DEXSeq.finished"),
+        expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX)
     resources:
          mem_mb=lambda wildcards, attempt: attempt * 8000
     params:
