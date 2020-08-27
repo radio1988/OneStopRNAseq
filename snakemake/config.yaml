@@ -13,7 +13,7 @@ SAMPLES:
     - WT_D8_1_S5
     - WT_D8_2_S11
 
-PAIR_END: False  # True/False
+PAIR_END: True  # True/False
 
 #GENOME: genome/mm10_chr19/mm10.chr19.fa 
 GENOME: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
@@ -103,9 +103,6 @@ TE_REFERENCE: mm # mm, hs, dm, dr
 # mm : Mus musculus
 # dm : Drosophila melanogaster
 # dr : Danio rerio
-
-DEXSeq_GFF: "genome/mm10_chr19/gencode.vM25.primary_assembly.annotation.DEXSeq.chr19.gff"
-
 
 # For ASE
 ASE_ANALYSIS: True

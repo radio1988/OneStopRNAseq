@@ -1146,13 +1146,13 @@ rule rMATS:
         """
 
 
-DEXSeq_GFF = config["DEXSeq_GFF"]
+DEXSeq_GFF = config['GTF']+".dexseq.gff"
 
 rule DEXSeq_Prep_GFF:
     input:
-        GTF=config['GTF']
+        config['GTF']
     output:
-        config['GTF']+".dexseq.gff"
+        DEXSeq_GFF
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:
@@ -1331,7 +1331,7 @@ rule reset:
         """
         echo 'deleting files..'
         rm -rf fastqc/ bam_qc/ mapped_reads/ sorted_reads/ bam_qc/ bigWig/ \
-        feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ gsea/ gsea.tar.gz \
+        feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ gsea/ gsea_compressed/ \
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \
         lsf.log Log.out nohup.out report.log report.html  Workflow_DAG.all.svg \
