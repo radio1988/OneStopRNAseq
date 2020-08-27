@@ -1252,7 +1252,7 @@ rule GATK_ASEReadCounter:
         "log/GATK_ASEReadCounter/{sample}.tsv"
     shell:
         "./envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} \
-        -U ALLOW_N_CIGAR_READS -minDepth 10 --minMappingQuality 15 --minBaseQuality 10 \
+        --min-depth-of-non-filtered-base 10 --min-mapping-quality 15 --min-base-quality 20 \
         &> {log}"  # todo: more thoughts on detailed parameters, e.g.    -drf DuplicateRead -U ALLOW_N_CIGAR_READS
         
 
@@ -1290,9 +1290,14 @@ rule create_dag:
 rule reset:
     shell:
         """
-        rm -rf fastqc/ bigWig/ bam_qc/ mapped_reads/ sorted_reads/ create_dag/ rMATS.*/ gsea.tar.gz SalmonTE_output fastq_salmon \
-        lsf.log Log.out report.log meta/strandness.detected.txt Workflow_DAG.all.svg report.html feature_count  nohup.out DESeq2 gsea \
-        meta/decoder.txt
+        echo 'deleting files..'
+        rm -rf fastqc/ bam_qc/ mapped_reads/ sorted_reads/ bam_qc/ bigWig/ \
+        feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ gsea/ gsea.tar.gz \
+        GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
+        _STARgenome _STARtmp \
+        lsf.log Log.out nohup.out report.log report.html  Workflow_DAG.all.svg \
+        meta/strandness.detected.txt  meta/decoder.txt
+        echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
 
