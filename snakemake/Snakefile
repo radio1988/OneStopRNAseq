@@ -205,9 +205,9 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-        GSEA_compression =  expand("gsea/{contrast}/{db}.GseaPreranked.tar.gz", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
+        GSEA_compression =  expand("gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
-            else expand("gsea/{contrast}/{db}.GseaPreranked.tar.gz", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
+            else expand("gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
         rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
@@ -994,7 +994,7 @@ rule GSEA_compression:
     input:
         "gsea/{contrast}/{db}.finished"
     output:
-        "gsea/{contrast}/{db}.GseaPreranked.tar.gz"
+        "gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     threads:
@@ -1004,8 +1004,9 @@ rule GSEA_compression:
     benchmark:
         "log/gsea/{contrast}.{db}.compression.tsv"
     shell:
-        "[ -d gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/ ] && \
-        tar cf - gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  | pigz -p {threads} -f > gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.tar.gz \
+        "mkdir -p gsea_compressed && \
+        [ -d gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/ ] && \
+        tar cf - gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  | pigz -p {threads} -f > gsea_compressed/{wildcards.contrast}/{wildcards.db}.GseaPreranked.tar.gz \
         2> {log}"
 
 
@@ -1147,6 +1148,23 @@ rule rMATS:
 
 DEXSeq_GFF = config["DEXSeq_GFF"]
 
+rule DEXSeq_Prep_GFF:
+    input:
+        GTF=config['GTF']
+    output:
+        config['GTF']+".dexseq.gff"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    threads:
+        1
+    log:
+        "log/DEXSeq/prep_gff.log"
+    benchmark:
+        "log/DEXSeq/prep_gff.tsv"
+    shell:
+        "python script/dexseq_prepare_annotation.py -r no {input} {output} &> {log}"
+
+
 def get_strandness_for_dexseq (x):
     book = {0 : '-s no', 1 : '-s yes', 2 : '-s reverse'}
     with open("meta/strandness.detected.txt", "r") as file:
@@ -1190,7 +1208,7 @@ rule DEXSeq:
         count_files = expand("DEXSeq_count/{sample}_count.txt", sample = SAMPLES),
         meta=config["META"],
         contrast=config["CONTRAST_DE"],
-        gffFile=config["DEXSeq_GFF"],
+        gffFile=config['GTF']+".dexseq.gff",
     output:
         #touch("DEXSeq/DEXSeq.finished"),
         expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX)
