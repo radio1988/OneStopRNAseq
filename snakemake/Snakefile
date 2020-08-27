@@ -205,6 +205,10 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
+        GSEA_compression =  expand("gsea/{contrast}/{db}.GseaPreranked.tar.gz", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
+            if config["START"] in ["FASTQ", "BAM", "COUNT"]
+            else expand("gsea/{contrast}/{db}.GseaPreranked.tar.gz", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
+
         rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
             else "Workflow_DAG.all.svg",
@@ -474,7 +478,7 @@ rule samtools_sort:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000 
     threads:
-        2
+        4
     container:
         "envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
     envmodules:
@@ -986,6 +990,23 @@ rule GSEA:
 
 # todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
 
+rule GSEA_compression:
+    input:
+        "gsea/{contrast}/{db}.finished"
+    output:
+        "gsea/{contrast}/{db}.GseaPreranked.tar.gz"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000,
+    threads:
+        4
+    log:
+        "log/gsea/{contrast}.{db}.compression.log"
+    benchmark:
+        "log/gsea/{contrast}.{db}.compression.tsv"
+    shell:
+        "[ -d gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/ ] && \
+        tar cf - gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  | pigz -p {threads} -f > gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.tar.gz \
+        2> {log}"
 
 
 # rule read_length_detection_fq: (not needed because can be detected from BAM)
