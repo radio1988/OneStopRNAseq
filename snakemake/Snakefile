@@ -28,7 +28,6 @@ import os
 import math
 
 # Get contrast name for DESeq2
-# todo: fix svg
 def get_contrast_fnames (fname):
     df=pd.read_excel(fname)
     CONTRASTS = []
@@ -210,7 +209,7 @@ rule targets:
             else expand("gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
         rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
-            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]  # todo: estimate read length from BAM
+            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"] 
             else "Workflow_DAG.all.svg",
 
         DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES),
@@ -561,7 +560,6 @@ if config['PAIR_END']:
             "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 16500
-            # todo: add strand support
         threads:
             1
         log:
@@ -587,7 +585,6 @@ else:
             "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 16500
-            # todo: add strand support
         threads:
             1
         log:
@@ -898,7 +895,6 @@ def DESeq2_input(config):
 
 
 rule DESeq2:
-    # todo: complicated contrasts
     input:
         DESeq2_input(config)
     output:
@@ -972,7 +968,6 @@ rule GSEA:
         
         mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}
 
-        # to upper letter for all gene_names in RNK file (todo: toupper for user defined non-human GSEA db)
         python script/capslock.py {input.rnk} &>> {log}
         
         which java &>> {log}
@@ -1010,41 +1005,7 @@ rule GSEA_compression:
         2> {log}"
 
 
-# rule read_length_detection_fq: (not needed because can be detected from BAM)
-#     input:
-#         expand("fastqc/details/{sample}.{r}_fastqc.html", sample=SAMPLES, r=["R1", "R2"])
-#             if config['PAIR_END']
-#             else expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES) # todo: test with single end reads
-#     output:
-#         "meta/read_length.txt"
-#     params:
-#         mem_mb="1000",
-#     threads:
-#         1
-#     log:
-#         "log/read_length_detection/read_length_detection.log"
-#     benchmark:
-#         "log/read_length_detection/read_length_detection.tsv"
-#     run:
-#         import re
-#         import statistics
-#         lengths = []
-#         for f in input:
-#             p = re.compile("Sequence length</td><td>(\d*)</td></tr>")
-#             for i, line in enumerate(open(f, "r")):
-#                 for match in re.finditer(p, line):
-#                     lengths.append(match.group(1))
-#         lengths = list(map(int, lengths))
-#         if(len(set(lengths))!=1):
-#             sys.exit("Not all fastq files have the same length")
-        
-#         median_length = int(statistics.median(lengths))
-#         print(output[0])
-#         with open(output[0], "w") as out:
-#             out.write(str(median_length))
-
 rule read_length_detection_bam:
-    # todo: not finished yet
     input:
         expand("bam_qc/stats/{sample}.stats.txt", sample=SAMPLES)
             if config['START'] in ["FASTQ", "BAM"]
@@ -1116,21 +1077,20 @@ rule rMATS:
         b1=lambda wildcards: B1S[int(wildcards['ascn'])],
         b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
-        # note: rMATS will re-run if Workflow_DAG.all.svg got updated
-        length_file= "Workflow_DAG.all.svg" if config['READ_LENGTH'] else "meta/read_length.txt" , # todo: bam read length auto detection
+        length_file="meta/read_length.txt" , 
         strand_file="meta/strandness.detected.txt",
     output:
         "rMATS.{ascn}/summary.txt"
     conda:
       "envs/rmats.yaml"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 32000, # todo: check and reduce
+        mem_mb=lambda wildcards, attempt: attempt * 32000, # todo: check and reduce # todo: set 24:00 run time while keep others under 4:00?
     params:
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
         type="paired" if config['PAIR_END'] else "single",  # todo, rMATS3 has a single end bug
         analysis="P" if config['PAIR_END'] else "U", 
-        length=config['READ_LENGTH'] if config['READ_LENGTH'] else read_length, 
+        length=read_length, 
         strandness=get_strandness,
         MAX_FDR=MAX_FDR
     threads:
@@ -1300,7 +1260,6 @@ rule GATK_ASEReadCounter:
         
 
 rule create_dag:
-    # todo: fix bug
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     threads:
