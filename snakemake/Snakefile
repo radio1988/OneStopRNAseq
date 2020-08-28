@@ -208,7 +208,7 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-        rMATS=expand("rMATS.{ascn}/summary.txt", ascn=range(ASCN))
+        rMATS=expand("rMATS.{ascn}/output/RI.MATS.JCEC.txt", ascn=range(ASCN))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"] 
             else "Workflow_DAG.all.svg",
 
@@ -1071,6 +1071,7 @@ def read_length(x):
 # --b1 b1.txt --b2 b2.txt \
 # --gtf Homo_sapiens.GRCh37.75.gtf \
 # --od rMATS  -t {params.type}} --readLength 100 --cstat 0.0001 --libType fr-unstranded"
+
 rule rMATS:
     #todo: rMATS4.0(sandbox failed because of apt dependency, still got partial results)
     #todo: update to docker: simple to install, faster, recommended on website
@@ -1081,11 +1082,12 @@ rule rMATS:
         length_file="meta/read_length.txt" , 
         strand_file="meta/strandness.detected.txt",
     output:
-        "rMATS.{ascn}/summary.txt"
-    conda:
-      "envs/rmats.yaml"
+        "rMATS.{ascn}/output/RI.MATS.JCEC.txt" # just one representative
+    envmodules:
+        "rMATS/4.1.0"
+        "gcc/8.1.0"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 32000, # todo: check and reduce # todo: set 24:00 run time while keep others under 4:00?
+        mem_mb=lambda wildcards, attempt: attempt * 6000, # todo: check and reduce # todo: set 24:00 run time while keep others under 4:00?
     params:
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
@@ -1095,7 +1097,7 @@ rule rMATS:
         strandness=get_strandness,
         MAX_FDR=MAX_FDR
     threads:
-        1  # todo: multi thread for rMATS4
+        4
     log:
         "log/rMATS/rMATS.{ascn}.log"
     benchmark:
@@ -1104,9 +1106,27 @@ rule rMATS:
         """
         rm -rf rMATS.{wildcards.ascn}
         mkdir -p rMATS.{wildcards.ascn}
-        python2 envs/rMATS.3.2.5/RNASeq-MATS.py -b1 {params.b1} -b2 {params.b2} \
-        -gtf {input.gtf} -o rMATS.{wildcards.ascn} \
-        -t {params.type} -len {params.length} -c {params.MAX_FDR} -analysis {params.analysis} -libType {params.strandness} &> {log}
+
+        echo {params.b1} > rMATS.{wildcards.ascn}/b1.txt
+        echo {params.b2} > rMATS.{wildcards.ascn}/b2.txt
+
+        which python &> {log}
+        which rmats.py &>> {log}
+
+        # todo: remove hardcode path
+        # todo: --paired-stats
+        python /share/pkg/rMATS/4.1.0/rmats.py  --b1 rMATS.{wildcards.ascn}/b1.txt \
+        --b2  rMATS.{wildcards.ascn}/b2.txt \
+        --gtf {input.gtf} \
+        -t {params.type} \
+        --readLength {params.length} \
+        --variable-read-length \
+        --libType {params.strandness} \
+        --nthread {threads} \
+        --tstat {threads} \
+        --cstat 0.2 \
+        --od rMATS.{wildcards.ascn}/output/ \
+        --tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
         """
 
 
