@@ -1064,12 +1064,15 @@ rule read_length_detection_bam:
         import statistics
         lengths = []
         for f in input:
-            p = re.compile("SN      average length: (\d*)")
+            p = re.compile("average length:\s*(\d*)")
             for i, line in enumerate(open(f, "r")):
                 for match in re.finditer(p, line):
                     lengths.append(match.group(1))
         lengths = list(map(int, lengths))
-        if(len(set(lengths))!=1):
+        print("read lengths detected from BAM:", lengths,"\n")
+        if(len(set(lengths)) < 1):
+            sys.exit("read lengths detection from BAM failed")
+        if(len(set(lengths)) > 1):
             sys.exit("Not all fastq files have the same length")
         
         median_length = int(statistics.median(lengths))
@@ -1113,7 +1116,7 @@ rule rMATS:
         b1=lambda wildcards: B1S[int(wildcards['ascn'])],
         b2=lambda wildcards: B2S[int(wildcards['ascn'])],
         gtf=GTF, 
-        # note: rMATS will re-run if Snakefile got updated
+        # note: rMATS will re-run if Workflow_DAG.all.svg got updated
         length_file= "Workflow_DAG.all.svg" if config['READ_LENGTH'] else "meta/read_length.txt" , # todo: bam read length auto detection
         strand_file="meta/strandness.detected.txt",
     output:
@@ -1121,7 +1124,7 @@ rule rMATS:
     conda:
       "envs/rmats.yaml"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 8000, # todo: check and reduce
+        mem_mb=lambda wildcards, attempt: attempt * 32000, # todo: check and reduce
     params:
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
@@ -1336,7 +1339,7 @@ rule reset:
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \
         lsf.log Log.out nohup.out report.log report.html  Workflow_DAG.all.svg \
-        meta/strandness.detected.txt  meta/decoder.txt
+        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
