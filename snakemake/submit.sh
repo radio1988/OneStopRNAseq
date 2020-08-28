@@ -1,7 +1,7 @@
 #!/bin/bash
 # run with:
 # nohup bash submit.sh &
-# OR: bsub -q long -W 24:00 'bash submit.sh'
+# OR: bsub -q long -W 72:00 'bash submit.sh'
 
 module purge
 module load singularity/singularity-current > nohup.out   2>&1 
@@ -14,17 +14,14 @@ snakemake -p -k --jobs 999 \
 --use-singularity \
 --use-conda  --conda-prefix "/project/umw_mccb/OneStopRNAseq/conda/" \
 --latency-wait 300 \
---ri --restart-times 2 \
---cluster 'bsub -q short -o lsf.log -R "rusage[mem={resources.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00' >> nohup.out  2>&1 
+--ri --restart-times 1 \
+--cluster 'bsub -q long -o lsf.log -R "rusage[mem={resources.mem_mb}]" -n {threads} -R span[hosts=1] -W 48:00' >> nohup.out  2>&1 
 
-# Rui Note: 2020/06/03/18:21
-# Most works with singularity
-# rMAT needs py2.7, thus --use-conda necessary, skip to remove conda download overhead
+# report
+# snakemake -j 1  --report report.html > report.log  2>&1
 
-snakemake --report report.html > report.log  2>&1
-
-[ -d 'gsea/' ] && rm -f gsea/gsea.tar.gz && tar cf - gsea/  | pigz -p 1 -f > gsea.tar.gz && mv gsea.tar.gz gsea
-
+# gsea compression
+# [ -d 'gsea/' ] && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz && mv gsea.tar.gz gsea
 
 ## Handy commands for development
 # rm -rf lsf.log nohup.out meta/read_length.txt   meta/strandness.detected.txt log/ Workflow_DAG.all.svg     may*  DESeq2/ gsea/ report.html bigWig/ feature_count/ bam_qc/ rMATS*/
