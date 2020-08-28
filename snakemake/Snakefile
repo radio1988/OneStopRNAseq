@@ -944,8 +944,7 @@ rule GSEA:
         db="envs/gsea_db/{db}"
     output:
         touch("gsea/{contrast}/{db}.finished"),  # todo: premature killed jobs create junk sub folders, confusing to users
-        directory("gsea/{contrast}/{db}.GseaPreranked")
-        #directory(lambda wildcards: "gsea/"+wildcards['contrast']+wildcards['db'][:-12])
+        "gsea/{contrast}/{db}.GseaPreranked/index.html"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
     params:
@@ -967,6 +966,8 @@ rule GSEA:
         echo {params.label_db} > {log}
         
         mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}
+        rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
+        rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  # avoid dir structure error
 
         python script/capslock.py {input.rnk} &>> {log}
         
