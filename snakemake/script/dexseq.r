@@ -8,7 +8,7 @@ suppressPackageStartupMessages(library(WriteXLS))
 suppressPackageStartupMessages(library(BiocParallel))
 sessionInfo()
 
-BPPARAM = MulticoreParam(workers=8) # test
+BPPARAM = MulticoreParam(workers=4) # test
 
 readExcel <- function(fname){
   df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important

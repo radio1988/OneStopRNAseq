@@ -634,9 +634,9 @@ rule bamCoverage:
     output:
         "bigWig/{sample}.{mode}.cpm.bw"
     threads:
-        8
+        4
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000,
+        mem_mb=lambda wildcards, attempt: attempt * 4000,
     priority:
         0
     log:
@@ -1190,7 +1190,7 @@ rule DEXSeq:
     conda:
         "envs/dexseq.yaml"
     threads:
-        8
+        4
     log:
         "log/DEXSeq/DEXSeq.log"
     benchmark:
