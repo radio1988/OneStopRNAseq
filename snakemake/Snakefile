@@ -373,7 +373,7 @@ if config['PAIR_END']:
             r1="fastq/{sample}.R1.fastq.gz",
             r2="fastq/{sample}.R2.fastq.gz"
         output:
-            bam="mapped_reads/{sample}.bam"
+            temp("mapped_reads/{sample}.bam")
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 3000 
         params:
@@ -424,7 +424,7 @@ else:
             gtf=GTF,
             r1="fastq/{sample}.fastq.gz",
         output:
-            bam="mapped_reads/{sample}.bam"
+            temp("mapped_reads/{sample}.bam")
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 3000   ,
         params:
@@ -559,7 +559,7 @@ if config['PAIR_END']:
         output:
             "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 16500
+            mem_mb=lambda wildcards, attempt: attempt * 16500 # todo: observe and reduce
         threads:
             1
         log:
@@ -967,7 +967,7 @@ rule GSEA:
         
         mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}
         rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
-        rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  # avoid dir structure error
+        rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  # avoid dir structure err
 
         python script/capslock.py {input.rnk} &>> {log}
         
@@ -1087,7 +1087,7 @@ rule rMATS:
         "rMATS/4.1.0"
         "gcc/8.1.0"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 6000, # todo: check and reduce # todo: set 24:00 run time while keep others under 4:00?
+        mem_mb=lambda wildcards, attempt: attempt * 1500, # need 3G RAM
     params:
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
