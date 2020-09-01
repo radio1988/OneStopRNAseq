@@ -155,7 +155,7 @@ for (i in 1:dim(contrast.df)[2]) { # test
   
   ## if only one batch, don't apply model, otherwise DEXSeq error:
   print("Estimate Dispersion and performing statistical test..")
-  if (length(unique(sampleTableSubset$BATCH)) == 1) {
+  if (length(unique(sampleTableSubset$batch)) == 1) {
   	print("No Batch Effect")
     dxd = estimateDispersions(dxd, BPPARAM=BPPARAM)
     dxd = testForDEU(dxd, BPPARAM=BPPARAM)
