@@ -518,7 +518,10 @@ rule bam_qc:
         bam="sorted_reads/{sample}.bam",
         bai="sorted_reads/{sample}.bam.bai"
     output:
-        "bam_qc/samstat/{sample}.bam.samstat.html"
+        "bam_qc/samstat/{sample}.bam.samstat.html",
+        "bam_qc/stats/{sample}.stats.txt",
+        "bam_qc/flagstat/{sample}.flagsat.txt",
+        "bam_qc/idxstats/{sample}.idxstats.txt"
     container:
         "envs/hand_sandbox.simg"
     priority:
@@ -559,7 +562,7 @@ if config['PAIR_END']:
         output:
             "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 16500 # todo: observe and reduce
+            mem_mb=lambda wildcards, attempt: attempt * 16500
         threads:
             1
         log:
@@ -967,7 +970,7 @@ rule GSEA:
         
         mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}
         rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
-        rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  # avoid dir structure err
+        rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
 
         python script/capslock.py {input.rnk} &>> {log}
         
@@ -1087,7 +1090,9 @@ rule rMATS:
         "rMATS/4.1.0"
         "gcc/8.1.0"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 1500, # need 3G RAM
+        mem_mb=lambda wildcards, attempt: attempt * 6000,
+    threads:
+        1
     params:
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
@@ -1096,8 +1101,6 @@ rule rMATS:
         length=read_length, 
         strandness=get_strandness,
         MAX_FDR=MAX_FDR
-    threads:
-        4
     log:
         "log/rMATS/rMATS.{ascn}.log"
     benchmark:
@@ -1318,7 +1321,7 @@ rule reset:
         feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ gsea/ gsea_compressed/ \
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \
-        lsf.log Log.out nohup.out report.log report.html  Workflow_DAG.all.svg \
+        lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.svg \
         meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
