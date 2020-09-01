@@ -5,5 +5,4 @@ rsync -aP  /project/umw_mccb/OneStopRNAseq/rui/develop/OneStopRNAseq/snakemake/s
 rsync -aP  /project/umw_mccb/OneStopRNAseq/rui/develop/OneStopRNAseq/snakemake/meta .
 ln -s /project/umw_mccb/OneStopRNAseq/rui/develop/OneStopRNAseq/snakemake/envs/
 source activate osr
-snakemake -j 1 reset
 echo "you need to create config.yaml, fastq/"
