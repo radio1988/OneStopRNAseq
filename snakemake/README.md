@@ -108,12 +108,15 @@ nohup submit.sh &
 - √ osr and singularity(2.7.1) both have STAR, conda STAR(2.7.4) bad: now use conda
 
 ## Todo
+- SE 
 - DESeq2 bug: no p-value histogram after the first one, just output as pdf?
-- upgrade the latest GenCode for Human and Mouse, Add TE to anno file
+- DEXseq anno
 - add custom genome and gtf
 - rMATS in singularity to speed up overhead
 - SalmonTE in github? in singularity? add installment code?
-
+- Filter rMATS results and transform txt to xlsx for gene symbol bug
+- submit.sh in long runs forever
+- GSEA input as name.txt rather than name.rnk
 1. GSEA-DB upload
 2. rMATS filter
 3. sample names can't be numbers, must be strings

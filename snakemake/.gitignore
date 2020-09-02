@@ -1,5 +1,7 @@
 *.DS_Store
 ._*
+.snake*
+script/.ipynb_checkpoints/
 
 # large files
 genome/
