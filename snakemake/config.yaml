@@ -15,22 +15,22 @@ SAMPLES:
 
 PAIR_END: True  # True/False
 
-#GENOME: genome/mm10_chr19/mm10.chr19.fa 
-GENOME: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
-#test: example_data/genome/mm10_chr19/mm10.chr19.fa
+GENOME: example_data/genome/mm10_chr19/mm10.chr19.fa.gz
+#'fa' and 'fa.gz' both supported
+#test: example_data/genome/mm10_chr19/mm10.chr19.fa.gz
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/hg38.primary.fa
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
 #yeast: /project/umw_mccb/Rui/genomes/yeast/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
 
-#INDEX: genome/mm10_chr19/star_idx
-INDEX: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/star_idx
+INDEX: example_data/genome/mm10_chr19/star_idx
+#will be created if not exist
 #test: example_data/genome/mm10_chr19/star_idx
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/star_idx
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/star_idx
 #yeast: /project/umw_mccb/Rui/genomes/yeast/star_idx
 
-#GTF: genome/mm10_chr19/gencode.vM21.chr19.gtf
-GTF: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf
+GTF: example_data/genome/mm10_chr19/gencode.vM25.primary_assembly.annotation.ch19.gtf.gz 
+#'gtf' or 'gtf.gz' both supported
 #test: example_data/genome/mm10_chr19/gencode.vM21.chr19.gtf
 #human: /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v34.primary_assembly.annotation.gtf
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf
@@ -103,4 +103,4 @@ TE_REFERENCE: mm # mm, hs, dm, dr
 
 # For ASE
 ASE_ANALYSIS: True
-VCF: genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
+VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf.gz

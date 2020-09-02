@@ -7,6 +7,38 @@ configfile: "config.yaml"
 
 #localrules: targets, create_dag
 
+import pandas as pd
+import sys
+import re
+import os
+import math
+import gzip
+import shutil
+
+def gunzip(fname):
+    outname = re.sub(".gz$", "", fname)
+    if outname == fname:
+        sys.exit("config error:", fname, "does not end with .gz")
+    # todo: skip if uncompressed file exists (but how to check for previous uncompress integrity
+    with gzip.open(fname, 'rb') as f_in:
+        with open(outname, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+
+
+# umcompress files
+if config["GENOME"].endswith(".gz"):
+    gunzip(config["GENOME"])
+    config["GENOME"] = re.sub(".gz$", "", config["GENOME"])
+
+if config["GTF"].endswith(".gz"):
+    # todo:
+    gunzip(config["GTF"])
+    config["GTF"] = re.sub(".gz$", "", config["GTF"])
+
+if config["VCF"].endswith(".gz"):
+    # todo:
+    gunzip(config["VCF"])
+    config["VCF"] = re.sub(".gz$", "", config["VCF"])
 
 SAMPLES=config['SAMPLES']
 GENOME=config["GENOME"]
@@ -21,11 +53,7 @@ MIN_LFC=config["MIN_LFC"]
 # priority 0-100, default 0
 
 # get CONTRASTS from meta/contrast.xlsx
-import pandas as pd
-import sys
-import re
-import os
-import math
+
 
 # Get contrast name for DESeq2
 def get_contrast_fnames (fname):
@@ -1046,23 +1074,31 @@ rule read_length_detection_bam:
             out.write(str(median_length))
 
 def get_strandness (x):
-    with open("meta/strandness.detected.txt", "r") as file:
-        txt = file.readline()
-    #print("meta/strandness.detected.txt:", txt)
-    p = re.compile("counts.s(.)\.[liberal|strict]")
-    res = p.search(txt)
-    #print("strand code:", res.group(1))
-    if res.group(1) is None:
-        sys.exit("strandness detection wrong")
-    strand = (config['RMATS_STRANDNESS'][int(res.group(1))])
-    return (strand)
+    try:
+        with open("meta/strandness.detected.txt", "r") as file:
+            txt = file.readline()
+        #print("meta/strandness.detected.txt:", txt)
+        p = re.compile("counts.s(.)\.[liberal|strict]")
+        res = p.search(txt)
+        #print("strand code:", res.group(1))
+        if res.group(1) is None:
+            sys.exit("strandness detection wrong")
+        strand = (config['RMATS_STRANDNESS'][int(res.group(1))])
+        return (strand)
+    except FileNotFoundError:
+        print("meta/strandness.detected.txt will be found in real run, not in dry run")
+        return (None)
 
 
 def read_length(x):
-    with open("meta/read_length.txt", "r") as file:
-        txt = file.readline()
-    #print("read length", int(txt))
-    return (int(txt))
+    try:
+        with open("meta/read_length.txt", "r") as file:
+            txt = file.readline()
+        #print("read length", int(txt))
+        return (int(txt))
+    except FileNotFoundError:
+        print("meta/read_length.txt not found in dry run, will be found in real run")
+        return (None)
 
 
 # rule rMATS
@@ -1154,16 +1190,20 @@ rule DEXSeq_Prep_GFF:
 
 def get_strandness_for_dexseq (x):
     book = {0 : '-s no', 1 : '-s yes', 2 : '-s reverse'}
-    with open("meta/strandness.detected.txt", "r") as file:
-        txt = file.readline()
-    #print("meta/strandness.detected.txt:", txt)
-    p = re.compile("counts.s(.)\.[liberal|strict]")
-    res = p.search(txt)
-    #print("strand code:", res.group(1))
-    if res.group(1) is None:
-        sys.exit("strandness detection wrong")
-    strand = book[int(res.group(1))]
-    return (strand)
+    try:
+        with open("meta/strandness.detected.txt", "r") as file:
+            txt = file.readline()
+        #print("meta/strandness.detected.txt:", txt)
+        p = re.compile("counts.s(.)\.[liberal|strict]")
+        res = p.search(txt)
+        #print("strand code:", res.group(1))
+        if res.group(1) is None:
+            sys.exit("strandness detection wrong")
+        strand = book[int(res.group(1))]
+        return (strand)
+    except FileNotFoundError:
+        print("meta/strandness.detected.txt will be found in real run, not in dry run")
+        return (None)
 
 rule prep_count:
     input:
@@ -1197,6 +1237,7 @@ rule DEXSeq:
         meta=config["META"],
         contrast=config["CONTRAST_DE"],
         gffFile=config['GTF']+".dexseq.gff",
+        strandness="meta/strandness.detected.txt"
     output:
         #touch("DEXSeq/DEXSeq.finished"),
         expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX)
