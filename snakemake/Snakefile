@@ -955,6 +955,8 @@ rule DESeq2:
         "log/DESeq2/DESeq2.tsv"
     shell:
         #Rscript -e rmarkdown::render({params.rmd})
+        'mkdir -p DESeq2; ' 
+        'cp script/DESeq2.Rmd DESeq2; '
         'Rscript -e "rmarkdown::render({params.rmd}, \
         params=list(max_fdr={params.fdr}, min_lfc={params.lfc}, \
         countFile=\'../{input}\', \
