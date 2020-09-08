@@ -654,6 +654,8 @@ rule QoRTs_MultiPlot:
         which python && which Rscript &> {log}
         python script/meta_to_decoder.py &>> {log}
         Rscript script/QoRT.R &>> {log}# needs QoRT package in R
+        mkdir -p bam_qc/QoRTs_MultiPlot/details/
+        mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/
         """
 
 
