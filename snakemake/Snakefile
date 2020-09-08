@@ -234,7 +234,7 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-        rMATS=expand("rMATS.{ascn}/output/RI.MATS.JCEC.txt", ascn=range(ASCN))
+        rMATS=expand("rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt", ascn=range(ASCN))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"] 
             else "Workflow_DAG.all.svg",
 
@@ -1124,14 +1124,14 @@ rule rMATS:
         length_file="meta/read_length.txt" , 
         strand_file="meta/strandness.detected.txt",
     output:
-        "rMATS.{ascn}/output/RI.MATS.JCEC.txt" # just one representative
+        "rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt"
     envmodules:
         "rMATS/4.1.0"
         "gcc/8.1.0"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 6000,
     threads:
-        1
+        4
     params:
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
@@ -1147,18 +1147,21 @@ rule rMATS:
     shell:
         """
         rm -rf rMATS.{wildcards.ascn}
-        mkdir -p rMATS.{wildcards.ascn}
+        mkdir -p rMATS.{wildcards.ascn}/
+        mkdir -p rMATS.{wildcards.ascn}/params/
 
-        echo {params.b1} > rMATS.{wildcards.ascn}/b1.txt
-        echo {params.b2} > rMATS.{wildcards.ascn}/b2.txt
+
+        echo {params.b1} > rMATS.{wildcards.ascn}/params/b1.txt
+        echo {params.b2} > rMATS.{wildcards.ascn}/params/b2.txt
 
         which python &> {log}
         which rmats.py &>> {log}
 
         # todo: remove hardcode path
         # todo: --paired-stats
-        python /share/pkg/rMATS/4.1.0/rmats.py  --b1 rMATS.{wildcards.ascn}/b1.txt \
-        --b2  rMATS.{wildcards.ascn}/b2.txt \
+        python /share/pkg/rMATS/4.1.0/rmats.py  \
+        --b1 rMATS.{wildcards.ascn}/params/b1.txt \
+        --b2  rMATS.{wildcards.ascn}/params/b2.txt \
         --gtf {input.gtf} \
         -t {params.type} \
         --readLength {params.length} \
@@ -1169,6 +1172,18 @@ rule rMATS:
         --cstat 0.2 \
         --od rMATS.{wildcards.ascn}/output/ \
         --tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
+
+        cp envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/
+
+        rm -rf rMATS.{wildcards.ascn}/tmp/
+
+        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/
+        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/
+        mkdir -p rMATS.{wildcards.ascn}/output/fromGTF/
+        mv rMATS.{wildcards.ascn}/output/*JCEC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/
+        mv rMATS.{wildcards.ascn}/output/*JC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/
+        mv rMATS.{wildcards.ascn}/output/fromGTF*txt  rMATS.{wildcards.ascn}/output/fromGTF/
+        rm -f *raw.input*
         """
 
 
