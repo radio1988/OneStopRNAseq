@@ -228,7 +228,7 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else "Workflow_DAG.all.svg",
 
-        GSEA = expand("gsea/{contrast}/{db}.finished", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
+        GSEA = expand("log/gsea/{contrast}/{db}.finished", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
@@ -976,7 +976,7 @@ rule GSEA:
             else "DESeq2/rnk/{contrast}.rnk",
         db="envs/gsea_db/{db}"
     output:
-        touch("gsea/{contrast}/{db}.finished"),  # todo: premature killed jobs create junk sub folders, confusing to users
+        touch("log/gsea/{contrast}/{db}.finished"),  # todo: premature killed jobs create junk sub folders, confusing to users
         "gsea/{contrast}/{db}.GseaPreranked/index.html"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
@@ -1021,7 +1021,7 @@ rule GSEA:
 
 rule GSEA_compression:
     input:
-        "gsea/{contrast}/{db}.finished"
+        "log/gsea/{contrast}/{db}.finished"
     output:
         "gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz"
     resources:
