@@ -188,7 +188,7 @@ shell.prefix("""
 # input don't have to be used, just for draw nice DAG
 # 07/10/2019 randomized primary alignment
 
-ruleorder: create_dag > rMATS > DESeq2 > GSEA > FastQC > bam_qc > bamCoverage > feature_count > reset > samtools_sort > samtools_index
+ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc > bamCoverage > feature_count  > samtools_sort > samtools_index > reset
 
 rule targets:
     input:
@@ -238,15 +238,20 @@ rule targets:
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"] 
             else "Workflow_DAG.all.svg",
 
-        DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES),
-        DEXSeq=expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX),
+        DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES)
+            if config["START"] in ["FASTQ", "BAM"]
+            else "Workflow_DAG.all.svg",
+
+        DEXSeq=expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX)
+            if config["START"] in ["FASTQ", "BAM"]
+            else "Workflow_DAG.all.svg",
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
             else "Workflow_DAG.all.svg"),
 
         GATK_ASE=(expand("GATK_ASEReadCounter/{sample}.table", sample=SAMPLES)
-            if config["ASE_ANALYSIS"]
+            if config["ASE_ANALYSIS"] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg"),
 
         dag="Workflow_DAG.all.svg", # create DAG
@@ -1124,12 +1129,12 @@ rule rMATS:
         length_file="meta/read_length.txt" , 
         strand_file="meta/strandness.detected.txt",
     output:
-        "rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt"
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt"
     envmodules:
         "rMATS/4.1.0"
         "gcc/8.1.0"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 6000,
+        mem_mb=lambda wildcards, attempt: attempt * 6000,  # todo reduce
     threads:
         4
     params:
@@ -1183,7 +1188,7 @@ rule rMATS:
         mv rMATS.{wildcards.ascn}/output/*JCEC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/
         mv rMATS.{wildcards.ascn}/output/*JC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/
         mv rMATS.{wildcards.ascn}/output/fromGTF*txt  rMATS.{wildcards.ascn}/output/fromGTF/
-        rm -f *raw.input*
+        rm -f rMATS.{wildcards.ascn}/output/*raw.input*
         """
 
 
@@ -1263,6 +1268,7 @@ rule DEXSeq:
          mem_mb=lambda wildcards, attempt: attempt * 8000
     params:
         rmd="'script/dexseq.r'",
+        annoFile=config["ANNO_TAB"],
         # fdr=MAX_FDR, # todo: add MAX_FDR
         #lfc=MIN_LFC,
         #anno_tab=ANNO_TAB,
@@ -1281,13 +1287,17 @@ rule DEXSeq:
     shell:
         "mkdir -p DEXSeq \n"
         "which Rscript &> {log} \n"
-        "Rscript script/dexseq.r {input.meta} {input.contrast} {input.gffFile} &>> {log}"
+        "cp script/dexseq.r DEXSeq"
+        "Rscript script/dexseq.r \
+        {input.meta} {input.contrast} {input.gffFile} {params.annoFile} &>> {log}"
 
 rule genome_faidx:
     input:
         config['GENOME']
     output:
         config['GENOME']+'.fai'
+            if config['GENOME'].endswith"fa"
+            else re.sub(config['GENOME']+'.fai'
     resources:
         mem_mb=lambda wildcards, attempt: attempt *4000
     threads:

@@ -50,18 +50,43 @@ args = commandArgs(trailingOnly=TRUE)
 # todo: remove countFile from args
 if (length(args) < 2){
     # development
-    metaFile <- 'meta/meta.xlsx'  
+    metaFile <- './meta/meta.xlsx'  
     contrastFile <- './meta/contrast.as.xlsx'
     gffFile <- '/project/umw_mccb/OneStopRNAseq/kai/DEXSeq/gff/gencode.v34.primary_assembly.annotation.DEXSeq.gff'
     gffFile <- 'gencode.v34.primary_assembly.annotation.DEXSeq.gff'
+    gffFile <- "/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf.dexseq.gff"  # test
+    annoFile <- "https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt"
     #countFile <- 'DEXSeq_count/N052611_Alb_Dex_count.txt DEXSeq_count/N052611_Alb_count.txt DEXSeq_count/N052611_Dex_count.txt DEXSeq_count/N052611_untreated_count.txt DEXSeq_count/N061011_Alb_Dex_count.txt DEXSeq_count/N061011_Alb_count.txt DEXSeq_count/N061011_Dex_count.txt DEXSeq_count/N061011_untreated_count.txt DEXSeq_count/N080611_Alb_Dex_count.txt DEXSeq_count/N080611_Alb_count.txt DEXSeq_count/N080611_Dex_count.txt DEXSeq_count/N080611_untreated_count.txt DEXSeq_count/N61311_Alb_Dex_count.txt DEXSeq_count/N61311_Alb_count.txt DEXSeq_count/N61311_Dex_count.txt DEXSeq_count/N61311_untreated_count.txt'
   }else{
     # production
     metaFile <- args[1]
     contrastFile <- args[2]
     gffFile <- args[3]
+    annoFile <- args[4]
     #countFile <-paste( unlist(args[4:length(args)]), collapse=' ')  
   }
+
+
+# Importing annotation from GitHub (must be raw, not zipped)
+getAnnotation <- function(urlpath) {
+  tmp <- tempfile()
+  download.file(urlpath, destfile = tmp, method = 'auto')
+  return(read.table(tmp, sep="\t", header = TRUE))
+}
+
+paste("Getting data from", annoFile)
+
+if (grepl('https://', annoFile)){
+  print("downloading remote annoFile")
+  anno <- getAnnotation(annoFile)
+}else{
+  print("reading local annoFile")
+  anno <- read.table(annoFile, sep = "\t", header = T)
+}
+print("Dimention of annotation table: ")
+dim(anno)
+head(anno)
+
 
 
 
@@ -187,6 +212,22 @@ for (i in 1:dim(contrast.df)[2]) { # test
   fname <- paste(outDir, "DEXSeq_", name, ".xlsx", sep = "")
   ## filter out rows with no padj value, otherwise, the excel might be too huge.
   df_dxr <- data.frame(dxr)
+  ## Annotate results
+  if (sum(anno[, 1] %in% dxr$groupID) < 1){
+    warning("!!! Annotation file and count file have no ID in common")
+    warning("The results will be unannotated")
+    warning("Please Double check Annotation file")
+    print("count table ID:")
+    print(row.names(cts)[1:2])
+    print("anno table ID:")
+    print(anno[1:2, 1])
+  }
+  df_dxr <- merge(df_dxr, anno, 
+                  by.x='groupID', 
+                  by.y=1, 
+                  sort=F, all.1=T)
+  df_dxr <- df_dxr[c(26,27,1:25)]  # todo: double check when DEXSeq updates
+  
   df_dxr <- df_dxr[!is.na(df_dxr$padj), ]
   colnames(df_dxr) <- gsub('countData.', '', colnames(df_dxr))
   print(paste("Saving results to:", fname))
@@ -206,8 +247,13 @@ for (i in 1:dim(contrast.df)[2]) { # test
   
   for (k in 1:5) {
     gene <- geneList[k]
+    gene_symbol <-  anno$Name[anno$Gene == gene]
+    if( is.na(gene_symbol)){
+      gene_symbol <- gene
+    }
+    gene_symbol <- gsub(" ","",gene_symbol)
 
-    name_tmp <- paste(name, gene, "top", k, "normalized_counts.pdf", sep=".")
+    name_tmp <- paste(name, gene_symbol, "top", k, "normalized_counts.pdf", sep=".")
     name_tmp <- gsub("\\+", "_", name_tmp)
     name_tmp <- gsub("\\.", "_", name_tmp)
     name_tmp <- gsub("_pdf$", ".pdf", name_tmp)
@@ -215,7 +261,7 @@ for (i in 1:dim(contrast.df)[2]) { # test
     try(plotDEXSeq_norCounts(dxr, gene, outDir, name_tmp))
 
     ## relative_exon_usage.pdf
-    name_tmp <- paste(name, gene, "top", k, "relative_exon_usage.pdf", sep=".")
+    name_tmp <- paste(name, gene_symbol, "top", k, "relative_exon_usage.pdf", sep=".")
     name_tmp <- gsub("\\+", "_", name_tmp)
     name_tmp <- gsub("\\.", "_", name_tmp)
     name_tmp <- gsub("_pdf$", ".pdf", name_tmp)
