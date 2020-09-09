@@ -1287,7 +1287,7 @@ rule DEXSeq:
     shell:
         "mkdir -p DEXSeq \n"
         "which Rscript &> {log} \n"
-        "cp script/dexseq.r DEXSeq"
+        "cp script/dexseq.r DEXSeq/"
         "Rscript script/dexseq.r \
         {input.meta} {input.contrast} {input.gffFile} {params.annoFile} &>> {log}"
 
@@ -1296,8 +1296,6 @@ rule genome_faidx:
         config['GENOME']
     output:
         config['GENOME']+'.fai'
-            if config['GENOME'].endswith"fa"
-            else re.sub(config['GENOME']+'.fai'
     resources:
         mem_mb=lambda wildcards, attempt: attempt *4000
     threads:
