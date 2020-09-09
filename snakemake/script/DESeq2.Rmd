@@ -230,16 +230,25 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
     row.names(annotation_row) <- row.names(classification)
     annotation_row$class <- as.character(annotation_row$class)
     # output final plot
-    if (dim(df)[1] < 20){
+    if (dim(df)[1] < 20){ # manage row height
         p2 <- pheatmap(df,
-                 main = main,
-                 border_color = NA,
-                 cluster_cols = F,
-                 cutree_rows = nclass,
-                 show_rownames = F,
-                 annotation_row = annotation_row,
-                 cellheight = 20,
-                 filename = paste(fname, "pdf", sep = "."))
+           main = main,
+           border_color = NA,
+           cluster_cols = F,
+           cutree_rows = nclass,
+           show_rownames = F,
+           annotation_row = annotation_row,
+           cellheight = 20,
+           filename = paste(fname, "pdf", sep = "."))
+        p3 <- pheatmap(df,  # sample clustering
+           main = main,
+           border_color = NA,
+           cluster_cols = T,
+           cutree_rows = nclass,
+           show_rownames = F,
+           annotation_row = annotation_row,
+           cellheight = 20,
+           filename = paste(fname, "v2.pdf", sep = "."))
     }else{
         p2 <- pheatmap(df,
            main = main,
@@ -249,27 +258,50 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
            show_rownames = F,
            annotation_row = annotation_row,
            filename = paste(fname, "pdf", sep = "."))
+        p3 <- pheatmap(df, # sample clustering
+           main = main,
+           border_color = NA,
+           cluster_cols = T,
+           cutree_rows = nclass,
+           show_rownames = F,
+           annotation_row = annotation_row,
+           filename = paste(fname, "v2.pdf", sep = "."))
     }
 
   }else if (dim(df)[1] > 0){
     # output final plot
-        if (dim(df)[1] < 50){
+        if (dim(df)[1] < 20){ # manage row height
             p2 <- pheatmap(df,
-                           main = main,
-                           cluster_cols = F,
-                           cluster_rows = F,
-                           border_color = NA,
-                           show_rownames = F,
-                           cellheight = 20,
-                           filename = paste(fname, "pdf", sep = "."))
+               main = main,
+               cluster_cols = F,
+               cluster_rows = F,
+               border_color = NA,
+               show_rownames = F,
+               cellheight = 20,
+               filename = paste(fname, "pdf", sep = "."))
+            p3 <- pheatmap(df,
+               main = main,
+               cluster_cols = T,
+               cluster_rows = F,
+               border_color = NA,
+               show_rownames = F,
+               cellheight = 20,
+               filename = paste(fname, "v2.pdf", sep = "."))
         }else{
             p2 <- pheatmap(df,
-                 main = main,
-                 cluster_cols = F,
-                 cluster_rows = F,
-                 border_color = NA,
-                 show_rownames = F,
-                 filename = paste(fname, "pdf", sep = "."))
+               main = main,
+               cluster_cols = F,
+               cluster_rows = F,
+               border_color = NA,
+               show_rownames = F,
+               filename = paste(fname, "pdf", sep = "."))
+            p3 <- pheatmap(df,
+               main = main,
+               cluster_cols = T,
+               cluster_rows = F,
+               border_color = NA,
+               show_rownames = F,
+               filename = paste(fname, "v2.pdf", sep = "."))
         }
   }else{ print("no sig DEG for heatmap")}
 }
@@ -541,6 +573,19 @@ dds
 dds <-DESeq(dds)
 resultsNames(dds)
 #saveRDS(dds, file = 'deseq2.dds.rds')
+```
+
+## Save DESeq2 normalized counts
+```{r}
+normalized_counts <- counts(dds, normalized=TRUE)
+normalized_counts <- data.frame(normalized_counts)
+colnames(normalized_counts) <- paste(colnames(normalized_counts),"DESeq2NormalizedCount",  sep = ":")
+normalized_counts_out <- merge(anno, normalized_counts, by.x=1, by.y=0, all.y=T, sort=F)
+head(normalized_counts_out)
+tail(normalized_counts_out)
+WriteXLS(x = normalized_counts_out, 
+         ExcelFileName = 'DESeq2NormalizedCounts.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+print("saved in DESeq2NormalizedCounts.xlsx")
 ```
 
 ## QC Plots
