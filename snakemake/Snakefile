@@ -31,12 +31,10 @@ if config["GENOME"].endswith(".gz"):
     config["GENOME"] = re.sub(".gz$", "", config["GENOME"])
 
 if config["GTF"].endswith(".gz"):
-    # todo:
     gunzip(config["GTF"])
     config["GTF"] = re.sub(".gz$", "", config["GTF"])
 
 if config["VCF"].endswith(".gz"):
-    # todo:
     gunzip(config["VCF"])
     config["VCF"] = re.sub(".gz$", "", config["VCF"])
 
@@ -239,11 +237,11 @@ rule targets:
             else "Workflow_DAG.all.svg",
 
         DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES)
-            if config["START"] in ["FASTQ", "BAM"]
+            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg",
 
         DEXSeq=expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX)
-            if config["START"] in ["FASTQ", "BAM"]
+            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg",
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
@@ -973,7 +971,7 @@ rule DESeq2:
 
 rule GSEA:
     input: 
-        deseq2= "Snakefile" # dummy assume existing
+        deseq2= "Workflow_DAG.all.svg" # dummy assume existing
             if config["START"] == "RNK" 
             else "DESeq2/DESeq2.html" , # to keep ordering
         rnk="meta/{contrast}"  # contrast just a name, alias for rnk
@@ -1131,16 +1129,16 @@ rule rMATS:
     output:
         "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt"
     envmodules:
-        "rMATS/4.1.0"
-        "gcc/8.1.0"
+        "rMATS/4.1.0 "
+        "gcc/8.1.0 " # must have space
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 6000,  # todo reduce
+        mem_mb=lambda wildcards, attempt: attempt * 4000,  # todo reduce
     threads:
         4
     params:
         b1=lambda wildcards: B1[int(wildcards['ascn'])], 
         b2=lambda wildcards: B2[int(wildcards['ascn'])], 
-        type="paired" if config['PAIR_END'] else "single",  # todo, rMATS3 has a single end bug
+        type="paired" if config['PAIR_END'] else "single", 
         analysis="P" if config['PAIR_END'] else "U", 
         length=read_length, 
         strandness=get_strandness,
@@ -1287,7 +1285,7 @@ rule DEXSeq:
     shell:
         "mkdir -p DEXSeq \n"
         "which Rscript &> {log} \n"
-        "cp script/dexseq.r DEXSeq/"
+        "cp script/dexseq.r DEXSeq/ \n"
         "Rscript script/dexseq.r \
         {input.meta} {input.contrast} {input.gffFile} {params.annoFile} &>> {log}"
 
