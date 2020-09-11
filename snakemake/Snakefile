@@ -224,9 +224,9 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else "Workflow_DAG.all.svg",
 
-        GSEA = expand("log/gsea/{contrast}/{db}.finished", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
+        GSEA = expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
-            else expand("gsea/{contrast}/{db}.finished", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
+            else expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
         GSEA_compression =  expand("gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
@@ -445,10 +445,10 @@ if config['PAIR_END']:
 
             mkdir -p bam_qc/
             mkdir -p bam_qc/STAR_summary/
-            cp mapped_reads/{wildcards.sample}.Log.final.out bam_qc/STAR_summary/
+            cp mapped_reads/{wildcards.sample}.Log.final.out bam_qc/STAR_summary/ &>> {log}
 
-            mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam
-            pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
+            mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam &>> {log}
+            pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*  &>> {log}
             """
 else:
     rule STAR_Align:
@@ -847,6 +847,7 @@ if config['PAIR_END']:
         shell:
             """
             which python &> {log}
+            python envs/SalmonTE/SalmonTE.py --version > versions.txt
             python envs/SalmonTE/SalmonTE.py quant \
             --reference={params.ref} --exprtype=count \
             --num_threads={threads} \
@@ -979,7 +980,7 @@ rule GSEA:
             else "DESeq2/rnk/{contrast}.rnk",
         db="envs/gsea_db/{db}"
     output:
-        touch("log/gsea/{contrast}/{db}.finished"),  # todo: premature killed jobs create junk sub folders, confusing to users
+#        touch("log/gsea/{contrast}/{db}.finished"),  # todo: premature killed jobs create junk sub folders, confusing to users
         "gsea/{contrast}/{db}.GseaPreranked/index.html"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
@@ -1016,16 +1017,16 @@ rule GSEA:
         -set_max 15000 -set_min 15 \
         -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &>> {log}
 
-        mv gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/ gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/   # if gsea fails, might still have problems, not sure
-        cp envs/GSEA_MSigDB_ReadMe.html gsea/
-        cp envs/GSEA_MSigDB_ReadMe.html gsea_compressed/
+        mv gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/ gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  &>> {log}   # if gsea fails, might still have problems, not sure
+        cp envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
         """
 
 # todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
 
 rule GSEA_compression:
     input:
-        "log/gsea/{contrast}/{db}.finished"
+#        "log/gsea/{contrast}/{db}.finished"
+        "gsea/{contrast}/{db}.GseaPreranked/index.html"
     output:
         "gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz"
     resources:
@@ -1037,10 +1038,14 @@ rule GSEA_compression:
     benchmark:
         "log/gsea/{contrast}.{db}.compression.tsv"
     shell:
-        "mkdir -p gsea_compressed && \
+        """
+        mkdir -p gsea_compressed && \
         [ -d gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/ ] && \
         tar cf - gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  | pigz -p {threads} -f > gsea_compressed/{wildcards.contrast}/{wildcards.db}.GseaPreranked.tar.gz \
-        2> {log}"
+        2> {log}
+
+        cp envs/GSEA_MSigDB_ReadMe.html gsea_compressed/  &>> {log}
+        """
 
 
 rule read_length_detection_bam:
@@ -1176,17 +1181,17 @@ rule rMATS:
         --od rMATS.{wildcards.ascn}/output/ \
         --tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
 
-        cp envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/
+        cp envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
 
-        rm -rf rMATS.{wildcards.ascn}/tmp/
+        rm -rf rMATS.{wildcards.ascn}/tmp/   &>> {log}
 
-        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/
-        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/
-        mkdir -p rMATS.{wildcards.ascn}/output/fromGTF/
-        mv rMATS.{wildcards.ascn}/output/*JCEC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/
-        mv rMATS.{wildcards.ascn}/output/*JC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/
-        mv rMATS.{wildcards.ascn}/output/fromGTF*txt  rMATS.{wildcards.ascn}/output/fromGTF/
-        rm -f rMATS.{wildcards.ascn}/output/*raw.input*
+        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
+        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/  &>> {log}
+        mkdir -p rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
+        mv rMATS.{wildcards.ascn}/output/*JCEC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/ &>> {log}
+        mv rMATS.{wildcards.ascn}/output/*JC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
+        mv rMATS.{wildcards.ascn}/output/fromGTF*txt  rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
+        rm -f rMATS.{wildcards.ascn}/output/*raw.input* &>> {log}
         """
 
 
@@ -1262,22 +1267,17 @@ rule DEXSeq:
     output:
         #touch("DEXSeq/DEXSeq.finished"),
         expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX)
+    conda:
+        "envs/dexseq.yaml"
     resources:
          mem_mb=lambda wildcards, attempt: attempt * 8000
+    threads:
+        4
+    priority:
+        10
     params:
         rmd="'script/dexseq.r'",
         annoFile=config["ANNO_TAB"],
-        # fdr=MAX_FDR, # todo: add MAX_FDR
-        #lfc=MIN_LFC,
-        #anno_tab=ANNO_TAB,
-    # envmodules:
-    #    "R/3.5.2_gcc8.1.0" # only works for Rui, after he installed packages
-    #container:
-    #    "envs/hand_sandbox.simg"
-    conda:
-        "envs/dexseq.yaml"
-    threads:
-        4
     log:
         "log/DEXSeq/DEXSeq.log"
     benchmark:
@@ -1285,9 +1285,9 @@ rule DEXSeq:
     shell:
         "mkdir -p DEXSeq \n"
         "which Rscript &> {log} \n"
-        "cp script/dexseq.r DEXSeq/ \n"
-        "Rscript script/dexseq.r \
-        {input.meta} {input.contrast} {input.gffFile} {params.annoFile} &>> {log}"
+        "cp script/dexseq.r DEXSeq/ &>> {log} \n"
+        "Rscript script/dexseq.r &>> {log} \
+        {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} &>> {log}"
 
 rule genome_faidx:
     input:
