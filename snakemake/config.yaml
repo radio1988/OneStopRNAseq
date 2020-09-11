@@ -52,6 +52,9 @@ MAX_FDR: 0.05
 MIN_LFC: 0.585 
 META: meta/meta.xlsx
 CONTRAST_DE: meta/contrast.de.xlsx
+cooksCutoff: 'TRUE'
+independentFilter: 'FALSE'
+
 
 # GSEA
 GSEA_NPLOTS: 100  # not implemented

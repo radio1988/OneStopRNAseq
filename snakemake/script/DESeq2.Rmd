@@ -10,6 +10,7 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   indfilter: FALSE
+  cookscutoff: TRUE
   countFile: "../feature_count/TE_included.txt"
   #annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
   annoFile: '/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt'
@@ -57,6 +58,7 @@ knitr::opts_knit$set(root.dir = "../DESeq2")
 max_fdr <- params$max_fdr
 min_lfc <- params$min_lfc
 indfilter <- params$indfilter
+cookscutoff <- params$cookscutoff
 
 countFile <- params$countFile
 annoFile <- params$annoFile
@@ -778,9 +780,10 @@ for (i in 1:dim(contrast.df)[2]){
                    contrast=contrast))
   
   res <- lfcShrink(dds, contrast = contrast, type = 'ashr')
-  res2 <- results(dds, contrast = contrast, independentFilter=indfilter)
+  res2 <- results(dds, contrast = contrast, 
+                  independentFilter=indfilter, cooksCutoff=cookscutoff)
   process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = tpm)
-}
+} 
 ```
 
 

@@ -945,6 +945,8 @@ rule DESeq2:
         rmd="'script/DESeq2.Rmd'",
         fdr=MAX_FDR,
         lfc=MIN_LFC,
+        independentFilter=config["independentFilter"],
+        cooksCutoff=config["cooksCutoff"],
         anno_tab=ANNO_TAB,
         meta=config["META"],
         cont=config["CONTRAST_DE"],
@@ -962,7 +964,10 @@ rule DESeq2:
         'mkdir -p DESeq2; ' 
         'cp script/DESeq2.Rmd DESeq2; '
         'Rscript -e "rmarkdown::render({params.rmd}, \
-        params=list(max_fdr={params.fdr}, min_lfc={params.lfc}, \
+        params=list(max_fdr={params.fdr}, \
+        min_lfc={params.lfc}, \
+        cookscutoff={params.cooksCutoff}, \
+        indfilter={params.independentFilter}, \
         countFile=\'../{input}\', \
         annoFile=\'{params.anno_tab}\', \
         metaFile=\'../{params.meta}\', \
@@ -1270,9 +1275,9 @@ rule DEXSeq:
     conda:
         "envs/dexseq.yaml"
     resources:
-         mem_mb=lambda wildcards, attempt: attempt * 4000
+         mem_mb=lambda wildcards, attempt: attempt * 6400
     threads:
-        8
+        5
     priority:
         10
     params:
