@@ -8,7 +8,6 @@ suppressPackageStartupMessages(library(WriteXLS))
 suppressPackageStartupMessages(library(BiocParallel))
 sessionInfo()
 
-BPPARAM = MulticoreParam(workers=4) # test
 
 readExcel <- function(fname){
   df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
@@ -42,7 +41,7 @@ plotMAWrapper <- function(dxd, ourDir, name){
 	dev.off()
 }
 
-outDir <- "./DEXSeq/" # test
+outDir <- "./DEXSeq/"
 dir.create(outDir, showWarnings = FALSE)
 args = commandArgs(trailingOnly=TRUE)
 
@@ -58,6 +57,7 @@ if (length(args) < 2){
     annoFile <- "https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt"
     maxFDR <- 0.1
     minLFC <- 0.585
+    threads <- 4
     #countFile <- 'DEXSeq_count/N052611_Alb_Dex_count.txt DEXSeq_count/N052611_Alb_count.txt DEXSeq_count/N052611_Dex_count.txt DEXSeq_count/N052611_untreated_count.txt DEXSeq_count/N061011_Alb_Dex_count.txt DEXSeq_count/N061011_Alb_count.txt DEXSeq_count/N061011_Dex_count.txt DEXSeq_count/N061011_untreated_count.txt DEXSeq_count/N080611_Alb_Dex_count.txt DEXSeq_count/N080611_Alb_count.txt DEXSeq_count/N080611_Dex_count.txt DEXSeq_count/N080611_untreated_count.txt DEXSeq_count/N61311_Alb_Dex_count.txt DEXSeq_count/N61311_Alb_count.txt DEXSeq_count/N61311_Dex_count.txt DEXSeq_count/N61311_untreated_count.txt'
   }else{
     # production
@@ -67,9 +67,11 @@ if (length(args) < 2){
     annoFile <- args[4]
     maxFDR <- args[5] 
     minLFC <- args[6]
+    threads <- args[7]
     #countFile <-paste( unlist(args[4:length(args)]), collapse=' ')  
   }
 
+BPPARAM = MulticoreParam(workers=threads) 
 
 # Importing annotation from GitHub (must be raw, not zipped)
 getAnnotation <- function(urlpath) {
