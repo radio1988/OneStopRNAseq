@@ -581,8 +581,6 @@ normalized_counts <- counts(dds, normalized=TRUE)
 normalized_counts <- data.frame(normalized_counts)
 colnames(normalized_counts) <- paste(colnames(normalized_counts),"DESeq2NormalizedCount",  sep = ":")
 normalized_counts_out <- merge(anno, normalized_counts, by.x=1, by.y=0, all.y=T, sort=F)
-head(normalized_counts_out)
-tail(normalized_counts_out)
 WriteXLS(x = normalized_counts_out, 
          ExcelFileName = 'DESeq2NormalizedCounts.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
 print("saved in DESeq2NormalizedCounts.xlsx")
