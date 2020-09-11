@@ -56,6 +56,8 @@ if (length(args) < 2){
     gffFile <- 'gencode.v34.primary_assembly.annotation.DEXSeq.gff'
     gffFile <- "/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf.dexseq.gff"  # test
     annoFile <- "https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt"
+    maxFDR <- 0.1
+    minLFC <- 0.585
     #countFile <- 'DEXSeq_count/N052611_Alb_Dex_count.txt DEXSeq_count/N052611_Alb_count.txt DEXSeq_count/N052611_Dex_count.txt DEXSeq_count/N052611_untreated_count.txt DEXSeq_count/N061011_Alb_Dex_count.txt DEXSeq_count/N061011_Alb_count.txt DEXSeq_count/N061011_Dex_count.txt DEXSeq_count/N061011_untreated_count.txt DEXSeq_count/N080611_Alb_Dex_count.txt DEXSeq_count/N080611_Alb_count.txt DEXSeq_count/N080611_Dex_count.txt DEXSeq_count/N080611_untreated_count.txt DEXSeq_count/N61311_Alb_Dex_count.txt DEXSeq_count/N61311_Alb_count.txt DEXSeq_count/N61311_Dex_count.txt DEXSeq_count/N61311_untreated_count.txt'
   }else{
     # production
@@ -63,6 +65,8 @@ if (length(args) < 2){
     contrastFile <- args[2]
     gffFile <- args[3]
     annoFile <- args[4]
+    maxFDR <- args[5] 
+    minLFC <- args[6]
     #countFile <-paste( unlist(args[4:length(args)]), collapse=' ')  
   }
 
@@ -91,8 +95,7 @@ head(anno)
 
 
 min_count_per_exon <- 0  # for test, must be zero, or DEXSeq exon plot skip exons
-maxFDR <- 0.05  # todo: read config
-#minLFC <- 0.585
+
 
 #countFile <- gsub(' +',' ',countFile) 
 print(">>> Parameters: ")
@@ -115,9 +118,13 @@ print(countFile)
 if (!all(file.exists(countFile))){
 	stop("Some countFiles Can't be found!!!")
 }
+# 
+# parse_names <- function(contrast.df, i){
+#   
+# }
 
 ## name1 should be treated group
-for (i in 1:dim(contrast.df)[2]) { # test
+for (i in 1:dim(contrast.df)[2]) {  # for each contrast
   # parse names
   name1 <- contrast.df[1, i]
   name2 <- contrast.df[2, i]
@@ -158,7 +165,7 @@ for (i in 1:dim(contrast.df)[2]) { # test
     
   # Read data
   print("reading data..")
-  dxd = DEXSeqDataSetFromHTSeq(
+  dxd <- DEXSeqDataSetFromHTSeq(
     countFilesSubset,
     sampleData=sampleTableSubset,
     design= ~ sample + exon + condition:exon,
@@ -226,12 +233,20 @@ for (i in 1:dim(contrast.df)[2]) { # test
                   by.x='groupID', 
                   by.y=1, 
                   sort=F, all.1=T)
-  df_dxr <- df_dxr[c(26,27,1:25)]  # todo: double check when DEXSeq updates
   
+  # save results
   df_dxr <- df_dxr[!is.na(df_dxr$padj), ]
   colnames(df_dxr) <- gsub('countData.', '', colnames(df_dxr))
   print(paste("Saving results to:", fname))
   try(WriteXLS(df_dxr, row.names = F, fname)) # if only nrow > 0
+  
+  # save sig results
+  lfc_idx <- abs(df_dxr[ ,grepl("log2fold_", colnames(df_dxr) )]) > minLFC
+  fdr_idx <- df_dxr$padj < maxFDR
+  df_dxr.sig <- df_dxr[lfc_idx & fdr_idx, ]
+  fname.sig <- paste(outDir, "DEXSeq_", name, ".sig.xlsx", sep = "")
+  print(paste("Saving significant results to:", fname.sig))
+  try(WriteXLS(df_dxr.sig, row.names = F, fname.sig)) # if only nrow > 0
   
   # QC plots:
   try(plotDispEstsWrapper(dxd, outDir, name))

@@ -1270,9 +1270,9 @@ rule DEXSeq:
     conda:
         "envs/dexseq.yaml"
     resources:
-         mem_mb=lambda wildcards, attempt: attempt * 8000
+         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:
-        4
+        8
     priority:
         10
     params:
@@ -1287,7 +1287,7 @@ rule DEXSeq:
         "which Rscript &> {log} \n"
         "cp script/dexseq.r DEXSeq/ &>> {log} \n"
         "Rscript script/dexseq.r &>> {log} \
-        {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} &>> {log}"
+        {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} {threads} &>> {log}"
 
 rule genome_faidx:
     input:
