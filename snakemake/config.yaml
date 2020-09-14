@@ -22,6 +22,7 @@ GENOME: example_data/genome/mm10_chr19/mm10.chr19.fa
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
 #yeast: /project/umw_mccb/genome/yeast/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
 #worm: /project/umw_mccb/genome/worm/Caenorhabditis_elegans.WBcel235.dna.toplevel.fa
+#fruit fly: /project/umw_mccb/genome/Drosophila_melanogaster/ENSEMBL/primary/Drosophila_melanogaster.BDGP6.dna.primary.fa # chr without annotation removed
 
 INDEX: example_data/genome/mm10_chr19/star_idx
 #will be created if not exist
@@ -30,6 +31,7 @@ INDEX: example_data/genome/mm10_chr19/star_idx
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/star_idx
 #yeast: /project/umw_mccb/genome/yeast/star_idx
 #worm: /project/umw_mccb/genome/worm/star_idx
+#fruit fly: /project/umw_mccb/genome/Drosophila_melanogaster/ENSEMBL/primary/star_idx
 
 GTF: example_data/genome/mm10_chr19/gencode.vM25.primary_assembly.annotation.ch19.gtf
 #'gtf' or 'gtf.gz' both supported
@@ -38,6 +40,7 @@ GTF: example_data/genome/mm10_chr19/gencode.vM25.primary_assembly.annotation.ch1
 #mouse: /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf
 #yeast: /project/umw_mccb/genome/yeast/Saccharomyces_cerevisiae.R64-1-1.90.gtf
 #worm: /project/umw_mccb/genome/worm/Caenorhabditis_elegans.WBcel235.90.gtf
+#fruit fly: /project/umw_mccb/genome/Drosophila_melanogaster/ENSEMBL/primary/Drosophila_melanogaster.BDGP6.22.96.gtf
 
 ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/mm10.gencode.vm25.te_included.anno.txt
 #view all options from: https://github.com/radio1988/OneStopRNAseq/tree/master/snakemake/envs/anno_tables
@@ -45,6 +48,7 @@ ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snake
 #mouse with TE: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/mm10.gencode.vm25.te_included.anno.txt
 #yeast: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Saccharomyces_cerevisiae.R64-1-1.90.anno.txt
 #worm: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Caenorhabditis_elegans.WBcel235.90.anno.txt
+#fruit fly: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Drosophila_melanogaster.BDGP6.22.96.anno.txt
 
 STRAND: [0, 1, 2]  # can input [0, 1, 2] to get all possible results, then workflow auto inferrs the correct one 
 # [2] if you know it's reverse, [1] if you know it's forward, [0] if you know it's un-stranded
