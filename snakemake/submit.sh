@@ -18,6 +18,9 @@ snakemake -p -k --jobs 999 \
 
 snakemake --report report.html > report.log  2>&1
 
+bash script/zip.sh
+
+
 # gsea compression (should be skipped)
 # [ -d 'gsea/' ] && tar cf - gsea/  | pigz -p 2 -f > gsea.tar.gz && mv gsea.tar.gz gsea
 
