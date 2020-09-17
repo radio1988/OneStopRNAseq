@@ -1275,9 +1275,9 @@ rule DEXSeq:
     conda:
         "envs/dexseq.yaml"
     resources:
-         mem_mb=lambda wildcards, attempt: attempt * 6400
+         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:
-        5
+        8
     priority:
         10
     params:
