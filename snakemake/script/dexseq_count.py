@@ -1,5 +1,6 @@
 from __future__ import division
 import sys, itertools, optparse, warnings
+# copied from  DEXSeq package in Bioconductor
 
 optParser = optparse.OptionParser( 
    

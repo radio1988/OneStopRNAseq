@@ -1,4 +1,5 @@
 import sys, collections, itertools, os.path, optparse
+# copied from  DEXSeq package in Bioconductor
 
 optParser = optparse.OptionParser( 
    

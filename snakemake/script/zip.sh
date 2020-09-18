@@ -1,3 +1,4 @@
+unset ARRAY
 ARRAY=(fastqc bam_qc DESeq2 DEXSeq `ls -d  rMAT*` GATK_ASEReadCounter )
 for D in "${ARRAY[@]}"
 do
