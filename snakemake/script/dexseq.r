@@ -51,13 +51,12 @@ if (length(args) < 2){
     # development
     metaFile <- './meta/meta.xlsx'  
     contrastFile <- './meta/contrast.as.xlsx'
-    gffFile <- '/project/umw_mccb/OneStopRNAseq/kai/DEXSeq/gff/gencode.v34.primary_assembly.annotation.DEXSeq.gff'
-    gffFile <- 'gencode.v34.primary_assembly.annotation.DEXSeq.gff'
     gffFile <- "/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf.dexseq.gff"  # test
     annoFile <- "https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt"
     maxFDR <- 0.1
     minLFC <- 0.585
     threads <- 4
+    MIN_GENE_COUNT <- 50
     #countFile <- 'DEXSeq_count/N052611_Alb_Dex_count.txt DEXSeq_count/N052611_Alb_count.txt DEXSeq_count/N052611_Dex_count.txt DEXSeq_count/N052611_untreated_count.txt DEXSeq_count/N061011_Alb_Dex_count.txt DEXSeq_count/N061011_Alb_count.txt DEXSeq_count/N061011_Dex_count.txt DEXSeq_count/N061011_untreated_count.txt DEXSeq_count/N080611_Alb_Dex_count.txt DEXSeq_count/N080611_Alb_count.txt DEXSeq_count/N080611_Dex_count.txt DEXSeq_count/N080611_untreated_count.txt DEXSeq_count/N61311_Alb_Dex_count.txt DEXSeq_count/N61311_Alb_count.txt DEXSeq_count/N61311_Dex_count.txt DEXSeq_count/N61311_untreated_count.txt'
   }else{
     # production
@@ -68,6 +67,7 @@ if (length(args) < 2){
     maxFDR <- args[5] 
     minLFC <- args[6]
     threads <- args[7]
+    MIN_GENE_COUNT <- 50  # todo: from args
     #countFile <-paste( unlist(args[4:length(args)]), collapse=' ')  
   }
 
@@ -92,11 +92,6 @@ if (grepl('https://', annoFile)){
 print("Dimention of annotation table: ")
 dim(anno)
 head(anno)
-
-
-
-
-min_count_per_exon <- 0  # for test, must be zero, or DEXSeq exon plot skip exons
 
 
 #countFile <- gsub(' +',' ',countFile) 
@@ -141,22 +136,29 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
   name <- paste(name1, name2, sep = "_vs_")
   cat(paste("\n\n>>> for contrast", i, ":", name, "\n"))
 
+  # create sampleTable
   sampleTable <- data.frame(row.names = meta.df$SAMPLE_LABEL,
                             condition = meta.df$GROUP_LABEL,
                             batch     = meta.df$BATCH)
+  sampleTable
 
+  # filter sampleTable
   idx <- sampleTable$condition %in% c(name1s, name2s)
   sampleTableSubset <- sampleTable[idx, ]
+  countFilesSubset <- countFile[idx]
+  sampleTableSubset
+  countFilesSubset
 
-  # for complex condition contrast
+  # change condition names for complex condition contrast
   if (length(name1s)> 1){
-  	sampleTableSubset$condition[sampleTableSubset$condition %in% name1s] <- name1
+  	levels(sampleTableSubset$condition)[levels(sampleTableSubset$condition) %in% name1s] <- name1
   	# todo: fix batch 
   }
   if (length(name2s)>1){
-  	sampleTableSubset$condition[sampleTableSubset$condition %in% name2s] <- name2
+  	levels(sampleTableSubset$condition)[levels(sampleTableSubset$condition) %in% name2s] <- name2
   }
-  countFilesSubset <- countFile[idx]
+  sampleTableSubset
+
   
   # Print sampleTable:
   print('countFilesSubset:')
@@ -173,15 +175,18 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
     design= ~ sample + exon + condition:exon,
     flattenedfile=gffFile )
   dxd$condition <- relevel(dxd$condition, ref = name2)
-
-  # Filter data (skipped to keep figures in results correct)
-  if (min_count_per_exon > 0){
-    print(paste("Removing bins/exons with less than ", min_count_per_exon, "reads"))
-    dxd <- dxd[rowSums(featureCounts(dxd)) >= min_count_per_exon, ]
-  }
-
   print(dxd)
-  #print(head(geneIDs(dxd), 3))
+
+  # Filter lowly expressed genes
+  print(paste("removing genes with less than", MIN_GENE_COUNT, "counts"))
+  if (MIN_GENE_COUNT > 0){
+    jump <- round(dim(dxd)[2]/2)
+    gene_count <- rowSums(counts(dxd)[,c(1,1+jump)])
+    large_gene_idx <- gene_count >= MIN_GENE_COUNT
+    sum(large_gene_idx)
+    dxd <- dxd[large_gene_idx, ]
+  }
+  print(dxd)
   print(head(featureCounts(dxd), 5))
   
   print("Estimate size factors..")
@@ -259,7 +264,11 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
   
   # Visualization:
   ## plot for top 5 genes ranked by pvalue
-  gene_temp <- df_dxr[order(df_dxr$pvalue),]
+  if (dim(df_dxr.sig)>0){
+    gene_temp <- df_dxr.sig[order(df_dxr.sig$pvalue),]
+  }else{
+    gene_temp <- df_dxr[order(df_dxr$pvalue),]
+  }
   geneList  <- gene_temp$groupID %>% unique()
   
   for (k in 1:5) {
@@ -286,3 +295,4 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
     try(plotDEXSeq_relative_exon_usage(dxr, gene, outDir, name_tmp))
   }
 }
+
