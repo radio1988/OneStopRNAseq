@@ -67,7 +67,7 @@ if (length(args) < 2){
     maxFDR <- args[5] 
     minLFC <- args[6]
     threads <- args[7]
-    MIN_GENE_COUNT <- 50  # todo: from args
+    MIN_GENE_COUNT <- args[8]  # todo: from args
     #countFile <-paste( unlist(args[4:length(args)]), collapse=' ')  
   }
 
