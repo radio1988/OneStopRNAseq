@@ -41,8 +41,10 @@ plotMAWrapper <- function(dxd, ourDir, name){
 	dev.off()
 }
 
-outDir <- "./DEXSeq/"
-dir.create(outDir, showWarnings = FALSE)
+outDir <- paste("./DEXSeq/contrast",idx_contrast,"/", sep="")
+dir.create( "./DEXSeq/", showWarnings = FALSE)
+dir.create( outDir, showWarnings = FALSE)
+
 args = commandArgs(trailingOnly=TRUE)
 
 # Read ARGS
@@ -56,7 +58,8 @@ if (length(args) < 2){
     maxFDR <- 0.1
     minLFC <- 0.585
     threads <- 4
-    MIN_GENE_COUNT <- 50
+    MIN_GENE_COUNT <- 20
+    idx_contrast <- 1
     #countFile <- 'DEXSeq_count/N052611_Alb_Dex_count.txt DEXSeq_count/N052611_Alb_count.txt DEXSeq_count/N052611_Dex_count.txt DEXSeq_count/N052611_untreated_count.txt DEXSeq_count/N061011_Alb_Dex_count.txt DEXSeq_count/N061011_Alb_count.txt DEXSeq_count/N061011_Dex_count.txt DEXSeq_count/N061011_untreated_count.txt DEXSeq_count/N080611_Alb_Dex_count.txt DEXSeq_count/N080611_Alb_count.txt DEXSeq_count/N080611_Dex_count.txt DEXSeq_count/N080611_untreated_count.txt DEXSeq_count/N61311_Alb_Dex_count.txt DEXSeq_count/N61311_Alb_count.txt DEXSeq_count/N61311_Dex_count.txt DEXSeq_count/N61311_untreated_count.txt'
   }else{
     # production
@@ -68,6 +71,7 @@ if (length(args) < 2){
     minLFC <- args[6]
     threads <- args[7]
     MIN_GENE_COUNT <- args[8]  # todo: from args
+    idx_contrast <- args[9]  # index of contrast, e.g. 1,2,3
     #countFile <-paste( unlist(args[4:length(args)]), collapse=' ')  
   }
 
@@ -116,15 +120,20 @@ if (!all(file.exists(countFile))){
 	stop("Some countFiles Can't be found!!!")
 }
 # 
-# parse_names <- function(contrast.df, i){
+# parse_names <- function(contrast.df, idx_contrast){
 #   
 # }
 
+
+
+
+
+# for each contrast
 ## name1 should be treated group
-for (i in 1:dim(contrast.df)[2]) {  # for each contrast
+
   # parse names
-  name1 <- contrast.df[1, i]
-  name2 <- contrast.df[2, i]
+  name1 <- contrast.df[1, idx_contrast]
+  name2 <- contrast.df[2, idx_contrast]
   name1 <- gsub(" ", "", name1)
   name2 <- gsub(" ", "", name2)
   name1 <- gsub(";$", "", name1)
@@ -134,7 +143,8 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
   name1 <- gsub(";", "_", name1)
   name2 <- gsub(";", "_", name2)
   name <- paste(name1, name2, sep = "_vs_")
-  cat(paste("\n\n>>> for contrast", i, ":", name, "\n"))
+  cat(paste("\n\n>>> for contrast", idx_contrast, ":", name, "\n"))
+  cat(paste("name1:", name1, "name2", name2, "\n"))
 
   # create sampleTable
   sampleTable <- data.frame(row.names = meta.df$SAMPLE_LABEL,
@@ -152,10 +162,12 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
   # change condition names for complex condition contrast
   if (length(name1s)> 1){
   	levels(sampleTableSubset$condition)[levels(sampleTableSubset$condition) %in% name1s] <- name1
+  	sampleTableSubset$condition[sampleTableSubset$condition %in% name1s] <- name1
   	# todo: fix batch 
   }
   if (length(name2s)>1){
   	levels(sampleTableSubset$condition)[levels(sampleTableSubset$condition) %in% name2s] <- name2
+  	sampleTableSubset$condition[sampleTableSubset$condition %in% name2s] <- name2
   }
   sampleTableSubset
 
@@ -182,7 +194,8 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
   if (MIN_GENE_COUNT > 0){
     jump <- round(dim(dxd)[2]/2)
     gene_count <- rowSums(counts(dxd)[,c(1,1+jump)])
-    large_gene_idx <- gene_count >= MIN_GENE_COUNT
+    large_gene_idx <- gene_count >= MIN_GENE_COUNT * dim(sampleTableSubset)[1]  # per sample
+    #large_gene_idx <- gene_count >= MIN_GENE_COUNT 
     sum(large_gene_idx)
     dxd <- dxd[large_gene_idx, ]
   }
@@ -214,7 +227,7 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
   # Summarize result:
   cat("\nSummarize result:\n")
   dxr = DEXSeqResults(dxd)
-  save.image(file=paste(outDir, "contrast", i, ".", name, ".RData", sep=''))
+  save.image(file=paste(outDir, "contrast", idx_contrast, ".RData", sep=''))
   
   # Some statistics:
   cat(paste("\n\nnum of DE exons with FDR <", maxFDR, "\n"))
@@ -264,7 +277,7 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
   
   # Visualization:
   ## plot for top 5 genes ranked by pvalue
-  if (dim(df_dxr.sig)>0){
+  if (dim(df_dxr.sig)[1]>0){
     gene_temp <- df_dxr.sig[order(df_dxr.sig$pvalue),]
   }else{
     gene_temp <- df_dxr[order(df_dxr$pvalue),]
@@ -294,5 +307,5 @@ for (i in 1:dim(contrast.df)[2]) {  # for each contrast
     print(paste("saving: ", outDir, name_tmp, sep=""))
     try(plotDEXSeq_relative_exon_usage(dxr, gene, outDir, name_tmp))
   }
-}
+
 

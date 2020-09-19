@@ -140,7 +140,11 @@ else:
     CONTRASTS_DE = ["placeholder"]
 
 # for DEXSeq
-CONTRASTS_DE_for_DEX = [l.replace('.','_') for l in CONTRASTS_DE]
+if config['START'] in ["FASTQ", "BAM"]:
+    CONTRASTS_AS = get_contrast_fnames(config['CONTRAST_AS'])
+else:
+    CONTRASTS_AS = ["placeholder"]
+CONTRASTS_AS = [l.replace('.','_') for l in CONTRASTS_DE]
 
 
 # for rMATS
@@ -242,7 +246,7 @@ rule targets:
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg",
 
-        DEXSeq=expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX)
+        DEXSeq=expand("DEXSeq/contrast{ascn}/contrast{ascn}.Rdata", ascn=range(1,ASCN+1))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg",
 
@@ -1280,12 +1284,11 @@ rule DEXSeq:
     input:
         count_files = expand("DEXSeq_count/{sample}_count.txt", sample = SAMPLES),
         meta=config["META"],
-        contrast=config["CONTRAST_DE"],
+        contrast=config["CONTRAST_AS"],
         gffFile=config['GTF']+".dexseq.gff",
         strandness="meta/strandness.detected.txt"
     output:
-        #touch("DEXSeq/DEXSeq.finished"),
-        expand("DEXSeq/DEXSeq_{contrast}.xlsx", contrast=CONTRASTS_DE_for_DEX)
+        "DEXSeq/contrast{ascn}/contrast{ascn}.Rdata"
     conda:
         "envs/dexseq.yaml"
     resources:
@@ -1298,16 +1301,17 @@ rule DEXSeq:
         rmd="'script/dexseq.r'",
         annoFile=config["ANNO_TAB"],
     log:
-        "log/DEXSeq/DEXSeq.log"
+        "log/DEXSeq/DEXSeq.{ascn}.log"
     benchmark:
-        "log/DEXSeq/DEXSeq.tsv"
+        "log/DEXSeq/DEXSeq.{ascn}.tsv"
     shell:
         """
         mkdir -p DEXSeq 
         which Rscript &> {log}
         cp script/dexseq.r DEXSeq/ &>> {log}
-        Rscript script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} {threads} {MIN_GENE_COUNT} &>> {log}
-        D=DEXSeq; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log}
+        Rscript script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} {threads} {MIN_GENE_COUNT} {wildcards.ascn} &>> {log}
+        D=DEXSeq/contrast{wildcards.ascn}
+        rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
         """
 
 rule genome_faidx:

@@ -111,7 +111,7 @@ RMATS_STRANDNESS:
   2 : fr-secondstrand}
 
 # DEXSeq analysis
-MIN_GENE_COUNT: 100  # genes with less reads will be removed from DEXSeq analysis
+MIN_GENE_COUNT: 20  # genes with less reads per sample will be removed from DEXSeq analysis
 
 # TE analysis (SalmonTE)
 TE_ANALYSIS: True # True, include TE analysis in DESeq2 results (only if FASTQ provided); False, skip
