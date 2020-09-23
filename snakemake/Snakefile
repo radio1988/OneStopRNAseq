@@ -1026,7 +1026,7 @@ rule GSEA:
         rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
         rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
 
-        python script/capslock.py {input.rnk} &>> {log}
+        python script/fix_gsea_input.py {input.rnk} &>> {log}
         
         which java &>> {log}
 
