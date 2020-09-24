@@ -9,7 +9,7 @@
 - install anaconda
 - create a conda env called `osr`: `conda env create -n osr -f envs/env.yaml`
 - download code and example data: `git clone git@github.com:radio1988/OneStopRNAseq.git`
-- download hand_sandbox.simg and put softlink under `envs/`: `ln -s /home/rl44w/singularity/hand_sandbox.simg`
+- download hand_sandbox.simg and put softlink under `envs/`: `ln -s $path/hand_sandbox.simg`
 
 # Folder structure
 - essential for execution of example workflow marked *
@@ -42,7 +42,7 @@ ln -s $snakemake/submit.sh
 cp $snakemake/config.yaml .
 cp -r $snakemake/meta .
 cp -r $snakemake/fastq .
-cp -r $snakemake/script/ . # have to cp, softlink has problems (todo: fix)
+cp -r $snakemake/script/ . # have to cp, softlink has problems
 
 
 ## submit jobs ##
