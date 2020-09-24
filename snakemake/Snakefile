@@ -1183,7 +1183,6 @@ rule rMATS:
         echo {params.b2} > rMATS.{wildcards.ascn}/params/b2.txt
 
         which python &> {log}
-        which rmats.py &>> {log}
 
         # todo: remove hardcode path
         # todo: --paired-stats
