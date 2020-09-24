@@ -1,7 +1,7 @@
 # Easy RNAseq Analysis with *oneStopRNAseq*
 
-Currently, this is the backend of https://mccb.umassmed.edu/OneStopRNAseq/index.php and intended for internal use
-Installation will be simplified and make it suitable for download and usage in any Unix like workstation/server.
+- Currently, this is the backend of https://mccb.umassmed.edu/OneStopRNAseq/index.php and intended for internal use
+- Installation will be simplified and make it suitable for download and usage in any Unix like workstation/serve in the future
 
 # Install (for any user on HPCC)
 
@@ -15,7 +15,6 @@ Installation will be simplified and make it suitable for download and usage in a
 - essential for execution of example workflow marked *
 
 ```
-├── .gitignore
 ├── README.md
 ├── Snakefile *
 ├── config.yaml *
@@ -69,6 +68,6 @@ nohup bash submit.sh &
 	- set `READ_LENGTH: 100` (for testing, June 03)
 	- etc.
 - Absolute Path
-	- /project/umw_yong-xu_wang/singularity/hand_sandbox.simg
+	- $path/hand_sandbox.simg
 
 	
