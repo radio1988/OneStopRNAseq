@@ -64,8 +64,8 @@ nohup bash submit.sh &
 	- meta/contrast.as.xlsx 
 - modify `config.yaml`
 	- set `START: "FASTQ"`
-	- set `STRAND: [0, 1, 2]` (for testing, June 03)
-	- set `READ_LENGTH: 100` (for testing, June 03)
+	- set `STRAND: [0, 1, 2]`
+	- set `READ_LENGTH: 100` 
 	- etc.
 - Absolute Path
 	- $path/hand_sandbox.simg
