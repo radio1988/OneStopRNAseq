@@ -666,11 +666,8 @@ rule QoRTs_MultiPlot:
         mkdir -p bam_qc/QoRTs_MultiPlot/details/
         mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/
 
-        D=bam_qc/QoRTs
-        rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
-
-        D=bam_qc/QoRTs_MultiPlot
-        rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
+        D=bam_qc  # todo: more robust rule in case other bam_qc finishes faster (highly unlikely)
+        rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ 
         """
 
 
