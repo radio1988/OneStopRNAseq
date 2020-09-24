@@ -1,9 +1,9 @@
 # Easy RNAseq Analysis with *oneStopRNAseq*
 
-- Currently, this is the backend of https://mccb.umassmed.edu/OneStopRNAseq/index.php and intended for internal use
-- Installation will be simplified and make it suitable for download and usage in any Unix like workstation/serve in the future
+- This is the backend of https://mccb.umassmed.edu/OneStopRNAseq/index.php.
+- The installation guide will be modified for any Unix like workstation/serve in the future.
 
-# Install (for any user on HPCC)
+# Here is the step-by-step guide on how to install the backend pipeline on high performance computing cluster (HPCC). Please change the directory name accordingly.
 
 - load singularity: `module load singularity/singularity-current`
 - install anaconda
@@ -11,8 +11,7 @@
 - download code and example data: `git clone git@github.com:radio1988/OneStopRNAseq.git`
 - download hand_sandbox.simg and put softlink under `envs/`: `ln -s /home/rl44w/singularity/hand_sandbox.simg`
 
-# Folder structure
-- essential for execution of example workflow marked *
+# Here is how the folder structure should look like, which is essential for the successful execution of the example workflow.
 
 ```
 ├── README.md
@@ -29,7 +28,7 @@
 ├── example_data/genome/mm10_chr19/
 ```
 
-# Running Example Dataset(on HPCC)
+# Here are the commands on how to run the Example Dataset on HPCC.
 ```
 ## Preps ##
 mkdir analysis && cd analysis
@@ -42,17 +41,16 @@ ln -s $snakemake/submit.sh
 cp $snakemake/config.yaml .
 cp -r $snakemake/meta .
 cp -r $snakemake/fastq .
-cp -r $snakemake/script/ . # have to cp, softlink has problems (todo: fix)
+cp -r $snakemake/script/ . # important to use cp instead of softlink
 
 
 ## submit jobs ##
 nohup bash submit.sh &
 
-# If applicable, kill previous running submitted job, then 'snakemake --unlock -j 1'
+# If necessary, please kill previously submitted jobs by typing 'snakemake --unlock -j 1'
 ```
 
-
-## Start from FASTQ config.yaml settings
+## Here is how to modidfy the parameter setting in config.yaml with FASTQ input files.
 - provide fastq files under fastq/
 	- {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
 	- {sample}.fastq.gz for SE reads
@@ -67,7 +65,7 @@ nohup bash submit.sh &
 	- set `STRAND: [0, 1, 2]`
 	- set `READ_LENGTH: 100` 
 	- etc.
-- Absolute Path
+- Set absolute Path
 	- $path/hand_sandbox.simg
 
 	
