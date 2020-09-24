@@ -3,7 +3,8 @@
 - This is the backend of https://mccb.umassmed.edu/OneStopRNAseq/index.php.
 - The installation guide will be modified for any Unix like workstation/serve in the future.
 
-# Here is the step-by-step guide on how to install the backend pipeline on high performance computing cluster (HPCC). Please change the directory name accordingly.
+# Installation
+Here is the step-by-step guide on how to install the backend pipeline on high performance computing cluster (HPCC). Please change the directory name accordingly.
 
 - load singularity: `module load singularity/singularity-current`
 - install anaconda
