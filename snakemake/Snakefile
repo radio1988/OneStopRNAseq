@@ -1097,7 +1097,7 @@ rule read_length_detection_bam:
         if(len(set(lengths)) < 1):
             sys.exit("read lengths detection from BAM failed")
         if(len(set(lengths)) > 1):
-            sys.exit("Not all fastq files have the same length")
+            print("Not all fastq files have the same length, will give rMATS the median length")
         
         median_length = int(statistics.median(lengths))
         print(output[0])
