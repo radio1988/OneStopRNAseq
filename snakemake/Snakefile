@@ -234,10 +234,6 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-        GSEA_compression =  expand("gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
-            if config["START"] in ["FASTQ", "BAM", "COUNT"]
-            else expand("gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
-
         rMATS=expand("rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt", ascn=range(ASCN))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"] 
             else "Workflow_DAG.all.svg",
@@ -292,7 +288,6 @@ if config["PAIR_END"]:
             "mkdir -p fastqc && mkdir -p fastqc/details; "
             "which fastqc &> {log};"
             "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
-            "D=fastqc; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
 else:
     rule FastQC:
         # don't need input, if you agree on not checking them
@@ -319,7 +314,6 @@ else:
             "mkdir -p fastqc && mkdir -p fastqc/details; "
             "which fastqc &> {log};"
             "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
-            "D=fastqc; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
 
 
 # rule MultiQC
@@ -345,6 +339,7 @@ if config["PAIR_END"]:
         shell:
             "which multiqc &> {log};"
             "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log}"
+            "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log}"
 else:
     rule MultiQC:
         input:
@@ -367,6 +362,7 @@ else:
         shell:
             "which multiqc &> {log};"
             "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log}"
+            "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log}"
 
 
 rule star_idx:
@@ -1034,36 +1030,16 @@ rule GSEA:
         -set_max 15000 -set_min 15 \
         -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &>> {log}
 
+        # rename
         mv gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/ gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  &>> {log}   # if gsea fails, might still have problems, not sure
+
         cp envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
+        # compress
+        D=gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked
+        rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
         """
 
 # todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
-
-rule GSEA_compression:
-    input:
-#        "log/gsea/{contrast}/{db}.finished"
-        "gsea/{contrast}/{db}.GseaPreranked/index.html"
-    output:
-        "gsea_compressed/{contrast}/{db}.GseaPreranked.tar.gz"
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 1000,
-    threads:
-        4
-    log:
-        "log/gsea/{contrast}.{db}.compression.log"
-    benchmark:
-        "log/gsea/{contrast}.{db}.compression.tsv"
-    shell:
-        """
-        mkdir -p gsea_compressed && \
-        [ -d gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/ ] && \
-        tar cf - gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  | pigz -p {threads} -f > gsea_compressed/{wildcards.contrast}/{wildcards.db}.GseaPreranked.tar.gz \
-        2> {log}
-
-        cp envs/GSEA_MSigDB_ReadMe.html gsea_compressed/  &>> {log}
-        """
-
 
 rule read_length_detection_bam:
     input:
