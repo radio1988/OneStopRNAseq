@@ -234,7 +234,7 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM", "COUNT"]
             else expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
 
-        rMATS=expand("rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt", ascn=range(ASCN))
+        rMATS=expand("rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt", ascn=range(1, 1+ASCN))
             if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"] 
             else "Workflow_DAG.all.svg",
 
@@ -1105,22 +1105,11 @@ def read_length(x):
         return (None)
 
 
-# rule rMATS
-# conda: snakemake --use-conda -p -j 5 rMATS/bam_test_genecode/ASEvents/fromGTF.A3SS.txt
-# python envs/rMATS.3.2.5/RNASeq-MATS.py -b1 sorted_reads/KO_D8_1_S6.bam,sorted_reads/KO_D8_2_S12.bam,sorted_reads/WT_D8_1_S5.bam,sorted_reads/WT_D8_2_S11.bam -b2  sorted_reads/KO_D0_1_S2.bam,sorted_reads/KO_D0_2_S8.bam,sorted_reads/WT_D0_1_S1.bam,sorted_reads/WT_D0_2_S7.bam -gtf genome/mm10_chr19/genecode.vM21.chr19.gtf -o rMATS -t paired -len 100 -c 0.0001 -analysis paired -libType fr-unstranded
-# v 3.5 have no pvalues, must use 4.0
-# "singularity exec ~/singularity/hand_sandbox/ \
-# /opt/anaconda3/envs/rmat/bin/python /opt/bin/rMATS.4.0.2/rMATS-turbo-Linux-UCS4/rmats.py \
-# --b1 b1.txt --b2 b2.txt \
-# --gtf Homo_sapiens.GRCh37.75.gtf \
-# --od rMATS  -t {params.type}} --readLength 100 --cstat 0.0001 --libType fr-unstranded"
-
 rule rMATS:
-    #todo: rMATS4.0(sandbox failed because of apt dependency, still got partial results)
     #todo: update to docker: simple to install, faster, recommended on website
     input:
-        b1=lambda wildcards: B1S[int(wildcards['ascn'])],
-        b2=lambda wildcards: B2S[int(wildcards['ascn'])],
+        b1=lambda wildcards: B1S[int(wildcards['ascn'])-1],
+        b2=lambda wildcards: B2S[int(wildcards['ascn'])-1],
         gtf=GTF, 
         length_file="meta/read_length.txt" , 
         strand_file="meta/strandness.detected.txt",
@@ -1134,8 +1123,8 @@ rule rMATS:
     threads:
         4
     params:
-        b1=lambda wildcards: B1[int(wildcards['ascn'])], 
-        b2=lambda wildcards: B2[int(wildcards['ascn'])], 
+        b1=lambda wildcards: B1[int(wildcards['ascn'])-1], 
+        b2=lambda wildcards: B2[int(wildcards['ascn'])-1], 
         type="paired" if config['PAIR_END'] else "single", 
         analysis="P" if config['PAIR_END'] else "U", 
         length=read_length, 
