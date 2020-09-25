@@ -338,8 +338,8 @@ if config["PAIR_END"]:
             "envs/hand_sandbox.simg"
         shell:
             "which multiqc &> {log};"
-            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log}"
-            "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log}"
+            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log};"
+            "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
 else:
     rule MultiQC:
         input:
@@ -361,8 +361,8 @@ else:
             "envs/hand_sandbox.simg"
         shell:
             "which multiqc &> {log};"
-            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log}"
-            "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log}"
+            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log};"
+            "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
 
 
 rule star_idx:
@@ -656,13 +656,13 @@ rule QoRTs_MultiPlot:
         "log/QoRTs/multiplot.tsv"
     shell:
         """
-        which python && which Rscript &> {log}
-        python script/meta_to_decoder.py &>> {log}
-        Rscript script/QoRT.R &>> {log}# needs QoRT package in R
-        mkdir -p bam_qc/QoRTs_MultiPlot/details/
-        mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/
+        which python && which Rscript &> {log};
+        python script/meta_to_decoder.py &>> {log};
+        Rscript script/QoRT.R &>> {log}; # needs QoRT package in R
+        mkdir -p bam_qc/QoRTs_MultiPlot/details/;
+        mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/;
 
-        D=bam_qc  # todo: more robust rule in case other bam_qc finishes faster (highly unlikely)
+        D=bam_qc  ; # todo: more robust rule in case other bam_qc finishes faster (highly unlikely)
         rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ 
         """
 
@@ -1147,7 +1147,6 @@ rule rMATS:
         which python &> {log}
 
         # todo: remove hardcode path
-        # todo: --paired-stats
         python /share/pkg/rMATS/4.1.0/rmats.py  \
         --b1 rMATS.{wildcards.ascn}/params/b1.txt \
         --b2  rMATS.{wildcards.ascn}/params/b2.txt \
