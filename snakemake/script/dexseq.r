@@ -205,19 +205,28 @@ dxd <- DEXSeqDataSetFromHTSeq(
   flattenedfile = gffFile
 )
 dxd$condition <- relevel(dxd$condition, ref = name2)
+print("Data summary:")
 print(dxd)
 
 # Filter lowly expressed genes
-print(paste("removing genes with less than", MIN_GENE_COUNT, "counts"))
+cat(paste("removing genes with less than", MIN_GENE_COUNT, "counts per sample\n"))
 if (MIN_GENE_COUNT > 0) {
   jump <- round(dim(dxd)[2] / 2)
   gene_count <- rowSums(counts(dxd)[, c(1, 1 + jump)])
   large_gene_idx <-
     gene_count >= MIN_GENE_COUNT * dim(sampleTableSubset)[1]  # per sample
   #large_gene_idx <- gene_count >= MIN_GENE_COUNT
-  sum(large_gene_idx)
-  dxd <- dxd[large_gene_idx,]
+  cat(paste("there are", sum(large_gene_idx), "genes will survive the filter\n"))
+  if (sum(large_gene_idx) > 30){
+    dxd <- dxd[large_gene_idx,]
+    print("filtering performed")
+  }else{
+    warning("not enough genes has enough reads, filtering stopped")
+    warning("please try setting a smaller MIN_GENE_COUNT parameter, or perform deeper sequencing")
+    quit(status=1)
+  }
 }
+print("Data summary after fitering:")
 print(dxd)
 print(head(featureCounts(dxd), 5))
 
