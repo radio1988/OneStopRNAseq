@@ -64,6 +64,7 @@ STRAND: [0, 1, 2]  # can input [0, 1, 2] to get all possible results, then workf
 MODE: strict # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
 
 # DESeq2
+DESEQ2_ANALYSIS: True
 MAX_FDR: 0.05
 MIN_LFC: 0.585 
 META: meta/meta.xlsx
@@ -73,6 +74,7 @@ independentFilter: 'FALSE'
 
 
 # GSEA
+GSEA_ANALYSIS: True
 GSEA_NPLOTS: 100  # not implemented
 GSEA_PLOT_SVG: True  # not implemented
 GSEA_DBS:  # not implemented
@@ -103,7 +105,8 @@ RNKS:
 # Optinoal Analysis
 
 # Alternative Splicing analysis (rMATS)
-AS_ANALYSIS: True  # perform AS analysis or not
+DEXSEQ_ANALYSIS: True
+RMATS_ANALYSIS: True
 CONTRAST_AS: meta/contrast.as.xlsx
 RMATS_STRANDNESS:
   {0 : fr-unstranded,
@@ -111,7 +114,7 @@ RMATS_STRANDNESS:
   2 : fr-secondstrand}
 
 # DEXSeq analysis
-MIN_GENE_COUNT: 50  # genes with less reads per sample will be removed from DEXSeq analysis
+MIN_GENE_COUNT: 100  # genes with less reads per sample will be removed from DEXSeq analysis
 
 # TE analysis (SalmonTE)
 TE_ANALYSIS: True # True, include TE analysis in DESeq2 results (only if FASTQ provided); False, skip
