@@ -194,6 +194,15 @@ shell.prefix("""
 
 ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc > bamCoverage > feature_count  > samtools_sort > samtools_index > reset
 
+def GSEA_OUTPUT(config):
+    if config["GSEA_ANALYSIS"]:
+        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=config["GSEA_DBS"]))
+        else:
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=config["GSEA_DBS"]))
+    else:
+        return("Workflow_DAG.all.svg")
+
 rule targets:
     input:
         # 1. everything listed here will be produced by the pipeline
@@ -227,23 +236,21 @@ rule targets:
             else "Workflow_DAG.all.svg"),
 
         DESeq2="DESeq2/DESeq2.html"
-            if config["START"] in ["FASTQ", "BAM", "COUNT"]
+            if config["START"] in ["FASTQ", "BAM", "COUNT"] and config['DESEQ2_ANALYSIS']
             else "Workflow_DAG.all.svg",
 
-        GSEA = expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=config["GSEA_DBS"])
-            if config["START"] in ["FASTQ", "BAM", "COUNT"]
-            else expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=config["GSEA_DBS"]), # contrast just a name
+        GSEA = GSEA_OUTPUT(config),
 
         rMATS=expand("rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt", ascn=range(1, 1+ASCN))
-            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"] 
+            if config['RMATS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"] 
             else "Workflow_DAG.all.svg",
 
         DEXSeq_count=expand("DEXSeq_count/{sample}_count.txt", sample=SAMPLES)
-            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
+            if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg",
 
         DEXSeq=expand("DEXSeq/contrast{ascn}/contrast{ascn}.Rdata", ascn=range(1,ASCN+1))
-            if config['AS_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
+            if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg",
 
         SalmonTE=("SalmonTE_output/EXPR.csv"
