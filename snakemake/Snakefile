@@ -532,7 +532,7 @@ rule samtools_sort:
         "log/samtools_sort/{sample}.sort.tsv"
     shell:
         "which samtools &> {log};"
-        "samtools sort -@ {threads} -m 3G {input} -o sorted_reads/{wildcards.sample}.bam &>> {log}"
+        "samtools sort -@ {threads} -m 3G {input} -o {output} &>> {log}"
 
 
 rule samtools_index:
@@ -565,8 +565,8 @@ rule bam_qc:
         bam="sorted_reads/{sample}.bam",
         bai="sorted_reads/{sample}.bam.bai"
     output:
-        "bam_qc/stats/{sample}.stats.txt",
-        "bam_qc/idxstats/{sample}.idxstats.txt"
+        stats="bam_qc/stats/{sample}.stats.txt",
+        idxstats="bam_qc/idxstats/{sample}.idxstats.txt"
     container:
         "envs/hand_sandbox.simg" # not necessary after samstat disabled
     priority:
@@ -586,8 +586,8 @@ rule bam_qc:
         mkdir -p bam_qc/idxstats
         mkdir -p bam_qc/stats
 
-        samtools idxstats {input.bam} > bam_qc/idxstats/{wildcards.sample}.idxstats.txt 2> {log.idxstats} &
-        samtools stats {input.bam} > bam_qc/stats/{wildcards.sample}.stats.txt 2> {log.stats} &
+        samtools idxstats {input.bam} > {output.idxstats} 2> {log.idxstats} &
+        samtools stats {input.bam} > {output.stats} 2> {log.stats} &
 
         wait
         """
