@@ -38,6 +38,7 @@ if config["VCF"].endswith(".gz"):
     gunzip(config["VCF"])
     config["VCF"] = re.sub(".gz$", "", config["VCF"])
 
+
 # params
 SAMPLES=config['SAMPLES']
 GENOME=config["GENOME"]
@@ -249,7 +250,7 @@ rule targets:
             if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg",
 
-        DEXSeq=expand("DEXSeq/contrast{ascn}/contrast{ascn}.Rdata", ascn=range(1,ASCN+1))
+        DEXSeq=expand("DEXSeq/contrast{ascn}/contrast{ascn}.RData", ascn=range(1,ASCN+1))
             if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]
             else "Workflow_DAG.all.svg",
 
@@ -990,6 +991,7 @@ rule DESeq2:
         'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};'
 
 
+# copy gmt files for GSEA
 rule GSEA:
     input: 
         deseq2= "Workflow_DAG.all.svg" # dummy assume existing
@@ -998,7 +1000,7 @@ rule GSEA:
         rnk="meta/{contrast}"  # contrast just a name, alias for rnk
             if config["START"] == "RNK" 
             else "DESeq2/rnk/{contrast}.rnk",
-        db="envs/gsea_db/{db}"
+        db="meta/gsea_db/{db}"
     output:
 #        touch("log/gsea/{contrast}/{db}.finished"),  # todo: premature killed jobs create junk sub folders, confusing to users
         "gsea/{contrast}/{db}.GseaPreranked/index.html"
@@ -1255,7 +1257,7 @@ rule DEXSeq:
         gffFile=config['GTF']+".dexseq.gff",
         strandness="meta/strandness.detected.txt"
     output:
-        "DEXSeq/contrast{ascn}/contrast{ascn}.Rdata"
+        "DEXSeq/contrast{ascn}/contrast{ascn}.RData"
     conda:
         "envs/dexseq.yaml"
     resources:
