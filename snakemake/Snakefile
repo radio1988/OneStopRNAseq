@@ -134,14 +134,14 @@ def G2B_workflow(G, g2s):
 
 
 # for DESeq2
-if config['START'] in ["FASTQ", "BAM", "COUNT"]:
+if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
     CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
     #print("CONTRASTS_DE:\n", CONTRASTS_DE)
 else:
     CONTRASTS_DE = ["placeholder"]
 
 # for DEXSeq
-if config['START'] in ["FASTQ", "BAM"]:
+if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]:
     CONTRASTS_AS = get_contrast_fnames(config['CONTRAST_AS'])
 else:
     CONTRASTS_AS = ["placeholder"]
@@ -149,7 +149,7 @@ CONTRASTS_AS = [l.replace('.','_') for l in CONTRASTS_DE]
 
 
 # for rMATS
-if config['START'] in ["FASTQ", "BAM"]:
+if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
     G = get_contrast_groups(config['CONTRAST_AS'])
     #print("\nGRPUPS:\n", G[0], "\nVS\n", G[1])
 
