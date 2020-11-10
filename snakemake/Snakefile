@@ -867,6 +867,8 @@ if config['INTRON']:
                 else:
                     print ("MODE err, not liberal nor strict")
 
+            shell("python script/get_max_of_featureCountsTable.py {input.exon_counts} {output.count}")
+
 
 rule strand_detection:
     input:
