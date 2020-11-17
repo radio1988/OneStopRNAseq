@@ -497,6 +497,7 @@ else:
             "star/2.7.5a"
         shell:
             """
+            # todo: documentation for liberal mode: STAR->featureCounts
             which STAR > {log};
             STAR --runThreadN {threads} \
             --genomeDir {INDEX} \
@@ -584,6 +585,7 @@ rule CUFFLINKS_FLT:
     threads:
         4
     params:
+        # todo: parameter of MIN_MAPPED_LEN
         MIN_M="perl -lane 'if (/^@/){print;next}; @M=$F[5]=~/(\d+)M/g; foreach(@M){$sum+=$_};print if $sum > 35;$sum=0'", 
         FIX_XS="perl script/bam_xs_fix.pl"
     log:
@@ -593,6 +595,8 @@ rule CUFFLINKS_FLT:
     shell:
         """
         # Filter, sort
+        # todo: PE and SE MODE
+        # todo: STAR XS parameter
         samtools view -hq 30 {input} 2>{log} | \
         samtools view -hf 0x2  2>{log} | \
         {params.MIN_M} 2>{log} | \
@@ -606,7 +610,7 @@ rule CUFFLINKS_FLT:
 rule CUFFLINKS:
     input:
         # todo: by groups
-        "filtered_reads/{sample}.bam"
+        "hisat2/{sample}.bam"
     output:
         "cufflinks/{sample}/transcripts.gtf"
     params:
@@ -1513,7 +1517,185 @@ rule GATK_ASEReadCounter:
         &> {log};"  # todo: more thoughts on detailed parameters, e.g.    -drf DuplicateRead -U ALLOW_N_CIGAR_READS
         "D=GATK_ASEReadCounter; "
         "rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
-        
+
+
+rule hisat2_build:
+    """
+    guided by GTF
+    """
+    input:
+        genome=config['GENOME'],
+        gtf=config['GTF']
+    output:
+        ss=config['GTF']+"ss",
+        exon=config['GTF']+"exon",
+        index=config['GENOME'] + ".8.ht2"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    threads:
+        4
+    log:
+        "log/hisat2_build/hisat2_build.log"
+    benchmark:
+        "log/hisat2_build/hisat2_build.tsv"
+    shell:
+        """
+        hisat2_extract_splice_sites.py -v {input.gtf} > {output.ss} 2> {log}
+        hisat2_extract_exons.py -v {input.gtf} > {output.exon} 2>> {log}
+        hisat2-build -p {threads} {input.genome} {input.genome} --ss {output.ss} --exon {output.exon} 2>> {log}
+        """
+
+
+def get_strandness_for_hisat2_PE (x):
+    book = {0 : 'unstranded', 1 : 'FR', 2 : 'RF'}
+    try:
+        with open("meta/strandness.detected.txt", "r") as file:
+            txt = file.readline()
+        #print("meta/strandness.detected.txt:", txt)
+        p = re.compile("counts.s(.)\.[liberal|strict]")
+        res = p.search(txt)
+        #print("strand code:", res.group(1))
+        if res.group(1) is None:
+            sys.exit("strandness detection wrong")
+        strand = book[int(res.group(1))]
+        return (strand)
+    except FileNotFoundError:
+        print("meta/strandness.detected.txt will be found in real run, not in dry run")
+        return (None)
+
+def get_strandness_for_hisat2_SE (x):
+    book = {0 : 'unstranded', 1 : 'F', 2 : 'R'}
+    try:
+        with open("meta/strandness.detected.txt", "r") as file:
+            txt = file.readline()
+        #print("meta/strandness.detected.txt:", txt)
+        p = re.compile("counts.s(.)\.[liberal|strict]")
+        res = p.search(txt)
+        #print("strand code:", res.group(1))
+        if res.group(1) is None:
+            sys.exit("strandness detection wrong")
+        strand = book[int(res.group(1))]
+        return (strand)
+    except FileNotFoundError:
+        print("meta/strandness.detected.txt will be found in real run, not in dry run")
+        return (None)
+
+
+if config['PAIR_END']:
+    rule hisat2:
+        input:
+            genome=config['GENOME'],
+            index=config['GENOME'] + ".8.ht2",
+            R1="fastq/{sample}.R1.fastq.gz",
+            R2="fastq/{sample}.R2.fastq.gz",
+        output:
+            bam="hisat2/{sample}.bam",
+            bai="hisat2/{sample}.bam.bai"
+        params:
+            strand=get_strandness_for_hisat2_PE
+        resources:
+            mem_mb=lambda wildcards, attempt: attempt * 2000
+        threads:
+            8
+        log:
+            "log/hisat2/{sample}.hisat2.log"
+        benchmark:
+            "log/hisat2/{sample}.hisat2.tsv"
+        shell:
+            """
+            mkdir -p hisat2
+            hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
+            -1 {input.R1} -2 {input.R2} \
+            --rna-strandness {params.strand} 2> {log} | \
+            samtools sort -@ 2 -o {output.bam}
+            samtools index {output.bam}
+            """
+else:
+    rule hisat2:
+        input:
+            index=config['GENOME'] + ".8.ht2",
+            U="fastq/{sample}.fastq.gz"
+        output:
+            bam="hisat2/{sample}.bam",
+            bai="hisat2/{sample}.bam.bai"
+        params:
+            strand=get_strandness_for_hisat2_SE
+        resources:
+            mem_mb=lambda wildcards, attempt: attempt * 2000
+        threads:
+            8
+        log:
+            "log/hisat2/{sample}.hisat2.log"
+        benchmark:
+            "log/hisat2/{sample}.hisat2.tsv"
+        shell:
+            """
+            mkdir -p hisat2
+            hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
+            -U {input.U} \
+            --rna-strandness {params.strand} 2> {log} | \
+            samtools sort -@ 2 -o {output.bam}
+            samtools index {output.bam}
+            """
+
+def get_strandness_for_stringtie (x):
+    book = {0 : ' ', 1 : '--fr', 2 : '--rf'}
+    try:
+        with open("meta/strandness.detected.txt", "r") as file:
+            txt = file.readline()
+        #print("meta/strandness.detected.txt:", txt)
+        p = re.compile("counts.s(.)\.[liberal|strict]")
+        res = p.search(txt)
+        #print("strand code:", res.group(1))
+        if res.group(1) is None:
+            sys.exit("strandness detection wrong")
+        strand = book[int(res.group(1))]
+        return (strand)
+    except FileNotFoundError:
+        print("meta/strandness.detected.txt will be found in real run, not in dry run")
+        return (None)
+
+rule stringtie:  # todo: group level
+    input:
+        bam="hisat2/{sample}.bam",
+        gtf=config['GTF']
+    output:
+        "stringtie/{sample}.stringtie.gtf"
+    params:
+        strand=get_strandness_for_stringtie
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    threads:
+        4
+    log:
+        "log/stringtie/{sample}.stringtie.log"
+    benchmark:
+        "log/stringtie/{sample}.stringtie.tsv"
+    shell:
+        """
+        mkdir -p stringtie
+        stringtie -G {input.gtf} {params.strand} -o {output} {input.bam} 2> {log}
+        """
+
+rule stringtie_merge:
+    input:
+        stringties=expand("stringtie/{sample}.stringtie.gtf", sample=SAMPLES),
+        gtf=config['GTF']
+    output:
+        "stringtie/stringtie.merged.gtf"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    threads:
+        4
+    log:
+        "log/stringtie/stringtie.merged.log"
+    benchmark:
+        "log/stringtie/stringtie.merged.tsv"
+    shell:
+        """
+        stringtie --merge -G {input.gtf} -o {output} {input.stringties} 2> {log}
+        """
+
 
 rule create_dag:
     resources:
