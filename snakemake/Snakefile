@@ -267,7 +267,9 @@ rule targets:
             if config['TE_ANALYSIS'] and config["START"] == "FASTQ"
             else "Workflow_DAG.all.svg"),
 
-        CUFFMERGE='cuffmerge/merged.gtf' if config["ASSEMBLY_ANALYSIS"] else "Workflow_DAG.all.svg",
+        #CUFFMERGE='cuffmerge/merged.gtf' if config["ASSEMBLY_ANALYSIS"] and config["START"] in ["FASTQ"] else "Workflow_DAG.all.svg",
+
+        stringtie='stringtie/stringtie.merged.gtf' if config["ASSEMBLY_ANALYSIS"] and config["START"] in ["FASTQ"] else "Workflow_DAG.all.svg",
 
         GATK_ASE=(expand("GATK_ASEReadCounter/{sample}.table", sample=SAMPLES)
             if config["ASE_ANALYSIS"] and config["START"] in ["FASTQ", "BAM"]
@@ -569,7 +571,8 @@ rule samtools_index:
         "which samtools &> {log};"
         "samtools index -@ {threads} {input} &>> {log}"
 
-rule CUFFLINKS_FLT:
+
+rule CUFFLINKS_FLT: # SKipped in standard analysis, because STRINGTIE performs better
     '''
     MQ > 30; 
     More than 35BP M
@@ -607,10 +610,10 @@ rule CUFFLINKS_FLT:
         """
 
 
-rule CUFFLINKS:
+rule CUFFLINKS:  # SKipped in standard analysis, because STRINGTIE performs better
     input:
         # todo: by groups
-        "hisat2/{sample}.bam"
+        "filtered_reads/{sample}.bam"
     output:
         "cufflinks/{sample}/transcripts.gtf"
     params:
@@ -634,11 +637,11 @@ rule CUFFLINKS:
         --overlap-radius 50 \
         --3-overhang-tolerance 50 \
         -g {params.ref} {input} &> {log}
-        cat {output}|sort sort -k1,1 -k4,4n > cufflinks/{wildcards.sample}/transcripts.sort.gtf
+        cat {output}|sort -k1,1 -k4,4n > cufflinks/{wildcards.sample}/transcripts.sort.gtf
         """ 
 
 
-rule CUFFMERGE:
+rule CUFFMERGE:  # SKipped in standard analysis, because STRINGTIE performs better
     input:
         expand("cufflinks/{sample}/transcripts.gtf", sample=SAMPLES)
     output:
