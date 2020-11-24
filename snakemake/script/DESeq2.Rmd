@@ -1,6 +1,5 @@
 ---
 title: "DE Analysis and Standard Visualizations"
-#date: "07/09/2020"
 output:
   html_document:
     toc: yes
@@ -11,9 +10,9 @@ params:
   min_lfc: 0.585
   indfilter: FALSE
   cookscutoff: TRUE
-  countFile: "../feature_count/TE_included.txt"
-  #annoFile: 'https://raw.githubusercontent.com/hukai916/Collections/master/gencode.vM21.annotation.txt'
-  annoFile: '/project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM21.annotation.txt'
+  countFile: '../example_data/counts/cleanCount.mm10.xlsx'
+  annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/mm10.gencode.vm25.te_included.anno.txt'
+  #annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/hg38.gencode.v34.te_included.anno.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.de.xlsx"
 ---
@@ -423,28 +422,77 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
 
 ## Importing data
 ```{r}
-df <- read.table(countFile, 
-                 sep="\t", header=TRUE, 
-                 row.names = 1) # row.name in cts(matrix)
-# clean names
-colnames(df) <- gsub("\\.bam$", "", colnames(df))
-colnames(df) <- gsub("sorted_reads.", "", colnames(df))
-colnames(df) <- gsub("mapped_reads.", "", colnames(df))
+# read
+if (grepl("txt$", countFile)){
+  df <- read.table(countFile, 
+                   sep="\t", header=TRUE, 
+                   row.names = 1) # row.name in cts(matrix)
+} else if (grepl("xlsx$", countFile)){
+  df <- readExcel(countFile)  # todo: test with COUNT.xlsx
+} else {
+  stop("input count file not xlsx, nor txt format, abort!!!")
+}
 
-# convert to int
-df[, 6:ncol(df)] <- sapply(df[, 6:ncol(df)], as.integer)
+# auto-detect content format
+featureCountsFormat <- F
+cleanCountFormat <- F
+osrCountFormat <- F
+
+meta.df <- readExcel(metaFile)
+if (colnames(df)[1] == "Chr" & colnames(df)[2] == "Start" & colnames(df)[3] == "End"){
+  cat("featureCounts format table detected\n")
+  featureCountsFormat <- T
+  # clean names
+  colnames(df) <- gsub("\\.bam$", "", colnames(df))
+  colnames(df) <- gsub("sorted_reads.", "", colnames(df))
+  colnames(df) <- gsub("mapped_reads.", "", colnames(df))
+  # convert to int
+  df[, 6:ncol(df)] <- sapply(df[, 6:ncol(df)], as.integer)
+  # get cts
+  cts <- as.matrix(df[, 6:ncol(df)])
+} else if (dim(df)[2] == dim(meta.df)[1] + 1){
+  cat("clean format table detected\n")
+  cleanCountFormat<- T
+  row.names(df) <- df[, 1]
+  df[, 2:ncol(df)] <- sapply(df[, 2:ncol(df)], as.integer)
+  cts <- as.matrix(df[, 2:ncol(df)])
+} else if (colnames(df)[1] == "Gene" & colnames(df)[2] == "Name" & colnames(df)[3] == "Type") {
+  cat("OSR COUNT.xlsx format detected\n")
+  osrCountFormat <- T
+  # clean names
+  colnames(df) <- gsub(".COUNT", "", colnames(df))
+  # convert to int
+  df[, 4:ncol(df)] <- sapply(df[, 4:ncol(df)], as.integer)
+  row.names(df) <- df$Gene
+  # get cts
+  cts <- as.matrix(df[, 4:ncol(df)])
+} else {
+  stop("COUNT file not in featureCounts output format, nor cleanCountFormat format, nor osrCount format. \nMay have different number of samples in meta-data and count-table if cleanCountFormat is provided\n")
+}
+
+# check number of samples
+if ( dim(cts)[2] != dim(meta.df)[1] ){
+  paste("# samples in count-table:", dim(cts)[2] )
+  paste("# samples in meta-data provided:", dim(meta.df)[1] )
+  stop("the number of samples in count-table does not match the number of samples in meta-data")
+}
+
+# check sample names
+if (all(colnames(cts) %in% meta.df$SAMPLE_LABEL) & all(meta.df$SAMPLE_LABEL %in% colnames(cts)) ){
+  cat("all sample-labels in count-table and meta-data matches")
+} else {
+  warning("count-table: ", colnames(cts), "\n")
+  warning("meta-data: ", meta.df$SAMPLE_LABEL, "\n")
+  stop("not all sample-labels in count-table and meta-data matches, abort!!!")
+}
 
 
-# get cts
-cts <- df[, 6:ncol(df)]
-cts <- as.matrix(cts)
 
 # Report Summary
 print(paste("lib-size in millions:"))
 print(format(colSums(cts/1e6), digits=2))
 print(paste("Dim of input data:"))
 print(dim(cts))
-
 ```
 
 ## Filtering
@@ -455,7 +503,13 @@ min_colsum <- 2e4
 sample_filter <- colSums(cts) >= min_colsum
 if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
   cts <- cts[expression_filter, sample_filter]
-  df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
+  if (featureCountsFormat) {
+    df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
+  }else if (cleanCountFormat) {
+    df <- df[expression_filter, sample_filter]
+  } else if (osrCountFormat) {
+    df <- df[expression_filter, c(rep(TRUE,3), sample_filter )]
+  }
   paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples")
   paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes")
   
@@ -516,35 +570,43 @@ print("saved in COUNT.xlsx")
 
 ## TPM calculation
 ```{r}
-tpm <- calculateTPM(cts, df$Length)
-tpm <- data.frame(tpm)
-colnames(tpm) <- paste(colnames(tpm),"TPM",  sep = ":")
-tpm_out <- merge(anno, tpm, by.x=1, by.y=0, all.y=T, sort=F)
-# head(tpm_out)
-# tail(tpm_out)
-WriteXLS(x = tpm_out, 
-         ExcelFileName = 'TPM.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
-print("saved in TPM.xlsx")
+if (featureCountsFormat | osrCountFormat){
+  tpm <- calculateTPM(cts, df$Length)
+  tpm <- data.frame(tpm)
+  colnames(tpm) <- paste(colnames(tpm),"TPM",  sep = ":")
+  tpm_out <- merge(anno, tpm, by.x=1, by.y=0, all.y=T, sort=F)
+  # head(tpm_out)
+  # tail(tpm_out)
+  WriteXLS(x = tpm_out, 
+           ExcelFileName = 'TPM.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+  print("saved in TPM.xlsx")
+} else {
+  cat ("TPM not calculated if COUNT-table is not featureCount format nor osrCountFormat\n")
+}
 ```
 
 ## FPKM calculation
 ```{r}
-fpkm <- calculateFPKM(cts, df$Length)
-fpkm <- data.frame(fpkm)
-colnames(fpkm) <- paste(colnames(fpkm), "FPKM", sep = ":")
-fpkm_out <- merge(anno, fpkm, by.x=1, by.y=0, all.y=T, sort=F)
-# head(fpkm_out)
-# tail(fpkm_out)
-WriteXLS(x = fpkm_out, 
-         ExcelFileName = 'FPKM.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
-print("saved in FPKM.xlsx")
-print("Recommend to use TPM, rather than FPKM")
+if (featureCountsFormat | osrCountFormat){
+  fpkm <- calculateFPKM(cts, df$Length)
+  fpkm <- data.frame(fpkm)
+  colnames(fpkm) <- paste(colnames(fpkm), "FPKM", sep = ":")
+  fpkm_out <- merge(anno, fpkm, by.x=1, by.y=0, all.y=T, sort=F)
+  # head(fpkm_out)
+  # tail(fpkm_out)
+  WriteXLS(x = fpkm_out, 
+           ExcelFileName = 'FPKM.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+  print("saved in FPKM.xlsx")
+  print("Recommend to use TPM, rather than FPKM")
+} else {
+  cat ("FPKM not calculated if COUNT-table is not featureCount format\n")
+}
 ```
 
 ## Design matrix extracted from meta-data
 ```{r}
 meta.df <- readExcel(metaFile)
-meta.df <- meta.df[match(colnames(cts), meta.df$SAMPLE_LABEL), ]
+meta.df <- meta.df[match(colnames(cts), meta.df$SAMPLE_LABEL), ]  # # todo: what if meta has less/more?
 
 contrast.df <- readExcel(contrastFile)
 
@@ -782,7 +844,13 @@ for (i in 1:dim(contrast.df)[2]){
   res <- lfcShrink(dds, contrast = contrast, type = 'ashr')
   res2 <- results(dds, contrast = contrast, 
                   independentFilter=indfilter, cooksCutoff=cookscutoff)
-  process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = tpm)
+  if (featureCountsFormat | osrCountFormat){
+    process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = tpm)
+  } else if (cleanCountFormat){
+      process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = normalized_counts)
+  } else {
+    stop("COUNT table format was wrong")
+  }
 } 
 ```
 

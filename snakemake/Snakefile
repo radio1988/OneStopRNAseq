@@ -1108,14 +1108,7 @@ def DESeq2_input(config):
         else:
             raise Exception("START config not valid")
     elif config["START"] in ["COUNT"]:
-        if config["COUNT_FILE"].endswith("txt"):
             return(config["COUNT_FILE"])
-        elif config["COUNT_FILE"].endswith("xlsx"):
-            df = pd.read_excel(config["COUNT_FILE"])
-            df.to_csv("meta/COUNT.xlsx.txt", sep="\t", index=False, header=True)
-            return("meta/COUNT.xlsx.txt")
-        else:
-            raise NameError('COUNT file not txt nor xlsx format, Exit')
     else:
         return("placeholder" )
 
