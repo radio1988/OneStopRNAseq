@@ -1525,7 +1525,7 @@ rule hisat2_build:
     output:
         ss=config['GTF']+"ss",
         exon=config['GTF']+"exon",
-        index=config['GENOME'] + ".8.ht2"
+        index=config['GENOME'] + ".1.ht2"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:
@@ -1581,7 +1581,7 @@ if config['PAIR_END']:
     rule hisat2:
         input:
             genome=config['GENOME'],
-            index=config['GENOME'] + ".8.ht2",
+            index=config['GENOME'] + ".1.ht2",
             R1="fastq/{sample}.R1.fastq.gz",
             R2="fastq/{sample}.R2.fastq.gz",
         output:
@@ -1609,7 +1609,7 @@ if config['PAIR_END']:
 else:
     rule hisat2:
         input:
-            index=config['GENOME'] + ".8.ht2",
+            index=config['GENOME'] + ".1.ht2",
             U="fastq/{sample}.fastq.gz"
         output:
             bam="hisat2/{sample}.bam",
