@@ -75,7 +75,7 @@ independentFilter: 'FALSE'
 
 
 # GSEA
-GSEA_ANALYSIS: True
+GSEA_ANALYSIS: False
 GSEA_NPLOTS: 100  
 GSEA_PLOT_SVG: True  
 GSEA_DBS:  
@@ -106,8 +106,8 @@ RNKS:
 # Optinoal Analysis
 
 # Alternative Splicing analysis (rMATS)
-DEXSEQ_ANALYSIS: True
-RMATS_ANALYSIS: True
+DEXSEQ_ANALYSIS: False
+RMATS_ANALYSIS: False
 CONTRAST_AS: meta/contrast.as.xlsx
 RMATS_STRANDNESS:
   {0 : fr-unstranded,
@@ -118,7 +118,7 @@ RMATS_STRANDNESS:
 MIN_GENE_COUNT: 100  # genes with less reads per sample will be removed from DEXSeq analysis
 
 # TE analysis (SalmonTE)
-TE_ANALYSIS: True # True, include TE analysis in DESeq2 results (only if FASTQ provided); False, skip
+TE_ANALYSIS: False # True, include TE analysis in DESeq2 results (only if FASTQ provided); False, skip
 TE_REFERENCE: mm # mm, hs, dm, dr
 # hs : Homo Sapiens
 # mm : Mus musculus
@@ -126,8 +126,8 @@ TE_REFERENCE: mm # mm, hs, dm, dr
 # dr : Danio rerio
 
 # For ASE
-ASE_ANALYSIS: True
+ASE_ANALYSIS: False
 VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
 
-ASSEMBLY_ANALYSIS: True
+ASSEMBLY_ANALYSIS: False
 # todo: DE analysis with new ASSEMBLY GTF
