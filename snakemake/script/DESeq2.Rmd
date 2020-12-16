@@ -425,7 +425,7 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
 # read
 if (grepl("txt$", countFile)){
   df <- read.table(countFile, 
-                   sep="\t", header=TRUE, 
+                   sep="\t", header=TRUE, comment.char = '#', 
                    row.names = 1) # row.name in cts(matrix)
 } else if (grepl("xlsx$", countFile)){
   df <- readExcel(countFile)  # todo: test with COUNT.xlsx

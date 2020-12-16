@@ -1,6 +1,6 @@
 # Introduction of OSR from COUNT input
 If users have a gene count-table, they can use this to perform quick DESeq2, GSEA analysis and visualizaiton of RNASeq data.
-
+It makes it easy to add/drop samples from a gene level analysis by adding/dropping samples from the COUNT-table, meta.xlsx, and contrast.de.xlsx.
 
 # Description of count-table format 
 Three different formats of count table are supported
@@ -11,19 +11,20 @@ Three different formats of count table are supported
     - table header must be exactly:    Gene	Name	Type	SampleName1 SampleName2 etc.
     - designed to re-run gene-level analysis with updated meta-data/contrast info quickly
 
-2. featureCounts format 
+2. cleanCount format
+    - e.g. example_data/counts/cleanCount.mm10.xlsx
+    - an xlsx file that has gene-name or gene-id as the first column, and read counts in other columns
+    - table header must be: Gene    SampleName1 SampleName2 etc.
+    - because no concatenated exon length (Gene length) is provided, TPM/FPKM normalization will not be performed, and DESeq2 normalized expression values will be used in the output tables instead
+    - minimum information required from users, designed to run OSR analysis with count-table generated with any software, so that users have more flexibility
+
+3. featureCounts format 
     - e.g. example_data/counts/featureCounts.mm10.txt
     - a txt file generate by featureCounts software
     - table header must be exactly:    Geneid	Chr	Start	End	Strand	Length	SampleName1 SampleName2 etc.
     - the seperator of columns must be 'tab'
     - designed to run OSR analysis with any featureCounts count-table obtained from collaborators, public database, etc.
-
-3. cleanCount format
-    - e.g. example_data/counts/cleanCount.mm10.xlsx
-    - an xlsx file that has gene-name or gene-id as the first column, and read counts in other columns
-    - table header must be: Gene    SampleName1 SampleName2 etc.
-    - because no concatenated exon length (Gene length) is provided, TPM/FPKM normalization will not be performed, and DESeq2 normalized expression values will be used in the output tables instead
-    - designed to run OSR analysis with count-table generated with any software, so that users have more flexibility
+    - when using Excel to edit this file, please be sure to delete the comment line from featureCount (e.g. # Program:featureCounts v2.0.0; Command:""featureCounts""...)
 
 # Description of meta-data file:
     - e.g. example_data/meta/meta.xlsx
