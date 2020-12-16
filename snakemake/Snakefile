@@ -52,6 +52,9 @@ MAX_FDR=config["MAX_FDR"]
 MIN_LFC=config["MIN_LFC"]
 MIN_GENE_COUNT= config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
 
+
+
+
 # priority 0-100, default 0
 
 # get CONTRASTS from meta/contrast.xlsx
@@ -427,7 +430,7 @@ if config['PAIR_END']:
             r1="fastq/{sample}.R1.fastq.gz",
             r2="fastq/{sample}.R2.fastq.gz"
         output:
-            "mapped_reads/{sample}.bam"  # test mode, should have temp("mapped_reads/{sample}.bam")
+            temp("mapped_reads/{sample}.bam")
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 3000 
         params:
@@ -1114,6 +1117,7 @@ def DESeq2_input(config):
 
 
 rule DESeq2:
+# todo: use softlinked script/DESeq2.rmd, use softlinked example_data/ at COUNT-START
     input:
         DESeq2_input(config)
     output:
@@ -1122,7 +1126,7 @@ rule DESeq2:
     container:
         "envs/hand_sandbox.simg"
     # conda:
-    #     "envs/r.yaml"
+    #     "envs/r.yaml" # installing R via conda is problematic
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000,
     params:
@@ -1138,7 +1142,7 @@ rule DESeq2:
     priority: 
         100
     threads:
-        2
+        1
     log:
         "log/DESeq2/DESeq2.log"
     benchmark:
@@ -1160,14 +1164,22 @@ rule DESeq2:
         'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};'
 
 
-# copy gmt files for GSEA
 rule GSEA:
+    """
+    config[START] == RNK, then find config[RNKS], else, find {contrast} 
+    config[RNKS] contains the full name of the rank file (xlsx or txt), must be put in ./meta/ folder
+    rnk file must be named xxx.rnk.txt when feeded to GSEA
+
+    # todo: 
+    [x] no svg if nplots > 200 (yes)
+    [] 
+    """
     input: 
         deseq2= "Workflow_DAG.all.svg" # dummy assume existing
-            if config["START"] == "RNK" 
-            else "DESeq2/DESeq2.html" , # to keep ordering
-        rnk="meta/{contrast}"  # contrast just a name, alias for rnk
-            if config["START"] == "RNK" 
+            if config["START"] == "RNK"
+            else "DESeq2/DESeq2.html" , # DESEq2, then GSEA
+        rnk="meta/{contrast}"  # contrast just a name, alias for rnk, see rule targets
+            if config["START"] == "RNK"
             else "DESeq2/rnk/{contrast}.rnk",
         db="meta/gsea_db/{db}"
     output:
@@ -1176,9 +1188,12 @@ rule GSEA:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
     params:
-        svg=config["GSEA_PLOT_SVG"],
+        svg=config["GSEA_PLOT_SVG"] if config["GSEA_NPLOTS"] <= 200 else False,  # no svg if nplots > 200 (to save time and space)
         nplot=config["GSEA_NPLOTS"],
-        label_db=lambda wildcards: wildcards["db"][:-12]
+        label_db=lambda wildcards: wildcards["db"][:-12],
+        rnk_flat_file= lambda wildcards: re.sub(".rnk.xlsx$", ".rnk.txt", wildcards["contrast"]) \
+                    if wildcards["contrast"].endswith(".rnk.xlsx") \
+                    else wildcards["contrast"]
     threads:
         1
     log:
@@ -1189,22 +1204,21 @@ rule GSEA:
         "openjdk/11+28"
     priority:
         100
-    # run:
-    #     print('test')
     shell:
         """
-        echo {params.label_db} > {log}
-        
+        echo {input.rnk} {params.label_db} > {log}
+
         mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}
         rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
         rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
+        rm -rf gsea/{wildcards.contrast}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
 
-        python script/fix_gsea_input.py {input.rnk} &>> {log}
+        python script/fix_gsea_input.py {input.rnk} &>> {log}  # fix gene symbol error; change test.xlsx to test.rnk.txt
         
         which java &>> {log}
 
         envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
-        -gmx {input.db} -rnk {input.rnk} -rpt_label {wildcards.db} \
+        -gmx {input.db} -rnk meta/{params.rnk_flat_file} -rpt_label {wildcards.db} \
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
         -set_max 15000 -set_min 15 \

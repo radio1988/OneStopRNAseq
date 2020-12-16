@@ -1,35 +1,50 @@
 import sys
+import pandas as pd
+import re
 
-print("function: make all lower case letters in txt file upper case, then save back to the same file")
-print("usage: capslock.py file.txt")
+print("function: make all lower case letters in txt file upper case, remove all spaces/quotes in gene symbols, then save to txt file for GSEA")
+print("usage: fix_gsea_input.py file.txt/file.xlsx")
+print("path/file.txt or path/file.xlsx will be converted to path/file.rnk.txt")
+
 
 fname = sys.argv[1]
 
-inputFile = open(fname, 'r')
-content = inputFile.read()
+if fname.endswith(".rnk.xlsx"):
+    df = pd.read_excel(fname)
+    outname = re.sub('.rnk.xlsx$', '.rnk.txt', fname)
+elif fname.endswith(".rnk.txt"):
+    df = pd.read_table(fname, header=0)
+    outname = fname
+else:
+    sys.exit("Error: File format not .rnk.xlsx, nor .rnk.txt, Exit\n \
+        Please note that '.rnk' suffix is necessary for xlsx and txt files, to indicate they are rnk files")
 
-# search for lower letters
-contain_lower = False
-for line in content:
-    if any(letter.islower() for letter in line):
-        contain_lower = True
-        print("log: lower case letters found, updating", fname)
-        content=content.upper()
-        break
+print("input:\n", df.head())
 
-# search for spaces
-contain_space = False
-for line in content:
-    if ' ' in line:
-        contain_space = True
-        print("log: spaces found in lines, updating", fname)
-        content=content.replace(" ", "") # remove space
-        break
+# lower gene name to upper
+over_write = False
+if any(df.iloc[:, 0].str.islower()):
+    df = df.apply(lambda x: x.astype(str).str.upper())
+    over_write = True
+
+# remove space from gene symbols
+if any(df.iloc[:, 0].str.find(" ") >= 0):
+    df = df.apply(lambda x: x.astype(str).str.replace(" ", ""))
+    over_write = True
+
+if any(df.iloc[:, 0].str.find("\"") >= 0):
+    df = df.apply(lambda x: x.astype(str).str.replace("\"", ""))
+    over_write = True
+
+if any(df.iloc[:, 0].str.find("\'") >= 0):
+    df = df.apply(lambda x: x.astype(str).str.replace("\'", ""))
+    over_write = True
 
 # convert to upper 
-if contain_lower or contain_space:
-    with open(fname, 'w') as outputFile:
-        outputFile.write(content)
+if over_write:
+    df.to_csv(outname, index=False, header=True, sep="\t")
+    print("spaces and lower-case fond in gene symbols, fixed and saved to ", outname)
+    print("output:\n", df.head())
 else:
-    print("lower case nor spaces found in file, not updating", fname)
+    print("no lower case nor spaces found in file, not updating", fname)
 
