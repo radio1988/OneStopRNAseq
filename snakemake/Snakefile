@@ -1188,7 +1188,7 @@ rule GSEA:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
     params:
-        svg=config["GSEA_PLOT_SVG"] if config["GSEA_NPLOTS"] <= 200 else False,  # no svg if nplots > 200 (to save time and space)
+        svg=config["GSEA_PLOT_SVG"] if config["GSEA_NPLOTS"] <= 200 else False,  # no svg if nplots > 200 (to save time and space) # todo: move this to front end, when making workflow portable
         nplot=config["GSEA_NPLOTS"],
         label_db=lambda wildcards: wildcards["db"][:-12],
         rnk_flat_file= lambda wildcards: re.sub(".rnk.xlsx$", ".rnk.txt", wildcards["contrast"]) \
@@ -1668,7 +1668,8 @@ def get_strandness_for_stringtie (x):
 rule stringtie:  # todo: group level
     input:
         bam="hisat2/{sample}.bam",
-        gtf=config['GTF']
+        gtf=config['GTF'],
+        strandness='meta/strandness.detected.txt'
     output:
         "stringtie/{sample}.stringtie.gtf"
     params:
