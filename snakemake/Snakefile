@@ -1068,7 +1068,9 @@ def DESeq2_input(config):
 rule DESeq2:
 # todo: use softlinked script/DESeq2.rmd, use softlinked example_data/ at COUNT-START
     input:
-        DESeq2_input(config)
+        cnt=DESeq2_input(config),
+        meta=config["META"],
+        contrast=config["CONTRAST_DE"],
     output:
         "DESeq2/DESeq2.html",
         expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
@@ -1077,7 +1079,7 @@ rule DESeq2:
     # conda:
     #     "envs/r.yaml" # installing R via conda is problematic
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000,
+        mem_mb=lambda wildcards, attempt: attempt * 4000,
     params:
         rmd="'script/DESeq2.Rmd'",
         fdr=MAX_FDR,
@@ -1085,8 +1087,6 @@ rule DESeq2:
         independentFilter=config["independentFilter"],
         cooksCutoff=config["cooksCutoff"],
         anno_tab=ANNO_TAB,
-        meta=config["META"],
-        cont=config["CONTRAST_DE"],
         o="'../DESeq2/DESeq2.html'"
     priority: 
         100
@@ -1105,12 +1105,53 @@ rule DESeq2:
         min_lfc={params.lfc}, \
         cookscutoff={params.cooksCutoff}, \
         indfilter={params.independentFilter}, \
-        countFile=\'../{input}\', \
+        countFile=\'../{input.cnt}\', \
         annoFile=\'{params.anno_tab}\', \
-        metaFile=\'../{params.meta}\', \
-        contrastFile=\'../{params.cont}\'           ), \
+        metaFile=\'../{input.meta}\', \
+        contrastFile=\'../{input.contrast}\'           ), \
         output_file={params.o})" > {log} 2>&1 ;'
         'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};'
+
+def input_rnk_fname1(wildcards, config):
+    '''
+    fname1: the rnk file name as input for rule GSEA , 
+    which is the output of upstream analysis
+    '''
+    if config['START'] == 'RNK':
+        fname1 = 'meta/' + wildcards['fname']  
+        # wildcards['fname']  = one of config['RNKS'], 
+        # e.g. meta/wrong.rnk.xlsx, meta/name1.rnk.txt
+    else:
+        fname1 = "DESeq2/rnk/" + wildcards['fname'] + ".rnk"  
+        # e.g. DESeq2/rnk/KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8.rnk
+    return fname1
+
+
+def rnk_fname1_to_fname2(fname1):
+    '''
+    xxx.rnk -> xxx.rnk.txt
+    xxx.rnk.xlsx -> xxx.rnk.txt
+    xxx.rnk.txt -> xxx.rnk.txt
+    '''
+    import re
+    import sys
+    if fname1.endswith('.rnk.xlsx'):
+        return re.sub('.rnk.xlsx$', '.rnk.txt', fname1)
+    elif fname1.endswith('.rnk'):
+        return fname1+".txt"
+    elif fname1.endswith('.rnk.txt'):
+        return fname1
+    else:
+        print(fname1)
+        sys.exit('rnk file type not rnk, rnk.txt, or rnk.xlsx')
+        return None
+
+def input_rnk_fname2(wildcards, config):
+    '''
+    the corresponding flat rnk.txt file name (fname1) for corresponding fname1
+    '''
+    fname1=input_rnk_fname1(wildcards, config)
+    return rnk_fname1_to_fname2(fname1)
 
 
 rule GSEA:
@@ -1127,58 +1168,55 @@ rule GSEA:
         deseq2= "Workflow_DAG.all.svg" # dummy assume existing
             if config["START"] == "RNK"
             else "DESeq2/DESeq2.html" , # DESEq2, then GSEA
-        rnk="meta/{contrast}"  # contrast just a name, alias for rnk, see rule targets
-            if config["START"] == "RNK"
-            else "DESeq2/rnk/{contrast}.rnk",
-        db="meta/gsea_db/{db}"
+        rnk=lambda wildcards: input_rnk_fname1(wildcards, config),
+        db="meta/gsea_db/{db}",
     output:
-#        touch("log/gsea/{contrast}/{db}.finished"),  # todo: premature killed jobs create junk sub folders, confusing to users
-        "gsea/{contrast}/{db}.GseaPreranked/index.html"
+        "gsea/{fname}/{db}.GseaPreranked/index.html"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
     params:
         svg=config["GSEA_PLOT_SVG"] if config["GSEA_NPLOTS"] <= 200 else False,  # no svg if nplots > 200 (to save time and space) # todo: move this to front end, when making workflow portable
         nplot=config["GSEA_NPLOTS"],
         label_db=lambda wildcards: wildcards["db"][:-12],
-        rnk_flat_file= lambda wildcards: re.sub(".rnk.xlsx$", ".rnk.txt", wildcards["contrast"]) \
-                    if wildcards["contrast"].endswith(".rnk.xlsx") \
-                    else wildcards["contrast"]
+        rnk_flat_file= lambda wildcards: input_rnk_fname2(wildcards, config),
     threads:
         1
     log:
-        "log/gsea/{contrast}.{db}.log"
+        "log/gsea/{fname}.{db}.log"
     benchmark:
-        "log/gsea/{contrast}.{db}.tsv"
+        "log/gsea/{fname}.{db}.tsv"
     envmodules:
         "openjdk/11+28"
     priority:
         100
     shell:
         """
-        echo {input.rnk} {params.label_db} > {log}
+        echo fname1: {input.rnk} > {log}
+        echo fname2: {params.rnk_flat_file} >> {log}
+        echo label_db: {params.label_db} >> {log}
 
-        mkdir -p gsea && mkdir -p gsea/{wildcards.contrast} &>> {log}
-        rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
-        rm -rf gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
-        rm -rf gsea/{wildcards.contrast}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
+        mkdir -p gsea && mkdir -p gsea/{wildcards.fname} &>> {log}
+        rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
+        rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
+        rm -rf gsea/{wildcards.fname}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
 
         python script/fix_gsea_input.py {input.rnk} &>> {log}  # fix gene symbol error; change test.xlsx to test.rnk.txt
         
         which java &>> {log}
 
         envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
-        -gmx {input.db} -rnk meta/{params.rnk_flat_file} -rpt_label {wildcards.db} \
+        -gmx {input.db} -rnk {params.rnk_flat_file} -rpt_label {wildcards.db} \
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
         -set_max 15000 -set_min 15 \
-        -plot_top_x {params.nplot} -out ./gsea/{wildcards.contrast} &>> {log}
+        -plot_top_x {params.nplot} -out ./gsea/{wildcards.fname} &>> {log}
 
         # rename
-        mv gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked.*/ gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked/  &>> {log}   # if gsea fails, might still have problems, not sure
+        mv gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/ gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}   # if gsea fails, might still have problems, not sure
 
         cp envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
         # compress
-        D=gsea/{wildcards.contrast}/{wildcards.db}.GseaPreranked
+        D=gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked
         rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
         """
 
