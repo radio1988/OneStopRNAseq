@@ -53,7 +53,7 @@ knitr::opts_knit$set(root.dir = "../DESeq2")
 
 
 ## Input parameter extraction
-```{r}
+```{r params}
 max_fdr <- params$max_fdr
 min_lfc <- params$min_lfc
 indfilter <- params$indfilter
@@ -73,7 +73,7 @@ paste("Log2FC cut-off:", min_lfc)
 ```
 
 ## Functions
-```{r}
+```{r functions}
 readExcel <- function(fname){
   df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
   df <- data.frame(df)  #important
@@ -421,7 +421,7 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
 
 
 ## Importing data
-```{r}
+```{r read_data}
 # read
 if (grepl("txt$", countFile)){
   df <- read.table(countFile, 
@@ -496,7 +496,7 @@ print(dim(cts))
 ```
 
 ## Filtering
-```{r}
+```{r filtering}
 min_rowsum <- 10
 expression_filter <- rowSums(cts) >= min_rowsum  # default 10
 min_colsum <- 2e4
@@ -525,7 +525,7 @@ boxplot(log10(cts+1), las=2, main = "library size after filtering")
 ```
 
 ## Importing annotation
-```{r}
+```{r import_annotation}
 # from GitHub (must be raw, not zipped)
 getAnnotation <- function(urlpath) {
   tmp <- tempfile()
@@ -569,7 +569,7 @@ print("saved in COUNT.xlsx")
 ```
 
 ## TPM calculation
-```{r}
+```{r tpm}
 if (featureCountsFormat | osrCountFormat){
   tpm <- calculateTPM(cts, df$Length)
   tpm <- data.frame(tpm)
@@ -586,7 +586,7 @@ if (featureCountsFormat | osrCountFormat){
 ```
 
 ## FPKM calculation
-```{r}
+```{r fpkm}
 if (featureCountsFormat | osrCountFormat){
   fpkm <- calculateFPKM(cts, df$Length)
   fpkm <- data.frame(fpkm)
@@ -640,7 +640,7 @@ resultsNames(dds)
 ```
 
 ## Save DESeq2 normalized counts
-```{r}
+```{r deseq2_norm}
 normalized_counts <- counts(dds, normalized=TRUE)
 normalized_counts <- data.frame(normalized_counts)
 colnames(normalized_counts) <- paste(colnames(normalized_counts),"DESeq2NormalizedCount",  sep = ":")
@@ -664,7 +664,7 @@ print("saved in DESeq2NormalizedCounts.xlsx")
 <!-- ``` -->
 
 ### Histogram of Log10(Counts)
-```{r}
+```{r histogram}
 log1p_count <- log10(counts(dds) + 1)
 hist(log1p_count, 
      main = 'Histogram of log10(count + 1)', 
@@ -673,13 +673,13 @@ hist(log1p_count,
 ```
 
 ### Dispersion plot
-```{r}
+```{r dispersion_plot}
 plotDispEsts(dds, main="Dispersion plot")
 ```
 
 
 ### Sample PCA plot
-```{r}
+```{r pca}
 plotQC_PCA <- function(dds) {
   vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
   
@@ -754,7 +754,7 @@ plotQC_PCA_no_label(dds)
 
 
 ### Sample heatmap (Poisson Distance Based)
-```{r}
+```{r poisson_heatmap}
 colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
 poisd <- PoissonDistance(t(counts(dds)))
 samplePoisDistMatrix <- as.matrix( poisd$dd ) 
@@ -813,7 +813,7 @@ pheatmap(samplePoisDistMatrix,
 ```
 
 ## DE analysis
-```{r, warning=T}
+```{r, warning=T, de}
 gsub("group", "", resultsNames(dds))
 
 for (i in 1:dim(contrast.df)[2]){
@@ -857,7 +857,7 @@ for (i in 1:dim(contrast.df)[2]){
 
 
 ## Log
-```{r}
+```{r log}
 #save.image(file="../DESeq2/RSession")
 sessionInfo()
 ```
