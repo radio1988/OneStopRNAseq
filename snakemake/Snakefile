@@ -216,9 +216,17 @@ rule targets:
             if config["START"] == "FASTQ" 
             else "Workflow_DAG.all.svg"),
 
+        STAR_Align_multiqc=("bam_qc/STAR_Align_summary_multiqc_report.html"
+            if config["START"] == "FASTQ" # todo: only when STAR used as aligner
+            else "Workflow_DAG.all.svg"),
+
         bam_qc=(expand("bam_qc/idxstats/{sample}.idxstats.txt", sample=SAMPLES) 
             if config["START"] in ["FASTQ", "BAM"]  
             else "Workflow_DAG.all.svg"),
+
+        bam_qc_multiqc=("bam_qc/samtools_stats_multiqc_report.html"
+            if config['START'] in ['FASTQ', 'BAM']
+            else 'Workflow_DAG.all.svg'),
 
         QoRTs=(expand("bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK", sample=SAMPLES)
             if config["START"] in ["FASTQ", "BAM"]  
@@ -403,8 +411,6 @@ rule star_idx:
         "log/star_idx/star_idx.log"
     benchmark:
         "log/star_idx/star_idx.tsv"
-    #container:
-    #    "envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
     envmodules:
         "star/2.7.5a"
     shell:
@@ -430,7 +436,8 @@ if config['PAIR_END']:
             r1="fastq/{sample}.R1.fastq.gz",
             r2="fastq/{sample}.R2.fastq.gz"
         output:
-            temp("mapped_reads/{sample}.bam")
+            log="mapped_reads/{sample}.Log.final.out",
+            bam=temp("mapped_reads/{sample}.bam"),
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 3000 
         params:
@@ -441,8 +448,6 @@ if config['PAIR_END']:
             "log/mapped_reads/{sample}.star.log"
         benchmark:
             "log/mapped_reads/{sample}.star.tsv"
-        #container:
-        #    "envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
         envmodules:
             "star/2.7.5a"
         shell:
@@ -471,10 +476,6 @@ if config['PAIR_END']:
             --outReadsUnmapped Fastx \
             >> {log} 2>&1
 
-            mkdir -p bam_qc/
-            mkdir -p bam_qc/STAR_summary/
-            cp mapped_reads/{wildcards.sample}.Log.final.out bam_qc/STAR_summary/ &>> {log}
-
             mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam &>> {log}
             pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*  &>> {log}
             """
@@ -485,7 +486,8 @@ else:
             gtf=GTF,
             r1="fastq/{sample}.fastq.gz",
         output:
-            temp("mapped_reads/{sample}.bam")
+            temp("mapped_reads/{sample}.bam"),
+            "mapped_reads/{sample}.Log.final.out"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 3000   ,
         params:
@@ -496,8 +498,6 @@ else:
             "log/mapped_reads/{sample}.star.log"
         benchmark:
             "log/mapped_reads/{sample}.star.tsv"
-        #container:
-        #    "envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
         envmodules:
             "star/2.7.5a"
         shell:
@@ -529,6 +529,29 @@ else:
             mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam
             pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
             """
+
+rule STAR_Align_multiqc:
+    input:
+        expand("mapped_reads/{sample}.Log.final.out", sample=SAMPLES)
+    output:
+        expand("bam_qc/STAR_Align_summary/{sample}.Log.final.out", sample=SAMPLES),
+        "bam_qc/STAR_Align_summary_multiqc_report.html",    
+    resources:
+        mem_mb="2000"
+    threads:
+        1
+    log:
+        'log/bam_qc/STAR_Align_summary_multiqc_report.log'
+    benchmark:
+        'log/bam_qc/STAR_Align_summary_multiqc_report.tsv'
+    shell:
+        """
+        mkdir -p bam_qc/
+        mkdir -p bam_qc/STAR_Align_summary/
+        cp {input} bam_qc/STAR_Align_summary/
+
+        multiqc {input}  --outdir bam_qc --title STAR_Align_summary
+        """
 
 
 rule samtools_sort:
@@ -573,6 +596,63 @@ rule samtools_index:
     shell:
         "which samtools &> {log};"
         "samtools index -@ {threads} {input} &>> {log}"
+
+rule bam_qc:
+    """
+    with samtools
+    """
+    input:
+        bam="sorted_reads/{sample}.bam",
+        bai="sorted_reads/{sample}.bam.bai"
+    output:
+        stats="bam_qc/stats/{sample}.stats.txt",
+        idxstats="bam_qc/idxstats/{sample}.idxstats.txt",
+    container:
+        "envs/hand_sandbox.simg" # not necessary after samstat disabled
+    priority:
+        0
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 2000
+    threads:
+        2
+    log:
+        idxstats="log/bam_qc/idxstats/{sample}.idxstats.log",
+        stats="log/bam_qc/stats/{sample}.stats.log",
+    benchmark:
+        "log/bam_qc/benchmark/{sample}.bam_qc.tsv",
+    shell:
+        """
+        mkdir -p bam_qc 
+        mkdir -p bam_qc/idxstats
+        mkdir -p bam_qc/stats
+
+        samtools idxstats {input.bam} > {output.idxstats} 2> {log.idxstats} &
+        samtools stats {input.bam} > {output.stats} 2> {log.stats} &
+
+        wait
+        """
+
+rule bam_qc_multiqc:
+    input:
+        stats=expand("bam_qc/stats/{sample}.stats.txt", sample=SAMPLES),
+        idxstats=expand("bam_qc/idxstats/{sample}.idxstats.txt", sample=SAMPLES)
+    output:
+        "bam_qc/samtools_stats_multiqc_report.html",    
+        "bam_qc/samtools_idxstats_multiqc_report.html",   
+    resources:
+        mem_mb="2000"
+    threads:
+        1
+    log:
+        'log/bam_qc/samtools_multiqc_report.log'
+    benchmark:
+        'log/bam_qc/samtools_multiqc_report.tsv'
+    shell:
+        """
+        multiqc {input.stats}  --outdir bam_qc --title samtools_stats &> {log}
+        multiqc {input.idxstats}  --outdir bam_qc --title samtools_idxstats &> {log}
+        """
+
 
 
 rule CUFFLINKS_FLT: # SKipped in standard analysis, because STRINGTIE performs better
@@ -670,40 +750,6 @@ rule CUFFMERGE:  # SKipped in standard analysis, because STRINGTIE performs bett
         cat {output}| sort -k1,1 -k4,4n > cuffmerge/merged.sort.gtf 2>> {log}
         """
 
-rule bam_qc:
-    """
-    with samtools
-    """
-    input:
-        bam="sorted_reads/{sample}.bam",
-        bai="sorted_reads/{sample}.bam.bai"
-    output:
-        stats="bam_qc/stats/{sample}.stats.txt",
-        idxstats="bam_qc/idxstats/{sample}.idxstats.txt"
-    container:
-        "envs/hand_sandbox.simg" # not necessary after samstat disabled
-    priority:
-        0
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000
-    threads:
-        4
-    log:
-        idxstats="log/bam_qc/idxstats/{sample}.idxstats.log",
-        stats="log/bam_qc/stats/{sample}.stats.log",
-    benchmark:
-        "log/bam_qc/benchmark/{sample}.bam_qc.tsv",
-    shell:
-        """
-        mkdir -p bam_qc 
-        mkdir -p bam_qc/idxstats
-        mkdir -p bam_qc/stats
-
-        samtools idxstats {input.bam} > {output.idxstats} 2> {log.idxstats} &
-        samtools stats {input.bam} > {output.stats} 2> {log.stats} &
-
-        wait
-        """
 
 
 # rule QoRTs
@@ -1746,6 +1792,7 @@ rule reset:
         feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ gsea/ gsea_compressed/ \
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \
+        feature_count_gene_level hisat2 stringtie \
         lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.svg \
         meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt
         echo 'unlocking dir..'
