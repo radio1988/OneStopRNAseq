@@ -639,8 +639,8 @@ rule QoRTs_MultiPlot:
     shell:
         """
         which python && which Rscript &> {log};
-        python script/meta_to_decoder.py &>> {log};
-        Rscript script/QoRT.R &>> {log}; # needs QoRT package in R
+        python workflow/script/meta_to_decoder.py &>> {log};
+        Rscript workflow/script/QoRT.R &>> {log}; # needs QoRT package in R
         mkdir -p bam_qc/QoRTs_MultiPlot/details/;
         mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/;
 
@@ -832,7 +832,7 @@ if config['INTRON']:
                 else:
                     print ("MODE err, not liberal nor strict")
 
-            shell("python script/get_max_of_featureCountsTable.py {input.exon_counts} {output.count}")
+            shell("python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.count}")
 
 
 rule strand_detection:
@@ -852,7 +852,7 @@ rule strand_detection:
     benchmark:
         "log/strand_detection.tsv"
     script:
-        "script/strandness_detection.py" # todo: improvement needed
+        "workflow/script/strandness_detection.py" # todo: improvement needed
 
 
 
@@ -953,7 +953,7 @@ rule Merge_TE_and_Gene:
         "log/merge_te_and_gene/merge_te_and_gene.tsv"
     shell:
         """
-        python script/merge_featureCount_and_SalmonTE.py \
+        python workflow/script/merge_featureCount_and_SalmonTE.py \
         {input.gene} {input.te} {output} > {log} 2>&1
         """
 
@@ -962,7 +962,7 @@ rule Merge_TE_and_Gene:
 
 
 rule DESeq2:
-# todo: use softlinked script/DESeq2.rmd, use softlinked example_data/ at COUNT-START
+# todo: use softlinked workflow/script/DESeq2.rmd, use softlinked example_data/ at COUNT-START
     input:
         cnt=DESeq2_input(config),
         meta=config["META"],
@@ -977,7 +977,7 @@ rule DESeq2:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     params:
-        rmd="'script/DESeq2.Rmd'",
+        rmd="'workflow/script/DESeq2.Rmd'",
         fdr=MAX_FDR,
         lfc=MIN_LFC,
         independentFilter=config["independentFilter"],
@@ -995,7 +995,7 @@ rule DESeq2:
     shell:
         #Rscript -e rmarkdown::render({params.rmd})
         'mkdir -p DESeq2; ' 
-        'cp script/DESeq2.Rmd DESeq2; '
+        'cp workflow/script/DESeq2.Rmd DESeq2; '
         'Rscript -e "rmarkdown::render({params.rmd}, \
         params=list(max_fdr={params.fdr}, \
         min_lfc={params.lfc}, \
@@ -1057,7 +1057,7 @@ rule GSEA:
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
         rm -rf gsea/{wildcards.fname}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
 
-        python script/fix_gsea_input.py {input.rnk} &>> {log}  # fix gene symbol error; change test.xlsx to test.rnk.txt
+        python workflow/script/fix_gsea_input.py {input.rnk} &>> {log}  # fix gene symbol error; change test.xlsx to test.rnk.txt
         
         which java &>> {log}
 
@@ -1216,7 +1216,7 @@ rule DEXSeq_Prep_GFF:
     benchmark:
         "log/DEXSeq/prep_gff.tsv"
     shell:
-        "python script/dexseq_prepare_annotation.py -r no {input} {output} &> {log}"
+        "python workflow/script/dexseq_prepare_annotation.py -r no {input} {output} &> {log}"
 
 
 
@@ -1243,7 +1243,7 @@ rule prep_count:
     #conda:
     #    "workflow/envs/dexseq.yaml"
     shell:
-        "python script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output}"  
+        "python workflow/script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output}"  
         # todo: maybe -r name (sort by name) is faster
 
 
@@ -1265,7 +1265,7 @@ rule DEXSeq:
     priority:
         10
     params:
-        rmd="'script/dexseq.r'",
+        rmd="'workflow/script/dexseq.r'",
         annoFile=config["ANNO_TAB"],
     log:
         "log/DEXSeq/DEXSeq.{ascn}.log"
@@ -1275,8 +1275,8 @@ rule DEXSeq:
         """
         mkdir -p DEXSeq 
         which Rscript &> {log}
-        cp script/dexseq.r DEXSeq/ &>> {log}
-        Rscript script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} {threads} {MIN_GENE_COUNT} {wildcards.ascn} &>> {log}
+        cp workflow/script/dexseq.r DEXSeq/ &>> {log}
+        Rscript workflow/script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} {threads} {MIN_GENE_COUNT} {wildcards.ascn} &>> {log}
         D=DEXSeq/contrast{wildcards.ascn}
         rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
         """
