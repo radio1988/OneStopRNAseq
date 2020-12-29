@@ -1,20 +1,10 @@
-from snakemake.utils import min_version
-min_version("5.17.0")
-
-configfile: "config.yaml"
-#container: "envs/hand_sandbox.simg"  # only effective when --use-singularity
-# removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
-
-#localrules: targets, create_dag
-
-# priority 0-100, default 0
-
 import pandas as pd
 import sys
 import re
 import os
 import math
 import shutil
+from snakemake.utils import min_version
 from osr import gunzip
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2
@@ -22,7 +12,32 @@ from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hi
 get_strandness_for_hisat2_SE, get_strandness_for_stringtie
 from osr import read_length
 
-# umcompress files
+###  Usage Requirements  ###
+# inputs in ./fastq/
+# named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
+# {sample}.fastq.gz for PE reads
+
+# SnakeMake Coding Notes:
+# input don't have to be used, just for draw nice DAG
+# 07/10/2019 randomized primary alignment
+
+
+min_version("5.17.0")  # check snakemake version
+configfile: "config.yaml"
+ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc > bamCoverage > feature_count  > samtools_sort > samtools_index > reset
+# container: "envs/hand_sandbox.simg"  # only effective when --use-singularity
+# removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
+# localrules: targets, create_dag
+# priority 0-100, default 0
+# shell.prefix("""
+#             # - alias does not work, have to use $samstat
+#             # module load star/2.5.3a
+#             # module load singularity/singularity-current
+#             # conda activate osr  # have to create conda env osr first
+#             """)
+
+
+# umcompress files (todo: make it a rule)
 if config["GENOME"].endswith(".gz"):
     gunzip(config["GENOME"])
     config["GENOME"] = re.sub(".gz$", "", config["GENOME"])
@@ -93,23 +108,9 @@ else:
 
 
 
-# load modules (have to use """, to keep in one block)
-# - alias does not work, have to use $samstat
-shell.prefix("""
-            # module load star/2.5.3a
-            # module load singularity/singularity-current
-            # conda activate osr  # have to create conda env osr first
-            """)
 
-# Requirements
-# inputs in ./fastq/xxx.{fastq,fq}.gz
-# named as {sample}.{R1,R2}.{fastq,fq}.gz
 
-# SnakeMake Coding Notes:
-# input don't have to be used, just for draw nice DAG
-# 07/10/2019 randomized primary alignment
 
-ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc > bamCoverage > feature_count  > samtools_sort > samtools_index > reset
 
 def GSEA_OUTPUT(config):
     if config["GSEA_ANALYSIS"]:
@@ -1067,10 +1068,16 @@ rule GSEA:
         -set_max 15000 -set_min 15 \
         -plot_top_x {params.nplot} -out ./gsea/{wildcards.fname} &>> {log}
 
-        # rename
-        mv gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/ gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}   # if gsea fails, might still have problems, not sure
+        # rename for successful run
+        mv gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/ \
+        gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}   # if gsea fails, might still have problems, not sure
+
+        # rename for failed run
+        mv gsea/{wildcards.fname}/error_{wildcards.db}.GseaPreranked.*/ \
+        gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}   
 
         cp envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
+
         # compress
         D=gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked
         rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
