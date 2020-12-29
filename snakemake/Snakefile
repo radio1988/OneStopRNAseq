@@ -1348,9 +1348,9 @@ rule hisat2_build:
         index=config['GENOME'] + ".1.ht2",
         flag=touch(config['GENOME'] + '.hisat2_build.finished')
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
+        mem_mb=lambda wildcards, attempt: attempt * 6000
     threads:
-        4
+        8
     log:
         "log/hisat2_build/hisat2_build.log"
     benchmark:
