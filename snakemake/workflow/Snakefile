@@ -25,7 +25,7 @@ from osr import read_length
 min_version("5.17.0")  # check snakemake version
 configfile: "config.yaml"
 ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc > bamCoverage > feature_count  > samtools_sort > samtools_index > reset
-# container: "envs/hand_sandbox.simg"  # only effective when --use-singularity
+# container: "workflow/envs/hand_sandbox.simg"  # only effective when --use-singularity
 # removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
 # localrules: targets, create_dag
 # priority 0-100, default 0
@@ -226,7 +226,7 @@ if config["PAIR_END"]:
         benchmark:
             "log/fastqc/{sample}.tsv"
         container:
-            "envs/hand_sandbox.simg"
+            "workflow/envs/hand_sandbox.simg"
         envmodules:
             "fastqc/0.11.5"
         shell:
@@ -252,7 +252,7 @@ else:
         benchmark:
             "log/fastqc/{sample}.tsv"
         container:
-            "envs/hand_sandbox.simg"
+            "workflow/envs/hand_sandbox.simg"
         envmodules:
             "fastqc/0.11.5"
         shell:
@@ -280,7 +280,7 @@ if config["PAIR_END"]:
         benchmark:
             "log/multiqc/multiqc.tsv"
         container:
-            "envs/hand_sandbox.simg"
+            "workflow/envs/hand_sandbox.simg"
         shell:
             "which multiqc &> {log};"
             "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log};"
@@ -303,7 +303,7 @@ else:
         benchmark:
             "log/multiqc/multiqc.tsv"
         container:
-            "envs/hand_sandbox.simg"
+            "workflow/envs/hand_sandbox.simg"
         shell:
             "which multiqc &> {log};"
             "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log};"
@@ -477,7 +477,7 @@ rule samtools_sort:
     threads:
         4
     container:
-        "envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
+        "workflow/envs/hand_sandbox.simg" # 2.7.1 does not work for small fa, also too old index version
     envmodules:
         "samtools/1.9"
     log:
@@ -503,7 +503,7 @@ rule samtools_index:
     benchmark:
         "log/samtools_index/{sample}.index.tsv"
     container:
-        "envs/hand_sandbox.simg" 
+        "workflow/envs/hand_sandbox.simg" 
     envmodules:
         "samtools/1.9"
     shell:
@@ -521,7 +521,7 @@ rule bam_qc:
         stats="bam_qc/stats/{sample}.stats.txt",
         idxstats="bam_qc/idxstats/{sample}.idxstats.txt",
     container:
-        "envs/hand_sandbox.simg" # not necessary after samstat disabled
+        "workflow/envs/hand_sandbox.simg" # not necessary after samstat disabled
     priority:
         0
     resources:
@@ -585,13 +585,13 @@ if config['PAIR_END']:
         benchmark:
             "log/QoRTs/QoRTs.{sample}.tsv"
         #container:
-        #    "envs/hand_sandbox.simg" # file access issue
+        #    "workflow/envs/hand_sandbox.simg" # file access issue
         shell:
             """
             mkdir -p bam_qc/
             mkdir -p bam_qc/QoRTs/
             which java &> {log}
-            java -Xmx16G -jar envs/hartleys-QoRTs-099881f/QoRTs.jar QC \
+            java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC \
             {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
             """
 else:
@@ -610,13 +610,13 @@ else:
         benchmark:
             "log/QoRTs/QoRTs.{sample}.tsv"
         #container:
-        #    "envs/hand_sandbox.simg" # file access issue
+        #    "workflow/envs/hand_sandbox.simg" # file access issue
         shell:
             """
             mkdir -p bam_qc/
             mkdir -p bam_qc/QoRTs/
             which java &> {log}
-            java -Xmx16G -jar envs/hartleys-QoRTs-099881f/QoRTs.jar QC --singleEnded \
+            java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC --singleEnded \
             {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
             """
 
@@ -627,7 +627,7 @@ rule QoRTs_MultiPlot:
     output:
         "bam_qc/QoRTs_MultiPlot/plot-basic.pdf"
     container:
-        "envs/hand_sandbox.simg"
+        "workflow/envs/hand_sandbox.simg"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 8000   ,
     threads:
@@ -903,8 +903,8 @@ if config['PAIR_END']:
         shell:
             """
             which python &> {log}
-            python envs/SalmonTE/SalmonTE.py --version > versions.txt
-            python envs/SalmonTE/SalmonTE.py quant \
+            python workflow/envs/SalmonTE/SalmonTE.py --version > versions.txt
+            python workflow/envs/SalmonTE/SalmonTE.py quant \
             --reference={params.ref} --exprtype=count \
             --num_threads={threads} \
             {input.r1} {input.r2} >> {log} 2>&1
@@ -929,7 +929,7 @@ else:
         shell:
             """
             which python &> {log}
-            python envs/SalmonTE/SalmonTE.py quant \
+            python workflow/envs/SalmonTE/SalmonTE.py quant \
             --reference={params.ref} --exprtype=count \
             --num_threads={threads} \
             {input.r1} >> {log} 2>&1
@@ -971,9 +971,9 @@ rule DESeq2:
         "DESeq2/DESeq2.html",
         expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
     container:
-        "envs/hand_sandbox.simg"
+        "workflow/envs/hand_sandbox.simg"
     # conda:
-    #     "envs/r.yaml" # installing R via conda is problematic
+    #     "workflow/envs/r.yaml" # installing R via conda is problematic
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     params:
@@ -1061,7 +1061,7 @@ rule GSEA:
         
         which java &>> {log}
 
-        envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
+        workflow/envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
         -gmx {input.db} -rnk {params.rnk_flat_file} -rpt_label {wildcards.db} \
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
@@ -1076,7 +1076,7 @@ rule GSEA:
         mv gsea/{wildcards.fname}/error_{wildcards.db}.GseaPreranked.*/ \
         gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}   
 
-        cp envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
+        cp workflow/envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
 
         # compress
         D=gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked
@@ -1183,7 +1183,7 @@ rule rMATS:
         --od rMATS.{wildcards.ascn}/output/ \
         --tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
 
-        cp envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
+        cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
 
         rm -rf rMATS.{wildcards.ascn}/tmp/   &>> {log}
 
@@ -1241,7 +1241,7 @@ rule prep_count:
     benchmark:
         "log/DEXSeq/prep_count.{sample}.tsv"
     #conda:
-    #    "envs/dexseq.yaml"
+    #    "workflow/envs/dexseq.yaml"
     shell:
         "python script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output}"  
         # todo: maybe -r name (sort by name) is faster
@@ -1312,7 +1312,7 @@ rule GATK_CreateSequenceDictionary:
     benchmark:
         "log/GATK_CreateSequenceDictionary/GATK_CreateSequenceDictionary.tsv"
     shell:
-        "./envs/gatk-4.1.8.1/gatk CreateSequenceDictionary -R {input} &> {log}"
+        "./workflow/envs/gatk-4.1.8.1/gatk CreateSequenceDictionary -R {input} &> {log}"
 
 
 rule GATK_ASEReadCounter:
@@ -1335,7 +1335,7 @@ rule GATK_ASEReadCounter:
     benchmark:
         "log/GATK_ASEReadCounter/{sample}.tsv"
     shell:
-        "./envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} \
+        "./workflow/envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} \
         --min-depth-of-non-filtered-base 10 --min-mapping-quality 15 --min-base-quality 20 \
         &> {log};"  # todo: more thoughts on detailed parameters, e.g.    -drf DuplicateRead -U ALLOW_N_CIGAR_READS
         "D=GATK_ASEReadCounter; "
