@@ -7,24 +7,20 @@ configfile: "config.yaml"
 
 #localrules: targets, create_dag
 
+# priority 0-100, default 0
+
 import pandas as pd
 import sys
 import re
 import os
 import math
-import gzip
 import shutil
-
-def gunzip(fname):
-    outname = re.sub(".gz$", "", fname)
-    if outname == fname:
-        sys.exit("config error:", fname, "does not end with .gz")
-    # todo: skip if uncompressed file exists (but how to check for previous uncompress integrity
-    # todo: use bash gunzip to keep system timestamp of gz file
-    with gzip.open(fname, 'rb') as f_in:
-        with open(outname, 'wb') as f_out:
-            shutil.copyfileobj(f_in, f_out)
-
+from osr import gunzip
+from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
+from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2
+from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
+get_strandness_for_hisat2_SE, get_strandness_for_stringtie
+from osr import read_length
 
 # umcompress files
 if config["GENOME"].endswith(".gz"):
@@ -51,90 +47,6 @@ MODE=config["MODE"]
 MAX_FDR=config["MAX_FDR"]
 MIN_LFC=config["MIN_LFC"]
 MIN_GENE_COUNT= config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
-
-
-
-
-# priority 0-100, default 0
-
-# get CONTRASTS from meta/contrast.xlsx
-
-
-# Get contrast name for DESeq2
-def get_contrast_fnames (fname):
-    df=pd.read_excel(fname)
-    CONTRASTS = []
-    for j in range(df.shape[1]):
-        c1 = df.iloc[0,j]
-        c2 = df.iloc[1,j]
-        c1 = c1.replace(" ", "")
-        c2 = c2.replace(" ", "")
-        c1 = re.sub(";$", "", c1)  # remove extra ;
-        c2 = re.sub(";$", "", c2)
-        c1 = re.sub(";", ".", c1)  # remove extra ;
-        c2 = re.sub(";", ".", c2)
-        CONTRASTS.append(c1 + "_vs_" + c2)
-    # CONTRATS = ['KO_D8_vs_KO_D0', 'WT_D8.KO_D8_vs_WT_D0.KO_D0', 'KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8']
-    return (CONTRASTS)
-
-
-def get_contrast_groups (fname):
-    df2=pd.read_excel(fname)
-    C1S = []; C2S = []
-    for j in range(df2.shape[1]):
-        c1 = df2.iloc[0, j].strip()
-        c2 = df2.iloc[1, j].strip()
-        c1 = c1.replace(" ", "")
-        c2 = c2.replace(" ", "")
-        c1 = re.sub(";$", "", c1)  # remove extra ;
-        c2 = re.sub(";$", "", c2)
-        c1s = c1.split(";")
-        c2s = c2.split(";")
-        C1S.append(c1s)
-        C2S.append(c2s)
-    return ([C1S, C2S])
-
-
-def get_dict_from_meta (fname):
-    df = pd.read_excel(fname)
-    d = {}
-    for i in range(df.shape[0]):
-        sample = df.iloc[i, 0]
-        group = df.iloc[i, 1]
-        if group in d:
-            d[group].append(sample)
-        else:
-            d[group] = []
-            d[group].append(sample)
-    return (d)
-
-
-def swap_list_element(l, d):
-    return [swap_list_element(x, d) if isinstance(x, list) else d.get(x, x) for x in l]
-    
-def flatten(l):
-    flat_list = [item for sublist in l for item in sublist]
-    return (flat_list)
-
-def collapseL2(L3):
-    L2 = []
-    for l in L3:
-        L2.append(flatten(l))
-    return (L2)
-
-def s2b(S):
-    K = flatten(S)
-    V = ["sorted_reads/"+x+".bam" for x in K]
-    return (dict(zip(K, V)))
-
-def G2B_workflow(G, g2s):
-    S = swap_list_element(G, g2s)
-    S = collapseL2(S)
-    s2b_dict = s2b(S)
-    BS = swap_list_element(S, s2b_dict)
-    B = [",".join(x) for x in BS]
-    return (BS, B)
-
 
 
 # for DESeq2
@@ -1045,24 +957,7 @@ rule Merge_TE_and_Gene:
         """
 
 
-def DESeq2_input(config):
-    if config["START"] in ["FASTQ", "BAM"]:
-        if config["MODE"] == "strict":
-            if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
-                return("feature_count/TE_included.txt")
-            else:
-                return("feature_count/counts.strict.txt")
-        elif config["MODE"] == "liberal":
-            if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
-                return("feature_count/TE_included.txt")
-            else:
-                return("feature_count/counts.liberal.txt")
-        else:
-            raise Exception("START config not valid")
-    elif config["START"] in ["COUNT"]:
-            return(config["COUNT_FILE"])
-    else:
-        return("placeholder" )
+
 
 
 rule DESeq2:
@@ -1112,46 +1007,7 @@ rule DESeq2:
         output_file={params.o})" > {log} 2>&1 ;'
         'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};'
 
-def input_rnk_fname1(wildcards, config):
-    '''
-    fname1: the rnk file name as input for rule GSEA , 
-    which is the output of upstream analysis
-    '''
-    if config['START'] == 'RNK':
-        fname1 = 'meta/' + wildcards['fname']  
-        # wildcards['fname']  = one of config['RNKS'], 
-        # e.g. meta/wrong.rnk.xlsx, meta/name1.rnk.txt
-    else:
-        fname1 = "DESeq2/rnk/" + wildcards['fname'] + ".rnk"  
-        # e.g. DESeq2/rnk/KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8.rnk
-    return fname1
 
-
-def rnk_fname1_to_fname2(fname1):
-    '''
-    xxx.rnk -> xxx.rnk.txt
-    xxx.rnk.xlsx -> xxx.rnk.txt
-    xxx.rnk.txt -> xxx.rnk.txt
-    '''
-    import re
-    import sys
-    if fname1.endswith('.rnk.xlsx'):
-        return re.sub('.rnk.xlsx$', '.rnk.txt', fname1)
-    elif fname1.endswith('.rnk'):
-        return fname1+".txt"
-    elif fname1.endswith('.rnk.txt'):
-        return fname1
-    else:
-        print(fname1)
-        sys.exit('rnk file type not rnk, rnk.txt, or rnk.xlsx')
-        return None
-
-def input_rnk_fname2(wildcards, config):
-    '''
-    the corresponding flat rnk.txt file name (fname1) for corresponding fname1
-    '''
-    fname1=input_rnk_fname1(wildcards, config)
-    return rnk_fname1_to_fname2(fname1)
 
 
 rule GSEA:
@@ -1258,32 +1114,10 @@ rule read_length_detection_bam:
         with open(output[0], "w") as out:
             out.write(str(median_length))
 
-def get_strandness (x):
-    try:
-        with open("meta/strandness.detected.txt", "r") as file:
-            txt = file.readline()
-        #print("meta/strandness.detected.txt:", txt)
-        p = re.compile("counts.s(.)\.[liberal|strict]")
-        res = p.search(txt)
-        #print("strand code:", res.group(1))
-        if res.group(1) is None:
-            sys.exit("strandness detection wrong")
-        strand = (config['RMATS_STRANDNESS'][int(res.group(1))])
-        return (strand)
-    except FileNotFoundError:
-        print("meta/strandness.detected.txt will be found in real run, not in dry run")
-        return (None)
 
 
-def read_length(x):
-    try:
-        with open("meta/read_length.txt", "r") as file:
-            txt = file.readline()
-        #print("read length", int(txt))
-        return (int(txt))
-    except FileNotFoundError:
-        print("meta/read_length.txt not found in dry run, will be found in real run")
-        return (None)
+
+
 
 
 rule rMATS:
@@ -1308,8 +1142,8 @@ rule rMATS:
         b2=lambda wildcards: B2[int(wildcards['ascn'])-1], 
         type="paired" if config['PAIR_END'] else "single", 
         analysis="P" if config['PAIR_END'] else "U", 
-        length=read_length, 
-        strandness=get_strandness,
+        length=read_length("meta/read_length.txt"), 
+        strandness=get_strandness("meta/strandness.detected.txt", config),
         MAX_FDR=MAX_FDR
     log:
         "log/rMATS/rMATS.{ascn}.log"
@@ -1378,22 +1212,7 @@ rule DEXSeq_Prep_GFF:
         "python script/dexseq_prepare_annotation.py -r no {input} {output} &> {log}"
 
 
-def get_strandness_for_dexseq (x):
-    book = {0 : '-s no', 1 : '-s yes', 2 : '-s reverse'}
-    try:
-        with open("meta/strandness.detected.txt", "r") as file:
-            txt = file.readline()
-        #print("meta/strandness.detected.txt:", txt)
-        p = re.compile("counts.s(.)\.[liberal|strict]")
-        res = p.search(txt)
-        #print("strand code:", res.group(1))
-        if res.group(1) is None:
-            sys.exit("strandness detection wrong")
-        strand = book[int(res.group(1))]
-        return (strand)
-    except FileNotFoundError:
-        print("meta/strandness.detected.txt will be found in real run, not in dry run")
-        return (None)
+
 
 rule prep_count:
     input:
@@ -1403,7 +1222,7 @@ rule prep_count:
     output:
         "DEXSeq_count/{sample}_count.txt"
     params:
-        strand=get_strandness_for_dexseq,
+        strand=get_strandness_for_dexseq('meta/strandness.detected.txt'),
         readType=('-p yes -r pos'
             if config['PAIR_END']
             else ' '), 
@@ -1526,7 +1345,8 @@ rule hisat2_build:
     output:
         ss=config['GTF']+"ss",
         exon=config['GTF']+"exon",
-        index=config['GENOME'] + ".1.ht2"
+        index=config['GENOME'] + ".1.ht2",
+        flag=touch(config['GENOME'] + '.hisat2_build.finished')
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:
@@ -1543,53 +1363,22 @@ rule hisat2_build:
         """
 
 
-def get_strandness_for_hisat2_PE (x):
-    book = {0 : 'unstranded', 1 : 'FR', 2 : 'RF'}
-    try:
-        with open("meta/strandness.detected.txt", "r") as file:
-            txt = file.readline()
-        #print("meta/strandness.detected.txt:", txt)
-        p = re.compile("counts.s(.)\.[liberal|strict]")
-        res = p.search(txt)
-        #print("strand code:", res.group(1))
-        if res.group(1) is None:
-            sys.exit("strandness detection wrong")
-        strand = book[int(res.group(1))]
-        return (strand)
-    except FileNotFoundError:
-        print("meta/strandness.detected.txt will be found in real run, not in dry run")
-        return (None)
 
-def get_strandness_for_hisat2_SE (x):
-    book = {0 : 'unstranded', 1 : 'F', 2 : 'R'}
-    try:
-        with open("meta/strandness.detected.txt", "r") as file:
-            txt = file.readline()
-        #print("meta/strandness.detected.txt:", txt)
-        p = re.compile("counts.s(.)\.[liberal|strict]")
-        res = p.search(txt)
-        #print("strand code:", res.group(1))
-        if res.group(1) is None:
-            sys.exit("strandness detection wrong")
-        strand = book[int(res.group(1))]
-        return (strand)
-    except FileNotFoundError:
-        print("meta/strandness.detected.txt will be found in real run, not in dry run")
-        return (None)
 
 
 if config['PAIR_END']:
     rule hisat2:
         input:
             genome=config['GENOME'],
-            index=config['GENOME'] + ".1.ht2",
+            index=config['GENOME'] + '.hisat2_build.finished',
             R1="fastq/{sample}.R1.fastq.gz",
             R2="fastq/{sample}.R2.fastq.gz",
+            strandness="meta/strandness.detected.txt"
         output:
             bam="hisat2/{sample}.bam",
             bai="hisat2/{sample}.bam.bai"
         params:
-            strand=get_strandness_for_hisat2_PE
+            strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt")
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 2000
         threads:
@@ -1610,13 +1399,14 @@ if config['PAIR_END']:
 else:
     rule hisat2:
         input:
-            index=config['GENOME'] + ".1.ht2",
-            U="fastq/{sample}.fastq.gz"
+            index=config['GENOME'] + '.hisat2_build.finished',
+            U="fastq/{sample}.fastq.gz",
+            strandness="meta/strandness.detected.txt"
         output:
             bam="hisat2/{sample}.bam",
             bai="hisat2/{sample}.bam.bai"
         params:
-            strand=get_strandness_for_hisat2_SE
+            strand=get_strandness_for_hisat2_SE("meta/strandness.detected.txt")
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 2000
         threads:
@@ -1635,22 +1425,7 @@ else:
             samtools index {output.bam}
             """
 
-def get_strandness_for_stringtie (x):
-    book = {0 : ' ', 1 : '--fr', 2 : '--rf'}
-    try:
-        with open("meta/strandness.detected.txt", "r") as file:
-            txt = file.readline()
-        #print("meta/strandness.detected.txt:", txt)
-        p = re.compile("counts.s(.)\.[liberal|strict]")
-        res = p.search(txt)
-        #print("strand code:", res.group(1))
-        if res.group(1) is None:
-            sys.exit("strandness detection wrong")
-        strand = book[int(res.group(1))]
-        return (strand)
-    except FileNotFoundError:
-        print("meta/strandness.detected.txt will be found in real run, not in dry run")
-        return (None)
+
 
 rule stringtie:  # todo: group level
     input:
@@ -1660,7 +1435,7 @@ rule stringtie:  # todo: group level
     output:
         "stringtie/{sample}.stringtie.gtf"
     params:
-        strand=get_strandness_for_stringtie
+        strand=get_strandness_for_stringtie('meta/strandness.detected.txt')
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:
