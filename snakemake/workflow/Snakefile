@@ -317,9 +317,9 @@ rule star_idx:
     output:
         INDEX+"/SAindex"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 3200   
+        mem_mb=lambda wildcards, attempt: attempt * 6400   
     threads:
-        12
+        6
     log:
         "log/star_idx/star_idx.log"
     benchmark:
@@ -1350,7 +1350,7 @@ rule hisat2_build:
     large RAM needed? More threads more RAM?
     with only genome.fa, only takes ~6GB RAM, 20min
     $ hisat2-build -p 16 genome.fa genome
-    
+
     with transcripts, takes 160GB RAM, 1h
     $ hisat2-build -p 16 --exon genome.exon --ss genome.ss genome.fa genome_tran
     http://daehwankimlab.github.io/hisat2/howto/
@@ -1364,9 +1364,9 @@ rule hisat2_build:
         index=config['GENOME'] + ".1.ht2",
         flag=touch(config['GENOME'] + '.hisat2_build.finished')
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 12000
+        mem_mb=lambda wildcards, attempt: attempt * 24000
     threads:
-        16
+        8
     log:
         "log/hisat2_build/hisat2_build.log"
     benchmark:
