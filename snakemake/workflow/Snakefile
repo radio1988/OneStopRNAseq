@@ -1051,6 +1051,8 @@ rule GSEA:
         echo fname1: {input.rnk} > {log}
         echo fname2: {params.rnk_flat_file} >> {log}
         echo label_db: {params.label_db} >> {log}
+        echo wildcards.fname: {wildcards.fname} >> {log}
+        echo wildcards.db: {wildcards.db} >> {log}
 
         mkdir -p gsea && mkdir -p gsea/{wildcards.fname} &>> {log}
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
@@ -1061,24 +1063,24 @@ rule GSEA:
         
         which java &>> {log}
 
-        workflow/envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
+        if workflow/envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
         -gmx {input.db} -rnk {params.rnk_flat_file} -rpt_label {wildcards.db} \
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
         -set_max 15000 -set_min 15 \
         -plot_top_x {params.nplot} -out ./gsea/{wildcards.fname} &>> {log}
-
-        # rename for successful run
-        mv gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/ \
-        gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}   # if gsea fails, might still have problems, not sure
-
-        # rename for failed run
-        mv gsea/{wildcards.fname}/error_{wildcards.db}.GseaPreranked.*/ \
-        gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}   
-
+        then
+            mv gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/ \
+            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log} 
+        else
+            mv gsea/{wildcards.fname}/*{wildcards.db}.GseaPreranked*/ \
+            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}
+        fi
+    
         cp workflow/envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
 
         # compress
+        echo compress
         D=gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked
         rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
         """
