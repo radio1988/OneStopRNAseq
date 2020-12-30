@@ -46,9 +46,9 @@ library(gridExtra)
 library(grid)
 library(corrplot)
 
-dir.create("../DESeq2", showWarnings = FALSE)
-dir.create("../DESeq2/rnk", showWarnings = FALSE)
-knitr::opts_knit$set(root.dir = "../DESeq2")
+dir.create("../../DESeq2", showWarnings = FALSE)
+dir.create("../../DESeq2/rnk", showWarnings = FALSE)
+knitr::opts_knit$set(root.dir = "../../DESeq2")
 ```
 
 
@@ -858,7 +858,7 @@ for (i in 1:dim(contrast.df)[2]){
 
 ## Log
 ```{r log}
-#save.image(file="../DESeq2/RSession")
+#save.image(file="../../DESeq2/RSession")
 sessionInfo()
 ```
 
