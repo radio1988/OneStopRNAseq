@@ -25,26 +25,26 @@ params:
 
 ```{r setup, include=F}
 # Bioconductor
-library(BiocManager)
+library(BiocManager) # 
 library(DESeq2)
-library(scater)
-library(EnhancedVolcano)
+library(scater) # 
+library(EnhancedVolcano) # hard to install via conda
 
 # CRAN
-library(ggrepel)
+library(ggrepel) # 
 library(ggplot2)
-library(ashr)
+library(ashr) # 
 library(MASS)
 library(WriteXLS)
-library(plyr)
-library(gdata)
+library(plyr) # 
+library(gdata) #
 library(dplyr)
 library(RColorBrewer)
-library(pheatmap)
-library(PoiClaClu)
-library(gridExtra)
+library(pheatmap) #
+library(PoiClaClu) # 
+library(gridExtra) # 
 library(grid)
-library(corrplot)
+# library(corrplot) 
 
 dir.create("../../DESeq2", showWarnings = FALSE)
 dir.create("../../DESeq2/rnk", showWarnings = FALSE)
