@@ -1347,6 +1347,13 @@ rule GATK_ASEReadCounter:
 rule hisat2_build:
     """
     guided by GTF
+    large RAM needed? More threads more RAM?
+    with only genome.fa, only takes ~6GB RAM, 20min
+    $ hisat2-build -p 16 genome.fa genome
+    
+    with transcripts, takes 160GB RAM, 1h
+    $ hisat2-build -p 16 --exon genome.exon --ss genome.ss genome.fa genome_tran
+    http://daehwankimlab.github.io/hisat2/howto/
     """
     input:
         genome=config['GENOME'],
@@ -1357,9 +1364,9 @@ rule hisat2_build:
         index=config['GENOME'] + ".1.ht2",
         flag=touch(config['GENOME'] + '.hisat2_build.finished')
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 6000
+        mem_mb=lambda wildcards, attempt: attempt * 12000
     threads:
-        8
+        16
     log:
         "log/hisat2_build/hisat2_build.log"
     benchmark:
@@ -1368,7 +1375,8 @@ rule hisat2_build:
         """
         hisat2_extract_splice_sites.py -v {input.gtf} > {output.ss} 2> {log}
         hisat2_extract_exons.py -v {input.gtf} > {output.exon} 2>> {log}
-        hisat2-build -p {threads} {input.genome} {input.genome} --ss {output.ss} --exon {output.exon} 2>> {log}
+        hisat2-build -p {threads} \
+        {input.genome} {input.genome} --ss {output.ss} --exon {output.exon} 2>> {log}
         """
 
 
