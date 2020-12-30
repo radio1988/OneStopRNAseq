@@ -852,7 +852,7 @@ rule strand_detection:
     benchmark:
         "log/strand_detection.tsv"
     script:
-        "workflow/script/strandness_detection.py" # todo: improvement needed
+        "script/strandness_detection.py" # todo: improvement needed
 
 
 
@@ -1242,8 +1242,6 @@ rule prep_count:
         "log/DEXSeq/prep_count.{sample}.log"
     benchmark:
         "log/DEXSeq/prep_count.{sample}.tsv"
-    #conda:
-    #    "workflow/envs/dexseq.yaml"
     shell:
         "python workflow/script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output}"  
         # todo: maybe -r name (sort by name) is faster
@@ -1258,8 +1256,6 @@ rule DEXSeq:
         strandness="meta/strandness.detected.txt"
     output:
         "DEXSeq/contrast{ascn}/contrast{ascn}.RData"
-    conda:
-        "envs/dexseq.yaml"
     resources:
          mem_mb=lambda wildcards, attempt: attempt * 3000
     threads:
