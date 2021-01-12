@@ -655,7 +655,7 @@ rule feature_count:
         bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES), # sort by name -> faster
         gtf=GTF
     output:
-        count="feature_count/counts.s{strand}.strict.txt" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt",
+        COUNT="feature_count/counts.s{strand}.strict.txt" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt",
         summary="feature_count/counts.s{strand}.strict.txt.summary" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt.summary",
     priority:
         100
@@ -672,7 +672,7 @@ rule feature_count:
             if config["MODE"] == "strict":
                 shell("""
                 which featureCounts &> {log}
-                featureCounts -a {input.gtf} -o {output.count} \
+                featureCounts -a {input.gtf} -o {output.COUNT} \
                 -T {threads} \
                 -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 \
                 -p -B -C  \
@@ -682,7 +682,7 @@ rule feature_count:
             elif config["MODE"] == "liberal":
                 shell("""
                 which featureCounts &> {log}
-                featureCounts -a {input.gtf} -o {output.count} \
+                featureCounts -a {input.gtf} -o {output.COUNT} \
                 -T {threads} \
                 -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 \
                 -p \
@@ -695,7 +695,7 @@ rule feature_count:
             if config["MODE"] == "strict":
                 shell("""
                 which featureCounts &> {log}
-                featureCounts -a {input.gtf} -o {output.count} \
+                featureCounts -a {input.gtf} -o {output.COUNT} \
                 -T {threads} \
                 -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 \
                 -s {wildcards.strand} \
@@ -704,7 +704,7 @@ rule feature_count:
             elif config["MODE"] == "liberal":
                 shell("""
                 which featureCounts &> {log}
-                featureCounts -a {input.gtf} -o {output.count} \
+                featureCounts -a {input.gtf} -o {output.COUNT} \
                 -T {threads} \
                 -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 \
                 -s {wildcards.strand} \
@@ -712,20 +712,6 @@ rule feature_count:
                 """)
             else:
                 print ("MODE err, not liberal nor strict")
-            # -p: count Fragments rather than reads for Paired-end reads (remove this for SE data)
-            # -C: exclude chimeric (most times, for cancer maybe not include this)
-            # -d 50, -D 1000: including PE reads with fragment length in between, which is better than default 50-600
-            # -T: num threads
-            # -s: strand info, very important; use $i to perform all three possibilities, pick the correct one after counting
-            # -Q: min MAPQ, if MAPQ from star, we need to be careful, because star ignores PE information, we might need to add addional step to rescue PE info. (https://github.com/alexdobin/STAR/issues/615)
-            # -M: count multiple-mapping reads, based on NH, not useful for RNA-seq, may create misleading summary, by counting multi-mapping reads several times
-            # -B: Only count read pairs that have both ends aligned.
-            # --fracOverlap 0.2: 20% of read length
-            # -–minOverlap 2: 2bp
-            # Notes:
-            # liberal overlap settings (--minOverlap 1 --fracOverlap 0) will give you more counted reads
-            # samtools sorted bams are smaller, and faster to be counted, compared to unsorted bams/star sorted bams
-            # star sorted bams are slow to count => use samtools sorted reads, delete star bam (set as temp)
 
 if config['INTRON']:
     rule feature_count_gene_level:
@@ -734,7 +720,7 @@ if config['INTRON']:
             exon_counts="feature_count/counts.s{strand}.strict.txt" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt",
             gtf=GTF
         output:
-            count='feature_count_gene_level/counts.s{strand}.gene_level.strict.txt' if config["MODE"] == "strict" else 'feature_count/counts.s{strand}.gene_level.liberal.txt',
+            COUNT='feature_count_gene_level/counts.s{strand}.gene_level.strict.txt' if config["MODE"] == "strict" else 'feature_count/counts.s{strand}.gene_level.liberal.txt',
             summary="feature_count_gene_level/counts.s{strand}.gene_level.strict.txt.summary" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.gene_level.liberal.txt.summary",
         priority:
             10
@@ -751,7 +737,7 @@ if config['INTRON']:
                 if config["MODE"] == "strict":
                     shell("""
                     echo '>>> Gene-Count mode:' >> {log}
-                    featureCounts -a {input.gtf} -o {output.count} \
+                    featureCounts -a {input.gtf} -o {output.COUNT} \
                     -T {threads} -t gene \
                     -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 \
                     -p -B -C  \
@@ -761,7 +747,7 @@ if config['INTRON']:
                 elif config["MODE"] == "liberal":
                     shell("""
                     echo '>>> Gene-Count mode:' >> {log}
-                    featureCounts -a {input.gtf} -o {output.count} \
+                    featureCounts -a {input.gtf} -o {output.COUNT} \
                     -T {threads} -t gene \
                     -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 \
                     -p \
@@ -774,7 +760,7 @@ if config['INTRON']:
                 if config["MODE"] == "strict":
                     shell("""
                     echo '>>> Gene-Count mode:' >> {log}
-                    featureCounts -a {input.gtf} -o {output.count} \
+                    featureCounts -a {input.gtf} -o {output.COUNT} \
                     -T {threads} -t gene \
                     -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 \
                     -s {wildcards.strand} \
@@ -783,7 +769,7 @@ if config['INTRON']:
                 elif config["MODE"] == "liberal":
                     shell("""
                     echo '>>> Gene-Count mode:' >> {log}
-                    featureCounts -a {input.gtf} -o {output.count} \
+                    featureCounts -a {input.gtf} -o {output.COUNT} \
                     -T {threads} -t gene \
                     -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 \
                     -s {wildcards.strand} \
@@ -792,7 +778,7 @@ if config['INTRON']:
                 else:
                     print ("MODE err, not liberal nor strict")
 
-            shell("python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.count}")
+            shell("python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.COUNT}")
 
 
 rule strand_detection:
