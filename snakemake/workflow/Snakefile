@@ -96,7 +96,7 @@ if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
     # print("B2S:", B2S)
 
     # Get contrast for rMATS
-    df2 = pd.read_excel(config['CONTRAST_AS'])
+    df2 = pd.read_excel(config['CONTRAST_AS'], engine='openpyxl')
     ASCN = df2.shape[1] # alternative splicing contrast count
     #print("ASCN", ASCN)
 else:
@@ -824,7 +824,7 @@ rule strand_detection:
     benchmark:
         "log/strand_detection.tsv"
     script:
-        "workflow/script/strandness_detection.py" # todo: improvement needed
+        "script/strandness_detection.py"
 
 
 
@@ -901,7 +901,7 @@ else:
         shell:
             """
             which python &> {log}
-            python workflow/envs/SalmonTE/SalmonTE.py quant \
+            python envs/SalmonTE/SalmonTE.py quant \
             --reference={params.ref} --exprtype=count \
             --num_threads={threads} \
             {input.r1} >> {log} 2>&1
@@ -1221,8 +1221,6 @@ rule DEXSeq:
          mem_mb=lambda wildcards, attempt: attempt * 3000
     threads:
         12
-    priority:
-        10
     params:
         rmd="'workflow/script/dexseq.r'",
         annoFile=config["ANNO_TAB"],
