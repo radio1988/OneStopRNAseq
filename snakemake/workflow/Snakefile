@@ -837,20 +837,15 @@ if config['PAIR_END']:
         output:
             r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
             r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
+        log:
+            "fastq_salmon/SalmonTE_prep.log"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 1000
         threads:
             1
-        shell:
-            """
-            rm -rf fastq_salmon
-            mkdir -p fastq_salmon
-            cd fastq_salmon/
-            for f in ../fastq/*gz;do ln -s $f;done
-            rename .R1 _1 *
-            rename .R2 _2 *
-            cd ..
-            """
+        run:
+            for i,f in enumerate(input):
+                os.system("ln -s "+"../"+input[i] + " " + output[i])
 
 
 # rule SalmonTE
