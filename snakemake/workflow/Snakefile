@@ -226,7 +226,6 @@ if config["PAIR_END"]:
         benchmark:
             "log/fastqc/{sample}.tsv"
         shell:
-            "mkdir -p fastqc && mkdir -p fastqc/details; "
             "which fastqc &> {log};"
             "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
 else:
@@ -248,7 +247,6 @@ else:
         benchmark:
             "log/fastqc/{sample}.tsv"
         shell:
-            "mkdir -p fastqc && mkdir -p fastqc/details; "
             "which fastqc &> {log};"
             "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
 
@@ -316,7 +314,6 @@ rule star_idx:
     #     "star/2.7.5a"
     shell:
         """
-        #mkdir -p {INDEX}
         whoami > {log};
         which STAR >> {log};
 
@@ -447,7 +444,6 @@ rule STAR_Align_multiqc:
         'log/bam_qc/STAR_Align_summary_multiqc_report.tsv'
     shell:
         """
-        mkdir -p bam_qc/
         mkdir -p bam_qc/STAR_Align_summary/
         cp {input} bam_qc/STAR_Align_summary/
 
@@ -513,10 +509,6 @@ rule bam_qc:
         "log/bam_qc/benchmark/{sample}.bam_qc.tsv",
     shell:
         """
-        mkdir -p bam_qc 
-        mkdir -p bam_qc/idxstats
-        mkdir -p bam_qc/stats
-
         samtools idxstats {input.bam} > {output.idxstats} 2> {log.idxstats} &
         samtools stats {input.bam} > {output.stats} 2> {log.stats} &
 
@@ -564,8 +556,6 @@ if config['PAIR_END']:
             "log/QoRTs/QoRTs.{sample}.tsv"
         shell:
             """
-            mkdir -p bam_qc/
-            mkdir -p bam_qc/QoRTs/
             which java &> {log}
             java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC \
             {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
@@ -587,8 +577,6 @@ else:
             "log/QoRTs/QoRTs.{sample}.tsv"
         shell:
             """
-            mkdir -p bam_qc/
-            mkdir -p bam_qc/QoRTs/
             which java &> {log}
             java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC --singleEnded \
             {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
@@ -957,7 +945,6 @@ rule DESeq2:
         "log/DESeq2/DESeq2.tsv"
     shell:
         #Rscript -e rmarkdown::render({params.rmd})
-        'mkdir -p DESeq2; ' 
         'cp workflow/script/DESeq2.Rmd DESeq2; '
         'Rscript -e "rmarkdown::render({params.rmd}, \
         params=list(max_fdr={params.fdr}, \
@@ -1126,8 +1113,7 @@ rule rMATS:
 
         which python &> {log}
 
-        # todo: remove hardcode path
-        python /share/pkg/rMATS/4.1.0/rmats.py  \
+        rmats.py  \
         --b1 rMATS.{wildcards.ascn}/params/b1.txt \
         --b2  rMATS.{wildcards.ascn}/params/b2.txt \
         --gtf {input.gtf} \
@@ -1356,7 +1342,6 @@ if config['PAIR_END']:
             "log/hisat2/{sample}.hisat2.tsv"
         shell:
             """
-            mkdir -p hisat2
             hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
             -1 {input.R1} -2 {input.R2} \
             --rna-strandness {params.strand} 2> {log} | \
@@ -1384,7 +1369,6 @@ else:
             "log/hisat2/{sample}.hisat2.tsv"
         shell:
             """
-            mkdir -p hisat2
             hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
             -U {input.U} \
             --rna-strandness {params.strand} 2> {log} | \
@@ -1413,7 +1397,6 @@ rule stringtie:  # todo: group level
         "log/stringtie/{sample}.stringtie.tsv"
     shell:
         """
-        mkdir -p stringtie
         stringtie -G {input.gtf} {params.strand} -o {output} {input.bam} 2> {log}
         """
 
