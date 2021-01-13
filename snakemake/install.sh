@@ -1,5 +1,6 @@
 # install anaconda
 # https://docs.anaconda.com/anaconda/install/
+# make sure conda version is 4.9.2
 
 # create conda env called osr
 conda clean --all
@@ -18,14 +19,14 @@ Rscript -e "BiocManager::install('scater')" # takes a long time
 
 # for QoRTs
 Rscript -e 'install.packages("http://hartleys.github.io/QoRTs/QoRTs_STABLE.tar.gz", repos=NULL, type="source");'
-pip install HTSeq
+#pip install HTSeq
 # test3:  conda install -c bioconda htseq # seem to work
 
 # For SalmonTE
-pip install docopt
+#pip install docopt
 
 # for rMATS
- conda install -c bioconda rmats=4.1.0
+# conda install -c bioconda rmats=4.1.0
 
 ### test run ### 
 # snakemake -j 1 -pkn
