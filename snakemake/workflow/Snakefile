@@ -1071,6 +1071,8 @@ rule rMATS:
     envmodules:
         "rMATS/4.1.0 "
         "gcc/8.1.0 " # must have space
+    conda:
+        "envs/rmats.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,  # todo reduce
     threads:
