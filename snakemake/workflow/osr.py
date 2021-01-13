@@ -21,7 +21,7 @@ def gunzip(fname):
 ### get CONTRASTS from meta/contrast.xlsx  ###
 def get_contrast_fnames (fname):
     '''Get contrast name for DESeq2'''
-    df=pd.read_excel(fname)
+    df=pd.read_excel(fname, engine='openpyxl')
     CONTRASTS = []
     for j in range(df.shape[1]):
         c1 = df.iloc[0,j]
@@ -37,7 +37,7 @@ def get_contrast_fnames (fname):
     return (CONTRASTS)
 
 def get_contrast_groups (fname):
-    df2=pd.read_excel(fname)
+    df2=pd.read_excel(fname, engine='openpyxl')
     C1S = []; C2S = []
     for j in range(df2.shape[1]):
         c1 = df2.iloc[0, j].strip()
@@ -53,7 +53,7 @@ def get_contrast_groups (fname):
     return ([C1S, C2S])
 
 def get_dict_from_meta (fname):
-    df = pd.read_excel(fname)
+    df = pd.read_excel(fname, engine='openpyxl')
     d = {}
     for i in range(df.shape[0]):
         sample = df.iloc[i, 0]
