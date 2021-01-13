@@ -1,4 +1,6 @@
 name: deseq2
+# works on Jan 12 , 2020, in Ubuntu
+# not necessary to use this, as osr already contains the R packages here 
 
 channels:
   - conda-forge
