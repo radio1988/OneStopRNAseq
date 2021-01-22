@@ -12,19 +12,5 @@ conda activate osr
 # install R packages into R in osr
 # for DESeq2
 Rscript -e "install.packages( c('BiocManager', 'PoiClaClu', 'rmarkdown'), repos='https://cloud.r-project.org')"
-
-
-
 # for QoRTs
 Rscript -e 'install.packages("http://hartleys.github.io/QoRTs/QoRTs_STABLE.tar.gz", repos=NULL, type="source");'
-#pip install HTSeq
-# test3:  conda install -c bioconda htseq # seem to work
-
-# For SalmonTE
-#pip install docopt
-
-# for rMATS
-# conda install -c bioconda rmats=4.1.0
-
-### test run ###
-# snakemake -j 1 -pkn
