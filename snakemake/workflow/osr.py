@@ -159,6 +159,7 @@ def input_rnk_fname2(wildcards, config):
 
 
 ### Get parameters ###
+RMATS_STRANDNESS= {0 : 'fr-unstranded', 1 : 'fr-firststrand',2 : 'fr-secondstrand'}
 def get_strandness (strandFile="meta/strandness.detected.txt", config="config_dict"):
     try:
         with open(strandFile, "r") as file:
@@ -167,7 +168,7 @@ def get_strandness (strandFile="meta/strandness.detected.txt", config="config_di
         res = p.search(txt)
         if res.group(1) is None:
             sys.exit("strandness detection wrong")
-        strand = (config['RMATS_STRANDNESS'][int(res.group(1))])
+        strand = (RMATS_STRANDNESS[int(res.group(1))])
         return (strand)
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
