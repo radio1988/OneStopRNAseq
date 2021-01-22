@@ -38,3 +38,5 @@ snakemake -j 2 -pk  # run the workflow on the example datase with two threads, t
 
 # Viewing results
 - results are under subfolders in the workdir, e.g. DESeq2, gsea, rMATS.x, fastqc, bam_qc
+- interpretation of results can be found here: https://mccb.umassmed.edu/OneStopRNAseq/documents/description_of_output_files.pdf 
+- write up for method section in publication can be found here: https://mccb.umassmed.edu/OneStopRNAseq/documents/template_of_method_section.pdf 
