@@ -926,7 +926,7 @@ rule DESeq2:
     threads:
         1
     log:
-        "log/DESeq2/DESeq2.log"
+        "DESeq2/DESeq2.log"
     benchmark:
         "log/DESeq2/DESeq2.tsv"
     shell:
