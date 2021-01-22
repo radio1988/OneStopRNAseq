@@ -25,5 +25,4 @@ dependencies:
   - r-ggrepel
 
 # Rscript -e "install.packages( c('BiocManager', 'PoiClaClu', 'rmarkdown'), repos='https:    //cloud.r-project.org')"#version test2 deseq2
-# Rscript -e "BiocManager::install('scater')" # takes a long time
 

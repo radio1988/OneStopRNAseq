@@ -13,8 +13,6 @@ conda activate osr
 # for DESeq2
 Rscript -e "install.packages( c('BiocManager', 'PoiClaClu', 'rmarkdown'), repos='https://cloud.r-project.org')"
 
-# scater can be skipped if change R code, just normalize manually, calculateTPM, calculateFPKM
-Rscript -e "BiocManager::install('scater')" # takes a long time
 
 
 # for QoRTs
