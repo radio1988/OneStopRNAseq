@@ -35,7 +35,7 @@ MODE: strict # liberal: Multi-Mapping reads counted, No fragment size filter; st
 INTRON: False  # True/False # max(gene-count, exon-count) will be taken as gene-count, to include intron reads, default is False
 
 ## DESeq2
-DESEQ2_ANALYSIS: True
+DESEQ2_ANALYSIS: False
 MAX_FDR: 0.05 # cut-off for significant DEG
 MIN_LFC: 0.585 # cut-off for significant DEG
 META: meta/meta.xlsx # excel table to store meta-data for samples
@@ -44,7 +44,7 @@ cooksCutoff: 'TRUE'  # 'TRUE'/'FALSE', single quote needed
 independentFilter: 'FALSE'  # 'TRUE'/'FALSE', single quote needed
 
 ## GSEA
-GSEA_ANALYSIS: True
+GSEA_ANALYSIS: False
 GSEA_NPLOTS: 100 # num of top gene set to be plotted 
 GSEA_PLOT_SVG: True  
 GSEA_DBS: # MSigDB or custom gene set gmt files to choose from 
@@ -61,12 +61,12 @@ GSEA_DBS: # MSigDB or custom gene set gmt files to choose from
   - h.all.v7.1.symbols.gmt 
 
 ## Alternative Splicing analysis (rMATS)
-DEXSEQ_ANALYSIS: False # example dataset to small to perform DEXSeq analysis
+DEXSEQ_ANALYSIS: True # example dataset to small to perform DEXSeq analysis
 RMATS_ANALYSIS: True
 CONTRAST_AS: meta/contrast.as.xlsx
 
 # DEXSeq analysis
-MIN_GENE_COUNT: 100  # genes with less reads per sample will be removed from DEXSeq analysis
+MIN_GENE_COUNT: 10  # genes with less reads per sample will be removed from DEXSeq analysis, default 200
 
 # TE analysis (SalmonTE)
 TE_ANALYSIS: False # True, include TE analysis in DESeq2 results (only if FASTQ provided); False, skip
