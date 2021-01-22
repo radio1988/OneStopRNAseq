@@ -10,7 +10,7 @@ params:
   min_lfc: 0.585
   indfilter: FALSE
   cookscutoff: TRUE
-  countFile: '../example_data/counts/osrCount.mm10.xlsx'
+  countFile: '../example_data/counts/featureCounts.mm10.txt' # all three formats need to be tested in development
   annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/mm10.gencode.vm25.te_included.anno.txt'
   #annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/hg38.gencode.v34.te_included.anno.txt'
   metaFile: "../meta/meta.xlsx"
@@ -27,7 +27,6 @@ params:
 # Bioconductor
 library(BiocManager) # 
 library(DESeq2)
-library(scater) # 
 library(EnhancedVolcano) # hard to install via conda
 
 # CRAN
@@ -557,7 +556,7 @@ if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
     df <- df[expression_filter, sample_filter]
   } else if (osrCountFormat) {
     df <- df[expression_filter, c(rep(TRUE,3), sample_filter )]
-  }
+  }  # order of cts and df kept the same
   cat(paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples", "\n"))
   cat(paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes", "\n"))
   
@@ -583,6 +582,13 @@ head(count_out)
 
 ## TPM calculation
 ```{r tpm}
+calculateTPM <- function(counts,len) {
+  # michael's version
+  # https://support.bioconductor.org/p/91218/
+  x <- counts/len
+  return(t(t(x)*1e6/colSums(x)))
+}
+
 if (featureCountsFormat ){
   tpm <- calculateTPM(cts, df$Length)
   tpm <- data.frame(tpm)
@@ -600,6 +606,12 @@ if (featureCountsFormat ){
 
 ## FPKM calculation
 ```{r fpkm}
+calculateFPKM <- function(counts,len) {
+  x <- counts
+  x <- t(t(x)*1e6/colSums(x))
+  return (x/len*1e3)
+}
+
 if (featureCountsFormat ){
   fpkm <- calculateFPKM(cts, df$Length)
   fpkm <- data.frame(fpkm)
