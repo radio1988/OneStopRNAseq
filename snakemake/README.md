@@ -1,71 +1,39 @@
 # Easy RNAseq Analysis with *oneStopRNAseq*
-
-- This is the backend of https://mccb.umassmed.edu/OneStopRNAseq/index.php.
-- The installation guide will be modified for any Unix like workstation/serve in the future.
+- This is the backend of https://mccb.umassmed.edu/OneStopRNAseq/index.php
+- Can be installed on Linux systems (tested on Ubuntu and CentOS, did not test on other flavors of Linux, not working on Mac yet)
+- Would need knowledge in basic bash commands to use this workflow
 
 # Installation
-Here is the step-by-step guide on how to install the backend pipeline on high performance computing cluster (HPCC). Please change the directory name accordingly.
+- install anaconda by following instructions on https://docs.anaconda.com/anaconda/install/  (installation tested in conda version 4.9.2)
+- download OneStopRNASeq by `git clone git@github.com:radio1988/OneStopRNAseq.git`
+- `cd OneStopRNAseq/snakemake`
+- `conda env create -n osr -f workflow/envs/env.yaml`  # create an conda env called 'osr'
+- `conda activate osr`
+-`Rscript -e "install.packages( c('BiocManager', 'PoiClaClu', 'rmarkdown', 'gridExtra'), repos='https://cloud.r-project.org')"`  # install packages for DESeq2
+- `Rscript -e 'install.packages("http://hartleys.github.io/QoRTs/QoRTs_STABLE.tar.gz", repos=NULL, type="source");'` # install packages for QoRTs
+- uncompress example dataset
+    - `gunzip example_data/genome/mm10_chr19/mm10.chr19.fa.gz` 
+    - `gunzip example_data/genome/mm10_chr19/gencode.vM25.primary_assembly.annotation.ch19.gtf.gz`
+- the installation typically takes 15-30 mins
 
-- load singularity: `module load singularity/singularity-current`
-- install anaconda
-- create a conda env called `osr`: `conda env create -n osr -f envs/env.yaml`
-- download code and example data: `git clone git@github.com:radio1988/OneStopRNAseq.git`
-- download hand_sandbox.simg and put softlink under `envs/`: `ln -s $path/hand_sandbox.simg`
-
-# Here is how the folder structure should look like, which is essential for the successful execution of the example workflow.
-
+# Running OneStopRNASeq workflow on example datasets
+## Start from FASTQ as input
 ```
-├── README.md
-├── Snakefile *
-├── config.yaml *
-├── submit.sh *
-├── LICENSE.md 
-├── envs *
-├── scripts *
-├── meta *
-│   ├── contrast.as.xlsx *
-│   ├── contrast.de.xlsx *
-│   ├── meta.xlsx *
-├── example_data/genome/mm10_chr19/
-```
-
-# Here are the commands on how to run the Example Dataset on HPCC.
-```
-## Preps ##
-mkdir analysis && cd analysis
-snakemake=/project/umw_mccb/OneStopRNAseq/rui/test_run
-
-ln -s $snakemake/Snakefile 
-ln -s $snakemake/envs/
-ln -s $snakemake/genome/
-ln -s $snakemake/submit.sh 
-cp $snakemake/config.yaml .
-cp -r $snakemake/meta .
-cp -r $snakemake/fastq .
-cp -r $snakemake/script/ . # have to use cp, softlink has problems
-
-## submit jobs ##
-nohup bash submit.sh &
-
-# If necessary, please kill previously submitted jobs by typing 'snakemake --unlock -j 1'
+mkdir fq_analysis && cd fq_analysis # create workdir
+osr_path=$download_path/OneStopRNASeq/snakemake  # this is user specific, e.g. /home/user/git/OneStopRNAseq/snakemake
+# put necessary files into workdir
+ln -s $osr_path/meta
+ln -s $osr_path/example_data
+ln -s $osr_path/example_data/fastq_small/ fastq
+cp $osr_path/config.fq_example.yaml config.yaml
+cp -r $osr_path/workflow ./
+snakemake -j 1 -np   # quick test with a 'dry-run'
+snakemake -j 2 -pk  # run the workflow on the example datase with two threads, takes around 30 min for the first run
 ```
 
-## Here is how to modidfy the parameter setting in config.yaml with FASTQ input files.
-- provide fastq files under fastq/
-	- {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
-	- {sample}.fastq.gz for SE reads
-- write sample names in config.yaml: 
-	- {sample}
-- write meta data
-	- meta/meta.xlsx
-	- meta/contrast.de.xlsx 
-	- meta/contrast.as.xlsx 
-- modify `config.yaml`
-	- set `START: "FASTQ"`
-	- set `STRAND: [0, 1, 2]`
-	- set `READ_LENGTH: 100` 
-	- etc.
-- Set absolute Path
-	- $path/hand_sandbox.simg
+# Quick start on snakemake advanced usage:
+- If the workflow did not finish completely, try submitting the jobs again with `snakemake -j 2 -pk`
+- If the workdir is locked in a second submission, please kill previously submitted jobs by typing 'snakemake --unlock -j 1', after you make sure the first submission has stopped running
 
-	
+# Viewing results
+- results are under subfolders in the workdir, e.g. DESeq2, gsea, rMATS.x, fastqc, bam_qc
