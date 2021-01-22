@@ -10,7 +10,7 @@ params:
   min_lfc: 0.585
   indfilter: FALSE
   cookscutoff: TRUE
-  countFile: '../example_data/counts/cleanCount.mm10.xlsx'
+  countFile: '../example_data/counts/osrCount.mm10.xlsx'
   annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/mm10.gencode.vm25.te_included.anno.txt'
   #annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/hg38.gencode.v34.te_included.anno.txt'
   metaFile: "../meta/meta.xlsx"
@@ -421,7 +421,11 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
 
 
 ## Importing data
-```{r read_data}
+```{r read_meta_data}
+meta.df <- readExcel(metaFile)
+```
+
+```{r read_count_data}
 # read
 if (grepl("txt$", countFile)){
   df <- read.table(countFile, 
@@ -438,7 +442,6 @@ featureCountsFormat <- F
 cleanCountFormat <- F
 osrCountFormat <- F
 
-meta.df <- readExcel(metaFile)
 if (colnames(df)[1] == "Chr" & colnames(df)[2] == "Start" & colnames(df)[3] == "End"){
   cat("featureCounts format table detected\n")
   featureCountsFormat <- T
@@ -495,34 +498,6 @@ print(paste("Dim of input data:"))
 print(dim(cts))
 ```
 
-## Filtering
-```{r filtering}
-min_rowsum <- 10
-expression_filter <- rowSums(cts) >= min_rowsum  # default 10
-min_colsum <- 2e4
-sample_filter <- colSums(cts) >= min_colsum
-if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
-  cts <- cts[expression_filter, sample_filter]
-  if (featureCountsFormat) {
-    df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
-  }else if (cleanCountFormat) {
-    df <- df[expression_filter, sample_filter]
-  } else if (osrCountFormat) {
-    df <- df[expression_filter, c(rep(TRUE,3), sample_filter )]
-  }
-  paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples")
-  paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes")
-  
-  paste("Data dim after filtering:")
-  dim(cts)
-}else{
-  print("Library size too small: too few genes/samples would be left after filtering, so skipped filtering.")
-  print("Please interpret results with caution")
-}
-# print("Head of filtered data:")
-# head(cts)
-boxplot(log10(cts+1), las=2, main = "library size after filtering")
-```
 
 ## Importing annotation
 ```{r import_annotation}
@@ -557,7 +532,7 @@ if (sum(anno[, 1] %in% row.names(cts)) < 1){
   }
 ```
 
-## COUNT output
+## COUNT output (without filtering)
 ```{r}
 count <- data.frame(cts)
 colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
@@ -567,6 +542,44 @@ WriteXLS(x = count_out,
          ExcelFileName = 'COUNT.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
 print("saved in COUNT.xlsx")
 ```
+
+## Filtering
+```{r filtering}
+min_rowsum <- 10
+expression_filter <- rowSums(cts) >= min_rowsum  # default 10
+min_colsum <- 2e4
+sample_filter <- colSums(cts) >= min_colsum
+if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
+  cts <- cts[expression_filter, sample_filter]
+  if (featureCountsFormat) {
+    df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
+  }else if (cleanCountFormat) {
+    df <- df[expression_filter, sample_filter]
+  } else if (osrCountFormat) {
+    df <- df[expression_filter, c(rep(TRUE,3), sample_filter )]
+  }
+  cat(paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples", "\n"))
+  cat(paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes", "\n"))
+  
+  cat(paste("Data dim after filtering:"))
+  dim(cts)
+}else{
+  print("Library size too small: too few genes/samples would be left after filtering, so skipped filtering.")
+  print("Please interpret results with caution")
+}
+# print("Head of filtered data:")
+# head(cts)
+boxplot(log10(cts+1), las=2, main = "library size after filtering")
+```
+
+## COUNT calculation again (after filtering)
+```{r}
+count <- data.frame(cts)
+colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
+count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
+head(count_out)
+```
+
 
 ## TPM calculation
 ```{r tpm}
