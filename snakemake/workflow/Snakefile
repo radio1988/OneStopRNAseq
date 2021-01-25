@@ -844,7 +844,7 @@ if config['PAIR_END']:
         shell:
             """
             which python &> {log}
-            python workflow/envs/SalmonTE/SalmonTE.py --version > versions.txt
+            python workflow/envs/SalmonTE/SalmonTE.py --version >> {log}
             python workflow/envs/SalmonTE/SalmonTE.py quant \
             --reference={params.ref} --exprtype=count \
             --num_threads={threads} \
@@ -870,6 +870,7 @@ else:
         shell:
             """
             which python &> {log}
+            python workflow/envs/SalmonTE/SalmonTE.py --version >> {log}
             python envs/SalmonTE/SalmonTE.py quant \
             --reference={params.ref} --exprtype=count \
             --num_threads={threads} \
