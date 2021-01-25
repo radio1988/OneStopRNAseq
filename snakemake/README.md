@@ -34,6 +34,9 @@ snakemake -j 2 -pk  # run the workflow on the example datase with two threads, t
 # Quick start on snakemake advanced usage:
 - If the workflow did not finish completely, try submitting the jobs again with `snakemake -j 2 -pk`
 - If the workdir is locked in a second submission, please kill previously submitted jobs by typing 'snakemake --unlock -j 1', after you make sure the first submission has stopped running
+- The workflow can be easily adapted to a LSF system by using `snakemake -pk --cluster 'bsub -q queue_name -o lsf.log -R "rusage[mem={resources.mem_mb}]" -n {threads} -R span[hosts=1] -W 24:00'` 
 
 # Viewing results
 - results are under subfolders in the workdir, e.g. DESeq2, gsea, rMATS.x, fastqc, bam_qc
+- interpretation of results can be found here: https://mccb.umassmed.edu/OneStopRNAseq/documents/description_of_output_files.pdf 
+- write up for method section in publication can be found here: https://mccb.umassmed.edu/OneStopRNAseq/documents/template_of_method_section.pdf 
