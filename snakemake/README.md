@@ -5,7 +5,7 @@
 
 # Installation
 - install anaconda by following instructions on https://docs.anaconda.com/anaconda/install/  (installation tested in conda version 4.9.2)
-- download OneStopRNASeq by `git clone git@github.com:radio1988/OneStopRNAseq.git`
+- download OneStopRNASeq by `git clone https://github.com/radio1988/OneStopRNAseq.git`
 - `cd OneStopRNAseq/snakemake`
 - `conda env create -n osr -f workflow/envs/env.yaml`  # create an conda env called 'osr'
 - `conda activate osr`
