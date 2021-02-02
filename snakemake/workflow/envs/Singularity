@@ -1,0 +1,26 @@
+Bootstrap: docker
+
+From: continuumio/miniconda3
+
+%help
+singularity image for OneStopRNASeq, contains conda env called osr for snakemake
+usage: singularity run env.sif snakemake -j 2 -pk
+
+%labels
+    v2 portable, 2021-01-30
+
+%files
+    env.yaml
+
+%post
+    /opt/conda/bin/conda env create -f env.yaml 
+    . activate osr 
+    Rscript -e "install.packages(c('BiocManager', 'PoiClaClu', 'rmarkdown', 'gridExtra'), repos='https://cloud.r-project.org')"
+    Rscript -e 'install.packages("http://hartleys.github.io/QoRTs/QoRTs_STABLE.tar.gz", repos=NULL, type="source")'
+
+%runscript
+    echo 'singularity image for OneStopRNASeq'
+    conda -V
+    source activate osr
+    echo "$@"
+    exec "$@"
