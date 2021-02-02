@@ -2,6 +2,7 @@ import sys
 import csv
 from openpyxl import Workbook
 
+# for frontend only
 csvfilename = sys.argv[1]
 excelfilename = sys.argv[2]
 
