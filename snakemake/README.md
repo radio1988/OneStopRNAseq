@@ -7,7 +7,7 @@
 - install anaconda by following instructions on https://docs.anaconda.com/anaconda/install/  (installation tested in conda version 4.9.2)
 - download OneStopRNASeq by `git clone https://github.com/radio1988/OneStopRNAseq.git`
 - `cd OneStopRNAseq/snakemake`
-- `conda env create -n osr -f workflow/envs/env.yaml`  # create an conda env called 'osr'
+- `conda create -n osr -f workflow/envs/env.yaml`  # create an conda env called 'osr'
 - `conda activate osr`
 -`Rscript -e "install.packages( c('BiocManager', 'PoiClaClu', 'rmarkdown', 'gridExtra'), repos='https://cloud.r-project.org')"`  # install packages for DESeq2
 - `Rscript -e 'install.packages("http://hartleys.github.io/QoRTs/QoRTs_STABLE.tar.gz", repos=NULL, type="source");'` # install packages for QoRTs
@@ -26,7 +26,11 @@ ln -s $osr_path/meta
 ln -s $osr_path/example_data
 ln -s $osr_path/example_data/fastq_small/ fastq
 cp $osr_path/config.fq_example.yaml config.yaml
-cp -r $osr_path/workflow ./
+mkdir -p workflow && cd workflow
+ln -s $osr_path/workflow/envs
+ln -s $osr_path/workflow/Snakefile
+ln -s $osr_path/workflow/osr.py
+rsync  -a $osr_path/workflow/script ./
 snakemake -j 1 -np   # quick test with a 'dry-run'
 snakemake -j 2 -pk  # run the workflow on the example datase with two threads, takes around 30 min for the first run
 ```
