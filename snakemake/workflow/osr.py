@@ -188,8 +188,9 @@ def get_strandness_for_dexseq (strandFile="meta/strandness.detected.txt"):
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
         return (None)
+
 def get_strandness_for_hisat2_PE (strandFile="meta/strandness.detected.txt"):
-    book = {0 : 'unstranded', 1 : 'FR', 2 : 'RF'}
+    book = {0 : ' ', 1 : '--rna-strandness FR', 2 : '--rna-strandness RF'}
     try:
         with open(strandFile, "r") as file:
             txt = file.readline()
@@ -204,7 +205,7 @@ def get_strandness_for_hisat2_PE (strandFile="meta/strandness.detected.txt"):
         return (None)
 
 def get_strandness_for_hisat2_SE (strandFile="meta/strandness.detected.txt"):
-    book = {0 : 'unstranded', 1 : 'F', 2 : 'R'}
+    book = {0 : ' ', 1 : '--rna-strandness F', 2 : '--rna-strandness R'}
     try:
         with open(strandFile, "r") as file:
             txt = file.readline()

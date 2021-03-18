@@ -1336,7 +1336,7 @@ if config['PAIR_END']:
             """
             hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
             -1 {input.R1} -2 {input.R2} \
-            --rna-strandness {params.strand} 2> {log} | \
+            {params.strand} 2> {log} | \
             samtools sort -@ 2 -o {output.bam}
             samtools index {output.bam}
             """
@@ -1363,7 +1363,7 @@ else:
             """
             hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
             -U {input.U} \
-            --rna-strandness {params.strand} 2> {log} | \
+            {params.strand} 2> {log} | \
             samtools sort -@ 2 -o {output.bam}
             samtools index {output.bam}
             """
