@@ -25,7 +25,8 @@ from osr import read_length
 min_version("5.17.0")  # check snakemake version
 configfile: "config.yaml"
 ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc > bamCoverage > feature_count  > samtools_sort > samtools_index > reset
-# container: "workflow/envs/hand_sandbox.simg"  # only effective when --use-singularity
+container: "docker://continuumio/miniconda3:4.4.10"
+
 # removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
 # localrules: targets, create_dag
 # priority 0-100, default 0
@@ -215,6 +216,8 @@ if config["PAIR_END"]:
         output:
             r1="fastqc/details/{sample}.R1_fastqc.html", 
             r2="fastqc/details/{sample}.R2_fastqc.html" 
+        conda:
+            "envs/env.yaml"
         priority:
             10
         resources:
@@ -619,7 +622,7 @@ rule bamCoverage:
     threads:
         1
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 16000,
+        mem_mb=lambda wildcards, attempt: attempt * 20000,
     priority:
         0
     log:
@@ -635,7 +638,7 @@ rule bamCoverage:
             bamCoverage --bam {input.bam} \
             -o  {output} \
             --numberOfProcessors {threads} \
-            --outFileFormat bigwig --normalizeUsing CPM --binSize 10 \
+            --outFileFormat bigwig --normalizeUsing CPM --binSize 50 \
             --minMappingQuality 20 &>> {log}
             """)
         else:
@@ -645,7 +648,7 @@ rule bamCoverage:
             bamCoverage --bam {input.bam} \
             -o  {output} \
             --numberOfProcessors {threads} \
-            --outFileFormat bigwig --normalizeUsing CPM --binSize 10  &>> {log}
+            --outFileFormat bigwig --normalizeUsing CPM --binSize 50  &>> {log}
             """)
 
 
