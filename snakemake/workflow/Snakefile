@@ -274,7 +274,7 @@ if config["PAIR_END"]:
             "log/multiqc/multiqc.tsv"
         shell:
             "which multiqc &> {log};"
-            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log};"
+            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -f -o fastqc &>> {log};"
             "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
 else:
     rule MultiQC:
@@ -295,7 +295,7 @@ else:
             "log/multiqc/multiqc.tsv"
         shell:
             "which multiqc &> {log};"
-            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -o fastqc &>> {log};"
+            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -f -o fastqc &>> {log};"
             "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
 
 
@@ -450,7 +450,7 @@ rule STAR_Align_multiqc:
         mkdir -p bam_qc/STAR_Align_summary/
         cp {input} bam_qc/STAR_Align_summary/
 
-        multiqc {input}  --outdir bam_qc --title STAR_Align_summary
+        multiqc {input} -f --outdir bam_qc --title STAR_Align_summary
         """
 
 
@@ -535,8 +535,8 @@ rule bam_qc_multiqc:
         'log/bam_qc/samtools_multiqc_report.tsv'
     shell:
         """
-        multiqc {input.stats}  --outdir bam_qc --title samtools_stats &> {log}
-        multiqc {input.idxstats}  --outdir bam_qc --title samtools_idxstats &> {log}
+        multiqc {input.stats} -f --outdir bam_qc --title samtools_stats &> {log}
+        multiqc {input.idxstats} -f --outdir bam_qc --title samtools_idxstats &> {log}
         """
 
 
