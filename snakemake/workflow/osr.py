@@ -34,7 +34,7 @@ def get_contrast_fnames (fname):
         c2 = re.sub(";", ".", c2)
         name = c1 + "_vs_" + c2
         if len(name) > 200:
-            CONTRASTS.append("contrast" + str(j))
+            CONTRASTS.append("contrast" + str(j+1))
         else:
             CONTRASTS.append(c1 + "_vs_" + c2)
     # CONTRATS = ['KO_D8_vs_KO_D0', 'WT_D8.KO_D8_vs_WT_D0.KO_D0', 'KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8']
