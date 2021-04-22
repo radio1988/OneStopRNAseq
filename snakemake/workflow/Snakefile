@@ -227,7 +227,7 @@ if config["PAIR_END"]:
         log:
             "log/fastqc/{sample}.log"
         benchmark:
-            "log/fastqc/{sample}.tsv"
+            "log/fastqc/{sample}.benchmark"
         shell:
             "which fastqc &> {log};"
             "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
@@ -248,7 +248,7 @@ else:
         log:
             "log/fastqc/{sample}.log"
         benchmark:
-            "log/fastqc/{sample}.tsv"
+            "log/fastqc/{sample}.benchmark"
         shell:
             "which fastqc &> {log};"
             "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
@@ -271,7 +271,7 @@ if config["PAIR_END"]:
         log:
             "log/multiqc/multiqc.log"
         benchmark:
-            "log/multiqc/multiqc.tsv"
+            "log/multiqc/multiqc.benchmark"
         shell:
             "which multiqc &> {log};"
             "rm -rf fastqc/multiqc_data && multiqc fastqc/details -f -o fastqc &>> {log};"
@@ -292,7 +292,7 @@ else:
         log:
             "log/multiqc/multiqc.log"
         benchmark:
-            "log/multiqc/multiqc.tsv"
+            "log/multiqc/multiqc.benchmark"
         shell:
             "which multiqc &> {log};"
             "rm -rf fastqc/multiqc_data && multiqc fastqc/details -f -o fastqc &>> {log};"
@@ -312,7 +312,7 @@ rule star_idx:
     log:
         "log/star_idx/star_idx.log"
     benchmark:
-        "log/star_idx/star_idx.tsv"
+        "log/star_idx/star_idx.benchmark"
     # envmodules:
     #     "star/2.7.5a"
     shell:
@@ -348,7 +348,7 @@ if config['PAIR_END']:
         log:
             "log/mapped_reads/{sample}.star.log"
         benchmark:
-            "log/mapped_reads/{sample}.star.tsv"
+            "log/mapped_reads/{sample}.star.benchmark"
         # envmodules:
         #     "star/2.7.5a"
         shell:
@@ -398,7 +398,7 @@ else:
         log:
             "log/mapped_reads/{sample}.star.log"
         benchmark:
-            "log/mapped_reads/{sample}.star.tsv"
+            "log/mapped_reads/{sample}.star.benchmark"
         # envmodules:
         #     "star/2.7.5a"
         shell:
@@ -444,7 +444,7 @@ rule STAR_Align_multiqc:
     log:
         'log/bam_qc/STAR_Align_summary_multiqc_report.log'
     benchmark:
-        'log/bam_qc/STAR_Align_summary_multiqc_report.tsv'
+        'log/bam_qc/STAR_Align_summary_multiqc_report.benchmark'
     shell:
         """
         mkdir -p bam_qc/STAR_Align_summary/
@@ -466,7 +466,7 @@ rule samtools_sort:
     log:
         "log/samtools_sort/{sample}.sort.log"
     benchmark:
-        "log/samtools_sort/{sample}.sort.tsv"
+        "log/samtools_sort/{sample}.sort.benchmark"
     shell:
         "which samtools &> {log};"
         "samtools sort -@ {threads} -m 3G {input} -o {output} &>> {log}"
@@ -484,7 +484,7 @@ rule samtools_index:
     log:
         "log/samtools_index/{sample}.index.log"
     benchmark:
-        "log/samtools_index/{sample}.index.tsv"
+        "log/samtools_index/{sample}.index.benchmark"
     shell:
         "which samtools &> {log};"
         "samtools index -@ {threads} {input} &>> {log}"
@@ -509,7 +509,7 @@ rule bam_qc:
         idxstats="log/bam_qc/idxstats/{sample}.idxstats.log",
         stats="log/bam_qc/stats/{sample}.stats.log",
     benchmark:
-        "log/bam_qc/benchmark/{sample}.bam_qc.tsv",
+        "log/bam_qc/benchmark/{sample}.bam_qc.benchmark",
     shell:
         """
         samtools idxstats {input.bam} > {output.idxstats} 2> {log.idxstats} &
@@ -532,7 +532,7 @@ rule bam_qc_multiqc:
     log:
         'log/bam_qc/samtools_multiqc_report.log'
     benchmark:
-        'log/bam_qc/samtools_multiqc_report.tsv'
+        'log/bam_qc/samtools_multiqc_report.benchmark'
     shell:
         """
         multiqc {input.stats} -f --outdir bam_qc --title samtools_stats &> {log}
@@ -556,7 +556,7 @@ if config['PAIR_END']:
         log:
             "log/QoRTs/QoRTs.{sample}.log"
         benchmark:
-            "log/QoRTs/QoRTs.{sample}.tsv"
+            "log/QoRTs/QoRTs.{sample}.benchmark"
         shell:
             """
             which java &> {log}
@@ -577,7 +577,7 @@ else:
         log:
             "log/QoRTs/QoRTs.{sample}.log"
         benchmark:
-            "log/QoRTs/QoRTs.{sample}.tsv"
+            "log/QoRTs/QoRTs.{sample}.benchmark"
         shell:
             """
             which java &> {log}
@@ -598,7 +598,7 @@ rule QoRTs_MultiPlot:
     log:
         "log/QoRTs/multiplot.log"
     benchmark:
-        "log/QoRTs/multiplot.tsv"
+        "log/QoRTs/multiplot.benchmark"
     shell:
         """
         which python && which Rscript &> {log};
@@ -628,7 +628,7 @@ rule bamCoverage:
     log:
         "log/bamCoverage/{sample}.{mode}.bamCoverage.log"
     benchmark:
-        "log/bamCoverage/{sample}.{mode}.bamCoverage.tsv"
+        "log/bamCoverage/{sample}.{mode}.bamCoverage.benchmark"
     # not installed in hand_sandbox yet
     run:
         if {wildcards.mode} == "strict":
@@ -669,7 +669,7 @@ rule feature_count:
     log:
         "log/feature_count/counts.s{strand}.log"
     benchmark:
-        "log/feature_count/benchmark.s{strand}.tsv"
+        "log/feature_count/benchmark.s{strand}.benchmark"
     run:
         if config["PAIR_END"]:
             if config["MODE"] == "strict":
@@ -734,7 +734,7 @@ if config['INTRON']:
         log:
             "log/feature_count_gene_level/counts.s{strand}.gene_level.log"
         benchmark:
-            "log/feature_count_gene_level/benchmark.s{strand}.gene_level.tsv"
+            "log/feature_count_gene_level/benchmark.s{strand}.gene_level.benchmark"
         run:
             if config["PAIR_END"]:
                 if config["MODE"] == "strict":
@@ -799,7 +799,7 @@ rule strand_detection:
     log:
         "log/strand_detection.log"
     benchmark:
-        "log/strand_detection.tsv"
+        "log/strand_detection.benchmark"
     script:
         "script/strandness_detection.py"
 
@@ -843,7 +843,7 @@ if config['PAIR_END']:
         log:
             'log/SalmonTE/salmonte_count.log'
         benchmark:
-            'log/SalmonTE/salmonte_count.tsv'
+            'log/SalmonTE/salmonte_count.benchmark'
         shell:
             """
             which python &> {log}
@@ -869,7 +869,7 @@ else:
         log:
             'log/SalmonTE/salmonte_count.se.log'
         benchmark:
-            'log/SalmonTE/salmonte_count.se.tsv'
+            'log/SalmonTE/salmonte_count.se.benchmark'
         shell:
             """
             which python &> {log}
@@ -895,7 +895,7 @@ rule Merge_TE_and_Gene:
     log:
         "log/merge_te_and_gene/merge_te_and_gene.log"
     benchmark:
-        "log/merge_te_and_gene/merge_te_and_gene.tsv"
+        "log/merge_te_and_gene/merge_te_and_gene.benchmark"
     shell:
         """
         python workflow/script/merge_featureCount_and_SalmonTE.py \
@@ -932,7 +932,7 @@ rule DESeq2:
     log:
         "DESeq2/DESeq2.log"
     benchmark:
-        "log/DESeq2/DESeq2.tsv"
+        "DESeq2/DESeq2.benchmark"
     shell:
         #Rscript -e rmarkdown::render({params.rmd})
         'cp workflow/script/DESeq2.Rmd DESeq2; '
@@ -982,7 +982,7 @@ rule GSEA:
     log:
         "log/gsea/{fname}.{db}.log"
     benchmark:
-        "log/gsea/{fname}.{db}.tsv"
+        "log/gsea/{fname}.{db}.benchmark"
     priority:
         100
     shell:
@@ -1040,7 +1040,7 @@ rule read_length_detection_bam:
     log:
         "log/read_length_detection_bam/read_length_detection_bam.log"
     benchmark:
-        "log/read_length_detection_bam/read_length_detection_bam.tsv"
+        "log/read_length_detection_bam/read_length_detection_bam.benchmark"
     run:
         import re
         import statistics
@@ -1093,7 +1093,7 @@ rule rMATS:
     log:
         "log/rMATS/rMATS.{ascn}.log"
     benchmark:
-        "log/rMATS/rMATS.{ascn}.tsv"
+        "log/rMATS/rMATS.{ascn}.benchmark"
     shell:
         """
         rm -rf rMATS.{wildcards.ascn}
@@ -1151,7 +1151,7 @@ rule DEXSeq_Prep_GFF:
     log:
         "log/DEXSeq/prep_gff.log"
     benchmark:
-        "log/DEXSeq/prep_gff.tsv"
+        "log/DEXSeq/prep_gff.benchmark"
     shell:
         "python workflow/script/dexseq_prepare_annotation.py -r no {input} {output} &> {log}"
 
@@ -1176,7 +1176,7 @@ rule prep_count:
     log:
         "log/DEXSeq/prep_count.{sample}.log"
     benchmark:
-        "log/DEXSeq/prep_count.{sample}.tsv"
+        "log/DEXSeq/prep_count.{sample}.benchmark"
     shell:
         "python workflow/script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output}"  
         # todo: maybe -r name (sort by name) is faster
@@ -1201,7 +1201,7 @@ rule DEXSeq:
     log:
         "log/DEXSeq/DEXSeq.{ascn}.log"
     benchmark:
-        "log/DEXSeq/DEXSeq.{ascn}.tsv"
+        "log/DEXSeq/DEXSeq.{ascn}.benchmark"
     shell:
         """
         mkdir -p DEXSeq 
@@ -1241,7 +1241,7 @@ rule GATK_CreateSequenceDictionary:
     log:
         "log/GATK_CreateSequenceDictionary/GATK_CreateSequenceDictionary.log"
     benchmark:
-        "log/GATK_CreateSequenceDictionary/GATK_CreateSequenceDictionary.tsv"
+        "log/GATK_CreateSequenceDictionary/GATK_CreateSequenceDictionary.benchmark"
     shell:
         "./workflow/envs/gatk-4.1.8.1/gatk CreateSequenceDictionary -R {input} &> {log}"
 
@@ -1264,7 +1264,7 @@ rule GATK_ASEReadCounter:
     log:
         "log/GATK_ASEReadCounter/{sample}.log"
     benchmark:
-        "log/GATK_ASEReadCounter/{sample}.tsv"
+        "log/GATK_ASEReadCounter/{sample}.benchmark"
     shell:
         "./workflow/envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} \
         --min-depth-of-non-filtered-base 10 --min-mapping-quality 15 --min-base-quality 20 \
@@ -1299,7 +1299,7 @@ rule hisat2_build:
     log:
         "log/hisat2_build/hisat2_build.log"
     benchmark:
-        "log/hisat2_build/hisat2_build.tsv"
+        "log/hisat2_build/hisat2_build.benchmark"
     shell:
         """
         hisat2_extract_splice_sites.py -v {input.gtf} > {output.ss} 2> {log}
@@ -1332,7 +1332,7 @@ if config['PAIR_END']:
         log:
             "log/hisat2/{sample}.hisat2.log"
         benchmark:
-            "log/hisat2/{sample}.hisat2.tsv"
+            "log/hisat2/{sample}.hisat2.benchmark"
         shell:
             """
             hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
@@ -1359,7 +1359,7 @@ else:
         log:
             "log/hisat2/{sample}.hisat2.log"
         benchmark:
-            "log/hisat2/{sample}.hisat2.tsv"
+            "log/hisat2/{sample}.hisat2.benchmark"
         shell:
             """
             hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
@@ -1387,7 +1387,7 @@ rule stringtie:  # todo: group level
     log:
         "log/stringtie/{sample}.stringtie.log"
     benchmark:
-        "log/stringtie/{sample}.stringtie.tsv"
+        "log/stringtie/{sample}.stringtie.benchmark"
     shell:
         """
         stringtie -G {input.gtf} {params.strand} -o {output} {input.bam} 2> {log}
@@ -1406,7 +1406,7 @@ rule stringtie_merge:
     log:
         "log/stringtie/stringtie.merged.log"
     benchmark:
-        "log/stringtie/stringtie.merged.tsv"
+        "log/stringtie/stringtie.merged.benchmark"
     shell:
         """
         stringtie --merge -G {input.gtf} -o {output} {input.stringties} 2> {log}
