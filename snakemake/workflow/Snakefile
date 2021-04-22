@@ -972,7 +972,8 @@ rule GSEA:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
     params:
-        svg=config["GSEA_PLOT_SVG"] if config["GSEA_NPLOTS"] <= 200 else False,  # no svg if nplots > 200 (to save time and space) # todo: move this to front end, when making workflow portable
+        #svg=config["GSEA_PLOT_SVG"] if config["GSEA_NPLOTS"] <= 200 else False,  # no svg if nplots > 200 (to save time and space) # todo: move this to front end, when making workflow portable
+        svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
         label_db=lambda wildcards: wildcards["db"][:-12],
         rnk_flat_file= lambda wildcards: input_rnk_fname2(wildcards, config),
