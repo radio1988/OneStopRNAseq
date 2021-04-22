@@ -77,7 +77,7 @@ independentFilter: 'FALSE'
 # GSEA
 GSEA_ANALYSIS: False
 GSEA_NPLOTS: 100  
-GSEA_PLOT_SVG: True  
+GSEA_PLOT_SVG: False  
 GSEA_DBS:  
   - c1.all.v7.1.symbols.gmt
   - c2.cgp.v7.1.symbols.gmt
