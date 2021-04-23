@@ -101,23 +101,36 @@ def G2B_workflow(G, g2s):
 
 ###  Input functions (functions to create input fnames for rules)  ###
 def DESeq2_input(config):
-    if config["START"] in ["FASTQ", "BAM"]:
-        if config["MODE"] == "strict":
-            if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
-                return("feature_count/TE_included.txt")
+    if config['INTRON']:
+        if config["START"] in ["FASTQ", "BAM"]:
+            if config["MODE"] == "strict":
+                    return("feature_count_gene_level/counts.s0.gene_level.strict.txt")  # todo: strand detection
+            elif config["MODE"] == "liberal":
+                    return("feature_count_gene_level/counts.s0.gene_level.liberal.txt") # todo: strand detection
             else:
-                return("feature_count/counts.strict.txt")
-        elif config["MODE"] == "liberal":
-            if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
-                return("feature_count/TE_included.txt")
-            else:
-                return("feature_count/counts.liberal.txt")
+                raise Exception("MODE config not valid")
+        elif config["START"] in ["COUNT"]:
+                return(config["COUNT_FILE"])
         else:
             raise Exception("START config not valid")
-    elif config["START"] in ["COUNT"]:
-            return(config["COUNT_FILE"])
     else:
-        return("placeholder" )
+        if config["START"] in ["FASTQ", "BAM"]:
+            if config["MODE"] == "strict":
+                if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
+                    return("feature_count/TE_included.txt")
+                else:
+                    return("feature_count/counts.strict.txt")
+            elif config["MODE"] == "liberal":
+                if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
+                    return("feature_count/TE_included.txt")
+                else:
+                    return("feature_count/counts.liberal.txt")
+            else:
+                raise Exception("MODE config not valid")
+        elif config["START"] in ["COUNT"]:
+                return(config["COUNT_FILE"])
+        else:
+            raise Exception("START config not valid")
 
 def input_rnk_fname1(wildcards, config):
     '''

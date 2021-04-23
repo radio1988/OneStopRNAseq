@@ -724,7 +724,7 @@ if config['INTRON']:
             gtf=GTF
         output:
             COUNT='feature_count_gene_level/counts.s{strand}.gene_level.strict.txt' if config["MODE"] == "strict" else 'feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt',
-            summary="feature_count_gene_level/counts.s{strand}.gene_level.strict.txt.summary" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.gene_level.liberal.txt.summary",
+            summary="feature_count_gene_level/counts.s{strand}.gene_level.strict.txt.summary" if config["MODE"] == "strict" else "feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt.summary",
         priority:
             10
         resources:
