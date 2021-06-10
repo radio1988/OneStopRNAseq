@@ -33,7 +33,7 @@ def get_contrast_fnames (fname):
         c1 = re.sub(";", ".", c1)  # remove extra ;
         c2 = re.sub(";", ".", c2)
         name = c1 + "_vs_" + c2
-        if len(name) > 200:
+        if len(name) > 100:
             CONTRASTS.append("contrast" + str(j+1))
         else:
             CONTRASTS.append(c1 + "_vs_" + c2)
