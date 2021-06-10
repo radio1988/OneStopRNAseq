@@ -426,6 +426,7 @@ meta.df <- readExcel(metaFile)
 
 ```{r read_count_data}
 # read
+paste('countFile:', countFile)
 if (grepl("txt$", countFile)){
   df <- read.table(countFile, 
                    sep="\t", header=TRUE, comment.char = '#', 
@@ -854,7 +855,7 @@ for (i in 1:dim(contrast.df)[2]){
   name2 <- gsub(";", ".", name2)
   
   name <- paste(name1, name2, sep = "_vs_")
-  if (nchar(name) > 200) {name = paste0('contrast', i)}
+  if (nchar(name) > 100) {name = paste0('contrast', i)}
   print(paste(">>>", i, name))
   
   # contrast <- c("group", name1, name2)
