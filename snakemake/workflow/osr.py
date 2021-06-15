@@ -112,7 +112,8 @@ def DESeq2_input(config):
         elif config["START"] in ["COUNT"]:
                 return(config["COUNT_FILE"])
         else:
-            raise Exception("START config not valid")
+            return("Workflow_DAG.all.svg")
+#            raise Exception("START config not valid", config['START'])
     else:
         if config["START"] in ["FASTQ", "BAM"]:
             if config["MODE"] == "strict":
@@ -130,7 +131,8 @@ def DESeq2_input(config):
         elif config["START"] in ["COUNT"]:
                 return(config["COUNT_FILE"])
         else:
-            raise Exception("START config not valid")
+            return ("Workflow_DAG.all.svg")
+#            raise Exception("START config not valid:", config['START'])
 
 def input_rnk_fname1(wildcards, config):
     '''
