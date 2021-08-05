@@ -517,6 +517,7 @@ if (grepl('https://', annoFile)){
   print("reading local annoFile")
   anno <- read.table(annoFile, sep = "\t", header = T)
 }
+anno <- anno[!duplicated(anno[1]), ] # assume first column is Gene ID
 print("Dimention of annotation table: ")
 dim(anno)
 head(anno)
