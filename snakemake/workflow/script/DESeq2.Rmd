@@ -15,6 +15,7 @@ params:
   #annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/hg38.gencode.v34.te_included.anno.txt'
   metaFile: "../meta/meta.xlsx"
   contrastFile:  "../meta/contrast.de.xlsx"
+  blackSamples: 'H_B1_1, H_B1_8, C_B1_4, C_B1_1'
 ---
 
 ## Notes:
@@ -22,6 +23,8 @@ params:
 -	Normalized expression values, differentially expressed genes, and various types of plots such as heatmap and volcano plots are in the DESeq2 folder. For example, TPM.xlsx contains normalized expression values.
 - Please use LFC_shrunken for Log2FoldChange, LFC_raw is not recommended
 - Please use FDR (padj) instead of raw p-values for identifying significantly differentially expressed genes.
+- blackSamples added in params
+
 
 ```{r setup, include=F}
 # Bioconductor
@@ -45,9 +48,8 @@ library(gridExtra) #
 library(grid)
 # library(corrplot) 
 
-dir.create("../../DESeq2", showWarnings = FALSE)
-dir.create("../../DESeq2/rnk", showWarnings = FALSE)
-knitr::opts_knit$set(root.dir = "../../DESeq2")
+#dir.create("./rnk", showWarnings = FALSE)
+#knitr::opts_knit$set(root.dir = "./")
 ```
 
 
@@ -63,19 +65,28 @@ annoFile <- params$annoFile
 metaFile <- params$metaFile
 contrastFile <-params$contrastFile
 
+blackSamplesStr <- gsub(" " , '', params$blackSamples)
+blackSamples <- unlist(strsplit(blackSamplesStr, ','))
+
 paste("Data file name:", countFile)
 paste("MetaData file name:", metaFile)
 paste("Contrast file name:", contrastFile)
 paste("Annotation file name:", annoFile)
 paste("FDR cut-off:", max_fdr)
 paste("Log2FC cut-off:", min_lfc)
+cat('blackSamples to remove:', blackSamples)
 ```
 
 ## Functions
 ```{r functions}
+fix_hyphen <- function(x){
+  return(gsub("-", ".", x))
+}
+
 readExcel <- function(fname){
   df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
   df <- data.frame(df)  #important
+  df <- data.frame(lapply(df, fix_hyphen))
   return (df)
 }
 
@@ -422,6 +433,8 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
 ## Importing data
 ```{r read_meta_data}
 meta.df <- readExcel(metaFile)
+meta.df <- meta.df[!(meta.df[, 1] %in% blackSamples), ]
+
 ```
 
 ```{r read_count_data}
@@ -473,6 +486,10 @@ if (colnames(df)[1] == "Chr" & colnames(df)[2] == "Start" & colnames(df)[3] == "
   stop("COUNT file not in featureCounts output format, nor cleanCountFormat format, nor osrCount format. \nMay have different number of samples in meta-data and count-table if cleanCountFormat is provided\n")
 }
 
+# remove blackSamples
+df <- df[, !(colnames(df) %in% blackSamples)]
+cts <- cts[, !(colnames(cts) %in% blackSamples)]
+
 # check number of samples
 if ( dim(cts)[2] != dim(meta.df)[1] ){
   paste("# samples in count-table:", dim(cts)[2] )
@@ -486,7 +503,7 @@ if (all(colnames(cts) %in% meta.df$SAMPLE_LABEL) & all(meta.df$SAMPLE_LABEL %in%
 } else {
   warning("count-table: ", colnames(cts), "\n")
   warning("meta-data: ", meta.df$SAMPLE_LABEL, "\n")
-  stop("not all sample-labels in count-table and meta-data matches, abort!!!")
+  stop("not all sample-labels in count-table and meta-data matches, abort!!!", colnames(cts), meta.df$SAMPLE_LABEL)
 }
 
 

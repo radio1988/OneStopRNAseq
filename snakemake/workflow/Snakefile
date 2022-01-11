@@ -918,13 +918,13 @@ rule DESeq2:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     params:
-        rmd="'workflow/script/DESeq2.Rmd'",
+        rmd="'./DESeq2/DESeq2.Rmd'",
         fdr=MAX_FDR,
         lfc=MIN_LFC,
         independentFilter=config["independentFilter"],
         cooksCutoff=config["cooksCutoff"],
         anno_tab=ANNO_TAB,
-        o="'../../DESeq2/DESeq2.html'"
+        o="'DESeq2.html'"
     priority: 
         100
     threads:
