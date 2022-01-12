@@ -26,7 +26,7 @@ from osr import read_length
 
 min_version("5.17.0")  # check snakemake version
 configfile: "config.yaml"
-ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc  > samtools_sort > samtools_index > reset
+#ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc  > samtools_sort > samtools_index > reset
 container: "docker://continuumio/miniconda3:4.4.10"
 
 # removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
@@ -209,104 +209,57 @@ rule targets:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
 
-## fastqc
-if config["PAIR_END"]:
-    rule FastQC:
-        # don't need input, if you agree on not checking them
-        # without output, output will not be created
-        input:
-            r1="fastq/{sample}.R1.fastq.gz",
-            r2="fastq/{sample}.R2.fastq.gz",
-        output:
-            r1="fastqc/details/{sample}.R1_fastqc.html", 
-            r2="fastqc/details/{sample}.R2_fastqc.html" 
-        conda:
-            "envs/fastqc.yaml"
-        priority:
-            10
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1000   
-        threads:
-            1
-        log:
-            "log/fastqc/{sample}.log"
-        benchmark:
-            "log/fastqc/{sample}.benchmark"
-        shell:
-            "which fastqc &> {log};"
-            "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
-else:
-    rule FastQC:
-        # don't need input, if you agree on not checking them
-        # without output, output will not be created
-        input:
-            r1="fastq/{sample}.fastq.gz" 
-        output:
-            "fastqc/details/{sample}_fastqc.html"
-        conda:
-            "envs/fastqc.yaml"
-        priority:
-            10
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1000   
-        threads:
-            1
-        log:
-            "log/fastqc/{sample}.log"
-        benchmark:
-            "log/fastqc/{sample}.benchmark"
-        shell:
-            "which fastqc &> {log};"
-            "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
+
+rule FastQC:
+    input:
+        ["fastq/{sample}.R1.fastq.gz", "fastq/{sample}.R2.fastq.gz"] if PAIR_END else \
+        "fastq/{sample}.fastq.gz" 
+    output:
+        ["fastqc/details/{sample}.R1_fastqc.html", "fastqc/details/{sample}.R2_fastqc.html"] if PAIR_END else \
+        "fastqc/details/{sample}_fastqc.html"
+    conda:
+        "envs/fastqc.yaml"
+    priority:
+        10
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
+    threads:
+        1
+    log:
+        "log/fastqc/{sample}.log"
+    benchmark:
+        "log/fastqc/{sample}.benchmark"
+    shell:
+        "which fastqc &> {log};"
+        "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
 
 
-# rule MultiQC
-if config["PAIR_END"]:
-    rule MultiQC:
-        input:
-            r1=expand("fastqc/details/{sample}.R1_fastqc.html", sample=SAMPLES),
-            r2=expand("fastqc/details/{sample}.R2_fastqc.html", sample=SAMPLES) 
-        output:
-            "fastqc/multiqc_report.html"
-        conda:
-            "envs/fastqc.yaml"
-        priority:
-            10
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1000   
-        threads:
-            1
-        log:
-            "log/multiqc/multiqc.log"
-        benchmark:
-            "log/multiqc/multiqc.benchmark"
-        shell:
-            "which multiqc &> {log};"
-            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -f -o fastqc &>> {log};"
-            "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
-else:
-    rule MultiQC:
-        input:
-            r1=expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES),
-            r2=expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES), # trick snakemake to skip r2
-        output:
-            "fastqc/multiqc_report.html"
-        conda:
-            "envs/fastqc.yaml"
-        priority:
-            10
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1000   
-        threads:
-            1
-        log:
-            "log/multiqc/multiqc.log"
-        benchmark:
-            "log/multiqc/multiqc.benchmark"
-        shell:
-            "which multiqc &> {log};"
-            "rm -rf fastqc/multiqc_data && multiqc fastqc/details -f -o fastqc &>> {log};"
-            "D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};"
+rule MultiQC:
+    input:
+        [expand("fastqc/details/{sample}.R1_fastqc.html", sample=SAMPLES), 
+        expand("fastqc/details/{sample}.R2_fastqc.html", sample=SAMPLES)] \
+        if PAIR_END else \
+        expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES)
+    output:
+        "fastqc/multiqc_report.html"
+    conda:
+        "envs/fastqc.yaml"
+    priority:
+        10
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
+    threads:
+        1
+    log:
+        "log/multiqc/multiqc.log"
+    benchmark:
+        "log/multiqc/multiqc.benchmark"
+    shell:
+        """
+        which multiqc &> {log};
+        multiqc fastqc/details -f -o fastqc &>> {log};
+        D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};
+        """
 
 
 rule star_idx:
@@ -339,115 +292,60 @@ rule star_idx:
         --sjdbGTFfile {input.gtf} &>> {log}
         """
 
+rule STAR:
+    input:
+        index=INDEX+"/SAindex",
+        gtf=GTF,
+        reads=  ["fastq/{sample}.R1.fastq.gz","fastq/{sample}.R2.fastq.gz"] \
+                if PAIR_END else \
+                "fastq/{sample}.fastq.gz"
+    output:
+        log="mapped_reads/{sample}.Log.final.out",
+        bam=temp("mapped_reads/{sample}.bam"),
+    conda:
+        "envs/star.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 3000 
+    params:
+        pe = ""
+    threads:
+        12
+    log:
+        "log/mapped_reads/{sample}.star.log"
+    benchmark:
+        "log/mapped_reads/{sample}.star.benchmark"
+    # envmodules:
+    #     "star/2.7.5a"
+    shell:
+        """
+        which STAR > {log};
 
-# rule STAR_Align
-if config['PAIR_END']:
-    rule STAR_Align:
-        input:
-            index=INDEX+"/SAindex",
-            gtf=GTF,
-            r1="fastq/{sample}.R1.fastq.gz",
-            r2="fastq/{sample}.R2.fastq.gz"
-        output:
-            log="mapped_reads/{sample}.Log.final.out",
-            bam=temp("mapped_reads/{sample}.bam"),
-        conda:
-            "envs/star.yaml"
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 3000 
-        params:
-            reads="fastq/{sample}.R1.fastq.gz fastq/{sample}.R2.fastq.gz"
-        threads:
-            12
-        log:
-            "log/mapped_reads/{sample}.star.log"
-        benchmark:
-            "log/mapped_reads/{sample}.star.benchmark"
-        # envmodules:
-        #     "star/2.7.5a"
-        shell:
-            """
-            which STAR > {log};
-            STAR --runThreadN {threads} \
-            --genomeDir {INDEX} \
-            --sjdbGTFfile {input.gtf} \
-            --readFilesCommand zcat \
-            --readFilesIn {params.reads} \
-            --outFileNamePrefix mapped_reads/{wildcards.sample}. \
-            --outFilterType BySJout \
-            --outMultimapperOrder Random \
-            --outFilterMultimapNmax 200 \
-            --alignSJoverhangMin 8 \
-            --alignSJDBoverhangMin 3 \
-            --outFilterMismatchNmax 999 \
-            --outFilterMismatchNoverReadLmax 0.05 \
-            --alignIntronMin 20 \
-            --alignIntronMax 1000000 \
-            --alignMatesGapMax 1000000 \
-            --outFilterIntronMotifs RemoveNoncanonicalUnannotated \
-            --outSAMstrandField None \
-            --outSAMtype BAM Unsorted \
-            --quantMode GeneCounts \
-            --outReadsUnmapped Fastx \
-            >> {log} 2>&1
+        STAR --runThreadN {threads} --genomeDir {INDEX} --sjdbGTFfile {input.gtf} \
+        --readFilesCommand zcat --readFilesIn {input.reads} \
+        --outFileNamePrefix mapped_reads/{wildcards.sample}. \
+        --outFilterType BySJout \
+        --outMultimapperOrder Random \
+        --outFilterMultimapNmax 200 \
+        --alignSJoverhangMin 8 \
+        --alignSJDBoverhangMin 3 \
+        --outFilterMismatchNmax 999 \
+        --outFilterMismatchNoverReadLmax 0.05 \
+        --alignIntronMin 20 \
+        --alignIntronMax 1000000 \
+        --alignMatesGapMax 1000000 \
+        --outFilterIntronMotifs RemoveNoncanonicalUnannotated \
+        --outSAMstrandField None \
+        --outSAMtype BAM Unsorted \
+        --quantMode GeneCounts \
+        --outReadsUnmapped Fastx \
+        >> {log} 2>&1
 
-            mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam &>> {log}
-            pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*  &>> {log}
-            """
-else:
-    rule STAR_Align:
-        input:
-            index=INDEX+"/SAindex",
-            gtf=GTF,
-            r1="fastq/{sample}.fastq.gz",
-        output:
-            temp("mapped_reads/{sample}.bam"),
-            "mapped_reads/{sample}.Log.final.out"
-        conda:
-            "envs/star.yaml"
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 3000   ,
-        params:
-            reads="fastq/{sample}.fastq.gz",
-        threads:
-            12
-        log:
-            "log/mapped_reads/{sample}.star.log"
-        benchmark:
-            "log/mapped_reads/{sample}.star.benchmark"
-        # envmodules:
-        #     "star/2.7.5a"
-        shell:
-            """
-            # todo: documentation for liberal mode: STAR->featureCounts
-            which STAR > {log};
-            STAR --runThreadN {threads} \
-            --genomeDir {INDEX} \
-            --sjdbGTFfile {input.gtf} \
-            --readFilesCommand zcat \
-            --readFilesIn {params.reads} \
-            --outFileNamePrefix mapped_reads/{wildcards.sample}. \
-            --outFilterType BySJout \
-            --outMultimapperOrder Random \
-            --outFilterMultimapNmax 200 \
-            --alignSJoverhangMin 8 \
-            --alignSJDBoverhangMin 3 \
-            --outFilterMismatchNmax 999 \
-            --outFilterMismatchNoverReadLmax 0.05 \
-            --alignIntronMin 20 \
-            --alignIntronMax 1000000 \
-            --outFilterIntronMotifs RemoveNoncanonicalUnannotated \
-            --outSAMstrandField None \
-            --outSAMtype BAM Unsorted \
-            --quantMode GeneCounts \
-            --outReadsUnmapped Fastx \
-            >> {log} 2>&1
+        mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam &>> {log}
+        pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*  &>> {log}
+        """
 
-            mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam
-            pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*
-            """
-
-rule STAR_Align_multiqc:
+       
+rule STAR_multiqc:
     input:
         expand("mapped_reads/{sample}.Log.final.out", sample=SAMPLES)
     output:
@@ -511,10 +409,8 @@ rule samtools_index:
         "which samtools &> {log};"
         "samtools index -@ {threads} {input} &>> {log}"
 
+
 rule bam_qc:
-    """
-    with samtools
-    """
     input:
         bam="sorted_reads/{sample}.bam",
         bai="sorted_reads/{sample}.bam.bai"
@@ -567,53 +463,31 @@ rule bam_qc_multiqc:
         """
 
 
-# rule QoRTs
-if config['PAIR_END']:
-    rule QoRTs:
-        input:
-            bam="sorted_reads/{sample}.bam",
-            gtf=config['GTF']
-        output:
-            "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
-        conda:
-            "envs/java11.yaml"
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 16500
-        threads:
-            1
-        log:
-            "log/QoRTs/QoRTs.{sample}.log"
-        benchmark:
-            "log/QoRTs/QoRTs.{sample}.benchmark"
-        shell:
-            """
-            which java &> {log}
-            java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC \
-            {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
-            """
-else:
-    rule QoRTs:
-        input:
-            bam="sorted_reads/{sample}.bam",
-            gtf=config['GTF']
-        output:
-            "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
-        conda:
-            "envs/java11.yaml"
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 16500
-        threads:
-            1
-        log:
-            "log/QoRTs/QoRTs.{sample}.log"
-        benchmark:
-            "log/QoRTs/QoRTs.{sample}.benchmark"
-        shell:
-            """
-            which java &> {log}
-            java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC --singleEnded \
-            {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
-            """
+rule QoRTs:
+    input:
+        bam="sorted_reads/{sample}.bam",
+        gtf=config['GTF']
+    output:
+        "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
+    params:
+        pe = ' ' if PAIR_END else '--singleEnded'
+    conda:
+        "envs/java11.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 16500
+    threads:
+        1
+    log:
+        "log/QoRTs/QoRTs.{sample}.log"
+    benchmark:
+        "log/QoRTs/QoRTs.{sample}.benchmark"
+    shell:
+        """
+        which java &> {log}
+
+        java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
+        {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
+        """
 
 
 rule QoRTs_MultiPlot:
@@ -869,6 +743,7 @@ else:
             --num_threads={threads} \
             {input.r1} >> {log} 2>&1
             """
+
 
 rule Merge_TE_and_Gene:
     input:
@@ -1441,19 +1316,6 @@ rule create_dag:
         "which dot &>> {log};"
         "cat dag|dot -Tsvg > {output} 2>> {log}"
 
-
-# rule organize_results:
-#     input:
-#         mapping=expand("mapped_reads/{sample}.bam", sample=config['SAMPLES']),
-#     output:
-#         touch("log/oranize_results.finished")
-#     params:
-#         mem_mb="1000"
-#     log:
-#         "log/organize_results.log"
-#     shell:
-#         "gzip -f mapped_reads/*.Unmapped.out.mate*"
-# 
 
 rule reset:
     shell:
