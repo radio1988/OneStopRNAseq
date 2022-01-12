@@ -1,0 +1,119 @@
+name: gatk # test 
+
+channels:
+  - conda-forge
+  - bioconda
+  - anaconda
+
+dependencies:
+  # - python=3.8.2 # find conflicts if specify python version
+  # - conda=4.9.2
+
+  # conda forge
+  - openjdk=11.0.1 # java for GSEA
+  # R (DESeq2, etc.)
+  - r-base=4.0.2
+  - r-devtools
+  - r-readxl
+  - r-writexls
+  - r-dplyr
+  - r-plyr
+  - r-gdata
+  - r-pheatmap
+  - r-ashr
+  
+  # bioconda
+  - snakemake=5.17.0
+  - star=2.7.7a
+  - samtools=1.9
+  - subread=2.0.0
+  - fastqc=0.11.8
+  - multiqc=1.6
+  - deeptools=3.1.3
+  - pysam=0.16.0.1  # DEXSeq
+  - htseq=0.13.5  # DEXSeq, not working in zhuapp server
+  - hisat2=2.2.1
+  - stringtie=2.1.4
+  - rmats=4.1.0
+  # R
+  - bioconductor-deseq2
+  - bioconductor-enhancedvolcano
+  - r-ggrepel
+
+  # anaconda
+  - xlrd=1.2.0  # for reading excel
+  - graphviz # dot, svg
+  - pigz=2.4
+  - openpyxl # for xlsx2tsv.py
+  - docopt  # for SalmonTE
+  - zip
+
+
+  # R related
+  # conda-forge
+  - r-base=4.0.2
+  - r-readxl
+  - r-writexls
+  - r-dplyr
+  # bioconda 
+  - bioconductor-dexseq 
+  - pandoc=2.11
+  
+  # Others
+  # - cufflinks not in anaconda
+  # - conda install -c bioconda wiggletools 
+
+  # bioconductor
+#  - r-base=4.0.2
+#  - bioconductor-deseq2
+#  - bioconductor-dexseq
+#  - bioconductor-enhancedvolcano
+#  - r-writexls
+#  - r-gdata
+#  - r-readxl
+#  - r-pheatmap
+#  - r-poiclaclu
+#  - r-dplyr
+#  - r-plyr
+#  - r-ashr
+#  # R channel
+#  - r-mass
+#  - r-ggplot2 
+#  - r-rcolorbrewer
+#  - r-gridextra
+#  - r-gridgraphics 
+#  - r-corrplot
+  # Conda forge
+#  - r-biocmanager
+
+# Installation
+# conda env create -n osr -f envs/env.yaml
+# 2020/06/03/17:46
+
+
+# bash
+# conda update conda
+# conda install cmake compilers pybind11 libsolv libarchive libcurl nlohmann_json pip -c conda-forge
+# conda install mamba -c conda-forge
+# conda env list
+# conda env remove -n osr  # optional
+# mamba/conda env create -n osr -f envs/env.yaml
+# mamba/conda env update -n osr -f envs/env.yaml # --prune # optional
+# conda activate osr
+
+# R: put into singularity-conda
+# module purge && module load  R/4.0.0_gcc && module load gcc/8.1.0
+# install.packages("BiocManager")
+# BiocManager::install("DESeq2")
+  # r
+  # - bioconductor-deseq2=1.28.0
+  # - bioconductor-scater=1.16.0
+  # - bioconductor-enhancedvolcano=1.6.0
+  # - r-writexls=4.0.0
+  # - r-gdata=2.18.0
+  # - r-readxl=1.3.1
+  # - r-pheatmap=1.0.12
+  # - r-poiclaclu=1.0.2.1
+  # - r-dplyr=0.8.5
+  # - r-plyr=1.8.6
+  # - r-ashr=2.2-47

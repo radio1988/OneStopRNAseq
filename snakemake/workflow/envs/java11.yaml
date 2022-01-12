@@ -1,0 +1,9 @@
+name: java11
+
+channels:
+  - conda-forge
+
+dependencies:
+  # conda forge
+  - openjdk=11.0.1 # java for GSEA
+ 

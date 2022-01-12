@@ -17,19 +17,20 @@ from osr import read_length
 # named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
 # {sample}.fastq.gz for PE reads
 
-# SnakeMake Coding Notes:
+# Coding Notes:
 # input don't have to be used, just for draw nice DAG
 # 07/10/2019 randomized primary alignment
+# localrules: targets, create_dag
+# priority 0-100, default 0
 
 
 min_version("5.17.0")  # check snakemake version
 configfile: "config.yaml"
-ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc > bamCoverage > feature_count  > samtools_sort > samtools_index > reset
+ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc  > samtools_sort > samtools_index > reset
 container: "docker://continuumio/miniconda3:4.4.10"
 
 # removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
-# localrules: targets, create_dag
-# priority 0-100, default 0
+
 # shell.prefix("""
 #             # - alias does not work, have to use $samstat
 #             # module load star/2.5.3a
@@ -54,6 +55,7 @@ if config["VCF"].endswith(".gz"):
 
 # params
 SAMPLES=config['SAMPLES']
+PAIR_END=config['PAIR_END']
 GENOME=config["GENOME"]
 INDEX=config["INDEX"]
 GTF=config["GTF"]
@@ -63,6 +65,8 @@ MODE=config["MODE"]
 MAX_FDR=config["MAX_FDR"]
 MIN_LFC=config["MIN_LFC"]
 MIN_GENE_COUNT= config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
+CONTRAST_AS = config['CONTRAST_AS']
+META = config['META']
 
 
 # for DESeq2
@@ -82,7 +86,7 @@ CONTRASTS_AS = [l.replace('.','_') for l in CONTRASTS_DE]
 
 # for rMATS
 if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
-    G = get_contrast_groups(config['CONTRAST_AS'])
+    G = get_contrast_groups(CONTRAST_AS)
     #print("\nGRPUPS:\n", G[0], "\nVS\n", G[1])
 
     g2s = get_dict_from_meta(config['META'])
@@ -97,7 +101,7 @@ if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
     # print("B2S:", B2S)
 
     # Get contrast for rMATS
-    df2 = pd.read_excel(config['CONTRAST_AS'], engine='openpyxl')
+    df2 = pd.read_excel(CONTRAST_AS, engine='openpyxl')
     ASCN = df2.shape[1] # alternative splicing contrast count
     #print("ASCN", ASCN)
 else:
@@ -217,7 +221,7 @@ if config["PAIR_END"]:
             r1="fastqc/details/{sample}.R1_fastqc.html", 
             r2="fastqc/details/{sample}.R2_fastqc.html" 
         conda:
-            "envs/env.yaml"
+            "envs/fastqc.yaml"
         priority:
             10
         resources:
@@ -239,6 +243,8 @@ else:
             r1="fastq/{sample}.fastq.gz" 
         output:
             "fastqc/details/{sample}_fastqc.html"
+        conda:
+            "envs/fastqc.yaml"
         priority:
             10
         resources:
@@ -262,6 +268,8 @@ if config["PAIR_END"]:
             r2=expand("fastqc/details/{sample}.R2_fastqc.html", sample=SAMPLES) 
         output:
             "fastqc/multiqc_report.html"
+        conda:
+            "envs/fastqc.yaml"
         priority:
             10
         resources:
@@ -283,6 +291,8 @@ else:
             r2=expand("fastqc/details/{sample}_fastqc.html", sample=SAMPLES), # trick snakemake to skip r2
         output:
             "fastqc/multiqc_report.html"
+        conda:
+            "envs/fastqc.yaml"
         priority:
             10
         resources:
@@ -305,6 +315,8 @@ rule star_idx:
         gtf=GTF,
     output:
         INDEX+"/SAindex"
+    conda:
+        "envs/star.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 6400   
     threads:
@@ -339,6 +351,8 @@ if config['PAIR_END']:
         output:
             log="mapped_reads/{sample}.Log.final.out",
             bam=temp("mapped_reads/{sample}.bam"),
+        conda:
+            "envs/star.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 3000 
         params:
@@ -389,6 +403,8 @@ else:
         output:
             temp("mapped_reads/{sample}.bam"),
             "mapped_reads/{sample}.Log.final.out"
+        conda:
+            "envs/star.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 3000   ,
         params:
@@ -437,6 +453,8 @@ rule STAR_Align_multiqc:
     output:
         expand("bam_qc/STAR_Align_summary/{sample}.Log.final.out", sample=SAMPLES),
         "bam_qc/STAR_Align_summary_multiqc_report.html",    
+    conda:
+        "envs/fastqc.yaml"
     resources:
         mem_mb="2000"
     threads:
@@ -459,6 +477,8 @@ rule samtools_sort:
         "mapped_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam"
+    conda:
+        "envs/samtools.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000 
     threads:
@@ -477,6 +497,8 @@ rule samtools_index:
         "sorted_reads/{sample}.bam"
     output:
         "sorted_reads/{sample}.bam.bai"
+    conda:
+        "envs/samtools.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000
     threads:
@@ -499,6 +521,8 @@ rule bam_qc:
     output:
         stats="bam_qc/stats/{sample}.stats.txt",
         idxstats="bam_qc/idxstats/{sample}.idxstats.txt",
+    conda:
+        "envs/samtools.yaml"
     priority:
         0
     resources:
@@ -518,6 +542,7 @@ rule bam_qc:
         wait
         """
 
+
 rule bam_qc_multiqc:
     input:
         stats=expand("bam_qc/stats/{sample}.stats.txt", sample=SAMPLES),
@@ -525,6 +550,8 @@ rule bam_qc_multiqc:
     output:
         "bam_qc/samtools_stats_multiqc_report.html",    
         "bam_qc/samtools_idxstats_multiqc_report.html",   
+    conda:
+        "envs/fastqc.yaml"
     resources:
         mem_mb="2000"
     threads:
@@ -540,7 +567,6 @@ rule bam_qc_multiqc:
         """
 
 
-
 # rule QoRTs
 if config['PAIR_END']:
     rule QoRTs:
@@ -549,6 +575,8 @@ if config['PAIR_END']:
             gtf=config['GTF']
         output:
             "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
+        conda:
+            "envs/java11.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 16500
         threads:
@@ -570,6 +598,8 @@ else:
             gtf=config['GTF']
         output:
             "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
+        conda:
+            "envs/java11.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 16500
         threads:
@@ -591,6 +621,8 @@ rule QoRTs_MultiPlot:
         expand("bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK", sample=SAMPLES)
     output:
         "bam_qc/QoRTs_MultiPlot/plot-basic.pdf"
+    conda:
+        "envs/qorts.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 8000   ,
     threads:
@@ -613,12 +645,16 @@ rule QoRTs_MultiPlot:
 
 
 rule bamCoverage:
-    # osr
     input:
         bam="sorted_reads/{sample}.bam",
         bai="sorted_reads/{sample}.bam.bai"
     output:
-        "bigWig/{sample}.{mode}.cpm.bw"
+        "bigWig/{sample}.strict.cpm.bw" if MODE == 'strict' else \
+        "bigWig/{sample}.liberal.cpm.bw"
+    params:
+        "--minMappingQuality 20" if MODE == "strict" else " "
+    conda:
+        "envs/deeptools.yaml" 
     threads:
         1
     resources:
@@ -626,40 +662,43 @@ rule bamCoverage:
     priority:
         0
     log:
-        "log/bamCoverage/{sample}.{mode}.bamCoverage.log"
+        "log/bamCoverage/{sample}.bamCoverage.log"
     benchmark:
-        "log/bamCoverage/{sample}.{mode}.bamCoverage.benchmark"
-    # not installed in hand_sandbox yet
-    run:
-        if {wildcards.mode} == "strict":
-            shell("""
-            echo '{output}'
-            which bamCoverage &> {log}
-            bamCoverage --bam {input.bam} \
-            -o  {output} \
-            --numberOfProcessors {threads} \
-            --outFileFormat bigwig --normalizeUsing CPM --binSize 50 \
-            --minMappingQuality 20 &>> {log}
-            """)
-        else:
-            shell("""
-            echo '{output}'
-            which bamCoverage &> {log}
-            bamCoverage --bam {input.bam} \
-            -o  {output} \
-            --numberOfProcessors {threads} \
-            --outFileFormat bigwig --normalizeUsing CPM --binSize 50  &>> {log}
-            """)
+        "log/bamCoverage/{sample}.bamCoverage.benchmark"
+    shell:
+        """
+        which bamCoverage &> {log}
 
+        bamCoverage --bam {input.bam} -o  {output} --numberOfProcessors {threads} \
+        --outFileFormat bigwig --normalizeUsing CPM --binSize 50 \
+        {params} &>> {log}
+        """
 
 
 rule feature_count:
+    '''
+    exon read count
+    recognizes config.yaml: 
+        - MODE: strict, liberal
+        - PAIR_END: True, False
+    '''
     input:
         bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES), # sort by name -> faster
         gtf=GTF
     output:
-        COUNT="feature_count/counts.s{strand}.strict.txt" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt",
-        summary="feature_count/counts.s{strand}.strict.txt.summary" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt.summary",
+        COUNT="feature_count/counts.s{strand}.strict.txt" \
+                if MODE == "strict" else \
+                "feature_count/counts.s{strand}.liberal.txt",
+        summary="feature_count/counts.s{strand}.strict.txt.summary" \
+                if MODE == "strict" else \
+                "feature_count/counts.s{strand}.liberal.txt.summary",
+    params:
+        pe = '-p' if PAIR_END else ' ', 
+        mode = '-Q 20 --minOverlap 1 --fracOverlap 0 -B -C' \
+                if MODE == 'strict' else \
+                '-M -Q 0 --primary --minOverlap 1 --fracOverlap 0'
+    conda:
+        "envs/subread.yaml" 
     priority:
         100
     resources:
@@ -670,119 +709,66 @@ rule feature_count:
         "log/feature_count/counts.s{strand}.log"
     benchmark:
         "log/feature_count/benchmark.s{strand}.benchmark"
-    run:
-        if config["PAIR_END"]:
-            if config["MODE"] == "strict":
-                shell("""
-                which featureCounts &> {log}
-                featureCounts -a {input.gtf} -o {output.COUNT} \
-                -T {threads} \
-                -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 \
-                -p -B -C  \
-                -s {wildcards.strand} \
-                {input.bams} &>> {log}
-                """)
-            elif config["MODE"] == "liberal":
-                shell("""
-                which featureCounts &> {log}
-                featureCounts -a {input.gtf} -o {output.COUNT} \
-                -T {threads} \
-                -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 \
-                -p \
-                -s {wildcards.strand} \
-                {input.bams} &>> {log}
-                """)
-            else:
-                print ("MODE err, not liberal nor strict")
-        else:
-            if config["MODE"] == "strict":
-                shell("""
-                which featureCounts &> {log}
-                featureCounts -a {input.gtf} -o {output.COUNT} \
-                -T {threads} \
-                -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 \
-                -s {wildcards.strand} \
-                {input.bams} &>> {log}
-                """)
-            elif config["MODE"] == "liberal":
-                shell("""
-                which featureCounts &> {log}
-                featureCounts -a {input.gtf} -o {output.COUNT} \
-                -T {threads} \
-                -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 \
-                -s {wildcards.strand} \
-                {input.bams} &>> {log}
-                """)
-            else:
-                print ("MODE err, not liberal nor strict")
+    shell:
+        """
+        which featureCounts &> {log}
+        featureCounts -a {input.gtf} -o {output.COUNT} \
+        -T {threads} -g gene_id -s {wildcards.strand} \
+        {params.pe}  {params.mode} \
+        {input.bams} &>> {log}
+        """
+
 
 if config['INTRON']:
     rule feature_count_gene_level:
+        '''
+        gene read count, including exon and intron reads
+        the larger one of gene-count/exon-count for each gene, is used as gene-count
+        recognizes config.yaml: 
+            - MODE: strict, liberal
+            - PAIR_END: True, False
+        '''
         input:
             bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES), # sort by name -> faster
-            exon_counts="feature_count/counts.s{strand}.strict.txt" if config["MODE"] == "strict" else "feature_count/counts.s{strand}.liberal.txt",
+            exon_counts="feature_count/counts.s{strand}.strict.txt" \
+                            if config["MODE"] == "strict" else \
+                        "feature_count/counts.s{strand}.liberal.txt",
             gtf=GTF
         output:
-            COUNT='feature_count_gene_level/counts.s{strand}.gene_level.strict.txt' if config["MODE"] == "strict" else 'feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt',
-            summary="feature_count_gene_level/counts.s{strand}.gene_level.strict.txt.summary" if config["MODE"] == "strict" else "feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt.summary",
+            count = 'feature_count_gene_level/counts.s{strand}.gene_level.strict.txt' \
+                        if config["MODE"] == "strict" else \
+                    'feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt',
+            summary = 'feature_count_gene_level/counts.s{strand}.gene_level.strict.txt.summary' \
+                        if config["MODE"] == "strict" else \
+                     'feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt.summary',
+        params:
+            pe = '-p -B -C ' if PAIR_END else ' ',
+            mode = '-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
+        conda:
+            "envs/subread.yaml" 
         priority:
-            10
+            0
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000,
         threads:
             4
         log:
-            "log/feature_count_gene_level/counts.s{strand}.gene_level.log"
+            "log/feature_count_gene_level/counts.s{strand}.log"
         benchmark:
-            "log/feature_count_gene_level/benchmark.s{strand}.gene_level.benchmark"
-        run:
-            if config["PAIR_END"]:
-                if config["MODE"] == "strict":
-                    shell("""
-                    echo '>>> Gene-Count mode:' >> {log}
-                    featureCounts -a {input.gtf} -o {output.COUNT} \
-                    -T {threads} -t gene \
-                    -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 \
-                    -p -B -C  \
-                    -s {wildcards.strand} \
-                    {input.bams} &>> {log}
-                    """)
-                elif config["MODE"] == "liberal":
-                    shell("""
-                    echo '>>> Gene-Count mode:' >> {log}
-                    featureCounts -a {input.gtf} -o {output.COUNT} \
-                    -T {threads} -t gene \
-                    -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 \
-                    -p \
-                    -s {wildcards.strand} \
-                    {input.bams} &>> {log}
-                    """)
-                else:
-                    print ("MODE err, not liberal nor strict")
-            else:
-                if config["MODE"] == "strict":
-                    shell("""
-                    echo '>>> Gene-Count mode:' >> {log}
-                    featureCounts -a {input.gtf} -o {output.COUNT} \
-                    -T {threads} -t gene \
-                    -g gene_id -Q 20 --minOverlap 1 --fracOverlap 0 \
-                    -s {wildcards.strand} \
-                    {input.bams} &>> {log}
-                    """)
-                elif config["MODE"] == "liberal":
-                    shell("""
-                    echo '>>> Gene-Count mode:' >> {log}
-                    featureCounts -a {input.gtf} -o {output.COUNT} \
-                    -T {threads} -t gene \
-                    -g gene_id -M --primary -Q 0 --minOverlap 1 --fracOverlap 0 \
-                    -s {wildcards.strand} \
-                    {input.bams} &>> {log}
-                    """)
-                else:
-                    print ("MODE err, not liberal nor strict")
+            "log/feature_count_gene_level/benchmark.s{strand}.benchmark"
+        shell:
+            """
+            # gene level count
+            featureCounts -a {input.gtf} -o {output.count} -T {threads} \
+            -t gene -g gene_id -s {wildcards.strand} \
+            --minOverlap 1 --fracOverlap 0 \
+            {params.pe} {params.mode} \
+            {input.bams} &>> {log}
 
-            shell("python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.COUNT}")
-
+            # get larger count (exon vs gene) for each gene
+            python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.count}  
+            """
+            
 
 rule strand_detection:
     input:
@@ -834,6 +820,8 @@ if config['PAIR_END']:
             r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
         output:
             "SalmonTE_output/EXPR.csv"
+        conda:
+            "envs/salmonte.yaml"  # test
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 1000,
         params:
@@ -860,6 +848,8 @@ else:
             r1=expand("fastq/{sample}.fastq.gz", sample=SAMPLES),
         output:
             "SalmonTE_output/EXPR.csv"
+        conda:
+            "envs/salmonte.yaml"  # test
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 1000,
         params:
@@ -910,11 +900,13 @@ rule DESeq2:
 # todo: use softlinked workflow/script/DESeq2.rmd, use softlinked example_data/ at COUNT-START
     input:
         cnt=DESeq2_input(config),
-        meta=config["META"],
+        meta=META,
         contrast=config["CONTRAST_DE"],
     output:
         "DESeq2/DESeq2.html",
         expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
+    conda:
+        "envs/deseq2.yaml"  # test
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     params:
@@ -969,6 +961,8 @@ rule GSEA:
         db="meta/gsea_db/{db}",
     output:
         "gsea/{fname}/{db}.GseaPreranked/index.html"
+    conda:
+        "envs/java11.yaml"  # test
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 12000,
     params:
@@ -1185,12 +1179,14 @@ rule prep_count:
 rule DEXSeq:
     input:
         count_files = expand("DEXSeq_count/{sample}_count.txt", sample = SAMPLES),
-        meta=config["META"],
-        contrast=config["CONTRAST_AS"],
+        meta=META,
+        contrast=CONTRAST_AS,
         gffFile=config['GTF']+".dexseq.gff",
         strandness="meta/strandness.detected.txt"
     output:
         "DEXSeq/contrast{ascn}/contrast{ascn}.RData"
+    conda:
+        "envs/dexseq.yaml"  # test
     resources:
          mem_mb=lambda wildcards, attempt: attempt * 3000
     threads:
@@ -1217,6 +1213,8 @@ rule genome_faidx:
         config['GENOME']
     output:
         config['GENOME']+'.fai'
+    conda:
+        "envs/samtools.yaml"  # test
     resources:
         mem_mb=lambda wildcards, attempt: attempt *4000
     threads:
@@ -1234,6 +1232,8 @@ rule GATK_CreateSequenceDictionary:
         re.sub( "fa$", "dict", config['GENOME'])
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 16000
+    conda:
+        "envs/gatk.yaml"  # test
     envmodules:
         "java/1.8.0_171"
     threads:
@@ -1255,6 +1255,8 @@ rule GATK_ASEReadCounter:
         vcf=config['VCF']
     output:
         table="GATK_ASEReadCounter/{sample}.table"
+    conda:
+        "envs/gatk.yaml"  # test
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 16000
     envmodules:
@@ -1292,6 +1294,8 @@ rule hisat2_build:
         exon=config['GTF']+"exon",
         index=config['GENOME'] + ".1.ht2",
         flag=touch(config['GENOME'] + '.hisat2_build.finished')
+    conda:
+        "envs/hisat2.yaml" 
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 24000
     threads:
@@ -1323,6 +1327,8 @@ if config['PAIR_END']:
         output:
             bam="hisat2/{sample}.bam",
             bai="hisat2/{sample}.bam.bai"
+        conda:
+            "envs/hisat2.yaml" 
         params:
             strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt")
         resources:
@@ -1350,6 +1356,8 @@ else:
         output:
             bam="hisat2/{sample}.bam",
             bai="hisat2/{sample}.bam.bai"
+        conda:
+            "envs/hisat2.yaml" 
         params:
             strand=get_strandness_for_hisat2_SE("meta/strandness.detected.txt")
         resources:
@@ -1378,6 +1386,8 @@ rule stringtie:  # todo: group level
         strandness='meta/strandness.detected.txt'
     output:
         "stringtie/{sample}.stringtie.gtf"
+    conda:
+        "envs/stringtie.yaml" 
     params:
         strand=get_strandness_for_stringtie('meta/strandness.detected.txt')
     resources:
@@ -1399,6 +1409,8 @@ rule stringtie_merge:
         gtf=config['GTF']
     output:
         "stringtie/stringtie.merged.gtf"
+    conda:
+        "envs/stringtie.yaml" 
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:

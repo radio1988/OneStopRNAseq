@@ -1,0 +1,18 @@
+name: qorts 
+
+channels:
+  - conda-forge
+  - bioconda
+  - anaconda
+
+dependencies:
+  # bioconda
+  - r-base=4.0
+  - qorts
+  - bioconductor-deseq2
+
+  # anaconda
+  - xlrd=1.2.0  # for reading excel
+  - openpyxl # for xlsx2tsv.py
+  - zip
+  - pandas

@@ -7,9 +7,8 @@
 - install anaconda by following instructions on https://docs.anaconda.com/anaconda/install/  (installation tested in conda version 4.9.2)
 - download OneStopRNASeq by `git clone https://github.com/radio1988/OneStopRNAseq.git`
 - `cd OneStopRNAseq/snakemake`
-- `conda env create -n osr -f workflow/envs/env.yaml`  # create an conda env called 'osr'
-- `conda activate osr`
--`Rscript -e "install.packages( c('BiocManager', 'PoiClaClu', 'rmarkdown', 'gridExtra'), repos='https://cloud.r-project.org')"`  # install packages for DESeq2
+- `conda env create -f workflow/envs/osr-base.yaml`  # create an conda env called 'osr-base'
+- `conda activate osr-base`
 - `Rscript -e 'install.packages("http://hartleys.github.io/QoRTs/QoRTs_STABLE.tar.gz", repos=NULL, type="source");'` # install packages for QoRTs
 - uncompress example dataset
     - `gunzip example_data/genome/mm10_chr19/mm10.chr19.fa.gz` 

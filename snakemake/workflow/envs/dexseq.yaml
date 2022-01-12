@@ -3,6 +3,7 @@ name: dexseq
 channels:
   - conda-forge
   - bioconda
+  - anaconda
 
 dependencies:
   # conda-forge
@@ -13,3 +14,6 @@ dependencies:
 
   # bioconda 
   - bioconductor-dexseq 
+
+  # anaconda
+  - zip

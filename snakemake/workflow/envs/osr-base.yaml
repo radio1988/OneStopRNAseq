@@ -1,0 +1,31 @@
+name: osr-base
+# min set for OSR workflow to run
+# installation cmd:
+# mamba env create -f base.yaml # faster, require install mamba
+# conda env create -f base.yaml # slower, only conda installation required
+
+channels:
+  - conda-forge
+  - bioconda
+  - anaconda
+
+dependencies:
+  - python=3.8.2 # find conflicts if specify python version?
+  - conda=4.9.2
+
+  # conda-forge
+  - mamba
+
+  
+  # bioconda
+  - snakemake=5.17.0
+  - samtools=1.9
+  - pysam=0.16.0.1  # DEXSeq
+  
+  # anaconda
+  - xlrd=1.2.0  # for reading excel
+  - graphviz # dot, svg
+  - pigz=2.4
+  - openpyxl # for xlsx2tsv.py
+  - zip
+  - pytest-shutil 

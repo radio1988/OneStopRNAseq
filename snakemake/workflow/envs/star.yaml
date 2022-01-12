@@ -1,0 +1,13 @@
+name: star 
+
+channels:
+  - bioconda
+  - anaconda
+
+
+dependencies:
+  - star=2.7.7a
+  #- samtools=1.9
+  - pigz=2.4  # anaconda
+
+
