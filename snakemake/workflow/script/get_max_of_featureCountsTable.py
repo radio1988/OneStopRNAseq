@@ -23,4 +23,3 @@ tab1.iloc[:, 7:] = tab1.iloc[:, 7:].where(~larger_exon_counts_idx, tab0.iloc[:, 
 
 print("replacing gene_count with max(gene_count, exon_count)")
 tab1.to_csv(file1, sep="\t", index=False)
-#larger_exon_counts_idx.to_csv("temp.csv")

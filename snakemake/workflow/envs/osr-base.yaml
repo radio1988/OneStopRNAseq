@@ -10,22 +10,21 @@ channels:
   - anaconda
 
 dependencies:
-  - python=3.8.2 # find conflicts if specify python version?
+  - python=3.8.2
   - conda=4.9.2
 
   # conda-forge
   - mamba
-
   
   # bioconda
-  - snakemake=5.17.0
+  - snakemake
   - samtools=1.9
-  - pysam=0.16.0.1  # DEXSeq
+  - pysam=0.16
   
   # anaconda
   - xlrd=1.2.0  # for reading excel
   - graphviz # dot, svg
-  - pigz=2.4
   - openpyxl # for xlsx2tsv.py
+  #- pytest-shutil # test
+  - pigz=2.4
   - zip
-  - pytest-shutil 

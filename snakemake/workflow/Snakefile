@@ -1,16 +1,11 @@
 import pandas as pd
-import sys
-import re
-import os
-import math
-import shutil
+import sys, re, os, math
 from snakemake.utils import min_version
-from osr import gunzip
+from osr import gunzip, read_length
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2
 from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
 get_strandness_for_hisat2_SE, get_strandness_for_stringtie
-from osr import read_length
 
 ###  Usage Requirements  ###
 # inputs in ./fastq/
@@ -26,17 +21,7 @@ from osr import read_length
 
 min_version("5.17.0")  # check snakemake version
 configfile: "config.yaml"
-#ruleorder: create_dag > DESeq2 > GSEA  > rMATS > FastQC > bam_qc  > samtools_sort > samtools_index > reset
 container: "docker://continuumio/miniconda3:4.4.10"
-
-# removed gloabal singularity so that can use --use-singularity and --use-conda at the same time
-
-# shell.prefix("""
-#             # - alias does not work, have to use $samstat
-#             # module load star/2.5.3a
-#             # module load singularity/singularity-current
-#             # conda activate osr  # have to create conda env osr first
-#             """)
 
 
 # umcompress files (todo: make it a rule)
@@ -53,7 +38,7 @@ if config["VCF"].endswith(".gz"):
     config["VCF"] = re.sub(".gz$", "", config["VCF"])
 
 
-# params
+# params todo: check yaml format
 SAMPLES=config['SAMPLES']
 PAIR_END=config['PAIR_END']
 GENOME=config["GENOME"]
@@ -110,10 +95,6 @@ else:
     B2 = B1
     B2S = B1S
     ASCN = 0
-
-
-
-
 
 
 
@@ -640,7 +621,7 @@ if config['INTRON']:
             {input.bams} &>> {log}
 
             # get larger count (exon vs gene) for each gene
-            python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.count}  
+            python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.ct}  
             """
             
 
@@ -1007,6 +988,8 @@ rule prep_count:
         gff=DEXSeq_GFF
     output:
         "DEXSeq_count/{sample}_count.txt"
+    conda:
+        "envs/bioconda_misc.yaml"
     params:
         strand=get_strandness_for_dexseq('meta/strandness.detected.txt'),
         readType=('-p yes -r pos'

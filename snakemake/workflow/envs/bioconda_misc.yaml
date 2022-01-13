@@ -1,0 +1,9 @@
+name: bioconda_misc
+# rule dexseq_prep
+
+channels:
+  - bioconda
+
+dependencies:
+  - pysam=0.17
+  - htseq=1.99
