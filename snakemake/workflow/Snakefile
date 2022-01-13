@@ -216,6 +216,7 @@ rule FastQC:
         "fastq/{sample}.fastq.gz" 
     output:
         ["fastqc/details/{sample}.R1_fastqc.html", "fastqc/details/{sample}.R2_fastqc.html"] if PAIR_END else \
+        "fastqc/details/{sample}_fastqc.html",
         ["fastqc/details/{sample}.R1_fastqc.zip", "fastqc/details/{sample}.R2_fastqc.zip"] if PAIR_END else \
         "fastqc/details/{sample}_fastqc.zip"
     conda:
@@ -608,7 +609,7 @@ if config['INTRON']:
                         "feature_count/counts.s{strand}.liberal.txt",
             gtf=GTF
         output:
-            count = 'feature_count_gene_level/counts.s{strand}.gene_level.strict.txt' \
+            ct = 'feature_count_gene_level/counts.s{strand}.gene_level.strict.txt' \
                         if config["MODE"] == "strict" else \
                     'feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt',
             summary = 'feature_count_gene_level/counts.s{strand}.gene_level.strict.txt.summary' \
@@ -632,7 +633,7 @@ if config['INTRON']:
         shell:
             """
             # gene level count
-            featureCounts -a {input.gtf} -o {output.count} -T {threads} \
+            featureCounts -a {input.gtf} -o {output.ct} -T {threads} \
             -t gene -g gene_id -s {wildcards.strand} \
             --minOverlap 1 --fracOverlap 0 \
             {params.pe} {params.mode} \
