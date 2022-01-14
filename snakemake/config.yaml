@@ -72,6 +72,7 @@ META: meta/meta.xlsx
 CONTRAST_DE: meta/contrast.de.xlsx
 cooksCutoff: 'TRUE'
 independentFilter: 'FALSE'
+blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlier, e.g. KO_D0_1_S2, excluded in DESeq2 analysis only, optional
 
 
 # GSEA

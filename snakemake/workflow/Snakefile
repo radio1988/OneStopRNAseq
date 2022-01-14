@@ -744,6 +744,7 @@ rule DESeq2:
         lfc=MIN_LFC,
         independentFilter=config["independentFilter"],
         cooksCutoff=config["cooksCutoff"],
+        blackSamples=config['blackSamples'] if 'blackSamples' in config else "", 
         anno_tab=ANNO_TAB,
         o="'DESeq2.html'"
     priority: 
@@ -757,15 +758,19 @@ rule DESeq2:
     shell:
         #Rscript -e rmarkdown::render({params.rmd})
         'cp workflow/script/DESeq2.Rmd DESeq2; '
-        'Rscript -e "rmarkdown::render({params.rmd}, \
-        params=list(max_fdr={params.fdr}, \
-        min_lfc={params.lfc}, \
-        cookscutoff={params.cooksCutoff}, \
-        indfilter={params.independentFilter}, \
-        countFile=\'../{input.cnt}\', \
-        annoFile=\'{params.anno_tab}\', \
-        metaFile=\'../{input.meta}\', \
-        contrastFile=\'../{input.contrast}\'           ), \
+        'Rscript -e "rmarkdown::render( \
+        {params.rmd}, \
+        params=list( \
+            max_fdr={params.fdr}, \
+            min_lfc={params.lfc}, \
+            cookscutoff={params.cooksCutoff}, \
+            indfilter={params.independentFilter}, \
+            countFile=\'../{input.cnt}\', \
+            annoFile=\'{params.anno_tab}\', \
+            metaFile=\'../{input.meta}\', \
+            contrastFile=\'../{input.contrast}\', \
+            blackSamples=\'{params.blackSamples}\' \
+            ), \
         output_file={params.o})" > {log} 2>&1 ;'
         'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};'
 
