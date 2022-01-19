@@ -442,7 +442,7 @@ meta.df <- meta.df[!(meta.df[, 1] %in% blackSamples), ]
 paste('countFile:', countFile)
 if (grepl("txt$", countFile)){
   df <- read.table(countFile, 
-                   sep="\t", header=TRUE, comment.char = '#', 
+                   sep="\t", header=TRUE, comment.char = '#', quote="",
                    row.names = 1) # row.name in cts(matrix)
 } else if (grepl("xlsx$", countFile)){
   df <- readExcel(countFile)  
@@ -522,7 +522,7 @@ print(dim(cts))
 getAnnotation <- function(urlpath) {
   tmp <- tempfile()
   download.file(urlpath, destfile = tmp, method = 'auto')
-  return(read.table(tmp, sep="\t", header = TRUE))
+  return(read.table(tmp, sep="\t", header = TRUE, quote=""))
 }
 
 paste("Getting data from", annoFile)
@@ -532,7 +532,7 @@ if (grepl('https://', annoFile)){
   anno <- getAnnotation(annoFile)
 }else{
   print("reading local annoFile")
-  anno <- read.table(annoFile, sep = "\t", header = T)
+  anno <- read.table(annoFile, sep = "\t", header = T, quote="")
 }
 anno <- anno[!duplicated(anno[1]), ] # assume first column is Gene ID
 print("Dimention of annotation table: ")
