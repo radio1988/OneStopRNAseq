@@ -2410,7 +2410,7 @@ YIL149C	 MLP2	protein_coding
 YIL150C	 MCM10	protein_coding
 YIL151C	 ESL1	protein_coding
 YIL153W	 RRD1	protein_coding
-YIL154C	 IMP2'	protein_coding
+YIL154C	 IMP21	protein_coding
 YIL155C	 GUT2	protein_coding
 YIL156W	 UBP7	protein_coding
 YIL157C	 COA1	protein_coding
