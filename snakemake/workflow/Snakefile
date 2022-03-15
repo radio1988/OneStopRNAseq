@@ -798,7 +798,7 @@ rule GSEA:
     conda:
         "envs/java11.yaml"  # test
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 12000,
+        mem_mb=lambda wildcards, attempt: attempt * 24000,
     params:
         #svg=config["GSEA_PLOT_SVG"] if config["GSEA_NPLOTS"] <= 200 else False,  # no svg if nplots > 200 (to save time and space) # todo: move this to front end, when making workflow portable
         svg=config["GSEA_PLOT_SVG"],
