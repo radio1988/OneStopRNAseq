@@ -24,6 +24,7 @@ params:
 - Please use LFC_shrunken for Log2FoldChange, LFC_raw is not recommended
 - Please use FDR (padj) instead of raw p-values for identifying significantly differentially expressed genes.
 - blackSamples added in params
+- manual dispersion estimation when DESeq() fails
 
 
 ```{r setup, include=F}
@@ -46,6 +47,10 @@ library(pheatmap) #
 library(PoiClaClu) # 
 library(gridExtra) # 
 library(grid)
+if(!require(berryFunctions)){
+    install.packages("berryFunctions", repos = "http://cran.us.r-project.org")
+    library(berryFunctions)
+}
 # library(corrplot) 
 
 #dir.create("./rnk", showWarnings = FALSE)
@@ -678,7 +683,13 @@ if (length(levels(batch)) > 1){
                                 design = ~  0 + group)  # converted to alph-order
 }
 dds
-dds <-DESeq(dds)
+if (is.error(dds <-DESeq(dds))){
+  cat("using manual dispersion estimation")
+  dds <- estimateSizeFactors(dds)
+  dds <- estimateDispersionsGeneEst(dds)
+  dispersions(dds) <- mcols(dds)$dispGeneEst
+  dds <- nbinomWaldTest(dds)
+}
 resultsNames(dds)
 #saveRDS(dds, file = 'deseq2.dds.rds')
 ```
