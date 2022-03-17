@@ -1,5 +1,12 @@
 # OneStopRNAseq
 
+This is the tracking site (questions & versions) for [OneStopRNAseq](https://mccb.umassmed.edu/OneStopRNAseq/).
+
+To view **previous questions**, click [here](https://github.com/radio1988/OneStopRNAseq/issues?q=is%3Aissue+is%3Aclosed).
+
+To ask **new questions**, click [here](https://github.com/radio1988/OneStopRNAseq/issues/new).
+
+
 <details markdown="1">
 <summary>Update: V.1.0.1 (2022/03/17)</summary>
 
