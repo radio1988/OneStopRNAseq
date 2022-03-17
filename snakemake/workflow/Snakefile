@@ -513,7 +513,7 @@ rule bamCoverage:
     threads:
         4
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 5000,
+        mem_mb=lambda wildcards, attempt: attempt * 4000,
     priority:
         0
     log:

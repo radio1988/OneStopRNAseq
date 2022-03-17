@@ -1,8 +1,8 @@
 name: osr-base
 # min set for OSR workflow to run
 # installation cmd:
-# mamba env create -f base.yaml # faster, require install mamba
-# conda env create -f base.yaml # slower, only conda installation required
+# mamba env create -f osr-base.yaml # faster, require install mamba
+# conda env create -f osr-base.yaml # slower, only conda installation required
 
 channels:
   - conda-forge
@@ -17,7 +17,7 @@ dependencies:
   - mamba
   
   # bioconda
-  - snakemake
+  - snakemake=7.2.1
   - samtools=1.9
   - pysam=0.16
   
