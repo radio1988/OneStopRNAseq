@@ -1,7 +1,7 @@
 #!/bin/bash
+# for LSF system only
 # bsub -q long -W 144:00 -R rusage[mem=4000]  -R select[rh=8] 'bash submit.sh'
 
-module purge
 rm -f lsf.log
 source activate osr-base > workflow.log  2>&1 
 
