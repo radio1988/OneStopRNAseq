@@ -1,5 +1,6 @@
 # Easy RNAseq Analysis with *oneStopRNAseq*
 - This is the backend of https://mccb.umassmed.edu/OneStopRNAseq/index.php
+- Citation: Li R, Hu K, Liu H, Green MR, Zhu LJ. OneStopRNAseq: A Web Application for Comprehensive and Efficient Analyses of RNA-Seq Data. Genes (Basel). 2020 Oct 2;11(10):1165. doi: 10.3390/genes11101165. PMID: 33023248; PMCID: PMC7650687.
 - Can be installed on Linux systems (tested on Ubuntu and CentOS, did not test on other flavors of Linux, not working on Mac yet)
 - Would need knowledge in basic bash commands to use this workflow
 
@@ -17,6 +18,7 @@
 
 # Running OneStopRNASeq workflow on example datasets
 ## Start from FASTQ as input
+### Preparations
 ```
 mkdir fq_analysis && cd fq_analysis # create workdir
 osr_path=$download_path/OneStopRNASeq/snakemake  # this is user specific, e.g. /home/user/git/OneStopRNAseq/snakemake
@@ -30,8 +32,11 @@ ln -s $osr_path/workflow/envs
 ln -s $osr_path/workflow/Snakefile
 ln -s $osr_path/workflow/osr.py
 rsync  -a $osr_path/workflow/script ./
+```
+### Running workflow
+```
 snakemake -j 1 -np   # quick test with a 'dry-run'
-snakemake -j 2 -pk  # run the workflow on the example datase with two threads, takes around 30 min for the first run
+snakemake -j 2 -pk  --use-conda --conda-prefix ~/anaconda3/envs --ri # automatically download packages needed for the workflow, run the workflow on the example datase with two threads, takes around 30 min for the first run
 ```
 
 # Quick start on snakemake advanced usage:
