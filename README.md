@@ -1,5 +1,13 @@
 # OneStopRNAseq
-
+<br>
+Website for submitting analysis jobs: https://mccb.umassmed.edu/OneStopRNAseq/index.php<br>
+Citation: Li R, Hu K, Liu H, Green MR, Zhu LJ. OneStopRNAseq: A Web Application for Comprehensive and Efficient Analyses of RNA-Seq Data. Genes (Basel). 2020 Oct 2;11(10):1165. doi: 10.3390/genes11101165. PMID: 33023248; PMCID: PMC7650687.<br>
+<br>
+`frontend` folder contains website Q&A for online users
+<br> 
+`snakemake` folder contains info for installing OneStopRNASeq locally and run it on your Linux computer<br>
+<br>
+<br>
 <details markdown="1">
 <summary>Update: V.1.0.1 (2022/03/17)</summary>
 
