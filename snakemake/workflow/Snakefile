@@ -347,7 +347,7 @@ rule STAR_multiqc:
         mkdir -p bam_qc/STAR_Align_summary/
         cp {input} bam_qc/STAR_Align_summary/
 
-        multiqc {input} -f --outdir bam_qc --title STAR_Align_summary
+        multiqc {input} -f --outdir bam_qc --title STAR_Align_summary &> {log}
         """
 
 
@@ -440,7 +440,7 @@ rule bam_qc_multiqc:
     shell:
         """
         multiqc {input.stats} -f --outdir bam_qc --title samtools_stats &> {log}
-        multiqc {input.idxstats} -f --outdir bam_qc --title samtools_idxstats &> {log}
+        multiqc {input.idxstats} -f --outdir bam_qc --title samtools_idxstats &>> {log}
         """
 
 
