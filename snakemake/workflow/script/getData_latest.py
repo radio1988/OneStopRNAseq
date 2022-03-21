@@ -9,7 +9,7 @@ import time
 import os
 import subprocess
 from datetime import datetime
-
+from os.path import exists
 
 srx = sys.argv[1]
 sampleName = sys.argv[2]
@@ -23,6 +23,7 @@ efetchResFile = fastq_folder + "/efetch_res_" + srx + ".txt"
 logFile       = fastq_folder + "/getData_log_" + srx + ".txt"
 
 cmd = "bsub -q short -n 1 -W 0:10 -R rusage[mem=500] -o " + efetchLogFile + " \"esearch -db sra -query " + srx + " | efetch -format runinfo | awk 'NR%2==0' | cut -d ',' -f 1 > " + efetchResFile + "\""
+cmd = "bsub -q short -n 1 -W 0:10 -R rusage[mem=500] -o " + efetchLogFile + " \"esearch -db sra -query " + srx + " | efetch -format runinfo | awk 'NR!=1' | cut -d ',' -f 1 | head -n -1 > " + efetchResFile + "\""
 with open(logFile, "a") as f:
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -69,7 +70,9 @@ while (efetchDone == 0):
     if efetchLogComplete and not efetchError:
         if os.path.exists(efetchResFile):
             time.sleep(1) # make sure efetchResFile finishes saving to disk
-            if not os.stat(efetchResFile).st_size: # if file empty:
+            efetchResFileContentList = [line for line in open(efetchResFile)] # keep a copy of efetchResFile so it won't be overwritten.
+            # if not os.stat(efetchResFile).st_size: # if file empty:
+            if len(efetchResFileContentList) < 1:
                 with open(logFile, "a") as f:
                     now = datetime.now()
                     current_time = now.strftime("%H:%M:%S")
@@ -91,7 +94,8 @@ while (efetchDone == 0):
             f.write(current_time + " efetch resubmit code is: " + str(resubmit) + ", now resubmitting efetch job.\n")
             subprocess.call(cmd, shell=True)
 
-    timer = timer + 10
+    if os.path.exists(efetchLogFile): # Start timer only when log file exists meaning that bsub job starts executing
+        timer = timer + 10
     time.sleep(10)
 
     if timer // gap_efetch: # resubmit the job every 3000 seconds in case of the ssh jobs queue error.
@@ -112,7 +116,7 @@ while (efetchDone == 0):
             exit()
 
 
-srrList = [line.strip() for line in open(efetchResFile)]
+srrList = [line.strip() for line in efetchResFileContentList]
 srrList = [x for x in srrList if not x == ""]
 
 srrFile = " ".join(srrList)
@@ -131,14 +135,19 @@ for srr in srrList:
     prefetchLogFile = fastq_folder + "/prefetch_log_" + srx + "_" + srr + ".txt"
     prefetchSraFile = fastq_folder + "/" + srr + ".sra"
     # jobCheckFile = fastq_folder + "/job_prefetch_" + srx + "_" + srr + ".txt"
-    cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=500] -o " + prefetchLogFile + " \"prefetch -O " + fastq_folder + "/ " + srr + "\""
+    cmd_clearPrefetchLogFile  = "rm " + prefetchLogFile # Clear potential log file before submit new job
+    cmd_clearPrefetchPrevious = "rm " + fastq_folder + "/" + srr + ".sra*" # get rid of srx.sra* files otherwise may prevent new prefetch from executing.
+    cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=500] -o " + prefetchLogFile + " \"prefetch -f yes --max-size 50GB -O " + fastq_folder + "/ " + srr + "\""
 
     with open(logFile, "a") as f:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         f.write(current_time + " CMD prefetch: \n")
         f.write(cmd + "\n")
+    subprocess.call(cmd_clearPrefetchLogFile, shell=True)
+    subprocess.call(cmd_clearPrefetchPrevious, shell=True)
     subprocess.call(cmd, shell=True)
+
 
     prefetchDone = 0
     timer = 0
@@ -149,6 +158,10 @@ for srr in srrList:
         resubmit = 0
 
         if os.path.exists(prefetchLogFile):
+            with open(logFile, "a") as f:
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                f.write(current_time + " prefetch " + prefetchLogFile + " exists.\n")
             for line in open(prefetchLogFile):
                 if "The output (if any) is above this job summary." in line:
                     prefetchLogComplete = 1
@@ -159,15 +172,18 @@ for srr in srrList:
                     # since we also check the res file, so the below check of the log file is redundant
                     for line in open(prefetchLogFile):
                         if "Successfully completed." in line:
+                            with open(logFile, "a") as f:
+                                now = datetime.now()
+                                current_time = now.strftime("%H:%M:%S")
+                                f.write(current_time + " prefetch " + prefetchLogFile + " log file successfully completed.\n")
                             prefetchError = 0
                             break
                     if prefetchError == 1:
                         with open(logFile, "a") as f:
                             now = datetime.now()
                             current_time = now.strftime("%H:%M:%S")
-                            f.write(current_time + " prefetch " + prefetchLogFile + " didn't finish successfully, need to resubmit job.")
+                            f.write(current_time + " prefetch " + prefetchLogFile + " didn't finish successfully, need to resubmit job.\n")
                             resubmit = resubmit + 1
-                            f.write("\n")
                         break
 
         if prefetchLogComplete and not prefetchError:
@@ -182,36 +198,43 @@ for srr in srrList:
                     current_time = now.strftime("%H:%M:%S")
                     f.write(current_time + " prefetch " + prefetchSraFile + " complete. Move on.\n")
 
-            if resubmit: # only resubmit once if job fails
+        if resubmit: # only resubmit once if job fails
+            #os.remove(prefetchLogFile)
+            with open(logFile, "a") as f:
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                f.write(current_time + " prefetch resubmit code is: " + str(resubmit) + ", now resubmitting prefetch job.\n")
+                cmd_clearPrefetchLogFile  = "rm " + prefetchLogFile # Clear potential log file before submit new job
+                cmd_clearPrefetchPrevious = "rm " + fastq_folder + "/" + srr + ".sra*" # get rid of srx.sra* files otherwise prefetch complians
+                cmd_clearPrefetchFolder = "rm -r " + fastq_folder + "/" + srr # Occasionally, there will be a lingering SRR folder that prevent future prefetch downloading.
+
+                subprocess.call(cmd_clearPrefetchLogFile, shell=True)
+                subprocess.call(cmd_clearPrefetchPrevious, shell=True)
+                subprocess.call(cmd_clearPrefetchFolder, shell=True)
+                subprocess.call(cmd, shell=True)
+        if os.path.exists(prefetchLogFile):
+            timer = timer + 300
+        time.sleep(60)
+
+        if timer // gap_prefetch and not resubmit: # resubmit the job every 9000 seconds in case of the ssh jobs queue error.
+            gap_prefetch = gap_prefetch + gap_prefetch
+            with open(logFile, "a") as f:
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                f.write(current_time + " prefetch job reach 9000-second limit, resubmit job to hpc.\n")
                 os.remove(prefetchLogFile)
-                with open(logFile, "a") as f:
-                    now = datetime.now()
-                    current_time = now.strftime("%H:%M:%S")
-                    f.write(current_time + " prefetch resubmit code is: " + str(resubmit) + ", now resubmitting prefetch job.\n")
-                    subprocess.call(cmd, shell=True)
+                subprocess.call(cmd, shell=True)
 
-            timer = timer + 10
-            time.sleep(10)
-
-            if timer // gap_prefetch and not resubmit: # resubmit the job every 9000 seconds in case of the ssh jobs queue error.
-                gap_prefetch = gap_prefetch + gap_prefetch
-                with open(logFile, "a") as f:
-                    now = datetime.now()
-                    current_time = now.strftime("%H:%M:%S")
-                    f.write(current_time + " prefetch job reach 9000-second limit, resubmit job to hpc.\n")
-                    os.remove(prefetchLogFile)
-                    subprocess.call(cmd, shell=True)
-
-            if timer > 27000:
-                with open(logFile, "a") as f:
-                    now = datetime.now()
-                    current_time = now.strftime("%H:%M:%S")
-                    f.write(current_time + " ERROR: prefetch job time out.")
-                    f.write("\n")
-                    exit()
+        if timer > 27000:
+            with open(logFile, "a") as f:
+                now = datetime.now()
+                current_time = now.strftime("%H:%M:%S")
+                f.write(current_time + " ERROR: prefetch job time out.")
+                f.write("\n")
+                exit()
 
     # Check md5 with vdb-validate command:
-    cmd = "cd " + fastq_folder + " && bsub -q short -n 1 -W 0:30 -R rusage[mem=1000] -o " + fastq_folder + "/md5_" + srr + ".log.txt" + " vdb-validate " + srr + ".sra"
+    cmd = "cd " + fastq_folder + " && bsub -q short -n 1 -W 4:00 -R rusage[mem=10000] -o " + fastq_folder + "/md5_" + srr + ".log.txt" + " vdb-validate " + srr + ".sra"
     md5LogFile = fastq_folder + "/md5_" + srr + ".log.txt"
     # Check md5 check result:
     if os.path.exists(md5LogFile):
@@ -275,9 +298,6 @@ for srr in srrList:
                     f.write(current_time + " md5check resubmit code is: " + str(resubmit) + ", now resubmitting md5check job.\n")
                     subprocess.call(cmd, shell=True)
 
-            timer = timer + 10
-            time.sleep(10)
-
             if timer // gap_md5check and not resubmit: # resubmit the job every 9000 seconds in case of the ssh jobs queue error.
                 gap_md5check = gap_md5check + gap_md5check
                 with open(logFile, "a") as f:
@@ -294,7 +314,8 @@ for srr in srrList:
                     f.write(current_time + " ERROR: md5check job time out.\n")
                     exit()
 
-        timer = timer + 10
+        if os.path.exists(md5LogFile):
+            timer = timer + 10
         time.sleep(10)
 
         if timer // gap_md5check and not resubmit: # resubmit the job every 1000 seconds in case of the ssh jobs queue error.
@@ -314,7 +335,18 @@ for srr in srrList:
                 exit()
 
     # fastq-dump srr into fastq.gz files:
-    cmd = "cd " + fastq_folder + " && bsub -q short -n 1 -W 4:00 -R rusage[mem=1000] -o " + fastq_folder + "/fastq_dump_" + srr + ".log.txt" + " parallel-fastq-dump -s " + srr + ".sra -t 1 -O ./ --tmpdir ./ --split-files --gzip"
+    # In case sra files saved under SRRXXX folder, move them out first:
+    sra_tem = fastq_folder + "/" + srr + "/" + srr + ".sra"
+    if exists(sra_tem):
+        cmd_mv = "mv " + sra_tem + " " + fastq_folder
+        with open(logFile, "a") as f:
+            now = datetime.now()
+            current_time = now.strftime("%H:%M:%S")
+            f.write(current_time + " CMD: mv sra")
+            f.write(cmd_mv + "\n")
+        subprocess.call(cmd_mv, shell = True)
+
+    cmd = "cd " + fastq_folder + " && bsub -q short -n 1 -W 4:00 -R rusage[mem=10000] -o " + fastq_folder + "/fastq_dump_" + srr + ".log.txt" + " parallel-fastq-dump -s " + srr + ".sra -t 1 -O ./ --tmpdir ./ --split-files --gzip"
 
     dumpLogFile = fastq_folder + "/fastq_dump_" + srr + ".log.txt"
     if os.path.exists(dumpLogFile):
@@ -372,7 +404,8 @@ for srr in srrList:
                 f.write(current_time + " fastq_dump resubmit code is: " + str(resubmit) + ", now resubmitting fastq_dump job.\n")
                 subprocess.call(cmd, shell=True)
 
-        timer = timer + 30
+        if os.path.exists(dumpLogFile):
+            timer = timer + 30
         time.sleep(30)
 
         if (timer // gap_fastq_dump) and not resubmit: # resubmit the job every 10000 seconds in case of the ssh jobs queue error.
@@ -415,6 +448,7 @@ if (seqType == "pair"):
     tem_filesR2 = " ".join(temR2)
     cmdR2 = "cat " + tem_filesR2 + " > " + sampleName + ".R2.fastq.gz"
 
+    # Note that don't create data_geo_ for R1, only do it after R2 finishes, otherwise data.txt will be created prematurely...
     cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=20480] -o " + fastq_folder + "/" + srx + "_" + sampleName + ".R1.fastq.gz.log " + "\"" + "cd " + fastq_folder + " && " + cmdR1 + " && touch " + sampleName + ".R1.fastq.gz.done" + "\""
     subprocess.call(cmd, shell=True)
 
@@ -462,7 +496,8 @@ if (seqType == "pair"):
                 f.write(current_time + " catFastq resubmit code is: " + str(resubmit) + ", now resubmitting catFastq job.\n")
                 subprocess.call(cmd, shell=True)
 
-        timer = timer + 30
+        if os.path.exists(catLogFile):
+            timer = timer + 30
         time.sleep(30)
 
         if timer // gap_cat_fastq:
@@ -481,7 +516,7 @@ if (seqType == "pair"):
                 exit()
 
     # print("R1 done ...")
-    cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=20480] -o " + fastq_folder + "/" + srx + "_" + sampleName + ".R2.fastq.gz.log " + "\"" + "cd " + fastq_folder + " && " + cmdR2 + " && touch " + sampleName + ".R2.fastq.gz.done" + "\""
+    cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=20480] -o " + fastq_folder + "/" + srx + "_" + sampleName + ".R2.fastq.gz.log " + "\"" + "cd " + fastq_folder + " && " + cmdR2 + " && touch " + sampleName + ".R2.fastq.gz.done" + " && touch " + fastq_folder + "/../log_ssh2/data_geo_" + srx + ".txt" + "\""
     # print("R2 calling ...")
     subprocess.call(cmd, shell=True)
 
@@ -528,7 +563,8 @@ if (seqType == "pair"):
                 f.write(current_time + " catFastq resubmit code is: " + str(resubmit) + ", now resubmitting catFastq job.\n")
                 subprocess.call(cmd, shell=True)
 
-        timer = timer + 30
+        if os.path.exists(catLogFile):
+            timer = timer + 30
         time.sleep(30)
 
         if timer // gap_cat_fastq:
@@ -557,7 +593,7 @@ elif (seqType == "single"):
     tem_filesR1 = " ".join(temR1)
     cmdR1 = "cat " + tem_filesR1 + " > " + fastq_folder + "/" + sampleName + ".fastq.gz"
 
-    cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=20480] -o " + fastq_folder + "/" + srx + "_" + sampleName + ".fastq.gz.log " + "\"" + "cd " + fastq_folder + " && " + cmdR1 + " && touch " + sampleName + ".fastq.gz.done" + "\""
+    cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=20480] -o " + fastq_folder + "/" + srx + "_" + sampleName + ".fastq.gz.log " + "\"" + "cd " + fastq_folder + " && " + cmdR1 + " && touch " + sampleName + ".fastq.gz.done" + " && touch " + fastq_folder + "/../log_ssh2/data_geo_" + srx + ".txt" + "\""
     subprocess.call(cmd, shell=True)
 
     catLogFile = fastq_folder + "/" + srx + "_" + sampleName + ".fastq.gz.log"
@@ -603,7 +639,8 @@ elif (seqType == "single"):
                 f.write(current_time + " catFastq resubmit code is: " + str(resubmit) + ", now resubmitting catFastq job.\n")
                 subprocess.call(cmd, shell=True)
 
-        timer = timer + 30
+        if os.path.exists(catLogFile):
+            timer = timer + 30
         time.sleep(30)
 
         if timer // gap_cat_fastq:
