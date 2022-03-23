@@ -57,7 +57,7 @@ META = config['META']
 # for DESeq2
 if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
     CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
-    #print("CONTRASTS_DE:\n", CONTRASTS_DE)
+    CONTRASTS_DE = [x.replace("-", '.') for x in CONTRASTS_DE]
 else:
     CONTRASTS_DE = ["placeholder"]
 
