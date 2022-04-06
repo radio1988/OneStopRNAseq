@@ -101,38 +101,18 @@ def G2B_workflow(G, g2s):
 
 ###  Input functions (functions to create input fnames for rules)  ###
 def DESeq2_input(config):
-    if config['INTRON']:
-        if config["START"] in ["FASTQ", "BAM"]:
-            if config["MODE"] == "strict":
-                    return("feature_count_gene_level/counts.s0.gene_level.strict.txt")  # todo: strand detection
-            elif config["MODE"] == "liberal":
-                    return("feature_count_gene_level/counts.s0.gene_level.liberal.txt") # todo: strand detection
-            else:
-                raise Exception("MODE config not valid")
-        elif config["START"] in ["COUNT"]:
-                return(config["COUNT_FILE"])
-        else:
-            return("Workflow_DAG.all.svg")
-#            raise Exception("START config not valid", config['START'])
-    else:
-        if config["START"] in ["FASTQ", "BAM"]:
-            if config["MODE"] == "strict":
-                if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
-                    return("feature_count/TE_included.txt")
-                else:
-                    return("feature_count/counts.strict.txt")
-            elif config["MODE"] == "liberal":
-                if config["TE_ANALYSIS"] and config["START"] == "FASTQ":
-                    return("feature_count/TE_included.txt")
-                else:
-                    return("feature_count/counts.liberal.txt")
-            else:
-                raise Exception("MODE config not valid")
-        elif config["START"] in ["COUNT"]:
-                return(config["COUNT_FILE"])
-        else:
-            return ("Workflow_DAG.all.svg")
-#            raise Exception("START config not valid:", config['START'])
+    if config['START'] in ['COUNT']:
+        return(config['COUNT_FILE'])
+
+    if config['TE_ANALYSIS']:
+        return('feature_count/TE_included.txt')
+
+    if not config['TE_ANALYSIS']:
+        folder = 'feature_count_gene_level' \
+                 if config['INTRON'] \
+                 else 'feature_count'
+        return (folder + '/counts.' + config['MODE'] + '.txt' )
+        
 
 def input_rnk_fname1(wildcards, config):
     '''

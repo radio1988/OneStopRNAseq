@@ -147,11 +147,11 @@ rule targets:
             if config["START"] in ["FASTQ", "BAM"] and config["MODE"] == "liberal"
             else "Workflow_DAG.all.svg"),
 
-        feature_count_gene_strict=(expand('feature_count_gene_level/counts.s{strand}.gene_level.strict.txt', strand=STRAND)
+        feature_count_gene_strict=(expand('feature_count_gene_level/counts.s{strand}.strict.txt', strand=STRAND)
             if config["START"] in ["FASTQ", "BAM"] and config["MODE"] == "strict" and config['INTRON']
             else "Workflow_DAG.all.svg"),
 
-        feature_count_gene_liberal=(expand('feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt', strand=STRAND)
+        feature_count_gene_liberal=(expand('feature_count_gene_level/counts.s{strand}.liberal.txt', strand=STRAND)
             if config["START"] in ["FASTQ", "BAM"] and config["MODE"] == "liberal" and config['INTRON']
             else "Workflow_DAG.all.svg"),
 
@@ -590,12 +590,12 @@ if config['INTRON']:
                         "feature_count/counts.s{strand}.liberal.txt",
             gtf=GTF
         output:
-            ct = 'feature_count_gene_level/counts.s{strand}.gene_level.strict.txt' \
+            ct = 'feature_count_gene_level/counts.s{strand}.strict.txt' \
                         if config["MODE"] == "strict" else \
-                    'feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt',
-            summary = 'feature_count_gene_level/counts.s{strand}.gene_level.strict.txt.summary' \
+                    'feature_count_gene_level/counts.s{strand}.liberal.txt',
+            summary = 'feature_count_gene_level/counts.s{strand}.strict.txt.summary' \
                         if config["MODE"] == "strict" else \
-                     'feature_count_gene_level/counts.s{strand}.gene_level.liberal.txt.summary',
+                     'feature_count_gene_level/counts.s{strand}.liberal.txt.summary',
         params:
             pe = '-p -B -C ' if PAIR_END else ' ',
             mode = '-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
@@ -623,13 +623,20 @@ if config['INTRON']:
             # get larger count (exon vs gene) for each gene
             python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.ct}  
             """
-            
+
+
+def strand_detection_input(config):
+    folder='feature_count_gene_level/' \
+            if config['INTRON'] \
+            else 'feature_count/'
+    mode=config["MODE"]
+    return ([folder + 'counts.s' + str(s) + '.'  + config['MODE'] + '.txt.summary' \
+             for s in config['STRAND']])
+
 
 rule strand_detection:
     input:
-        expand("feature_count/counts.s{strand}.strict.txt.summary", strand=STRAND) 
-        if config["MODE"] == "strict" 
-        else expand("feature_count/counts.s{strand}.liberal.txt.summary", strand=STRAND)
+        strand_detection_input(config)
     output:
         "feature_count/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count/counts.liberal.txt",
         "meta/strandness.detected.txt"
@@ -644,6 +651,26 @@ rule strand_detection:
     script:
         "script/strandness_detection.py"
 
+
+
+rule strand_detection_gene_level:
+    input:
+        expand("feature_count_gene_level/counts.s{strand}.strict.txt.summary", strand=STRAND) 
+        if config["MODE"] == "strict" 
+        else expand("feature_count/counts.s{strand}.liberal.txt.summary", strand=STRAND)
+    output:
+        "feature_count_gene_level/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count_gene_level/counts.liberal.txt",
+        "feature_count_gene_level/strandness.detected.txt"
+    threads:
+        1
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000
+    log:
+        "log/feature_count_gene_level/strand_detection.log"
+    benchmark:
+        "log/feature_count_gene_level/strand_detection.benchmark"
+    script:
+        "script/strandness_detection.py"
 
 
 # rule SalmonTE_prep
@@ -664,7 +691,6 @@ if config['PAIR_END']:
         run:
             for i,f in enumerate(input):
                 os.system("ln -s "+"../"+input[i] + " " + output[i])
-
 
 
 rule SalmonTE:
@@ -698,12 +724,20 @@ rule SalmonTE:
         {input.reads} >> {log} 2>&1
         """
 
+def Merge_TE_and_Gene_input(config):
+    if config['MODE'] == 'strict' and config['INTRON']:
+        return("feature_count_gene_level/counts.strict.txt") 
+    if config['MODE'] == 'strict':
+        return("feature_count/counts.strict.txt")
+    if config['MODE'] == 'liberal' and config['INTRON']:
+        return("feature_count_gene_level/counts.liberal.txt")
+    if config['MODE'] == 'liberal':
+        return("feature_count/counts.liberal.txt")
+    raise Exeeption ('config error')
 
 rule Merge_TE_and_Gene:
     input:
-        gene="feature_count/counts.strict.txt"
-            if config['MODE'] == 'strict'
-            else "feature_count/counts.liberal.txt",
+        gene=Merge_TE_and_Gene_input(config),
         te="SalmonTE_output/EXPR.csv"
     output:
         "feature_count/TE_included.txt"
@@ -720,10 +754,6 @@ rule Merge_TE_and_Gene:
         python workflow/script/merge_featureCount_and_SalmonTE.py \
         {input.gene} {input.te} {output} > {log} 2>&1
         """
-
-
-
-
 
 rule DESeq2:
 # todo: use softlinked workflow/script/DESeq2.rmd, use softlinked example_data/ at COUNT-START
@@ -904,8 +934,10 @@ rule rMATS:
     envmodules:
         "rMATS/4.1.0 "
         "gcc/8.1.0 " # must have space
-    conda:
-        "envs/rmats.yaml"
+    container:
+        'envs/rmats.sif'
+#    conda:
+#        "envs/rmats.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,  # todo reduce
     threads:
@@ -933,7 +965,7 @@ rule rMATS:
         echo {params.b2} > rMATS.{wildcards.ascn}/params/b2.txt
 
         which python &> {log}
-
+        singularity exec rmats.sif bash /usr/local/etc/profile.d/conda.sh && conda activate rmats4 && \
         rmats.py  \
         --b1 rMATS.{wildcards.ascn}/params/b1.txt \
         --b2  rMATS.{wildcards.ascn}/params/b2.txt \
