@@ -105,7 +105,9 @@ def DESeq2_input(config):
         return(config['COUNT_FILE'])
 
     if config['TE_ANALYSIS']:
-        return('feature_count/TE_included.txt')
+        return("feature_count_gene_level/TE_included.txt" \
+                if config['INTRON'] \
+                else "feature_count/TE_included.txt")
 
     if not config['TE_ANALYSIS']:
         folder = 'feature_count_gene_level' \
@@ -241,4 +243,22 @@ def read_length(lengthFile="meta/read_length.txt"):
     except FileNotFoundError:
         sys.stderr.write(lengthFile + "not found in dry run, will be found in real run\n")
         return (None)
- 
+
+def Merge_TE_and_Gene_input(config):
+    if config['MODE'] == 'strict' and config['INTRON']:
+        return("feature_count_gene_level/counts.strict.txt") 
+    if config['MODE'] == 'strict':
+        return("feature_count/counts.strict.txt")
+    if config['MODE'] == 'liberal' and config['INTRON']:
+        return("feature_count_gene_level/counts.liberal.txt")
+    if config['MODE'] == 'liberal':
+        return("feature_count/counts.liberal.txt")
+    raise Exeeption ('config error')
+
+def strand_detection_input(config):
+    folder='feature_count_gene_level/' \
+            if config['INTRON'] \
+            else 'feature_count/'
+    mode=config["MODE"]
+    return ([folder + 'counts.s' + str(s) + '.'  + config['MODE'] + '.txt.summary' \
+             for s in config['STRAND']])

@@ -3,26 +3,29 @@ import sys, re, os, math
 from snakemake.utils import min_version
 from osr import gunzip, read_length
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
-from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2
+from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, \
+Merge_TE_and_Gene_input, strand_detection_input
 from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
 get_strandness_for_hisat2_SE, get_strandness_for_stringtie
 
 ###  Usage Requirements  ###
 # inputs in ./fastq/
 # named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
-# {sample}.fastq.gz for PE reads
-
-# Coding Notes:
-# input don't have to be used, just for draw nice DAG
-# 07/10/2019 randomized primary alignment
-# localrules: targets, create_dag
-# priority 0-100, default 0
-
+# {sample}.fastq.gz for SE reads
 
 min_version("5.17.0")  # check snakemake version
 configfile: "config.yaml"
 container: "docker://continuumio/miniconda3:4.4.10"
 
+
+def GSEA_OUTPUT(config):
+    if config["GSEA_ANALYSIS"]:
+        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=config["GSEA_DBS"]))
+        else:
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=config["GSEA_DBS"]))
+    else:
+        return("Workflow_DAG.all.svg")
 
 # umcompress files (todo: make it a rule)
 if config["GENOME"].endswith(".gz"):
@@ -96,16 +99,6 @@ else:
     B2S = B1S
     ASCN = 0
 
-
-
-def GSEA_OUTPUT(config):
-    if config["GSEA_ANALYSIS"]:
-        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=config["GSEA_DBS"]))
-        else:
-            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=config["GSEA_DBS"]))
-    else:
-        return("Workflow_DAG.all.svg")
 
 rule targets:
     input:
@@ -574,64 +567,59 @@ rule feature_count:
         """
 
 
-if config['INTRON']:
-    rule feature_count_gene_level:
-        '''
-        gene read count, including exon and intron reads
-        the larger one of gene-count/exon-count for each gene, is used as gene-count
-        recognizes config.yaml: 
-            - MODE: strict, liberal
-            - PAIR_END: True, False
-        '''
-        input:
-            bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES), # sort by name -> faster
-            exon_counts="feature_count/counts.s{strand}.strict.txt" \
-                            if config["MODE"] == "strict" else \
-                        "feature_count/counts.s{strand}.liberal.txt",
-            gtf=GTF
-        output:
-            ct = 'feature_count_gene_level/counts.s{strand}.strict.txt' \
+rule feature_count_gene_level:
+    '''
+    gene read count, including exon and intron reads
+    the larger one of gene-count/exon-count for each gene, is used as gene-count
+    recognizes config.yaml: 
+        - MODE: strict, liberal
+        - PAIR_END: True, False
+    '''
+    input:
+        bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES), # sort by name -> faster
+        exon_counts="feature_count/counts.s{strand}.strict.txt" \
                         if config["MODE"] == "strict" else \
-                    'feature_count_gene_level/counts.s{strand}.liberal.txt',
-            summary = 'feature_count_gene_level/counts.s{strand}.strict.txt.summary' \
-                        if config["MODE"] == "strict" else \
-                     'feature_count_gene_level/counts.s{strand}.liberal.txt.summary',
-        params:
-            pe = '-p -B -C ' if PAIR_END else ' ',
-            mode = '-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
-        conda:
-            "envs/subread.yaml" 
-        priority:
-            0
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 4000,
-        threads:
-            4
-        log:
-            "log/feature_count_gene_level/counts.s{strand}.log"
-        benchmark:
-            "log/feature_count_gene_level/benchmark.s{strand}.benchmark"
-        shell:
-            """
-            # gene level count
-            featureCounts -a {input.gtf} -o {output.ct} -T {threads} \
-            -t gene -g gene_id -s {wildcards.strand} \
-            --minOverlap 1 --fracOverlap 0 \
-            {params.pe} {params.mode} \
-            {input.bams} &>> {log}
+                    "feature_count/counts.s{strand}.liberal.txt",
+        gtf=GTF
+    output:
+        ct = 'feature_count_gene_level/counts.s{strand}.strict.txt' \
+                    if config["MODE"] == "strict" else \
+                'feature_count_gene_level/counts.s{strand}.liberal.txt',
+        summary = 'feature_count_gene_level/counts.s{strand}.strict.txt.summary' \
+                    if config["MODE"] == "strict" else \
+                 'feature_count_gene_level/counts.s{strand}.liberal.txt.summary',
+    params:
+        pe = '-p -B -C ' if PAIR_END else ' ',
+        mode = '-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
+    conda:
+        "envs/subread.yaml" 
+    priority:
+        0
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000,
+    threads:
+        4
+    log:
+        "log/feature_count_gene_level/counts.s{strand}.log"
+    benchmark:
+        "log/feature_count_gene_level/benchmark.s{strand}.benchmark"
+    shell:
+        """
+        # gene level count
+        featureCounts -a {input.gtf} -o {output.ct} -T {threads} \
+        -t gene -g gene_id -s {wildcards.strand} \
+        --minOverlap 1 --fracOverlap 0 \
+        {params.pe} {params.mode} {input.bams} \
+        > {log} 2>&1
 
-            # get larger count (exon vs gene) for each gene
-            python workflow/script/get_max_of_featureCountsTable.py {input.exon_counts} {output.ct}  
-            """
+        # get larger count (exon vs gene) for each gene
+        python workflow/script/get_max_of_featureCountsTable.py \
+        {input.exon_counts} {output.ct}  \
+        >> {log} 2>&1
+        """
 
 
-def strand_detection_input(config):
-    folder='feature_count_gene_level/' \
-            if config['INTRON'] \
-            else 'feature_count/'
-    mode=config["MODE"]
-    return ([folder + 'counts.s' + str(s) + '.'  + config['MODE'] + '.txt.summary' \
-             for s in config['STRAND']])
+
 
 
 rule strand_detection:
@@ -724,23 +712,16 @@ rule SalmonTE:
         {input.reads} >> {log} 2>&1
         """
 
-def Merge_TE_and_Gene_input(config):
-    if config['MODE'] == 'strict' and config['INTRON']:
-        return("feature_count_gene_level/counts.strict.txt") 
-    if config['MODE'] == 'strict':
-        return("feature_count/counts.strict.txt")
-    if config['MODE'] == 'liberal' and config['INTRON']:
-        return("feature_count_gene_level/counts.liberal.txt")
-    if config['MODE'] == 'liberal':
-        return("feature_count/counts.liberal.txt")
-    raise Exeeption ('config error')
+
 
 rule Merge_TE_and_Gene:
     input:
         gene=Merge_TE_and_Gene_input(config),
         te="SalmonTE_output/EXPR.csv"
     output:
-        "feature_count/TE_included.txt"
+        "feature_count_gene_level/TE_included.txt" \
+        if config['INTRON'] \
+        else "feature_count/TE_included.txt"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 16000,
     threads:
