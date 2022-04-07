@@ -145,11 +145,11 @@ def target_input(config, ASCN):
         l.append('stringtie/stringtie.merged.gtf')
 
     # todo: fix GATK env
-    # if config['ASE_ANALYSIS']:
-    #     if config['START'] not in ['FASTQ', 'BAM']:
-    #         raise Exception ('config Error: START and ASE_ANALYSIS incompatible')
-    #     l.extend(["GATK_ASEReadCounter/{sample}.table".\
-    #         format(sample=sample) for sample in SAMPLES])
+    if config['ASE_ANALYSIS']:
+        if config['START'] not in ['FASTQ', 'BAM']:
+            raise Exception ('config Error: START and ASE_ANALYSIS incompatible')
+        l.extend(["GATK_ASEReadCounter/{sample}.table".\
+            format(sample=sample) for sample in SAMPLES])
 
     return (l)
 
@@ -1055,8 +1055,6 @@ rule GATK_CreateSequenceDictionary:
         mem_mb=lambda wildcards, attempt: attempt * 16000
     conda:
         "envs/gatk.yaml"  # test
-    envmodules:
-        "java/1.8.0_171"
     threads:
         1
     log:
@@ -1064,7 +1062,7 @@ rule GATK_CreateSequenceDictionary:
     benchmark:
         "log/GATK_CreateSequenceDictionary/GATK_CreateSequenceDictionary.benchmark"
     shell:
-        "./workflow/envs/gatk-4.1.8.1/gatk CreateSequenceDictionary -R {input} &> {log}"
+        "gatk CreateSequenceDictionary -R {input} &> {log}"
 
 
 rule GATK_ASEReadCounter:
@@ -1080,8 +1078,6 @@ rule GATK_ASEReadCounter:
         "envs/gatk.yaml"  # test
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 16000
-    envmodules:
-        "java/1.8.0_171"
     threads:
         1
     log:
@@ -1089,7 +1085,7 @@ rule GATK_ASEReadCounter:
     benchmark:
         "log/GATK_ASEReadCounter/{sample}.benchmark"
     shell:
-        "./workflow/envs/gatk-4.1.8.1/gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} \
+        "gatk ASEReadCounter -R {input.genome} -I {input.bam} -V {input.vcf} -O {output} \
         --min-depth-of-non-filtered-base 10 --min-mapping-quality 15 --min-base-quality 20 \
         &> {log};"  # todo: more thoughts on detailed parameters, e.g.    -drf DuplicateRead -U ALLOW_N_CIGAR_READS
         "D=GATK_ASEReadCounter; "
