@@ -601,7 +601,9 @@ rule Strand_Detection:
     input:
         strand_detection_input(config)
     output:
-        "feature_count/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count/counts.liberal.txt",
+        "feature_count/counts.strict.txt" \
+        if config["MODE"] == "strict" \
+        else  "feature_count/counts.liberal.txt",
         "meta/strandness.detected.txt"
     threads:
         1
@@ -622,7 +624,9 @@ rule Strand_Detection_GeneLevel:
         if config["MODE"] == "strict" 
         else expand("feature_count/counts.s{strand}.liberal.txt.summary", strand=STRAND)
     output:
-        "feature_count_gene_level/counts.strict.txt" if config["MODE"] == "strict" else  "feature_count_gene_level/counts.liberal.txt",
+        "feature_count_gene_level/counts.strict.txt" \
+        if config["MODE"] == "strict" \
+        else  "feature_count_gene_level/counts.liberal.txt",
         "feature_count_gene_level/strandness.detected.txt"
     threads:
         1
@@ -633,7 +637,7 @@ rule Strand_Detection_GeneLevel:
     benchmark:
         "log/feature_count_gene_level/strand_detection.benchmark"
     script:
-        "script/strandness_detection.py"
+        "script/strandness_detection.ge.py"
 
 
 # rule SalmonTE_prep
@@ -892,8 +896,8 @@ rule rMATS:
         "gcc/8.1.0 " # must have space
     container:
         'envs/rmats.sif'
-#    conda:
-#        "envs/rmats.yaml"
+    conda:
+       "envs/rmats.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,  # todo reduce
     threads:

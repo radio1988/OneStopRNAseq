@@ -100,6 +100,18 @@ def G2B_workflow(G, g2s):
     return (BS, B)
 
 ###  Input functions (functions to create input fnames for rules)  ###
+def Merge_TE_and_Gene_input(config):
+    if config['MODE'] == 'strict' and config['INTRON']:
+        return("feature_count_gene_level/counts.strict.txt") 
+    if config['MODE'] == 'strict':
+        return("feature_count/counts.strict.txt")
+    if config['MODE'] == 'liberal' and config['INTRON']:
+        return("feature_count_gene_level/counts.liberal.txt")
+    if config['MODE'] == 'liberal':
+        return("feature_count/counts.liberal.txt")
+    raise Exeeption ('config error')
+
+    
 def DESeq2_input(config):
     if config['START'] in ['COUNT']:
         return(config['COUNT_FILE'])
@@ -244,16 +256,7 @@ def read_length(lengthFile="meta/read_length.txt"):
         sys.stderr.write(lengthFile + "not found in dry run, will be found in real run\n")
         return (None)
 
-def Merge_TE_and_Gene_input(config):
-    if config['MODE'] == 'strict' and config['INTRON']:
-        return("feature_count_gene_level/counts.strict.txt") 
-    if config['MODE'] == 'strict':
-        return("feature_count/counts.strict.txt")
-    if config['MODE'] == 'liberal' and config['INTRON']:
-        return("feature_count_gene_level/counts.liberal.txt")
-    if config['MODE'] == 'liberal':
-        return("feature_count/counts.liberal.txt")
-    raise Exeeption ('config error')
+
 
 def strand_detection_input(config):
     folder='feature_count_gene_level/' \
