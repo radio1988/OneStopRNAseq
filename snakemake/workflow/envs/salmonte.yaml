@@ -12,6 +12,7 @@ dependencies:
   - conda-forge::pandas
 
   - r-base=4.0.2
+  - bioconductor-deseq2
   - r-tidyverse
   - r-scales
   - r-writexls
