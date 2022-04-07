@@ -2,7 +2,11 @@ name: rmats4
 # not working on zhuapp yet
 
 channels:
-    - bioconda/label/cf201901
+    - bioconda
+#    - rmg
+#    - conda-forge
 
 dependencies:
-    - rmats=4.1
+    - rmats=4.1.2
+#    - glibc=2.19
+#    - libblas=3.9.0

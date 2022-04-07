@@ -144,11 +144,12 @@ def target_input(config, ASCN):
             raise Exception ('config Error: START and ASSEMBLY_ANALYSIS incompatible')
         l.append('stringtie/stringtie.merged.gtf')
 
-    if config['ASE_ANALYSIS']:
-        if config['START'] not in ['FASTQ', 'BAM']:
-            raise Exception ('config Error: START and ASE_ANALYSIS incompatible')
-        l.extend(["GATK_ASEReadCounter/{sample}.table".\
-            format(sample=sample) for sample in SAMPLES])
+    # todo: fix GATK env
+    # if config['ASE_ANALYSIS']:
+    #     if config['START'] not in ['FASTQ', 'BAM']:
+    #         raise Exception ('config Error: START and ASE_ANALYSIS incompatible')
+    #     l.extend(["GATK_ASEReadCounter/{sample}.table".\
+    #         format(sample=sample) for sample in SAMPLES])
 
     return (l)
 
@@ -919,13 +920,9 @@ rule rMATS:
         rm -rf rMATS.{wildcards.ascn}
         mkdir -p rMATS.{wildcards.ascn}/
         mkdir -p rMATS.{wildcards.ascn}/params/
-
-
         echo {params.b1} > rMATS.{wildcards.ascn}/params/b1.txt
         echo {params.b2} > rMATS.{wildcards.ascn}/params/b2.txt
-
         which python &> {log}
-        singularity exec rmats.sif bash /usr/local/etc/profile.d/conda.sh && conda activate rmats4 && \
         rmats.py  \
         --b1 rMATS.{wildcards.ascn}/params/b1.txt \
         --b2  rMATS.{wildcards.ascn}/params/b2.txt \
@@ -939,11 +936,8 @@ rule rMATS:
         --cstat 0.2 \
         --od rMATS.{wildcards.ascn}/output/ \
         --tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
-
         cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
-
         rm -rf rMATS.{wildcards.ascn}/tmp/   &>> {log}
-
         mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
         mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/  &>> {log}
         mkdir -p rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
@@ -951,7 +945,6 @@ rule rMATS:
         mv rMATS.{wildcards.ascn}/output/*JC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
         mv rMATS.{wildcards.ascn}/output/fromGTF*txt  rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
         rm -f rMATS.{wildcards.ascn}/output/*raw.input* &>> {log}
-
         D=rMATS.{wildcards.ascn};
         rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};
         """
