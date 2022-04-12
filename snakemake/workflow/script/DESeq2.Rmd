@@ -53,7 +53,7 @@ if(!require(berryFunctions)){
 }
 # library(corrplot) 
 
-#dir.create("./rnk", showWarnings = FALSE)
+dir.create("./rnk", showWarnings = FALSE)
 #knitr::opts_knit$set(root.dir = "./")
 ```
 
