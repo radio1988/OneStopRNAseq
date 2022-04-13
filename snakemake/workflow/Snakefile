@@ -111,11 +111,10 @@ def target_input(config, ASCN):
         l.append('fastqc/multiqc_report.html')
 
     if config['START'] in ['FASTQ', 'BAM']:
+        l.append('bam_qc/QoRTs_MultiPlot/plot-basic.pdf')
         l.extend([
             'bam_qc/STAR_Align_summary_multiqc_report.html',
             'bam_qc/samtools_stats_multiqc_report.html'])
-        l.extend(['bam_qc/QoRTs/{}/QC.QORTS_COMPLETED_OK'.format(sample) \
-            for sample in config['SAMPLES']])
         l.extend(['bigWig/{}.{}.cpm.bw'.format(sample, config['MODE']) \
                 for sample in config['SAMPLES']])
 
