@@ -1,4 +1,4 @@
-LLgeneID	LLgeneSymbol	geneName
+ID	Name	Desc
 LL0000000001	a1cf	apobec1 complementation factor
 LL0000000002	a2ml	alpha-2-macroglobulin-like
 LL0000000003	aaas	achalasia, adrenocortical insufficiency, alacrimia
