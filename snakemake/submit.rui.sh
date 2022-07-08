@@ -3,7 +3,7 @@
 # bsub -q long -W 144:00 -R rusage[mem=4000]  -R select[rh=8] 'bash submit.sh'
 
 rm -f lsf.log
-source activate osr-base2 > workflow.log  2>&1 
+source activate ~/anaconda3/envs/osr-base2  > workflow.log  2>&1
 
 snakemake -p -k --jobs 99 \
 --use-conda --conda-prefix ~/anaconda3/envs/osr_envs2 \

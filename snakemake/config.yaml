@@ -62,7 +62,7 @@ STRAND: [0, 1, 2]  # can input [0, 1, 2] to get all possible results, then workf
 # [2] if you know it's reverse, [1] if you know it's forward, [0] if you know it's un-stranded
 # todo refine auto select
 MODE: strict # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
-INTRON: True  # will also perform gene level featureCount as well as exon level, and max(gene-count, exon-count) will be taken as gene-count
+INTRON: False  # will also perform gene level featureCount as well as exon level, and max(gene-count, exon-count) will be taken as gene-count
 
 # DESeq2
 DESEQ2_ANALYSIS: True
