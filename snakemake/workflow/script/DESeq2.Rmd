@@ -808,9 +808,11 @@ plotQC_PCA_no_label <- function(dds) {
   
 }
 
-pdf("sample_PCA.labeled.pdf")
-plotQC_PCA(dds)
-dev.off()
+if (max(unlist(lapply(meta.df$SAMPLE_LABEL, nchar))) <= 36){
+  pdf("sample_PCA.labeled.pdf")
+  plotQC_PCA(dds)
+  dev.off()
+}
 
 pdf("sample_PCA.pdf")
 plotQC_PCA_no_label(dds)
