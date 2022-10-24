@@ -50,10 +50,8 @@ if(!require(berryFunctions)){
     install.packages("berryFunctions", repos = "http://cran.us.r-project.org")
     library(berryFunctions)
 }
-# library(corrplot) 
 
 dir.create("./rnk", showWarnings = FALSE)
-#knitr::opts_knit$set(root.dir = "./")
 ```
 
 
@@ -579,13 +577,7 @@ if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
   kept_samples <-  names(sample_filter)[sample_filter]
   meta.df <- filter(meta.df, SAMPLE_LABEL %in% kept_samples)
   group_count <- count(meta.df, GROUP_LABEL)
-  
-  
-  
-  
-  
   cts <- cts[expression_filter, sample_filter]
-  
   if (featureCountsFormat) {
     df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
   }else if (cleanCountFormat) {
@@ -752,12 +744,10 @@ plotDispEsts(dds, main="Dispersion plot")
 
 ### Sample PCA plot
 ```{r pca}
-plotQC_PCA <- function(dds) {
+plotQC_PCA <- function(dds, fname='pca.pdf') {
   vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
-  
   pcaData <- plotPCA(vsd, intgroup = 'group', returnData=TRUE) # labeling fixed
   percentVar <- round(100 * attr(pcaData, 'percentVar'), 1)
-  
   if (length(levels(batch)) > 1){
     ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
     geom_point(size = 3) +
@@ -767,9 +757,11 @@ plotQC_PCA <- function(dds) {
                       box.padding = 0.35,
                       point.padding = 1,
                       segment.color = 'grey50',
-                     segment.alpha = 0.5,
+                      segment.alpha = 0.5,
                       show.legend = FALSE) + # if TRUE, legend display might not be correct
     theme_classic()
+    ggsave(fname)
+
   }else{
     ggplot(pcaData, aes(PC1, PC2, color = group)) +
     geom_point(size = 3) +
@@ -779,47 +771,40 @@ plotQC_PCA <- function(dds) {
                       box.padding = 0.35,
                       point.padding = 1,
                       segment.color = 'grey50',
-                     segment.alpha = 0.5,
+                      segment.alpha = 0.5,
+                      max.overlaps = 20,
                       show.legend = FALSE) + # if TRUE, legend display might not be correct
     theme_classic()
+    ggsave(fname)
   }
 }
 
-plotQC_PCA_no_label <- function(dds) {
+plotQC_PCA_no_label <- function(dds, fname='pca.pdf') {
   vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
-  
-  
   pcaData <- plotPCA(vsd, intgroup = 'group', returnData=TRUE) # labeling fixed
   percentVar <- round(100 * attr(pcaData, 'percentVar'), 1)
-  
     if (length(levels(batch)) > 1){
         ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
         geom_point(size = 3) +
         xlab(paste0("PC1: ", percentVar[1], "% variance")) +
         ylab(paste0("PC2: ", percentVar[2], "% variance")) +
         theme_classic()
+        ggsave(fname)
     }else{
         ggplot(pcaData, aes(PC1, PC2, color = group)) +
         geom_point(size = 3) +
         xlab(paste0("PC1: ", percentVar[1], "% variance")) +
         ylab(paste0("PC2: ", percentVar[2], "% variance")) +
         theme_classic()
+        ggsave(fname)
     }
-  
 }
+
+plotQC_PCA_no_label(dds, "sample_PCA.pdf")
 
 if (max(unlist(lapply(meta.df$SAMPLE_LABEL, nchar))) <= 36){
-  pdf("sample_PCA.labeled.pdf")
-  plotQC_PCA(dds)
-  dev.off()
+  plotQC_PCA(dds, "sample_PCA.labeled.pdf")
 }
-
-pdf("sample_PCA.pdf")
-plotQC_PCA_no_label(dds)
-dev.off()
-
-plotQC_PCA(dds)
-plotQC_PCA_no_label(dds)
 ```
 
 
@@ -853,39 +838,6 @@ pheatmap(samplePoisDistMatrix,
 ```
 
 
-```{r, include=F}
-### Sample Heatmap (Spearman Corr Based)
-# corr <- cor(counts(dds), method="spearman")
-# spearman_corrplot <- function(corr){
-#   #corr <- round(corr, 2)
-#   corrplot(corr, 
-#            method="square", type="upper", add=F,  # add-on to previous plot
-#            is.corr=T,  # flexible coloring if False
-#            order="hclust", hclust.method="complete",
-#            tl.pos="lt", diag = T)
-#   
-#   if (dim(corr)[1]<12){
-#     corrplot(corr, 
-#              method="number", type="lower", add=T,  # add-on to previous plot
-#              is.corr=T,  # flexible coloring if False
-#              order="hclust", hclust.method="complete",
-#              tl.pos="n", diag = F, cl.pos = "n")
-#   }else{
-#     corrplot(corr, 
-#              method="pie", type="lower", add=T,  # add-on to previous plot
-#              is.corr=T,  # flexible coloring if False
-#              order="hclust", hclust.method="complete",
-#              tl.pos="n", diag = F, cl.pos = "n")
-#   }
-# }
-
-# pdf(paste("sample_spearman_corr", "pdf", sep="."))
-# spearman_corrplot(corr)
-# dev.off()
-# 
-# spearman_corrplot(corr)
-```
-
 ## DE analysis
 ```{r, warning=T, error=T, DE_ANALYSIS}
 parse_name <- function(name){
@@ -898,15 +850,12 @@ parse_name <- function(name){
 
 
 for (i in 1:dim(contrast.df)[2]){
-  
   # parse 
   name1 <- parse_name(contrast.df[1,i])
   name2 <- parse_name(contrast.df[2, i])
-  
   name <- paste(name1$name, name2$name, sep = "_vs_")
   if (nchar(name) > 100) {name = paste0('contrast', i)}
   print(paste(">>>", i, name))
-  
   
   # check group_count for all groups in each contrast
   groups <- unique(c(name1$names, name2$names))
@@ -921,8 +870,8 @@ for (i in 1:dim(contrast.df)[2]){
   group_with_reps <- group_count %>% # count >=2 
      filter(n >= 2) %>% 
      select(GROUP_LABEL)
-  with_reps1 <- any(name1$names %in% group_with_reps)
-  with_reps2 <- any(name2$names %in% group_with_reps)
+  with_reps1 <- any(name1$names %in% group_with_reps$GROUP_LABEL)
+  with_reps2 <- any(name2$names %in% group_with_reps$GROUP_LABEL)
   if (!any(with_reps1, with_reps2)) {
     print(paste('no groups in', name, 'has reps, skipped !!!'))
     print(group_count)
