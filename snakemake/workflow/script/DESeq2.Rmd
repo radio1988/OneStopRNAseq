@@ -28,23 +28,24 @@ params:
 
 ```{r setup, include=F}
 # Bioconductor
-library(BiocManager) # 
+library(BiocManager)
 library(DESeq2)
-library(EnhancedVolcano) # hard to install via conda
+library(EnhancedVolcano)
 
 # CRAN
-library(ggrepel) # 
 library(ggplot2)
-library(ashr) # 
+library(ggpubr) # ggmaplot
+library(ggrepel)
+library(ashr)
 library(MASS)
 library(WriteXLS)
-library(plyr) # 
-library(gdata) #
+library(plyr)
+library(gdata)
 library(dplyr)
 library(RColorBrewer)
-library(pheatmap) #
-library(PoiClaClu) # 
-library(gridExtra) # 
+library(pheatmap)
+library(PoiClaClu)  
+library(gridExtra)  
 library(grid)
 if(!require(berryFunctions)){
     install.packages("berryFunctions", repos = "http://cran.us.r-project.org")
@@ -52,8 +53,8 @@ if(!require(berryFunctions)){
 }
 
 dir.create("./rnk", showWarnings = FALSE)
+TEST=FALSE  # if TRUE, skip Excel outputs to save time
 ```
-
 
 ## Input parameter extraction
 ```{r params}
@@ -100,7 +101,6 @@ get_density <- function(x, y, ...) {
   return(dens$z[ii])
 }
 
-
 volcanoplot <- function(res, anno, name='name', 
                         lfcthresh=2, sigthresh=0.05, 
                         labelsig=FALSE, xlim=100, ylim=1000, textcx=1) {
@@ -129,9 +129,7 @@ volcanoplot <- function(res, anno, name='name',
   pos.n <- dim(pos)[1]
   neg.n <- dim(neg)[1]
   
-  #labelcut <- res$padj[order(res$padj)][100] 
-  
-  p <- EnhancedVolcano(res,
+  EnhancedVolcano(res,
                        lab = res$Name,
                        #selectLab = as.character(res$Name[which(res$padj<labelcut)]), # mark top genes
                        #selectLab = c("FOS", "LDHA"), # mark selected genes
@@ -141,16 +139,10 @@ volcanoplot <- function(res, anno, name='name',
                        subtitle = paste("Up:", pos.n, ", Down:", neg.n, sep = ""),
                        xlab = bquote(~Log[2]~ "Fold Change"),
                        ylab = bquote(~-Log[10]~italic(FDR)),
-                       #xlim = c(-6, 6),
-                       pCutoff = sigthresh,
-                       FCcutoff = lfcthresh,
-                       #pLabellingCutoff = labelcut,
+                       pCutoff = max_fdr,
+                       FCcutoff = min_lfc,
                        cutoffLineType = 'twodash',
                        cutoffLineWidth = 0.8,
-                       # pointSize = 1.0, # todo: fix incomparibility in R3.5 and R4
-                       # labSize = 2.0,
-                       # DrawConnectors = F,
-                       # legend = c("NS","Log2 FC","P","P & Log2 FC"),
                        legendLabels = c('NS', expression(Log[2]~FC),
                                         "FDR", expression(FDR~and~Log[2]~FC)),
                        caption = paste0('Total = ', nrow(res), ' genes'),
@@ -158,40 +150,23 @@ volcanoplot <- function(res, anno, name='name',
                        legendLabSize = 10,
                        axisLabSize = 10,
                        legendIconSize = 3.0)
-  
-  # # plot in html
-  # grid.arrange(p,
-  #              ncol=1,
-  #              top = textGrob(' ',
-  #                             just = c('center'),
-  #                             gp = gpar(fontsize = 32))
-  # )
-  # grid.rect(gp=gpar(fill=NA))
-  
-  # save PDF
-  pdf(paste(name, "pdf", sep="."), width=8, height=6)
-  grid.arrange(p,
-               ncol=1,
-               top = textGrob(' ',
-                              just = c('center'),
-                              gp = gpar(fontsize = 32))
-  )
-  grid.rect(gp=gpar(fill=NA))
-  dev.off()
+  ggsave(paste(name, "pdf", sep="."), width=8, height=6)
 }
 
-
-maplot <- function (res, thresh=max_fdr, labelsig=FALSE, textcx=1, ...) {
-  # todo: improve visualization
-  with(res, 
-       plot(baseMean, log2FoldChange, col="grey80", pch=20, cex=.5, log="x", ...))
-  with(subset(res, padj<max_fdr), 
-       points(baseMean, log2FoldChange, col="grey40", pch=20, cex=.5))
-  if (labelsig) {
-    require(calibrate)
-    with(subset(res, padj<max_fdr), 
-         textxy(baseMean, log2FoldChange, labs=Gene, cex=textcx, col=2))
-  }
+# Default plot
+maplot <- function(res, anno, fname){
+  maplotdat <- merge(anno, data.frame(res), by.x=1, by.y=0)
+  ggmaplot(maplotdat, main = name,genenames = as.vector(maplotdat$Name),
+           fdr = max_fdr, fc = 2^min_lfc, size = 0.4,
+           xlab = "Log2 Mean Expression",
+           ylab = "Log2 Fold Change",
+           palette = c("#B31B21", "#1465AC", "darkgray"),
+           legend = "top", top = 20,
+           font.label = c("bold", 11),label.rectangle = TRUE,
+           font.legend = "bold",
+           font.main = "bold",
+           ggtheme = ggplot2::theme_minimal())
+  ggsave(fname)
 }
 
 zscore <- function(matrix){
@@ -215,13 +190,16 @@ rename_num_vector_by_order <- function(l){
 Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
   if (dim(df)[1] > nclass){
     # Heatmap Pre-plot to get hclust
+    my_sample_col <- data.frame(group = coldata[,'group'])
+    row.names(my_sample_col) <- coldata[,'sample']
     p <- pheatmap(df, 
+                  annotation_col = my_sample_col,
                   main = main,
                   cluster_cols = F, 
                   border_color = NA,
                   cutree_rows = nclass, 
-                  show_rownames = F)
-
+                  show_rownames = F, filename = 'null.pdf')
+    
     ## Print out gene classification (https://www.biostars.org/p/287512/)
     # cutree manually
     gene_classes <- sort(cutree(p$tree_row, k=nclass))
@@ -234,8 +212,10 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
     # rename gene classes
     classification$gene_classes <- rename_num_vector_by_order(classification$gene_classes)
     # save excel
-    WriteXLS(classification, row.names = F,
-             paste(fname,"gene_class.xlsx", sep = "."))
+    if (!TEST){
+      WriteXLS(classification, row.names = F,
+               paste(fname,"gene_class.xlsx", sep = "."))}
+
     # get class label
     annotation_row = data.frame(
       class = classification$gene_classes
@@ -244,78 +224,86 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
     annotation_row$class <- as.character(annotation_row$class)
     # output final plot
     if (dim(df)[1] < 20){ # manage row height
-        p2 <- pheatmap(df,
-           main = main,
-           border_color = NA,
-           cluster_cols = F,
-           cutree_rows = nclass,
-           show_rownames = F,
-           annotation_row = annotation_row,
-           cellheight = 20,
-           filename = paste(fname, "pdf", sep = "."))
-        p3 <- pheatmap(df,  # sample clustering
-           main = main,
-           border_color = NA,
-           cluster_cols = T,
-           cutree_rows = nclass,
-           show_rownames = F,
-           annotation_row = annotation_row,
-           cellheight = 20,
-           filename = paste(fname, "v2.pdf", sep = "."))
+      p2 <- pheatmap(df,
+                     annotation_col = my_sample_col,
+                     main = main,
+                     border_color = NA,
+                     cluster_cols = F,
+                     cutree_rows = nclass,
+                     show_rownames = F,
+                     annotation_row = annotation_row,
+                     cellheight = 20,
+                     filename = paste(fname, "pdf", sep = "."))
+      p3 <- pheatmap(df,  # sample clustering
+                     annotation_col = my_sample_col,
+                     main = main,
+                     border_color = NA,
+                     cluster_cols = T,
+                     cutree_rows = nclass,
+                     show_rownames = F,
+                     annotation_row = annotation_row,
+                     cellheight = 20,
+                     filename = paste(fname, "v2.pdf", sep = "."))
     }else{
-        p2 <- pheatmap(df,
-           main = main,
-           border_color = NA,
-           cluster_cols = F,
-           cutree_rows = nclass,
-           show_rownames = F,
-           annotation_row = annotation_row,
-           filename = paste(fname, "pdf", sep = "."))
-        p3 <- pheatmap(df, # sample clustering
-           main = main,
-           border_color = NA,
-           cluster_cols = T,
-           cutree_rows = nclass,
-           show_rownames = F,
-           annotation_row = annotation_row,
-           filename = paste(fname, "v2.pdf", sep = "."))
+      p2 <- pheatmap(df,
+                     annotation_col = my_sample_col,
+                     main = main,
+                     border_color = NA,
+                     cluster_cols = F,
+                     cutree_rows = nclass,
+                     show_rownames = F,
+                     annotation_row = annotation_row,
+                     filename = paste(fname, "pdf", sep = "."))
+      p3 <- pheatmap(df, # sample clustering
+                     annotation_col = my_sample_col,
+                     main = main,
+                     border_color = NA,
+                     cluster_cols = T,
+                     cutree_rows = nclass,
+                     show_rownames = F,
+                     annotation_row = annotation_row,
+                     filename = paste(fname, "v2.pdf", sep = "."))
     }
 
   }else if (dim(df)[1] > 0){
     # output final plot
-        if (dim(df)[1] < 20){ # manage row height
-            p2 <- pheatmap(df,
-               main = main,
-               cluster_cols = F,
-               cluster_rows = F,
-               border_color = NA,
-               show_rownames = F,
-               cellheight = 20,
-               filename = paste(fname, "pdf", sep = "."))
-            p3 <- pheatmap(df,
-               main = main,
-               cluster_cols = T,
-               cluster_rows = F,
-               border_color = NA,
-               show_rownames = F,
-               cellheight = 20,
-               filename = paste(fname, "v2.pdf", sep = "."))
-        }else{
-            p2 <- pheatmap(df,
-               main = main,
-               cluster_cols = F,
-               cluster_rows = F,
-               border_color = NA,
-               show_rownames = F,
-               filename = paste(fname, "pdf", sep = "."))
-            p3 <- pheatmap(df,
-               main = main,
-               cluster_cols = T,
-               cluster_rows = F,
-               border_color = NA,
-               show_rownames = F,
-               filename = paste(fname, "v2.pdf", sep = "."))
-        }
+    if (dim(df)[1] < 20){ # manage row height
+      p2 <- pheatmap(df,
+                     annotation_col = my_sample_col,
+                     main = main,
+                     cluster_cols = F,
+                     cluster_rows = F,
+                     border_color = NA,
+                     show_rownames = F,
+                     cellheight = 20,
+                     filename = paste(fname, "pdf", sep = "."))
+      p3 <- pheatmap(df,
+                     annotation_col = my_sample_col,
+                     main = main,
+                     cluster_cols = T,
+                     cluster_rows = F,
+                     border_color = NA,
+                     show_rownames = F,
+                     cellheight = 20,
+                     filename = paste(fname, "v2.pdf", sep = "."))
+    }else{
+      p2 <- pheatmap(df,
+                     annotation_col = my_sample_col,
+                     main = main,
+                     cluster_cols = F,
+                     cluster_rows = F,
+                     border_color = NA,
+                     show_rownames = F,
+                     filename = paste(fname, "pdf", sep = "."))
+      p3 <- pheatmap(df,
+                     annotation_col = my_sample_col,
+                     main = main,
+                     cluster_cols = T,
+                     cluster_rows = F,
+                     border_color = NA,
+                     show_rownames = F,
+                     filename = paste(fname, "v2.pdf", sep = "."))
+    }
   }else{ print("no sig DEG for heatmap")}
 }
 
@@ -362,14 +350,17 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     head(resdata.sig)
 
     ## Write results
-    WriteXLS(x = resdata,
-             ExcelFileName = paste(name, 'deseq2.xlsx', sep = '.'),
-             row.names = F, SheetNames = 'sheet1', na = 'NA')  # for user
+    if (!TEST){
+      WriteXLS(x = resdata,
+               ExcelFileName = paste(name, 'deseq2.xlsx', sep = '.'),
+               row.names = F, SheetNames = 'sheet1', na = 'NA')  # for user
+      
+      WriteXLS(x = resdata.sig,
+               ExcelFileName = paste(name, 'deseq2.sig.FDR', max_fdr, 
+                                     'LFC', min_lfc, 'xlsx', sep = '.'),
+               row.names = F, SheetNames = 'sheet1', na = 'NA')  # for user
+    }
 
-    WriteXLS(x = resdata.sig,
-             ExcelFileName = paste(name, 'deseq2.sig.FDR', max_fdr,
-                                   'LFC', min_lfc, 'xlsx', sep = '.'),
-             row.names = F, SheetNames = 'sheet1', na = 'NA')  # for user
     ## For GSEA
     rnk <- subset(resdata, select = c("Name","log2FoldChange_shrunken"))
     colnames(rnk) <- c("# Name","log2FoldChange_shrunken")
@@ -380,7 +371,7 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
                 row.names = F, quote = F, sep='\t')
 
 
-    # # Corrlelation of Length and LFC for Niraj (only after write excel, alters resdata)
+    # # Corrlelation of Length and LFC
     # resdata.sig.cor <- cor.test(resdata.sig$Length, 
     #                        resdata.sig$log2FoldChange_shrunken, 
     #                        method = "spearman")
@@ -401,16 +392,16 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     #     xlim(0,20000)
     
     ##  Plots
-    hist(res$pvalue, breaks=50, col="grey80", # todo: improve vis
-         main = paste('Histogram of p-values', name, sep = "\n"), 
-         xlab = 'pvalues', ylab = 'Frequency')
+    ggplot(data.frame(res), aes(x=pvalue))+
+      geom_histogram(color="darkblue", fill="lightblue")
+    ggsave(paste0(name, '.pvalue.pdf'))
     
-    hist(res$padj, breaks=50, col="grey", 
-         main = paste('Histogram of FDR', name, sep = "\n"), 
-         xlab = 'FDR', ylab = 'Frequency')
+    ggplot(data.frame(res), aes(x=padj))+
+      geom_histogram(color="darkblue", fill="lightblue")
+    ggsave(paste0(name, '.fdr.pdf'))
     
-    maplot(res, main=paste("MAplot", paste(name, "LFC_shrunken"), sep="\n")) # todo: improve vis
-    maplot(res2, main=paste("MAplot", paste(name, "LFC_raw"), sep="\n"))
+    maplot(res, anno, paste0(name, '.maplot.shrunken_lfc.pdf'))
+    maplot(res2, anno, paste0(name, '.maplot.raw_lfc.pdf'))
     
     volcanoplot(res, anno, lfcthresh=min_lfc, sigthresh=max_fdr,
                 textcx=.8,  name= paste(name, "LFC_shrunken", sep="."))
@@ -425,12 +416,8 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     Heatmap(zscore.df, nclass = 2,
             fname = paste(name, "heatmap", sep="."),
             main = paste(name, "LFC >", min_lfc, "FDR <", max_fdr ))
-    # dev.off()
-
-
 }
 ```
-
 
 ## Importing data
 ```{r read_meta_data}
@@ -519,7 +506,6 @@ print(paste("Dim of input data:"))
 print(dim(cts))
 ```
 
-
 ## Importing annotation
 ```{r import_annotation}
 # from GitHub (must be raw, not zipped)
@@ -560,9 +546,9 @@ count <- data.frame(cts)
 colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
 count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
 head(count_out)
-WriteXLS(x = count_out, 
-         ExcelFileName = 'COUNT.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
-print("saved in COUNT.xlsx")
+if (!TEST){
+  WriteXLS(x = count_out, ExcelFileName = 'COUNT.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+  print("saved in COUNT.xlsx")}
 ```
 
 ## Filtering
@@ -609,7 +595,6 @@ count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
 head(count_out)
 ```
 
-
 ## TPM calculation
 ```{r tpm}
 calculateTPM <- function(counts,len) {
@@ -649,10 +634,11 @@ if (featureCountsFormat ){
   fpkm_out <- merge(anno, fpkm, by.x=1, by.y=0, all.y=T, sort=F)
   # head(fpkm_out)
   # tail(fpkm_out)
-  WriteXLS(x = fpkm_out, 
-           ExcelFileName = 'FPKM.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
-  print("saved in FPKM.xlsx")
-  print("Recommend to use TPM, rather than FPKM")
+  if (!TEST){
+    WriteXLS(x = fpkm_out, 
+             ExcelFileName = 'FPKM.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+    print("saved in FPKM.xlsx")
+    print("Recommend to use TPM, rather than FPKM")}
 } else {
   cat ("FPKM not calculated if COUNT-table is not featureCount format\n")
 }
@@ -678,7 +664,6 @@ coldata
 ```{r SaveWorkSpace}
 save.image()
 ```
-
 
 ## Model fitting
 ```{r}
@@ -709,20 +694,20 @@ normalized_counts <- counts(dds, normalized=TRUE)
 normalized_counts <- data.frame(normalized_counts)
 colnames(normalized_counts) <- paste(colnames(normalized_counts),"DESeq2NormalizedCount",  sep = ":")
 normalized_counts_out <- merge(anno, normalized_counts, by.x=1, by.y=0, all.y=T, sort=F)
-WriteXLS(x = normalized_counts_out, 
-         ExcelFileName = 'DESeq2NormalizedCounts.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
-print("saved in DESeq2NormalizedCounts.xlsx")
+if (!TEST){
+  WriteXLS(x = normalized_counts_out, 
+           ExcelFileName = 'DESeq2NormalizedCounts.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+  print("saved in DESeq2NormalizedCounts.xlsx")
+}
 ```
 
 ## QC Plots
-
 <!-- ## Data transformation -->
 <!-- ```{r} -->
 <!-- #vsd <- vst(dds, blind=FALSE) -->
 <!-- rld <- rlog(dds, blind=FALSE) -->
 <!-- counts <- counts(dds, normalized=0) -->
 <!-- logCounts <- log10(counts +1 ) -->
-
 <!-- normed <- counts(dds, normalized=1) -->
 <!-- logNormed <- log10(normed+1) -->
 <!-- ``` -->
@@ -740,7 +725,6 @@ hist(log1p_count,
 ```{r dispersion_plot}
 plotDispEsts(dds, main="Dispersion plot")
 ```
-
 
 ### Sample PCA plot
 ```{r pca}
@@ -807,11 +791,6 @@ if (max(unlist(lapply(meta.df$SAMPLE_LABEL, nchar))) <= 36){
 }
 ```
 
-
-
-
-
-
 ### Sample heatmap (Poisson Distance Based)
 ```{r poisson_heatmap}
 colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
@@ -821,22 +800,17 @@ rownames(samplePoisDistMatrix) <- coldata$sample
 colnames(samplePoisDistMatrix) <- NULL 
 colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
 
+my_sample_col <- data.frame(group = coldata[,'group'])
+row.names(my_sample_col) <- coldata[,'sample']
 pheatmap(samplePoisDistMatrix,
+         annotation_row = my_sample_col,
          clustering_distance_rows=poisd$dd,
          clustering_distance_cols=poisd$dd,
          col=colors, 
          clustering_method='complete', 
          legend = T, 
          filename = "sample_poisson_distance.pdf")
-
-pheatmap(samplePoisDistMatrix,
-         clustering_distance_rows=poisd$dd,
-         clustering_distance_cols=poisd$dd,
-         col=colors, 
-         clustering_method='complete',
-         legend = T)
 ```
-
 
 ## DE analysis
 ```{r, warning=T, error=T, DE_ANALYSIS}
@@ -847,7 +821,6 @@ parse_name <- function(name){
   name <- gsub(";", ".", name)
   return (list(name=name, names=names))
 }
-
 
 for (i in 1:dim(contrast.df)[2]){
   # parse 
@@ -870,16 +843,16 @@ for (i in 1:dim(contrast.df)[2]){
   group_with_reps <- group_count %>% # count >=2 
      filter(n >= 2) %>% 
      select(GROUP_LABEL)
+  
   with_reps1 <- any(name1$names %in% group_with_reps$GROUP_LABEL)
   with_reps2 <- any(name2$names %in% group_with_reps$GROUP_LABEL)
+  
   if (!any(with_reps1, with_reps2)) {
     print(paste('no groups in', name, 'has reps, skipped !!!'))
     print(group_count)
     next
   }
 
-  
-  
   # analysis
   gsub("group", "", resultsNames(dds))
   poss <- match(name1$names, gsub("group", "", resultsNames(dds)))
@@ -902,8 +875,6 @@ for (i in 1:dim(contrast.df)[2]){
   }
 } 
 ```
-
-
 
 ## Log
 ```{r log}
