@@ -23,13 +23,11 @@ ruleDict      = {}
 # Parse out line info for meta info and each rule info
 with open(filename) as f:
     for i, line in enumerate(f):
-        # if (re.search("^	count	jobs$", line)):
-        if (re.search("^Job stats:", line)):
+        if (re.search("^	count	jobs$", line)):
             lineMetaStart = i
-            lineMetaStart = i + 2
-        if (line.startswith("total")):
+        if (line == "\n"):
             if lineMetaEnd == 0:
-                lineMetaEnd   = i + 1
+                lineMetaEnd   = i
             continue
         if re.search("^rule.*:$", line) or re.search("^localrule.*:$", line):
             lineRule.append(i)
@@ -41,10 +39,8 @@ with open(filename) as f:
     for i, line in enumerate(f):
         if i in range(lineMetaStart + 1, lineMetaEnd - 1):
             tem = line.split()
-            # jobNum = tem[0]
-            # ruleName = tem[1]
-            jobNum = tem[1]
-            ruleName = tem[0]
+            jobNum = tem[0]
+            ruleName = tem[1]
             if not ruleName in ruleDict:
                 ruleDict[ruleName] = [jobNum, [], []]
 
