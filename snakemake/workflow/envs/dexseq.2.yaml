@@ -1,0 +1,16 @@
+name: dexseq
+# does not work
+
+channels:
+        - conda-forge
+        - bioconda
+        - anaconda
+
+dependencies:
+        - anaconda::zip
+        - conda-forge::r-base=4.0.2
+        - conda-forge::r-readxl
+        - conda-forge::r-writexls
+        - conda-forge::r-dplyr
+        - bonconda::bioconductor-dexseq 
+  
