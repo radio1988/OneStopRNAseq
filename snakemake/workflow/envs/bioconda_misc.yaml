@@ -2,10 +2,11 @@ name: bioconda_misc
 # rule dexseq_prep
 
 channels:
+  - conda-forge
   - bioconda
   - anaconda
 
 dependencies:
-  - pysam=0.15.3
-  - htseq=0.11.3
-  - libgcc-ng=9.1.0
+  - libzlib
+  - pysam=0.17
+  - htseq=1.99

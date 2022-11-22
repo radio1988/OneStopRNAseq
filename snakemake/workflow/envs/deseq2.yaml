@@ -16,6 +16,7 @@ dependencies:
   - r-ashr 
   - r-poiclaclu
   - r-biocmanager 
+  - r-ggpubr
 
   # bioconda 
   - bioconductor-deseq2

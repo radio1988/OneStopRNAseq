@@ -964,6 +964,8 @@ rule DEXSeq_GFF_Prep:
         "log/DEXSeq/prep_gff.log"
     benchmark:
         "log/DEXSeq/prep_gff.benchmark"
+    conda:
+        "envs/bioconda_misc.yaml"
     shell:
         "python workflow/script/dexseq_prepare_annotation.py -r no {input} {output} &> {log}"
 

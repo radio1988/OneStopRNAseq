@@ -1,4 +1,4 @@
-name: salmonte  # test
+name: salmonte 
 
 channels:
   - anaconda
