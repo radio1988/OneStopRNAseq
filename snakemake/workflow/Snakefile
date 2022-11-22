@@ -45,7 +45,7 @@ if config["VCF"].endswith(".gz"):
 SAMPLES=config['SAMPLES']
 PAIR_END=config['PAIR_END']
 GENOME=config["GENOME"]
-INDEX=config["INDEX"]
+INDEX=GENOME+'.star_idx'
 GTF=config["GTF"]
 ANNO_TAB=config["ANNO_TAB"]
 STRAND=config["STRAND"]
@@ -1233,7 +1233,7 @@ rule reset:
     shell:
         """
         echo 'deleting files..'
-        rm -rf fastqc/ bam_qc/ mapped_reads/ sorted_reads/ bam_qc/ bigWig/ \
+        rm -rf log/ workflow.log fastqc/ bam_qc/ mapped_reads/ sorted_reads/ bam_qc/ bigWig/ \
         feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ gsea/ gsea_compressed/ \
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \

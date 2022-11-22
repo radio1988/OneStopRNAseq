@@ -1,31 +1,31 @@
 version:
-    221111
-human:
-    - /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/hg38.primary.fa
-    - /project/umw_mccb/genome/Homo_sapiens/ucsc_hg38_primary/gencode.v34.primary_assembly.annotation.gtf
+    221114
+homo_sapiens:
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens/hg38.primary.fa
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens/gencode.v34.primary_assembly.annotation.gtf
     - https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/hg38.gencode.v34.te_included.anno.txt
-mouse:
-    - /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/mm10.ucsc.fa
-    - /project/umw_mccb/genome/Mus_musculus_UCSC_mm10/gencode.vM25.primary_assembly.annotation.gtf
+mus_musculus:
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/mm10.ucsc.fa
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/gencode.vM25.primary_assembly.annotation.gtf
     - https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/mm10.gencode.vm25.te_included.anno.txt
-yeast:
-    - /project/umw_mccb/genome/yeast/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
-    - /project/umw_mccb/genome/yeast/Saccharomyces_cerevisiae.R64-1-1.90.gtf
+s_cerevisiae:
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/s_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/s_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.90.gtf
     - https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Saccharomyces_cerevisiae.R64-1-1.90.anno.txt
-roundworm:
-    - /project/umw_mccb/genome/worm/Caenorhabditis_elegans.WBcel235.dna.toplevel.fa
-    - /project/umw_mccb/genome/worm/Caenorhabditis_elegans.WBcel235.90.gtf
+c_elegans:
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/c_elegans/Caenorhabditis_elegans.WBcel235.dna.toplevel.fa
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/c_elegans/Caenorhabditis_elegans.WBcel235.90.gtf
     - https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Caenorhabditis_elegans.WBcel235.90.anno.txt
-fruit_fly:
-    - /project/umw_mccb/genome/Drosophila_melanogaster/ENSEMBL/primary/star_idx
-    - /project/umw_mccb/genome/Drosophila_melanogaster/ENSEMBL/primary/Drosophila_melanogaster.BDGP6.22.96.gtf
+d_melanogaster:
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/d_melanogaster/Drosophila_melanogaster.BDGP6.dna.primary.fa
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/d_melanogaster/Drosophila_melanogaster.BDGP6.22.96.gtf
     - https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Drosophila_melanogaster.BDGP6.22.96.anno.txt
 zebrafish:
-    - /project/umw_mccb/genome/dr/danRer11.primary.fa
-    - /project/umw_mccb/genome/dr/dr.v4.3.2.gtf
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/d_rerio/danRer11.primary.fa
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/d_rerio/dr.v4.3.2.gtf
     - https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/dr.v4.3.2.anno.txt
-soybean:
-    - /project/umw_mccb/genome/glycine_max/Glycine_max.Glycine_max_v2.1.dna_sm.toplevel.fa
-    - /project/umw_mccb/genome/glycine_max/Glycine_max_v2.1.55.gtf
+glycine_max:
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/glycine_max/Glycine_max.Glycine_max_v2.1.dna_sm.toplevel.fa
+    - /pi/mccb-umw/shared/OneStopRNAseq/genome/glycine_max/Glycine_max_v2.1.55.gtf
     - https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Glycine_max_v2.1.55.anno.txt
 

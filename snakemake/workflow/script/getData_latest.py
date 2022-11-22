@@ -10,6 +10,7 @@ import os
 import subprocess
 from datetime import datetime
 from os.path import exists
+import pathlib
 
 srx = sys.argv[1]
 sampleName = sys.argv[2]
@@ -23,7 +24,7 @@ efetchResFile = fastq_folder + "/efetch_res_" + srx + ".txt"
 logFile       = fastq_folder + "/getData_log_" + srx + ".txt"
 
 cmd = "bsub -q short -n 1 -W 0:10 -R rusage[mem=500] -o " + efetchLogFile + " \"esearch -db sra -query " + srx + " | efetch -format runinfo | awk 'NR%2==0' | cut -d ',' -f 1 > " + efetchResFile + "\""
-cmd = "bsub -q short -n 1 -W 0:10 -R rusage[mem=500] -o " + efetchLogFile + " \"esearch -db sra -query " + srx + " | efetch -format runinfo | awk 'NR!=1' | cut -d ',' -f 1 | head -n -1 > " + efetchResFile + "\""
+cmd = "bsub -q short -n 1 -W 0:10 -R rusage[mem=500] -o " + efetchLogFile + " \"esearch -db sra -query " + srx + " | efetch -format runinfo | grep -v '^Run,' | awk 'NR==1' | cut -d ',' -f 1 | head -n 1 > " + efetchResFile + "\""
 with open(logFile, "a") as f:
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
@@ -73,6 +74,12 @@ while (efetchDone == 0):
             efetchResFileContentList = [line for line in open(efetchResFile)] # keep a copy of efetchResFile so it won't be overwritten.
             # if not os.stat(efetchResFile).st_size: # if file empty:
             if len(efetchResFileContentList) < 1:
+                with open(logFile, "a") as f:
+                    now = datetime.now()
+                    current_time = now.strftime("%H:%M:%S")
+                    f.write(current_time + " efetch " + efetchResFile + " is done but is empty, need to resubmit job.\n")
+                    resubmit = resubmit + 1
+            elif len(efetchResFileContentList[0]) < 3: # empty file could contain a single '\n'
                 with open(logFile, "a") as f:
                     now = datetime.now()
                     current_time = now.strftime("%H:%M:%S")
@@ -176,6 +183,10 @@ for srr in srrList:
                                 now = datetime.now()
                                 current_time = now.strftime("%H:%M:%S")
                                 f.write(current_time + " prefetch " + prefetchLogFile + " log file successfully completed.\n")
+                                # move sra out of its containing folder if so:
+                                srafiles = list(pathlib.Path(fastq_folder).glob("**/" + srr + ".sra"))
+                                if len(srafiles) > 0:
+                                    pathlib.Path(srafiles[0]).rename(fastq_folder + "/" + srr + ".sra")
                             prefetchError = 0
                             break
                     if prefetchError == 1:
