@@ -541,7 +541,7 @@ if (sum(anno[, 1] %in% row.names(cts)) < 1){
 ```
 
 ## COUNT output (without filtering)
-```{r}
+```{r count}
 count <- data.frame(cts)
 colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
 count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
@@ -577,18 +577,16 @@ if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
   
   cat(paste("Data dim after filtering:"))
   dim(cts)
+  print(group_count)
+  boxplot(log10(cts+1), las=2, main = "library size after filtering")
 }else{
   print("Library size too small: too few genes/samples would be left after filtering, so skipped filtering.")
   print("Please interpret results with caution")
 }
-# print("Head of filtered data:")
-# head(cts)
-print(group_count)
-boxplot(log10(cts+1), las=2, main = "library size after filtering")
 ```
 
 ## COUNT calculation again (after filtering)
-```{r}
+```{r filtered_count}
 count <- data.frame(cts)
 colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
 count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
@@ -645,7 +643,7 @@ if (featureCountsFormat ){
 ```
 
 ## Design matrix extracted from meta-data
-```{r}
+```{r coldata}
 meta.df <- meta.df[match(colnames(cts), meta.df$SAMPLE_LABEL), ]  # # todo: what if meta has less/more?
 
 
@@ -666,7 +664,7 @@ save.image()
 ```
 
 ## Model fitting
-```{r}
+```{r dds}
 if (length(levels(batch)) > 1){
   dds <- DESeqDataSetFromMatrix(countData = cts, 
                                 colData = coldata, 

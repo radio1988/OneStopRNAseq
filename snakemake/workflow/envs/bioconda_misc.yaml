@@ -4,6 +4,7 @@ name: bioconda_misc
 channels:
   - conda-forge
   - bioconda
+  - anaconda
 
 dependencies:
   - libzlib
