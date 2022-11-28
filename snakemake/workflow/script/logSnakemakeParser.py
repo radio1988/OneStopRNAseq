@@ -24,8 +24,8 @@ ruleDict      = {}
 with open(filename) as f:
     for i, line in enumerate(f):
         # if (re.search("^	count	jobs$", line)):
-        if (re.search("--------------------------  -------  -------------  -------------", line)):
-            lineMetaStart = i
+        if line.split() == ["job", "count", "min", "threads", "max", "threads"]:
+            lineMetaStart = i + 1
         if (line == "\n"):
             if lineMetaEnd == 0:
                 lineMetaEnd   = i
@@ -42,9 +42,11 @@ with open(filename) as f:
             tem = line.split()
             jobNum = tem[1]
             ruleName = tem[0]
+            # print(line, i, lineMetaStart)
             if not ruleName in ruleDict:
                 ruleDict[ruleName] = [jobNum, [], []]
 
+# exit()
 # For each rule, parse out submitted job IDs:
 fileList = [line for line in open(filename)]
 with open(filename) as f:
