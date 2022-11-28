@@ -23,7 +23,8 @@ ruleDict      = {}
 # Parse out line info for meta info and each rule info
 with open(filename) as f:
     for i, line in enumerate(f):
-        if (re.search("^	count	jobs$", line)):
+        # if (re.search("^	count	jobs$", line)):
+        if (re.search("--------------------------  -------  -------------  -------------", line)):
             lineMetaStart = i
         if (line == "\n"):
             if lineMetaEnd == 0:
@@ -37,10 +38,10 @@ with open(filename) as f:
 #  For each rule, parse out total jobs and save in dict:
 with open(filename) as f:
     for i, line in enumerate(f):
-        if i in range(lineMetaStart + 1, lineMetaEnd - 1):
+        if i in range(lineMetaStart + 1, lineMetaEnd - 2):
             tem = line.split()
-            jobNum = tem[0]
-            ruleName = tem[1]
+            jobNum = tem[1]
+            ruleName = tem[0]
             if not ruleName in ruleDict:
                 ruleDict[ruleName] = [jobNum, [], []]
 
