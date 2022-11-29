@@ -684,11 +684,12 @@ rule SalmonTE:
     shell:
         """
         which python &> {log}
+	rm -rf SalmonTE_output/
         python workflow/envs/SalmonTE/SalmonTE.py --version >> {log}
         python workflow/envs/SalmonTE/SalmonTE.py quant \
-        --reference={params.ref} --exprtype=count \
-        --num_threads={threads} \
-        {input.reads} >> {log} 2>&1
+		--reference={params.ref} --exprtype=count \
+		--num_threads={threads} \
+		{input.reads} >> {log} 2>&1
         """
 
 
@@ -772,10 +773,6 @@ rule GSEA:
     config[START] == RNK, then find config[RNKS], else, find {contrast} 
     config[RNKS] contains the full name of the rank file (xlsx or txt), must be put in ./meta/ folder
     rnk file must be named xxx.rnk.txt when feeded to GSEA
-
-    # todo: 
-    [x] no svg if nplots > 200 (yes)
-    [] 
     """
     input: 
         deseq2= "Workflow_DAG.all.svg" # dummy assume existing
@@ -899,7 +896,7 @@ rule rMATS:
     conda:
        "envs/rmats.yaml"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000,  # todo reduce
+        mem_mb=lambda wildcards, attempt: attempt * 10000,  
     threads:
         4
     params:
@@ -921,20 +918,22 @@ rule rMATS:
         mkdir -p rMATS.{wildcards.ascn}/params/
         echo {params.b1} > rMATS.{wildcards.ascn}/params/b1.txt
         echo {params.b2} > rMATS.{wildcards.ascn}/params/b2.txt
+
         which python &> {log}
         rmats.py  \
-        --b1 rMATS.{wildcards.ascn}/params/b1.txt \
-        --b2  rMATS.{wildcards.ascn}/params/b2.txt \
-        --gtf {input.gtf} \
-        -t {params.type} \
-        --readLength {params.length} \
-        --variable-read-length \
-        --libType {params.strandness} \
-        --nthread {threads} \
-        --tstat {threads} \
-        --cstat 0.2 \
-        --od rMATS.{wildcards.ascn}/output/ \
-        --tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
+		--b1 rMATS.{wildcards.ascn}/params/b1.txt \
+		--b2  rMATS.{wildcards.ascn}/params/b2.txt \
+		--gtf {input.gtf} \
+		-t {params.type} \
+		--readLength {params.length} \
+		--variable-read-length \
+		--libType {params.strandness} \
+		--nthread {threads} \
+		--tstat {threads} \
+		--cstat 0.2 \
+		--od rMATS.{wildcards.ascn}/output/ \
+		--tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
+
         cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
         rm -rf rMATS.{wildcards.ascn}/tmp/   &>> {log}
         mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
