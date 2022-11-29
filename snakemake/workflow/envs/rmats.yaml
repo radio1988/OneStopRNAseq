@@ -8,5 +8,5 @@ channels:
 
 dependencies:
         - bioconda::rmats=4.1.2
-        - rmg::glibc=2.19
-        - conda-forge::libblas=3.9.0
+          #- rmg::glibc=2.19
+          #        - conda-forge::libblas=3.9.0
