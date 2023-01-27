@@ -33,6 +33,7 @@ library(DESeq2)
 library(EnhancedVolcano)
 
 # CRAN
+library(tidyverse)
 library(ggplot2)
 library(ggpubr) # ggmaplot
 library(ggrepel)
@@ -89,7 +90,7 @@ fix_hyphen <- function(x){
 readExcel <- function(fname){
   df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
   df <- data.frame(df)  #important
-  df <- data.frame(lapply(df, fix_hyphen))
+  #df <- data.frame(lapply(df, fix_hyphen))
   return (df)
 }
 
@@ -432,9 +433,8 @@ print(contrast.df)
 # read
 paste('countFile:', countFile)
 if (grepl("txt$", countFile)){
-  df <- read.table(countFile, 
-                   sep="\t", header=TRUE, comment.char = '#', quote="",
-                   row.names = 1) # row.name in cts(matrix)
+  df <- read_delim(countFile, delim ="\t", comment = '#') 
+  df <- column_to_rownames(df, 'Geneid')
 } else if (grepl("xlsx$", countFile)){
   df <- readExcel(countFile)  
 } else {
@@ -562,7 +562,7 @@ sample_filter <- colSums(cts) >= min_colsum
 if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
   kept_samples <-  names(sample_filter)[sample_filter]
   meta.df <- filter(meta.df, SAMPLE_LABEL %in% kept_samples)
-  group_count <- count(meta.df, GROUP_LABEL)
+  group_count <- plyr::count(meta.df, 'GROUP_LABEL')
   cts <- cts[expression_filter, sample_filter]
   if (featureCountsFormat) {
     df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
@@ -699,7 +699,7 @@ if (!TEST){
 }
 ```
 
-## QC Plots
+<!-- ## QC Plots -->
 <!-- ## Data transformation -->
 <!-- ```{r} -->
 <!-- #vsd <- vst(dds, blind=FALSE) -->
