@@ -838,9 +838,9 @@ for (i in 1:dim(contrast.df)[2]){
     next
     }
 
-  group_with_reps <- group_count %>% # count >=2 
-     filter(n >= 2) %>% 
-     select(GROUP_LABEL)
+  group_with_reps <- group_count %>%
+     filter(freq >= 2) %>% 
+     dplyr::select(GROUP_LABEL)
   
   with_reps1 <- any(name1$names %in% group_with_reps$GROUP_LABEL)
   with_reps2 <- any(name2$names %in% group_with_reps$GROUP_LABEL)
