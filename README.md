@@ -6,6 +6,7 @@ Citation: Li R, Hu K, Liu H, Green MR, Zhu LJ. OneStopRNAseq: A Web Application 
 `frontend` folder contains website Q&A for online users
 <br> 
 `snakemake` folder contains info for installing OneStopRNASeq locally and run it on your Linux computer<br>
+- Instructions to run OneStopRNASeq on your local linux computer: https://github.com/radio1988/OneStopRNAseq/blob/master/snakemake/README.md
 <br>
 <br>
 <details markdown="1">
