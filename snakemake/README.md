@@ -5,7 +5,7 @@
 - Would need knowledge in basic bash commands to use this workflow
 
 # Installation
-- install anaconda by following instructions on https://docs.anaconda.com/anaconda/install/  (installation tested in conda version 4.9.2)
+- install anaconda by following instructions on https://docs.anaconda.com/anaconda/install/  (installation tested in conda version conda 4.12.0)
 - download OneStopRNASeq by `git clone https://github.com/radio1988/OneStopRNAseq.git`
 - `cd OneStopRNAseq/snakemake`
 - `conda env create -f workflow/envs/osr-base.yaml`  # create an conda env called 'osr-base'
