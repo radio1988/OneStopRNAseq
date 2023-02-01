@@ -1,11 +1,10 @@
 #!/bin/sh
 
-#This script is intended for launching on Macs
-#It may or may not work on *nix, definitely not on windows
+#This script is intended for launch on *nix machines
 
-#-Xdock:name again for Macs, sets the name in menu bar
 #-Xmx4g indicates 4 gb of memory, adjust number up or down as needed
-prefix=`dirname $(readlink $0 || echo $0)`
+#Add the flag -Dsun.java2d.uiScale=2 for HiDPI displays
+prefix=`dirname $(readlink -f $0 || echo $0)`
 
 # Check whether or not to use the bundled JDK
 if [ -d "${prefix}/jdk-11" ]; then
@@ -14,12 +13,12 @@ if [ -d "${prefix}/jdk-11" ]; then
     PATH=$JAVA_HOME/bin:$PATH
 else
     echo "Bundled JDK not found.  Using system JDK."
+    java -version
 fi
 
 exec java -showversion --module-path="${prefix}/modules" -Xmx4g \
     @"${prefix}/gsea.args" \
     --patch-module="jide.common=${prefix}/lib/jide-components-3.7.4.jar:${prefix}/lib/jide-dock-3.7.4.jar:${prefix}/lib/jide-grids-3.7.4.jar" \
-    -Xdock:name="GSEA" \
-    -Xdock:icon="${prefix}/icon_64x64.png" \
+    -Djava.util.logging.config.file="${prefix}/logging.properties" \
     -Dapple.laf.useScreenMenuBar=true \
     --module=org.gsea_msigdb.gsea/xapps.gsea.GSEA "$@"
