@@ -817,7 +817,7 @@ rule GSEA:
         
         which java &>> {log}
 
-        if workflow/envs/GSEA_4.0.3/gsea-cli.sh GSEAPreranked \
+        if workflow/envs/GSEA_4.3.2/gsea-cli.sh GSEAPreranked \
         -gmx {input.db} -rnk {params.rnk_flat_file} -rpt_label {wildcards.db} \
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \

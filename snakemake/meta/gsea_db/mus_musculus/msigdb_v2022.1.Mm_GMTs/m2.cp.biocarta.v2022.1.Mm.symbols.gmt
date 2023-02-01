@@ -1,0 +1,252 @@
+BIOCARTA_RELA_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RELA_PATHWAY	Tnfrsf1a	Tnf	Chuk	Fadd	Ikbkg	Crebbp	Nfkbia	Tnfrsf1b	Rela	Nfkb1	Ep300	Tradd	Ikbkb	Traf6	Ripk1
+BIOCARTA_CSK_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CSK_PATHWAY	Cd4	Cd3d	Zap70	Prkacb	Csk	Prkar2b	Prkar1a	Crebbp	Cd3e	Cd247	Prkar2a	Adcy1	Lck	Prkar1b	Cd3g	Ptprc
+BIOCARTA_SRCRPTP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SRCRPTP_PATHWAY	Csk	Cdc25b	Prkcb	Prkca	Ptpra	Ccnb1	Cdk1	Cdc25c	Cdc25a	Grb2
+BIOCARTA_ARAP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ARAP_PATHWAY	Arfgap1	Cyth1	Arfgap3	Gbf1	Cyth2	Asap1	Arap1	Cyth3	Gpld1	Clta	Chmp4c	Arf1
+BIOCARTA_AGR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_AGR_PATHWAY	Cdc42	Rapsn	Dvl1	Chrna1	Sp1	Dag1	Mapk3	Egfr	Musk	Mapk8	Pak4	Pak3	Lama3	Git2	Mapk1	Cttn	Acta1	Pak2	Chrm1	Lama2	Lama4	Nrg3	Pak1	Arhgef6	Itgb1	Agrn	Jun	Dmd	Lama1	Itga1	Utrn
+BIOCARTA_AKAP95_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_AKAP95_PATHWAY	Prkag1	Prkacb	Prkar2b	Ddx5	Prkar2a	Ncapd2	Ccnb1	Ppp2ca	Cdk1	Akap8
+BIOCARTA_AKT_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_AKT_PATHWAY	Fasl	Ghr	Chuk	Bad	Akt1	Pdpk1	Ikbkg	Foxo1	Casp9	Nfkbia	Foxo4	Rela	Nfkb1	Pik3r1	Ppp2ca	Pik3ca	Ikbkb	Ywhah	Foxo3	Hsp90aa1	Gh
+BIOCARTA_AT1R_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_AT1R_PATHWAY	Mapk3	Egfr	Map3k1	Mapk8	Ptk2b	Agtrap	Shc1	Raf1	Mapk1	Prkcb	Atf2	Prkca	Map2k1	Pak1	Jun	Map2k2	Calm1	Calm3	Agt	Hras	Sos1	Elk1	Map2k4	Grb2	Gnaq
+BIOCARTA_ACE2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ACE2_PATHWAY	Col4a1	Ace	Cma1	Agtr2	Ace2	Col4a4	Agtrap	Col4a6	Col4a2	Ren1	Col4a5	Agt	Col4a3
+BIOCARTA_ASBCELL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ASBCELL_PATHWAY	Il10	Fas	Cd4	Fasl	Cd40lg	Il2	Cd80	Cd28	Cd40	Il4
+BIOCARTA_DNAFRAGMENT_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_DNAFRAGMENT_PATHWAY	Top2a	Gzmb	Casp3	Casp7	Dffa	Top2b	Hmgb1	Hmgb2	Dffb	Endog
+BIOCARTA_CHEMICAL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CHEMICAL_PATHWAY	Trp53	Bad	Akt1	Bax	Casp3	Cycs	Casp7	Casp9	Eif2s1	Prkcb	Tln1	Apaf1	Prkca	Bid	Bcl2	Stat1	Parp1	Casp6
+BIOCARTA_ATM_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ATM_PATHWAY	Trp53	Abl1	Rad50	Chek1	Nbn	Mapk8	Mdm2	Gadd45a	Trp73	Mre11a	Nfkbia	Rpa1	Cdkn1a	Brca1	Rela	Nfkb1	Jun	Chek2	Rad51
+BIOCARTA_AGPCR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_AGPCR_PATHWAY	Prkacb	Prkar2b	Prkar1a	Grk4	Gnas	Prkcb	Prkca	Prkar2a	Arrb1	Prkar1b
+BIOCARTA_BCELLSURVIVAL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BCELLSURVIVAL_PATHWAY	Dpf2	Akt1	Birc5	Mtor	Casp3	Casp7	Pik3cg	Fos	Pik3r1	Xiap	Pik3ca	Itgb1	Cct4	Itga1	Jund	Zbtb7a
+BIOCARTA_BLYMPHOCYTE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BLYMPHOCYTE_PATHWAY	Itgb2	Itgal	Cd40lg	Cd80	Cr2	Cd40	Ptprc	Fcgr2b	Icam1
+BIOCARTA_BCR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BCR_PATHWAY	Cd79a	Cd79b	Btk	Mapk3	Map3k1	Mapk8	Nfatc4	Plcg1	Shc1	Nfatc2	Raf1	Prkcb	Prkca	Fos	Vav1	Map2k1	Ppp3cb	Jun	Calm1	Calm3	Mapk14	Lyn	Nfatc1	Ppp3ca	Hras	Sos1	Syk	Nfatc3	Elk1	Grb2	Ppp3cc
+BIOCARTA_BIOPEPTIDES_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BIOPEPTIDES_PATHWAY	Agtr2	Fyn	Mapk3	Mapk8	Ptk2b	Mylk	Plcg1	Shc1	F2	Raf1	Mapk1	Prkcb	Prkca	Map2k1	Stat3	Gna11	Map2k2	Jak2	Stat5a	Stat1	Calm1	Calm3	Cdk5	Agt	Mapk14	Hras	Sos1	Grb2
+BIOCARTA_CACAM_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CACAM_PATHWAY	Camkk1	Camk2a	Camk4	Calm1	Calm3	Creb1
+BIOCARTA_CDMAC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CDMAC_PATHWAY	Tnf	Myc	Mapk3	Nfkbia	Raf1	Mapk1	Prkcb	Prkca	Fos	Map2k1	Rela	Nfkb1	Jun	Plcb1	Hras
+BIOCARTA_CASPASE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CASPASE_PATHWAY	Casp1	Casp4	Birc3	Arhgdib	Casp2	Lmnb1	Lmnb2	Gzmb	Casp3	Cycs	Casp7	Dffa	Casp9	Apaf1	Prf1	Lmna	Xiap	Parp1	Casp6	Birc2	Casp8	Dffb
+BIOCARTA_CBL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CBL_PATHWAY	Egfr	Csf1r	Met	Prkcb	Pdgfra	Prkca	Egf	Cbl	Sh3glb1	Sh3kbp1	Grb2
+BIOCARTA_CCR3_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CCR3_PATHWAY	Rhoa	Ccl11	Mapk3	Mylpf	Limk1	Ccr3	Gnas	Raf1	Ppp1r12b	Mapk1	Prkcb	Prkca	Map2k1	Rock2	Plcb1	Pik3c2g	Hras	Gnaq
+BIOCARTA_CD40_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CD40_PATHWAY	Chuk	Cd40lg	Ikbkg	Map3k1	Traf3	Tnfaip3	Map3k14	Nfkbia	Dusp1	Rela	Nfkb1	Cd40	Ikbkb	Traf6
+BIOCARTA_MCM_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MCM_PATHWAY	Mcm4	Cdkn1b	Orc2	Mcm6	Ccne1	Cdc6	Orc6	Kitl	Cdk2	Orc4	Mcm7	Orc3	Orc5
+BIOCARTA_G1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_G1_PATHWAY	Trp53	Tfdp1	Abl1	Cdkn1b	Tgfb3	Cdkn2a	Ccna1	Cdk4	Smad3	Ccne1	E2f1	Tgfb2	Dhfr	Cdk6	Skp2	Smad4	Cdk2	Cdkn1a	Atr	Tgfb1	Ccnd1	Rb1	Cdk1	Cdc25a	Gsk3b	Cdkn2b
+BIOCARTA_G2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_G2_PATHWAY	Prkdc	Trp53	Plk1	Chek1	Cdc34	Mdm2	Cdkn2d	Cdc25b	Gadd45a	Cdkn1a	Atr	Brca1	Ep300	Ccnb1	Cdk1	Cdc25c	Wee1	Ywhaq	Rps6ka1	Cdc25a	Ywhah	Myt1
+BIOCARTA_CELL2CELL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CELL2CELL_PATHWAY	Bcar1	Actn3	Ctnna1	Csk	Ctnna2	Actn2	Vcl	Ctnnb1	Pecam1
+BIOCARTA_CERAMIDE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CERAMIDE_PATHWAY	Tnfrsf1a	Nsmaf	Traf2	Bad	Smpd1	Fadd	Mapk3	Map3k1	Bax	Mapk8	Cycs	Raf1	Mapk1	Aifm1	Map2k1	Rela	Nfkb1	Bcl2	Tradd	Casp8	Ripk1	Map2k4
+BIOCARTA_CLASSIC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CLASSIC_PATHWAY	Hc	C1qb	C3	C6	C9	C7	C1s1	C2	C1ra	C1qa	C4b
+BIOCARTA_COMP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_COMP_PATHWAY	Masp1	Hc	C1qb	Cfd	C3	C6	C9	Vps33a	C7	C1s1	Mbl1	C2	C1ra	Masp2	C1qa	C4b
+BIOCARTA_VDR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_VDR_PATHWAY	Med1	Arid1a	Rxra	Prmt1	Tsc2	Baz1b	Actl6a	Smarcc1	Top2b	Crebbp	Carm1	Vdr	Kat2b	Ep300	Snw1	Ncor1	Smarcd1	Smarca4	Smarce1	Chaf1a	Ncoa3	Supt16
+BIOCARTA_HDAC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_HDAC_PATHWAY	Myod1	Ins2	Avp	Akt1	Map2k6	Hdac5	Mapk7	Pik3cg	Nfatc2	Camk2a	Cabin1	Pik3r1	Pik3ca	Insr	Igf1	Ppp3cb	Igf1r	Calm1	Calm3	Mapk14	Nfatc1	Ppp3ca	Ywhah	Ppp3cc
+BIOCARTA_GCR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_GCR_PATHWAY	Adrb2	Akt1	Pik3cg	Gnas	Nr3c1	Anxa1	Rela	Nfkb1	Nos3	Pik3r1	Pik3ca	Calm1	Calm3	Corin	Hsp90aa1	Nppa
+BIOCARTA_CTCF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CTCF_PATHWAY	Trp53	Cd79a	Myc	Cdkn1b	Cd79b	Tgfb3	Cdkn2a	Tgfb2	Mtor	Mdm2	Smad4	Pik3cg	Tgfbr2	Tgfbr1	Tgfbr3	Smad1	Pten	Tgfb1	Pik3r1	Ppp2ca	Pik3ca	Ctcf	Smad5	Rps6kb1
+BIOCARTA_CTL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CTL_PATHWAY	B2m	Itgb2	Itgal	Fas	Fasl	Cd3d	Gzmb	Cd3e	Cd247	Prf1	Cd3g	H2-K1	Icam1	H2-K2
+BIOCARTA_CXCR4_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CXCR4_PATHWAY	Cxcr4	Bcar1	Mapk3	Ptk2b	Plcg1	Raf1	Mapk1	Prkcb	Prkca	Map2k1	Rela	Nfkb1	Pik3r1	Pik3ca	Crk	Cxcl12	Pik3c2g	Hras	Gnaq
+BIOCARTA_CELLCYCLE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CELLCYCLE_PATHWAY	Tfdp1	Cdkn2c	Cdkn1b	Cdkn2a	Ccna1	Cdk4	Ccne1	E2f1	Ccnh	Ccnd3	Cdkn2d	Cdk6	Cdk2	Cdkn1a	Rbl1	Cdk7	Ccnb1	Ccnd1	Rb1	Cdk1	Cdc25a	Ccnd2	Cdkn2b
+BIOCARTA_CFTR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CFTR_PATHWAY	Adrb2	Cftr	Prkacb	Prkar2b	Slc9a3r1	Prkar1a	Prkar2a	Adcy1	Ezr	Prkar1b
+BIOCARTA_CYTOKINE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CYTOKINE_PATHWAY	Il10	Il3	Il6	Ifnb1	Il13	Tnf	Il18	Il9	Il15	Il5	Il17a	Il16	Il2	Il1a	Ifna1	Ifng	Txlna	Il4
+BIOCARTA_INFLAM_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_INFLAM_PATHWAY	Csf1	Il10	Il3	Il6	Csf3	Ifnb1	Il13	Tnf	Cd4	Pdgfa	Il7	Tgfb3	Il15	Il5	Csf2	Il2	Il1a	Tgfb2	Il11	Ifna1	Ifng	Tgfb1	Il4
+BIOCARTA_D4GDI_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_D4GDI_PATHWAY	Casp1	Arhgdib	Gzmb	Casp3	Arhgap5	Cycs	Casp9	Apaf1	Prf1	Jun	Parp1	Casp8
+BIOCARTA_P35ALZHEIMERS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_P35ALZHEIMERS_PATHWAY	Capn1	Cdk5r1	Ppp2ca	Cdk5	Gsk3b	Capns1
+BIOCARTA_RNA_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RNA_PATHWAY	Trp53	Chuk	Map3k14	Nfkbia	Eif2s1	Rela	Nfkb1	Eif2s2	Eif2ak2
+BIOCARTA_MTA3_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MTA3_PATHWAY	Tuba4a	Hspb2	Snai1	Snai2	Mbd3	Esr1	Hspb1	Tuba8	Cdh1	Tuba1c	Ctsd	Aldoa	Mta3	Gapdh	Tuba1b	Greb1	Pdzk1	Mta1	Tuba1a
+BIOCARTA_SKP2E2F_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SKP2E2F_PATHWAY	Tfdp1	Ccna1	Ccne1	E2f1	Cdc34	Skp2	Cul1	Cdk2	Rb1
+BIOCARTA_CALCINEURIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CALCINEURIN_PATHWAY	Sp1	Nfatc4	Marcks	Plcg1	Nfatc2	Sp3	Cdkn1a	Prkcb	Prkca	Ppp3cb	Calm1	Calm3	Nfatc1	Ppp3ca	Nfatc3	Ppp3cc	Gnaq
+BIOCARTA_EGF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EGF_PATHWAY	Mapk3	Egfr	Map3k1	Mapk8	Csnk2a1	Plcg1	Srf	Shc1	Raf1	Prkcb	Prkca	Fos	Map2k1	Stat3	Egf	Pik3r1	Rasa1	Pik3ca	Jun	Stat5a	Stat1	Jak1	Hras	Sos1	Elk1	Map2k4	Grb2	Csnk2a2
+BIOCARTA_NDKDYNAMIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NDKDYNAMIN_PATHWAY	Nme2	Epn1	Ap2a1	Dnm1	Synj1	Synj2	Ppp3cb	Calm1	Calm3	Eps15	Ppp3ca	Ppp3cc	Nme1
+BIOCARTA_EPHA4_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EPHA4_PATHWAY	Selp	Fyn	Ephb1	Acta1	Itgb1	Itga1	Lyn	Rap1b	Epha4
+BIOCARTA_EPO_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EPO_PATHWAY	Epor	Mapk3	Mapk8	Csnk2a1	Stat5b	Plcg1	Shc1	Raf1	Fos	Map2k1	Ptpn6	Jun	Jak2	Stat5a	Hras	Epo	Sos1	Elk1	Grb2	Csnk2a2
+BIOCARTA_ECM_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ECM_PATHWAY	Rhoa	Myl2	Pfn1	Fyn	Rock1	Mapk3	Gsn	Mylk	Arhgap5	Shc1	Pik3cg	Raf1	Diaph1	Mapk1	Tln1	Map2k1	Pik3r1	Pik3ca	Itgb1	Itga1	Hras
+BIOCARTA_ERK_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ERK_PATHWAY	Ngf	Myc	Mapk3	Egfr	Mknk2	Shc1	Gnas	Raf1	Mapk1	Mknk1	Rps6ka5	Pdgfra	Map2k1	Stat3	Ppp2ca	Itgb1	Map2k2	Igf1r	Ngfr	Rps6ka1	Hras	Ptprr	Sos1	Elk1	Grb2	Klk1b3	Klk1b4
+BIOCARTA_ERYTH_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ERYTH_PATHWAY	Flt3	Il3	Il6	Csf3	Ccl3	Il9	Tgfb3	Csf2	Il1a	Tgfb2	Il11	Kitl	Tgfb1	Igf1	Epo
+BIOCARTA_EPONFKB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EPONFKB_PATHWAY	Epor	Hif1a	Nfkbia	Cdkn1a	Rela	Arnt	Nfkb1	Jak2	Grin1	Sod2	Epo
+BIOCARTA_EIF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EIF_PATHWAY	Eif3a	Eef2k	Eif2s1	Eif2s3x	Eif1a	Eif5	Eif6	Eef2	Eif2s2	Eif1ad3
+BIOCARTA_EXTRINSIC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EXTRINSIC_PATHWAY	Proc	F7	F5	Fgg	F2r	Fgb	Fga	F2	Tfpi	Pros1	Serpinc1	F10	F3
+BIOCARTA_FAS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_FAS_PATHWAY	Prkdc	Fas	Arhgdib	Fasl	Ptpn13	Lmnb1	Fadd	Lmnb2	Map3k1	Mapk8	Casp3	Casp7	Dffa	Sptan1	Pak2	Lmna	Map3k7	Pak1	Daxx	Rb1	Jun	Parp1	Casp6	Faf1	Cflar	Casp8	Dffb	Map2k4
+BIOCARTA_FCER1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_FCER1_PATHWAY	Map2k7	Pla2g4a	Btk	Fcer1a	Mapk3	Map3k1	Mapk8	Fcer1g	Nfatc4	Plcg1	Shc1	Pik3cg	Nfatc2	Raf1	Mapk1	Prkcb	Pak2	Fos	Vav1	Map2k1	Pik3r1	Pik3ca	Ppp3cb	Jun	Calm1	Calm3	Lyn	Nfatc1	Ms4a2	Ppp3ca	Hras	Sos1	Syk	Nfatc3	Elk1	Map2k4	Grb2	Ppp3cc
+BIOCARTA_FIBRINOLYSIS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_FIBRINOLYSIS_PATHWAY	Plg	Plau	Fgg	F2r	Fgb	Fga	F2	Plat	F13a1	Serpine1	Serpinb2
+BIOCARTA_FMLP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_FMLP_PATHWAY	Gna15	Mapk3	Map2k6	Map3k1	Map2k3	Nfatc4	Fpr1	Nfatc2	Camk2a	Nfkbia	Raf1	Mapk1	Map2k1	Rela	Nfkb1	Pak1	Ncf2	Ppp3cb	Map2k2	Calm1	Calm3	Mapk14	Nfatc1	Plcb1	Ppp3ca	Pik3c2g	Hras	Nfatc3	Elk1	Ncf1	Ppp3cc
+BIOCARTA_FREE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_FREE_PATHWAY	Gpx1	Tnf	Xdh	Rela	Gss	Nfkb1	Sod1	Gsr
+BIOCARTA_GABA_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_GABA_PATHWAY	Gabra2	Itga2b	Gabra3	Ubqln1	Gabra4	Nsf	Gabarap	Gabra5	Gphn	Gabra1
+BIOCARTA_GATA3_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_GATA3_PATHWAY	Il13	Il5	Prkacb	Map2k3	Prkar2b	Prkar1a	Nfatc2	Prkar2a	Maf	Il4	Prkar1b	Mapk14	Gata3	Nfatc1
+BIOCARTA_SET_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SET_PATHWAY	Apex1	Gzmb	Gzma	Dffa	Crebbp	Prf1	Anp32a	Hmgb2	Set	Dffb	Nme1
+BIOCARTA_GH_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_GH_PATHWAY	Socs1	Ghr	Ins2	Irs1	Mapk3	Slc2a4	Stat5b	Plcg1	Srf	Shc1	Pik3cg	Raf1	Mapk1	Prkcb	Prkca	Map2k1	Pik3r1	Pik3ca	Insr	Ptpn6	Jak2	Stat5a	Rps6ka1	Hnf1a	Hras	Gh	Sos1	Grb2
+BIOCARTA_TCAPOPTOSIS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TCAPOPTOSIS_PATHWAY	Fas	Cd4	Fasl	Cd3d	Ccr5	Cd3e	Cd247	Cd28	Cd3g
+BIOCARTA_HIVNEF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_HIVNEF_PATHWAY	Prkdc	Psen1	Tnfrsf1a	Tnf	Fas	Arhgdib	Prkcd	Fasl	Traf2	Map2k7	Casp2	Chuk	Lmnb1	Fadd	Map3k5	Lmnb2	Map3k1	Gsn	Mapk8	Mdm2	Casp3	Cycs	Casp7	Dffa	Casp9	Bag4	Map3k14	Nfkbia	Sptan1	Apaf1	Pak2	Bid	Tnfrsf1b	Traf1	Lmna	Rela	Nfkb1	Bcl2	Rasa1	Xiap	Tradd	Cdk11b	Daxx	Rb1	Parp1	Casp6	Psen2	Birc2	Cflar	Casp8	Ripk1	Dffb	Actg1	Cradd
+BIOCARTA_MPR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MPR_PATHWAY	Pin1	Mapk3	Cap1	Pgr	Prkacb	Prkar2b	Prkar1a	Mapk1	Acta1	Prkar2a	Adcy1	Ccnb1	Cdk1	Cdc25c	Rps6ka1	Prkar1b	Hras	Myt1
+BIOCARTA_HCMV_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_HCMV_PATHWAY	Sp1	Akt1	Mapk3	Map2k6	Map3k1	Map2k3	Pik3cg	Mapk1	Map2k1	Rela	Nfkb1	Pik3r1	Pik3ca	Rb1	Map2k2	Mapk14	Creb1
+BIOCARTA_IGF1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IGF1_PATHWAY	Irs1	Mapk3	Ptpn11	Mapk8	Csnk2a1	Srf	Shc1	Pik3cg	Raf1	Fos	Map2k1	Pik3r1	Rasa1	Pik3ca	Igf1	Jun	Igf1r	Hras	Sos1	Elk1	Grb2	Csnk2a2
+BIOCARTA_IL17_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL17_PATHWAY	Il3	Il6	Csf3	Cd8a	Cd4	Cd3d	Il17a	Cd2	Cd34	Kitl	Cd3e	Cd247	Cd3g
+BIOCARTA_IL2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL2_PATHWAY	Il2ra	Il2rg	Mapk3	Il2	Mapk8	Csnk2a1	Stat5b	Il2rb	Shc1	Raf1	Fos	Map2k1	Jak3	Jun	Stat5a	Jak1	Lck	Hras	Sos1	Syk	Elk1	Grb2	Csnk2a2
+BIOCARTA_IL3_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL3_PATHWAY	Il3	Mapk3	Stat5b	Shc1	Raf1	Csf2rb	Fos	Map2k1	Ptpn6	Jak2	Stat5a	Hras	Sos1	Il3ra	Grb2
+BIOCARTA_IL4_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL4_PATHWAY	Il2rg	Irs1	Akt1	Shc1	Stat6	Il4ra	Jak3	Il4	Jak1	Rps6kb1	Grb2
+BIOCARTA_IL5_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL5_PATHWAY	Il6	Cd4	Il5ra	Il5	Ccl11	Ccr3	Il1b	Il4
+BIOCARTA_IL6_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL6_PATHWAY	Il6	Il6ra	Il6st	Mapk3	Ptpn11	Csnk2a1	Srf	Shc1	Raf1	Fos	Map2k1	Jak3	Stat3	Jun	Jak2	Jak1	Hras	Sos1	Elk1	Grb2	Cebpb	Csnk2a2
+BIOCARTA_IL10_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL10_PATHWAY	Il10	Il6	Tnf	Il10rb	Il1a	Blvra	Stat3	Hmox1	Stat5a	Stat1	Jak1	Il10ra
+BIOCARTA_IL12_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL12_PATHWAY	Il12rb1	Il18	Stat4	Cd3d	Cxcr3	Ccr5	Map2k6	Tyk2	Mapk8	Etv5	Il12rb2	Cd3e	Cd247	Ifng	Il18r1	Jun	Jak2	Mapk14	Cd3g
+BIOCARTA_IL2RB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL2RB_PATHWAY	Socs1	Il2ra	Fas	Myc	Il2rg	Fasl	Socs3	Bad	Irs1	Akt1	Nmi	Mapk3	E2f1	Crkl	Stat5b	Il2rb	Shc1	Pik3cg	Ikzf3	Raf1	Mapk1	Fos	Jak3	Bcl2	Pik3r1	Pik3ca	Cbl	Ptpn6	Stat5a	Jak1	Hras	Cflar	Sos1	Syk	Rps6kb1	Grb2
+BIOCARTA_IL22BP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL22BP_PATHWAY	Socs3	Tyk2	Stat5b	Jak3	Stat3	Jak2	Stat5a	Stat1	Jak1
+BIOCARTA_IL7_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL7_PATHWAY	Il7r	Il7	Fyn	Nmi	Ptk2b	Stat5b	Pik3cg	Crebbp	Jak3	Bcl2	Ep300	Pik3r1	Pik3ca	Stat5a	Jak1	Lck
+BIOCARTA_GSK3_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_GSK3_PATHWAY	Wnt1	Dvl1	Akt1	Pdpk1	Axin1	Irak1	Myd88	Lbp	Fzd1	Rela	Lef1	Nfkb1	Pik3r1	Ppp2ca	Pik3ca	Ccnd1	Ctnnb1	Gja1	Eif2ak2	Apc	Gsk3b
+BIOCARTA_DEATH_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_DEATH_PATHWAY	Tnfsf10	Traf2	Chuk	Fadd	Tnfsf13	Casp3	Cycs	Casp7	Dffa	Casp9	Tnfrsf25	Map3k14	Nfkbia	Tnfrsf10b	Sptan1	Gas2	Apaf1	Bid	Lmna	Rela	Nfkb1	Bcl2	Xiap	Tradd	Casp6	Birc2	Cflar	Casp8	Ripk1	Dffb
+BIOCARTA_RACCYCD_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RACCYCD_PATHWAY	Rhoa	Tfdp1	Cdkn1b	Chuk	Akt1	Cdk4	Mapk3	Ikbkg	Ccne1	E2f1	Cdk6	Cdk2	Nfkbia	Raf1	Cdkn1a	Mapk1	Rela	Nfkb1	Pik3r1	Pak1	Pik3ca	Ccnd1	Rb1	Ikbkb	Hras
+BIOCARTA_GLEEVEC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_GLEEVEC_PATHWAY	Myc	Bad	Akt1	Mapk3	Map3k1	Crkl	Mapk8	Stat5b	Pik3cg	Raf1	Fos	Map2k1	Pik3r1	Pik3ca	Jun	Jak2	Stat5a	Stat1	Hras	Sos1	Map2k4	Grb2	Bcr
+BIOCARTA_INSULIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_INSULIN_PATHWAY	Ins2	Irs1	Mapk3	Ptpn11	Slc2a4	Mapk8	Csnk2a1	Srf	Shc1	Pik3cg	Raf1	Fos	Map2k1	Pik3r1	Rasa1	Pik3ca	Insr	Jun	Hras	Sos1	Elk1	Grb2	Csnk2a2
+BIOCARTA_INTEGRIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_INTEGRIN_PATHWAY	Rhoa	Bcar1	Fyn	Actn3	Capn1	Rock1	Mapk3	Crkl	Mapk8	Csk	Cav1	Actn2	Shc1	Raf1	Ppp1r12b	Mapk1	Tln1	Acta1	Map2k1	Itgb1	Jun	Map2k2	Vcl	Zyx	Rapgef1	Tns1	Itga1	Hras	Sos1	Grb2	Capns1	Rap1a	Bcr
+BIOCARTA_INTRINSIC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_INTRINSIC_PATHWAY	Col4a1	F8	Kng1	Proc	F5	Fgg	F2r	Fgb	F11	Serping1	Col4a4	F12	Fga	F2	Pros1	Col4a6	Col4a2	Serpinc1	F10	Col4a5	Col4a3	F9	Klkb1
+BIOCARTA_KERATINOCYTE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_KERATINOCYTE_PATHWAY	Tnfrsf1a	Tnf	Fas	Prkcd	Fasl	Traf2	Map2k7	Chuk	Sp1	Map3k5	Prkcg	Mapk3	Egfr	Map2k6	Map3k1	Map2k3	Mapk8	Prkce	Mapk13	Map3k14	Nfkbia	Raf1	Mapk1	Prkcb	Prkca	Tnfrsf1b	Fos	Map2k1	Rela	Egf	Nfkb1	Bcl2	Ppp2ca	Daxx	Jun	Ikbkb	Ets2	Ets1	Hoxa7	Mapk14	Prkcq	Hras	Prkch	Cebpa	Ripk1	Map2k4
+BIOCARTA_TCRA_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TCRA_PATHWAY	Cd4	Cd3d	Fyn	Zap70	Cd3e	Cd247	Lck	Cd3g	Ptprc
+BIOCARTA_LECTIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_LECTIN_PATHWAY	Masp1	Hc	C3	C6	C9	C7	Mbl1	C2	Masp2	C4b
+BIOCARTA_PYK2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PYK2_PATHWAY	Bcar1	Mapk3	Map3k1	Map2k3	Crkl	Mapk8	Ptk2b	Plcg1	Shc1	Raf1	Mapk1	Prkcb	Prkca	Map2k1	Pak1	Jun	Map2k2	Calm1	Calm3	Mapk14	Hras	Sos1	Map2k4	Grb2	Gnaq
+BIOCARTA_EGFR_SMRTE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EGFR_SMRTE_PATHWAY	Egfr	Map3k1	Rxra	Thrb	Map2k1	Egf	Thra	Ncor2	Mapk14	Rara	Zbtb16
+BIOCARTA_MAPK_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MAPK_PATHWAY	Myc	Map3k8	Traf2	Map2k7	Tgfb3	Chuk	Sp1	Map3k5	Mapk3	Map2k6	Map3k1	Tgfb2	Map2k3	Map4k4	Rps6ka4	Mapk8	Map4k2	Map3k3	Mapk13	Map3k4	Rapgef2	Map3k6	Mapk7	Mapk12	Mapk10	Mknk2	Mapk9	Shc1	Mapk11	Map4k1	Map3k14	Nfkbia	Map3k12	Raf1	Map3k11	Mapk1	Tgfbr1	Mknk1	Atf2	Map3k2	Rps6ka5	Mapkapk2	Pak2	Fos	Tgfb1	Map2k1	Rela	Nfkb1	Map3k7	Pak1	Tradd	Rps6ka2	Max	Daxx	Rps6kb2	Mapkapk5	Jun	Map2k2	Stat1	Ikbkb	Map4k5	Rps6ka1	Mapk14	Map4k3	Map2k5	Rps6ka3	Hras	Cebpa	Ripk1	Map3k10	Rps6kb1	Elk1	Map2k4	Creb1	Grb2	Mapk6
+BIOCARTA_MCALPAIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MCALPAIN_PATHWAY	Myl2	Capn1	Egfr	Cxcr3	Prkacb	Capn2	Prkar2b	Prkar1a	Mylk	Tln1	Acta1	Egf	Prkar2a	Itgb1	Ezr	Prkar1b	Itga1	Hras	Capns1
+BIOCARTA_ETS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ETS_PATHWAY	Csf1	Sin3b	Sin3a	E2f1	Hdac2	Csf1r	Hdac5	E2f4	Etv3	Rbl1	Fos	Ddx20	Jun	Ncor2	Ets2	Ets1	Hras
+BIOCARTA_MONOCYTE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MONOCYTE_PATHWAY	Itgb2	Sell	Itgal	Selp	Sele	Itga4	Itgam	Itgb1	Pecam1	Cd44	Icam1
+BIOCARTA_MTOR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MTOR_PATHWAY	Eif3a	Eif4e	Akt1	Eif4ebp1	Pdpk1	Mtor	Pdk2	Tsc2	Mknk1	Tsc1	Pten	Pik3r1	Eif4a2	Ppp2ca	Pik3ca	Eif4g3	Rheb	Eif4a1	Rps6kb1
+BIOCARTA_IGF1R_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IGF1R_PATHWAY	Bad	Irs1	Akt1	Mapk3	Prkacb	Prkar2b	Prkar1a	Shc1	Raf1	Mapk1	Map2k1	Prkar2a	Pik3r1	Adcy1	Pik3ca	Igf1r	Rps6ka1	Prkar1b	Ywhah	Hras	Sos1	Grb2
+BIOCARTA_PITX2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PITX2_PATHWAY	Wnt1	Dvl1	Med1	Axin1	Crebbp	Kat5	Fzd1	Pitx2	Lef1	Ep300	Trrap	Ctnnb1	Ldb1	Apc	Gsk3b
+BIOCARTA_NGF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NGF_PATHWAY	Ngf	Mapk3	Mapk8	Csnk2a1	Plcg1	Shc1	Pik3cg	Raf1	Fos	Map2k1	Pik3r1	Pik3ca	Jun	Ngfr	Hras	Sos1	Elk1	Grb2	Klk1b3	Csnk2a2	Klk1b4
+BIOCARTA_VIP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_VIP_PATHWAY	Myc	Chuk	Map3k1	Prkacb	Prkar2b	Prkar1a	Plcg1	Vip	Egr3	Nfatc2	Nfkbia	Rela	Prkar2a	Nfkb1	Ppp3cb	Calm1	Calm3	Egr2	Prkar1b	Nfatc1	Ppp3ca	Vipr2	Ppp3cc	Gnaq
+BIOCARTA_NFAT_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NFAT_PATHWAY	Calr	Hand1	Akt1	Mapk3	Edn1	Prkacb	Mapk8	Mef2c	Prkar2b	Csnk1a1	Nfatc4	Prkar1a	Nkx2-5	F2	Pik3cg	Nfatc2	Camk2a	Crebbp	Raf1	Mapk1	Acta1	Camk4	Gata4	Map2k1	Prkar2a	Pik3r1	Pik3ca	Igf1	Ppp3cb	Calm1	Calm3	Hbegf	Agt	Prkar1b	Mapk14	Nfatc1	Ppp3ca	Hras	Nfatc3	Ctf1	Rps6kb1	Gsk3b	Myh2	Hand2	Ppp3cc	Fgf2	Nppa
+BIOCARTA_NTHI_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NTHI_PATHWAY	Tnf	Chuk	Smad3	Map2k6	Map2k3	Mapk11	Smad4	Nr3c1	Crebbp	Map3k14	Nfkbia	Tgfbr2	Tgfbr1	Myd88	Il1b	Dusp1	Rela	Nfkb1	Ep300	Map3k7	Ikbkb	Mapk14
+BIOCARTA_NFKB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NFKB_PATHWAY	Il1r1	Tnfrsf1a	Tnf	Chuk	Fadd	Ikbkg	Il1a	Map3k1	Irak1	Tnfaip3	Map3k14	Nfkbia	Myd88	Tnfrsf1b	Rela	Nfkb1	Map3k7	Tradd	Ikbkb	Traf6	Ripk1
+BIOCARTA_NOS1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NOS1_PATHWAY	Grin2a	Prkacb	Prkar2b	Dlg4	Prkar1a	Grin2c	Nos1	Prkcb	Prkca	Prkar2a	Ppp3cb	Grin1	Calm1	Calm3	Prkar1b	Grin2d	Ppp3ca	Grin2b	Ppp3cc
+BIOCARTA_NO2IL12_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NO2IL12_PATHWAY	Il12rb1	Stat4	Cd4	Nos2	Cd3d	Cxcr3	Ccr5	Tyk2	Cd2	Il12rb2	Cd3e	Cd247	Ifng	Jak2	Cd3g
+BIOCARTA_RARRXR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RARRXR_PATHWAY	Rxra	Tbp	Kat2b	Ncor2	Rara	Ncoa3
+BIOCARTA_NUCLEARRS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NUCLEARRS_PATHWAY	Rarg	Cyp4b1	Pparg	Nr1h4	Cyp27b1	Cyp24a1	Nr1i2	Cyp1a2	Abcg1	Cyp8b1	Cyp2e1	Nr1h3	Abcc3	Cyp2c70	Abcc2	Cyp26a1	Abcb1b	Abcb1a	Ppara	Vdr	Rarb	Abca1	Abcg5	Abcd2	Ppard	Cyp3a11	Nr0b2	Abcd3	Rara	Abcb11	Cyp4a12b	Nr1i3
+BIOCARTA_ARENRF2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ARENRF2_PATHWAY	Atf4	Nfe2l2	Por	Mapk8	Maff	Mafk	Mapk1	Prkcb	Prkca	Fos	Keap1	Mafg	Hmox2	Jun	Hmox1	Mapk14	Cryz	Creb1	Gsta2
+BIOCARTA_P38MAPK_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_P38MAPK_PATHWAY	Cdc42	Hspb2	Myc	Hmgn1	Traf2	Tgfb3	Map3k5	Hspb1	Map2k6	Map3k1	Tgfb2	Rapgef2	Shc1	Ddit3	Tgfbr1	Mknk1	Atf2	Mapkapk2	Tgfb1	Map3k7	Tradd	Max	Daxx	Mapkapk5	Stat1	Mapk14	Hras	Ripk1	Elk1	Map2k4	Creb1	Grb2
+BIOCARTA_P53_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_P53_PATHWAY	Trp53	Timp3	Cdk4	Pcna	Ccne1	E2f1	Bax	Mdm2	Gadd45a	Cdk2	Cdkn1a	Apaf1	Bcl2	Ccnd1	Rb1
+BIOCARTA_PDGF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PDGF_PATHWAY	Pdgfa	Mapk3	Map3k1	Mapk8	Csnk2a1	Plcg1	Srf	Shc1	Pik3cg	Raf1	Prkcb	Pdgfra	Prkca	Fos	Map2k1	Stat3	Pik3r1	Rasa1	Pik3ca	Jun	Stat5a	Stat1	Jak1	Hras	Sos1	Elk1	Map2k4	Grb2	Csnk2a2
+BIOCARTA_CCR5_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CCR5_PATHWAY	Cxcr4	Ccr5	Mapk8	Ptk2b	Plcg1	Prkcb	Prkca	Ccl4	Fos	Jun	Calm1	Calm3	Ccl2	Cxcl12	Mapk14	Gnaq
+BIOCARTA_PTDINS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PTDINS_PATHWAY	Bad	Btk	Akt1	Ap2a1	Pdpk1	Prkce	Prkcz	Plcg1	Vav2	Tamalin	Lyn	Arf1	Rps6kb1	Gsk3b	Pp2d1
+BIOCARTA_PLCE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PLCE_PATHWAY	Adrb2	Prkacb	Rapgef3	Prkar2b	Prkar1a	Plce1	Prkar2a	Adcy1	Prkar1b	Rap2b	Ptger1
+BIOCARTA_EDG1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EDG1_PATHWAY	Itgav	Rhoa	Smpd2	S1pr1	Pdgfa	Smpd1	Akt1	Mapk3	Sphk1	Asah1	Itgb3	Pik3cg	Mapk1	Prkcb	Pdgfra	Prkca	Pik3r1	Adcy1	Pik3ca	Plcb1
+BIOCARTA_CDK5_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CDK5_PATHWAY	Ngf	Mapk3	Cdk5r1	Egr1	Raf1	Mapk1	Map2k1	Map2k2	Ngfr	Cdk5	Hras	Klk1b3	Klk1b4
+BIOCARTA_PLATELETAPP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PLATELETAPP_PATHWAY	Col4a1	Plg	Plau	F11	Col4a4	F2	Plat	Col4a6	Col4a2	Serpine1	Col4a5	Col4a3	F9
+BIOCARTA_PS1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PS1_PATHWAY	Psen1	Wnt1	Dvl1	Dll1	Axin1	Adam17	Btrc	Rbpj	Fzd1	Notch1	Ctnnb1	Hnf1a	Apc	Gsk3b
+BIOCARTA_AKAPCENTROSOME_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_AKAPCENTROSOME_PATHWAY	Rhoa	Prkag1	Prkacb	Prkce	Prkar2b	Akap9	Pkn1	Pcnt	Prkar2a	Map2	Ppp2ca	Cdk1
+BIOCARTA_PTEN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PTEN_PATHWAY	Cdkn1b	Fasl	Bcar1	Akt1	Mapk3	Pdpk1	Pdk2	Shc1	Mapk1	Pten	Pik3r1	Pik3ca	Itgb1	Ilk	Foxo3	Sos1	Grb2
+BIOCARTA_RAB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RAB_PATHWAY	Rab11a	Rab3a	Rab4a	Rab9	Rab6a	Rab27a	Rab8a	Acta1	Rab1a	Rab7	Rab2a	Pp2d1
+BIOCARTA_RAC1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RAC1_PATHWAY	Mylpf	Limk1	Map3k1	Ralbp1	Mylk	Wasf1	Arfip2	Pik3cg	Cdk5r1	Ppp1r12b	Pld1	Pdgfra	Vav1	Pik3r1	Pak1	Pik3ca	Ncf2	Cdk5	Rps6kb1	Trio	Chn1
+BIOCARTA_RAS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RAS_PATHWAY	Rhoa	Cdc42	Chuk	Bad	Ralgds	Akt1	Mapk3	Ralbp1	Rala	Casp9	Pik3cg	Raf1	Pld1	Foxo4	Map2k1	Rela	Nfkb1	Pik3r1	Pik3ca	Hras	Elk1
+BIOCARTA_NKCELLS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NKCELLS_PATHWAY	B2m	Il18	Mapk3	Lat	Ptk2b	Klrc1	Vav1	Map2k1	Pik3r1	Pak1	Pik3ca	Itgb1	Ptpn6	Klrc2	Klrc3	Syk	Klrd1	H2-K1	H2-K2
+BIOCARTA_RB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RB_PATHWAY	Trp53	Cdk4	Chek1	Cdc25b	Cdk2	Rb1	Cdk1	Cdc25c	Wee1	Cdc25a	Ywhah	Myt1
+BIOCARTA_BAD_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BAD_PATHWAY	Il3	Bad	Akt1	Mapk3	Prkacb	Bax	Prkar2b	Prkar1a	Kitl	Pik3cg	Mapk1	Csf2rb	Kit	Prkar2a	Bcl2	Pik3r1	Adcy1	Pik3ca	Igf1	Igf1r	Rps6ka1	Prkar1b	Ywhah	Il3ra
+BIOCARTA_CK1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CK1_PATHWAY	Prkacb	Prkar2b	Prkar1a	Drd2	Ppp1r1b	Drd1	Cdk5r1	Csnk1d	Prkar2a	Ppp2ca	Cdk5	Prkar1b	Plcb1	Ppp3ca	Grm1
+BIOCARTA_EIF2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EIF2_PATHWAY	Eif2s1	Eif2ak4	Eif2s3x	Eif2ak3	Eif5	Eif2s2	Eif2ak2	Eif2ak1	Gsk3b
+BIOCARTA_EIF4_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EIF4_PATHWAY	Eif4e	Ghr	Irs1	Akt1	Eif4ebp1	Mapk3	Pdpk1	Mtor	Pdk2	Mapk1	Prkcb	Mknk1	Prkca	Pten	Pik3r1	Eif4a2	Pik3ca	Mapk14	Eif4a1	Pabpc1	Rps6kb1
+BIOCARTA_STEM_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_STEM_PATHWAY	Csf1	Il3	Il6	Csf3	Cd8a	Cd4	Il9	Il7	Il5	Csf2	Il2	Il11	Il4	Epo
+BIOCARTA_P27_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_P27_PATHWAY	Tfdp1	Cdkn1b	Cks1b	Ccne1	E2f1	Rbx1	Skp2	Cul1	Cdk2	Rb1	Nedd8
+BIOCARTA_PGC1A_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PGC1A_PATHWAY	Slc2a4	Hdac5	Camk2a	Ppara	Camk4	Ppargc1a	Ppp3cb	Calm1	Calm3	Ppp3ca	Ywhah	Esrra	Ppp3cc
+BIOCARTA_PML_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PML_PATHWAY	Trp53	Tnfrsf1a	Tnf	Pax3	Fas	Fasl	Uba2	Crebbp	Tnfrsf1b	Sae1	Daxx	Rb1	Sp100	Hras	Sirt1	Sumo1	Pml	Rara
+BIOCARTA_DREAM_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_DREAM_PATHWAY	Crem	Oprk1	Mapk3	Prkacb	Prkar2b	Prkar1a	Fos	Prkar2a	Jun	Prkar1b	Kcnip3	Creb1
+BIOCARTA_RHO_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RHO_PATHWAY	Rhoa	Pfn1	Arhgef1	Rock1	Mylpf	Limk1	Gsn	Mylk	Arhgap5	Ppp1r12b	Diaph1	Baiap2	Tln1	Pip5k1b	Ophn1	Vcl	Pip5k1a	Arhgef5	Arhgap6	Arhgap4
+BIOCARTA_AKAP13_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_AKAP13_PATHWAY	Rhoa	Lpar1	Prkag1	Prkacb	Lpar2	Prkar2b	Lpar3	Prkar2a	Gna12
+BIOCARTA_ATRBRCA_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ATRBRCA_PATHWAY	Trp53	Rad50	Fanca	Chek1	Nbn	Fancg	Rad1	Hus1	Fancc	Mre11a	Fancd2	Atr	Brca2	Brca1	Rad17	Rad9a	Chek2	Rad51	Trex1
+BIOCARTA_CARDIACEGF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CARDIACEGF_PATHWAY	Rhoa	Myc	Agtr2	Egfr	Edn1	Plcg1	Prkcb	Prkca	Ednrb	Fos	Rela	Egf	Nfkb1	Jun	Ednra	Agt	Hras	Adam12
+BIOCARTA_HER2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_HER2_PATHWAY	Il6	Il6ra	Il6st	Mapk3	Egfr	Esr1	Shc1	Pik3cg	Carm1	Raf1	Mapk1	Grip1	Map2k1	Stat3	Ep300	Pik3r1	Pik3ca	Erbb2	Hras	Sos1	Erbb3	Grb2	Erbb4
+BIOCARTA_ERK5_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ERK5_PATHWAY	Akt1	Mapk3	Mapk7	Plcg1	Ntrk1	Shc1	Pik3cg	Mapk1	Pik3r1	Pik3ca	Rps6ka1	Hras	Creb1	Grb2
+BIOCARTA_MAL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MAL_PATHWAY	Rhoa	Cdc42	Rock1	Mapk3	Limk1	Map3k1	Mapk8	Map4k2	Mal	Srf	Raf1	Diaph1	Mapk1	Acta1	Map2k1	Map2k2	Hnf1a	Hras
+BIOCARTA_MEF2D_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MEF2D_PATHWAY	Capn2	Hdac2	Nfatc2	Prkcb	Prkca	Cabin1	Ep300	Ppp3cb	Calm1	Calm3	Nfatc1	Ppp3ca	Ppp3cc	Capns1	Mef2d
+BIOCARTA_MITOCHONDRIA_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MITOCHONDRIA_PATHWAY	Birc3	Bak1	Bax	Casp3	Cycs	Casp7	Dffa	Diablo	Casp9	Apaf1	Bid	Aifm1	Bcl2	Xiap	Casp6	Birc2	Casp8	Dffb	Endog
+BIOCARTA_ACH_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ACH_PATHWAY	Rapsn	Chrng	Fasl	Bad	Akt1	Tert	Musk	Ptk2b	Chrnb1	Pik3cg	Pik3r1	Pik3ca	Ywhah	Foxo3
+BIOCARTA_PARKIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PARKIN_PATHWAY	Snca	Septin5	Uba2	Sncaip	Prkn	Sumo1	Gpr37	Ube2g2
+BIOCARTA_CDC42RAC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CDC42RAC_PATHWAY	Rhoa	Cdc42	Wasl	Pdgfra	Pik3r1	Pak1	Pik3ca
+BIOCARTA_RANMS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RANMS_PATHWAY	Kpna2	Ranbp1	Aurka	Kpnb1	Rcc1	Rangap1	Kif15	Ran	Tpx2
+BIOCARTA_BARR_MAPK_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BARR_MAPK_PATHWAY	Mapk3	Kcna3	Kcna2	Dnm1	Gnas	Kcna4	Raf1	Mapk1	Map2k1	Grk2	Adcy1	Arrb1	Map2k2	Plcb1
+BIOCARTA_TOB1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TOB1_PATHWAY	Il2ra	Tgfb3	Cd3d	Smad3	Il2	Tgfb2	Smad4	Tgfbr2	Tgfbr1	Tgfbr3	Cd3e	Cd247	Ifng	Tgfb1	Cd28	Tob1	Il4	Tob2	Cd3g
+BIOCARTA_BARRESTIN_SRC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BARRESTIN_SRC_PATHWAY	Hck	Mapk3	Kcna3	Kcna2	Dnm1	Gnas	Kcna4	Raf1	Mapk1	Map2k1	Grk2	Adcy1	Arrb1	Fgr	Map2k2	Plcb1	Hras
+BIOCARTA_NKT_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NKT_PATHWAY	Ifngr1	Il12rb1	Ccl3	Cxcr4	Cd4	Ccr7	Tgfb3	Il5	Cd40lg	Csf2	Ccr2	Cxcr3	Il2	Ccr5	Tgfb2	Ccr3	Noct	Il12rb2	Il4ra	Ifng	Ccl4	Tgfb1	Ifngr2	Il18r1	Cd28	Ccr1	Il4
+BIOCARTA_IL1R_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IL1R_PATHWAY	Il1rn	Il1r1	Il6	Ifnb1	Tnf	Tgfb3	Chuk	Map2k6	Il1a	Map3k1	Tgfb2	Map2k3	Mapk8	Irak1	Ifna1	Irak3	Irak2	Map3k14	Nfkbia	Myd88	Il1b	Tgfb1	Rela	Il1rap	Nfkb1	Map3k7	Jun	Ikbkb	Traf6	Mapk14	Ecsit
+BIOCARTA_MET_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MET_PATHWAY	Mapk3	Ptpn11	Crkl	Mapk8	Ptk2b	Met	Pik3cg	Map4k1	Raf1	Mapk1	Acta1	Pten	Fos	Map2k1	Stat3	Pik3r1	Rasa1	Pak1	Pik3ca	Itgb1	Hgf	Jun	Map2k2	Gab1	Crk	Rapgef1	Itga1	Hras	Sos1	Rap1b	Elk1	Grb2	Rap1a
+BIOCARTA_GPCR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_GPCR_PATHWAY	Mapk3	Prkacb	Prkar2b	Nfatc4	Prkar1a	Plcg1	Nfatc2	Raf1	Prkcb	Prkca	Fos	Map2k1	Prkar2a	Adcy1	Ppp3cb	Jun	Calm1	Calm3	Prkar1b	Rps6ka3	Nfatc1	Ppp3ca	Hras	Nfatc3	Elk1	Creb1	Ppp3cc	Gnaq
+BIOCARTA_IGF1MTOR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IGF1MTOR_PATHWAY	Eif4e	Akt1	Eif4ebp1	Pdpk1	Mtor	Pdk2	Eif2s1	Eif2s3x	Pten	Pik3r1	Ppp2ca	Pik3ca	Igf1	Igf1r	Eif2s2	Rps6kb1	Gsk3b	Inppl1
+BIOCARTA_SODD_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SODD_PATHWAY	Tnfrsf1a	Tnf	Traf2	Fadd	Bag4	Tnfrsf1b	Tradd	Birc2	Casp8	Ripk1
+BIOCARTA_SHH_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SHH_PATHWAY	Gli3	Prkacb	Prkar2b	Smo	Prkar1a	Sufu	Shh	Dyrk1b	Ptch1	Prkar2a	Gli2	Prkar1b	Dyrk1a	Gli1	Gsk3b
+BIOCARTA_PTC1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PTC1_PATHWAY	Ccnh	Cdc25b	Shh	Xpo1	Ptch1	Mnat1	Cdk7	Ccnb1	Cdk1	Cdc25c	Cdc25a
+BIOCARTA_SPRY_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SPRY_PATHWAY	Mapk3	Egfr	Ptprb	Spry4	Shc1	Spry2	Raf1	Mapk1	Map2k1	Egf	Rasa1	Cbl	Spry1	Hras	Sos1	Grb2
+BIOCARTA_BARRESTIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BARRESTIN_PATHWAY	Ap2a1	Kcna3	Kcna2	Dnm1	Gnas	Kcna4	Ppara	Grk2	Adcy1	Arrb1	Plcb1
+BIOCARTA_STATHMIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_STATHMIN_PATHWAY	Cd3d	Prkacb	Cd2	Prkar2b	Mapk13	Prkar1a	Uhmk1	Cd3e	Cd247	Camk4	Tsg101	Prkar2a	Ccnb1	Cdk1	Rb1cc1	Prkar1b	Hspa5	Cd3g	Stmn1
+BIOCARTA_HSP27_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_HSP27_PATHWAY	Tnf	Fas	Hspb2	Fasl	Hspb1	Il1a	Casp3	Cycs	Casp9	Acta1	Apaf1	Mapkapk2	Bcl2	Daxx
+BIOCARTA_TCR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TCR_PATHWAY	Cd3d	Fyn	Zap70	Mapk3	Lat	Map3k1	Mapk8	Nfatc4	Plcg1	Shc1	Pik3cg	Nfatc2	Nfkbia	Raf1	Prkcb	Cd3e	Cd247	Prkca	Fos	Vav1	Map2k1	Rela	Nfkb1	Pik3r1	Rasa1	Pik3ca	Ppp3cb	Jun	Calm1	Calm3	Lck	Nfatc1	Ppp3ca	Hras	Cd3g	Sos1	Nfatc3	Elk1	Map2k4	Grb2	Ppp3cc
+BIOCARTA_TCYTOTOXIC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TCYTOTOXIC_PATHWAY	Itgb2	Itgal	Cd8a	Thy1	Cd3d	Cd2	Cd3e	Cd247	Cd28	Cd3g	Ptprc	Icam1
+BIOCARTA_THELPER_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_THELPER_PATHWAY	Itgb2	Itgal	Cd4	Thy1	Cd3d	Cd2	Cd3e	Cd247	Cd28	Cd3g	Ptprc	Icam1
+BIOCARTA_TALL1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TALL1_PATHWAY	Traf2	Chuk	Tnfrsf17	Mapk8	Traf3	Tnfsf13b	Map3k14	Tnfrsf13c	Rela	Nfkb1	Tnfrsf13b	Traf6	Mapk14
+BIOCARTA_TEL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TEL_PATHWAY	Trp53	Myc	Terf1	Akt1	Egfr	Tert	Tnks	Prkca	Xrcc5	Bcl2	Ppp2ca	Rb1	Igf1r	Xrcc6	Tep1	Hsp90aa1	Kras
+BIOCARTA_TGFB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TGFB_PATHWAY	Tgfb3	Smad3	Mapk3	Skil	Tgfb2	Smad7	Cdh1	Smad4	Crebbp	Smad2	Tgfbr2	Tgfbr1	Tgfb1	Map2k1	Ep300	Map3k7	Apc
+BIOCARTA_TH1TH2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TH1TH2_PATHWAY	Ifngr1	Il12rb1	Il2ra	Il18	Cd86	Cd40lg	Il2	Il12a	Il12rb2	Il4ra	Il12b	Ifng	Ifngr2	Il18r1	Cd28	Cd40	Il4	Nectin1
+BIOCARTA_41BB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_41BB_PATHWAY	Traf2	Chuk	Map3k5	Il2	Map3k1	Mapk8	Tnfsf9	Nfkbia	Atf2	Ifng	Tnfrsf9	Rela	Nfkb1	Jun	Il4	Ikbkb	Map4k5	Mapk14
+BIOCARTA_CTLA4_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CTLA4_PATHWAY	Ctla4	Cd86	Cd3d	Ptpn11	Il2	Icos	Cd80	Cd3e	Cd247	Cd28	Pik3r1	Pik3ca	Lck	Cd3g	Itk	Grb2
+BIOCARTA_LONGEVITY_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_LONGEVITY_PATHWAY	Sod3	Ghr	Cat	Akt1	Shc1	Pik3cg	Pik3r1	Pik3ca	Igf1	Igf1r	Sod1	Sod2	Hras	Foxo3	Gh
+BIOCARTA_PAR1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PAR1_PATHWAY	Rhoa	Arhgef1	Rock1	F2rl3	Ptk2b	F2	Pik3cg	Ppp1r12b	Gna13	Prkcb	Prkca	Map3k7	Pik3r1	Adcy1	Pik3ca	Plcb1	Gna12	Gnaq	F2rl2
+BIOCARTA_STRESS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_STRESS_PATHWAY	Atf1	Tnfrsf1a	Tnf	Traf2	Casp2	Chuk	Ikbkg	Map2k6	Map3k1	Map2k3	Mapk8	Map4k2	Map3k14	Nfkbia	Tank	Rela	Nfkb1	Tradd	Jun	Ikbkb	Mapk14	Ripk1	Map2k4	Cradd
+BIOCARTA_TNFR1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TNFR1_PATHWAY	Prkdc	Tnfrsf1a	Tnf	Arhgdib	Traf2	Casp2	Lmnb1	Fadd	Lmnb2	Map3k1	Mapk8	Casp3	Dffa	Bag4	Sptan1	Pak2	Lmna	Map3k7	Pak1	Tradd	Rb1	Jun	Parp1	Casp8	Ripk1	Dffb	Map2k4	Cradd
+BIOCARTA_TNFR2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TNFR2_PATHWAY	Traf2	Chuk	Ikbkg	Map3k1	Traf3	Tnfaip3	Map3k14	Nfkbia	Tnfrsf1b	Dusp1	Traf1	Tank	Rela	Nfkb1	Ikbkb	Elp1	Ripk1
+BIOCARTA_TOLL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TOLL_PATHWAY	Chuk	Ikbkg	Map2k6	Map3k1	Map2k3	Mapk8	Pglyrp1	Irak1	Map3k14	Nfkbia	Ppara	Myd88	Fos	Rela	Nfkb1	Map3k7	Jun	Ikbkb	Traf6	Mapk14	Eif2ak2	Elk1	Map2k4	Ecsit
+BIOCARTA_TPO_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TPO_PATHWAY	Thpo	Mpl	Mapk3	Csnk2a1	Stat5b	Plcg1	Shc1	Pik3cg	Raf1	Prkcb	Prkca	Fos	Map2k1	Stat3	Pik3r1	Rasa1	Pik3ca	Jun	Jak2	Stat5a	Stat1	Hras	Sos1	Grb2	Csnk2a2
+BIOCARTA_CREB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CREB_PATHWAY	Akt1	Mapk3	Prkacb	Prkar2b	Prkar1a	Mapk1	Prkcb	Rps6ka5	Prkca	Prkar2a	Pik3r1	Adcy1	Pik3ca	Rps6ka1	Prkar1b	Mapk14	Hras	Sos1	Creb1	Grb2
+BIOCARTA_CARM1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CARM1_PATHWAY	Prkacb	Rxra	Prkar2b	Prkar1a	Crebbp	Carm1	Prkar2a	Ep300	Prkar1b	Creb1	Rara
+BIOCARTA_TFF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TFF_PATHWAY	Rhoa	Tff2	Muc2	Tff1	Ghr	Bad	Tff3	Akt1	Mapk3	Egfr	Cycs	Shc1	Casp9	Pik3cg	Mapk1	Apaf1	Pik3r1	Pik3ca	Itgb1	Erbb2	Ctnnb1	Hras	Gh	Sos1	Grb2
+BIOCARTA_TRKA_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TRKA_PATHWAY	Ngf	Akt1	Plcg1	Ntrk1	Shc1	Prkcb	Prkca	Pik3r1	Pik3ca	Hras	Sos1	Grb2	Klk1b3	Klk1b4
+BIOCARTA_ARF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ARF_PATHWAY	Trp53	Abl1	Myc	Twist1	Polr1c	Cdkn2a	E2f1	Mdm2	Pik3cg	Polr1a	Polr1b	Pik3r1	Pik3ca	Rb1	Tbx2	Polr1d
+BIOCARTA_UCALPAIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_UCALPAIN_PATHWAY	Rhoa	Actn3	Capn1	Actn2	Itgb3	Sptan1	Tln1	Acta1	Itgb1	Ezr	Itga1	Capns1
+BIOCARTA_VITCB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_VITCB_PATHWAY	Col4a1	P4hb	Slc2a1	Slc23a1	Col4a4	Slc23a2	Col4a6	Col4a2	Col4a5	Col4a3	Slc2a3
+BIOCARTA_WNT_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_WNT_PATHWAY	Wnt1	Myc	Dvl1	Frat1	Ctbp1	Nlk	Axin1	Csnk2a1	Wif1	Smad4	Btrc	Crebbp	Fzd1	Map3k7	Ppp2ca	Ccnd1	Tle1	Ctnnb1	Ppard	Hnf1a	Apc	Gsk3b	Csnk2a2
+BIOCARTA_ACTINY_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ACTINY_PATHWAY	Wasl	Psma7	Wasf2	Nckap1	Wasf1	Ntrk1	Nck1	Abi2	Acta1	Wasf3
+BIOCARTA_EICOSANOID_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EICOSANOID_PATHWAY	Ptgis	Tbxas1	Pla2g4a	Tbxa2r	Ptger2	Ephx1	Ephx2	Ptger4	Alox5ap	Ptges	Ptger3	Alox5	Ptgs1	Cysltr1	Ptgir	Ptgs2	Plcb1	Ptgfr	Hpgds	Ptger1
+BIOCARTA_CHREBP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CHREBP_PATHWAY	Prkacb	Prkar2b	Prkar1a	Mlxipl	Gnas	Prkar2a	Adcy1	Ppp2ca	Prkar1b	Acsm1
+BIOCARTA_LIS1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_LIS1_PATHWAY	Abl1	Dcx	Csnk2a1	Dctn3	Ndel1	Cdk5r1	Dctn6	Clip1	Dynll1	Cdk5	Pafah1b1	Reln	Csnk2a2	Lrp8
+BIOCARTA_HSWI_SNF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_HSWI_SNF_PATHWAY	Arid1a	Smarcc1	Nr3c1	Tbp	Nf1	Smarcd1	Smarcb1	Smarca4	Gm4750	Smarce1	Actb
+BIOCARTA_PCAF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PCAF_PATHWAY	Irf3	Irf1	Crebbp	Hmgb1	Atf2	Rela	Kat2b	Nfkb1	Jun
+BIOCARTA_LYMPHOCYTE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_LYMPHOCYTE_PATHWAY	Itgb2	Sell	Itgal	Sele	Itga4	Itgb1	Pecam1	Cd44	Icam1
+BIOCARTA_AMAN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_AMAN_PATHWAY	Fut7	Man2b1	Fut9	Fut4	Man1a	B3galt1	St3gal4	B3galt2	St8sia4
+BIOCARTA_NEUTROPHIL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NEUTROPHIL_PATHWAY	Itgb2	Sell	Itgal	Sele	Itgam	Pecam1	Cd44	Icam1
+BIOCARTA_EFP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EFP_PATHWAY	Trp53	Cdk4	Esr1	Ccnb2	Smurf1	Cdk6	Cdk3	Sfn	Cdk2	Cdk7	Ccnb1	Cdk1	Cdk5
+BIOCARTA_CREM_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CREM_PATHWAY	Crem	Fshr	Fhl5	Xpo1	Fshb	Adcy1
+BIOCARTA_ERAD_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ERAD_PATHWAY	Ganab	Man2b1	Edem1	Uba2	Mogs	Sec61a1	Rbx1	Skp1	Cul1	Man1a	Ube2i	Canx	Sae1	Fbxo2
+BIOCARTA_BTG2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BTG2_PATHWAY	Trp53	Ngf	Btg1	Prmt1	Fgf1	Hoxb9	Ccnd1	Rb1	Chaf1a	Btg2
+BIOCARTA_TERT_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TERT_PATHWAY	Trp53	Myc	Sp1	Mzf1	Sp3	Max	Wt1
+BIOCARTA_VOBESITY_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_VOBESITY_PATHWAY	Retn	Tnf	Lpl	Pparg	Adipoq	Rxra	Hsd11b1	Nr3c1
+BIOCARTA_ERBB3_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ERBB3_PATHWAY	Egfr	Nrg1	Egf	Ube2d1	Rnf41	Erbb3
+BIOCARTA_CTBP1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CTBP1_PATHWAY	Zeb1	Ctbp1	Uba2	Cdh1	Nos1	Ube2i	Sae1	Sumo1
+BIOCARTA_PRION_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PRION_PATHWAY	Prnp	Nfe2l2	Gfap	Lamc1	Aplp1	Rpsa	Bcl2	Dnajb6	Lama1	Hspa5
+BIOCARTA_FXR_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_FXR_PATHWAY	Nr1h4	Ldlr	Nr1h3	Rxra	Fabp6	Abca1	Nr0b2
+BIOCARTA_ACETAMINOPHEN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ACETAMINOPHEN_PATHWAY	Cyp1a2	Cyp2e1	Ptgs1	Ptgs2	Cyp3a11	Nr1i3
+BIOCARTA_PRC2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PRC2_PATHWAY	Yy1	Ezh1	Rbbp4	Hdac2	Ring1	Ezh2	Cbx4	Rbbp7	Bmi1	Eed
+BIOCARTA_RANBP2_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RANBP2_PATHWAY	Pias2	Hdac5	Mdm2	Uba2	Hdac6	Sae1	Rangap1	Ran	Hdac9	Sumo1	Pias1	Ranbp2
+BIOCARTA_IRES_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IRES_PATHWAY	Eif3a	Eif4e	Eif4a2	Ptbp1	Eif4g3	Eif4a1
+BIOCARTA_PLC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PLC_PATHWAY	Akt1	Plcg1	Pik3cg	Prkcb	Prkca	Vav1	Pik3r1	Pik3ca	Plcb1
+BIOCARTA_BBCELL_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_BBCELL_PATHWAY	Fas	Cd4	Fasl	Cd40lg	Cd28	Cd40
+BIOCARTA_CDC25_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CDC25_PATHWAY	Chek1	Cdc25b	Cdk1	Cdc25c	Wee1	Cdc25a	Ywhah	Myt1
+BIOCARTA_DSP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_DSP_PATHWAY	Dusp6	Dusp2	Mapk3	Dusp9	Mapk8	Dusp8	Dusp4	Dusp1	Mapk14
+BIOCARTA_MELANOCYTE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MELANOCYTE_PATHWAY	Kitl	Kit	Bcl2	Ep300	Rps6ka1	Mitf	Creb1
+BIOCARTA_S1P_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_S1P_PATHWAY	Ldlr	Srebf2	Hmgcs1	Mbtps1	Srebf1	Scap
+BIOCARTA_HBX_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_HBX_PATHWAY	Ptk2b	Shc1	Lamtor5	Hras	Sos1	Creb1	Grb2
+BIOCARTA_MALATEX_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MALATEX_PATHWAY	Pcx	Pdha1	Cs	Me1	Mdh1	Slc25a1	Acly	Slc25a11
+BIOCARTA_TSP1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TSP1_PATHWAY	Thbs1	Fyn	Cd36	Casp3	Fos	Jun	Mapk14
+BIOCARTA_NPP1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NPP1_PATHWAY	Col4a1	Ibsp	Enpp1	Col4a4	Col4a6	Col4a2	Col4a5	Alpl	Spp1	Col4a3
+BIOCARTA_CPSF_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CPSF_PATHWAY	Pabpn1	Cstf1	Cpsf1	Papola	Cstf3	Cpsf3
+BIOCARTA_HES_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_HES_PATHWAY	Wnt1	Dvl1	Dll1	Hes7	Hey2	Rbpj	Fzd1	Notch1	Hnf1a	Hes1	Gsk3b	Notch2
+BIOCARTA_ERBB4_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ERBB4_PATHWAY	Psen1	Adam17	Prkcb	Prkca	Nrg3	Erbb4	Nrg4
+BIOCARTA_TERC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TERC_PATHWAY	Sp1	Nfya	Sp3	Nfyb	Rb1	Nfyc
+BIOCARTA_EOSINOPHILS_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EOSINOPHILS_PATHWAY	Il3	Il5	Ccl11	Csf2	Ccr3	Ccl5
+BIOCARTA_REELIN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_REELIN_PATHWAY	Vldlr	Fyn	Cdk5r1	Dab1	Cdk5	Reln	Lrp8
+BIOCARTA_SAM68_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SAM68_PATHWAY	Khdrbs1	Mapk3	Mapk1	Rasa1	Cdk1	Hras
+BIOCARTA_FBW7_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_FBW7_PATHWAY	Tfdp1	Ccne1	E2f1	Cdc34	Cul1	Cdk2	Fbxw7	Rb1
+BIOCARTA_CB1R_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CB1R_PATHWAY	Baat	Pld3	Cnr1	Pld1	Faah	Pld2	Cnr2
+BIOCARTA_SUMO_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SUMO_PATHWAY	Sumo3	Uba2	Sumo2	Ube2i	Sae1	Sumo1
+BIOCARTA_IFNA_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IFNA_PATHWAY	Ifnar1	Ifnb1	Irf9	Ifnar2	Tyk2	Ifna1	Stat1	Jak1	Stat2
+BIOCARTA_PKC_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PKC_PATHWAY	Nfkbia	Prkcb	Prkca	Rela	Nfkb1	Plcb1	Gnaq
+BIOCARTA_PPARG_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PPARG_PATHWAY	Lpl	Pparg	Med1	Rxra	Crebbp	Ep300	Ppargc1a
+BIOCARTA_ION_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ION_PATHWAY	P2ry2	Ptk2b	Plcg1	Prkcb	Prkca
+BIOCARTA_PELP1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PELP1_PATHWAY	Mapk3	Esr1	Crebbp	Mapk1	Ep300
+BIOCARTA_STAT3_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_STAT3_PATHWAY	Mapk3	Tyk2	Mtor	Mapk1	Jak3	Stat3	Jak2	Jak1
+BIOCARTA_EEA1_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_EEA1_PATHWAY	Hgs	Egfr	Tfrc	Trf	Egf	Pp2d1
+BIOCARTA_CIRCADIAN_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_CIRCADIAN_PATHWAY	Clock	Per1	Cry1	Csnk1e	Cry2	Arntl
+BIOCARTA_RECK_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_RECK_PATHWAY	Mmp9	Timp3	Timp1	Mmp2	Timp2	Timp4	Mmp14	Reck	Hras
+BIOCARTA_MSP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MSP_PATHWAY	Csf1	Tnf	Mst1r	Mst1	Il1b	Ccl2
+BIOCARTA_SLRP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_SLRP_PATHWAY	Bgn	Kera	Lum	Dcn	Epyc	Fmod
+BIOCARTA_ALTERNATIVE_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_ALTERNATIVE_PATHWAY	Hc	Cfp	Cfd	C3	C6	C9	Vps33a	C7
+BIOCARTA_FOSB_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_FOSB_PATHWAY	Ppp1r1b	Gria2	Fosb	Cdk5	Jund
+BIOCARTA_NOTCH_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_NOTCH_PATHWAY	Psen1	Dll1	Furin	Adam17	Rbpj	Notch1
+BIOCARTA_TUBBY_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_TUBBY_PATHWAY	Chrm1	Plcb1	Htr2c	Gnaq	Tub
+BIOCARTA_MRP_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_MRP_PATHWAY	Abcc3	Abcb1b	Abcc1	Abcb1a	Abcb11	Gstp2
+BIOCARTA_PLCD_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PLCD_PATHWAY	Plcd1	Adra1b	Prkcb	Prkca	Tgm2
+BIOCARTA_WNT_LRP6_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_WNT_LRP6_PATHWAY	Wnt8a	Wnt8b	Dkk2	Dkk1	Kremen2	Fzd1
+BIOCARTA_PEPI_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_PEPI_PATHWAY	Grn	Cela1	Cela2a	Cela3b	Slpi
+BIOCARTA_IFNG_PATHWAY	http://www.gsea-msigdb.org/gsea/msigdb/mouse/geneset/BIOCARTA_IFNG_PATHWAY	Ifngr1	Ifng	Ifngr2	Jak2	Stat1	Jak1

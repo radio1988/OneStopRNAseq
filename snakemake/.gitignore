@@ -27,3 +27,10 @@ workflow.cwl
 pull2mac.sh
 push2hpc.sh
 hpc2mccb.sh
+
+meta/contrast.de.xlsx.txt
+meta/decoder.txt
+meta/meta.xlsx.txt
+meta/read_length.txt
+meta/strandness.detected.txt
+workflow/__pycache__/
