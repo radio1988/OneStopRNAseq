@@ -1,0 +1,57 @@
+# mouse
+# cd meta/; ln -s $github/meta/gsea_db/mus_musculus/msigdb_v2022.1.Mm_GMTs/ gsea_db
+GSEA_DBS:
+        - m1.all.v2022.1.Mm.symbols.gmt
+        - m2.all.v2022.1.Mm.symbols.gmt
+        - m2.cgp.v2022.1.Mm.symbols.gmt
+        - m2.cp.biocarta.v2022.1.Mm.symbols.gmt
+        - m2.cp.reactome.v2022.1.Mm.symbols.gmt
+        - m2.cp.v2022.1.Mm.symbols.gmt
+        - m2.cp.wikipathways.v2022.1.Mm.symbols.gmt
+        - m3.all.v2022.1.Mm.symbols.gmt
+        - m3.gtrd.v2022.1.Mm.symbols.gmt
+        - m3.mirdb.v2022.1.Mm.symbols.gmt
+        - m5.all.v2022.1.Mm.symbols.gmt
+        - m5.go.bp.v2022.1.Mm.symbols.gmt
+        - m5.go.cc.v2022.1.Mm.symbols.gmt
+        - m5.go.mf.v2022.1.Mm.symbols.gmt
+        - m5.go.v2022.1.Mm.symbols.gmt
+        - m5.mpt.v2022.1.Mm.symbols.gmt
+        - m8.all.v2022.1.Mm.symbols.gmt
+        - mh.all.v2022.1.Mm.symbols.gmt
+        - msigdb.v2022.1.Mm.symbols.gmt
+
+# human
+# cd meta/; ln -s $github/meta/gsea_db/homo_sapiens/msigdb_v2022.1.Hs_GMTs/ gsea_db
+	- c1.all.v2022.1.Hs.symbols.gmt
+	- c2.all.v2022.1.Hs.symbols.gmt
+	- c2.cgp.v2022.1.Hs.symbols.gmt
+	- c2.cp.biocarta.v2022.1.Hs.symbols.gmt
+	- c2.cp.kegg.v2022.1.Hs.symbols.gmt
+	- c2.cp.pid.v2022.1.Hs.symbols.gmt
+	- c2.cp.reactome.v2022.1.Hs.symbols.gmt
+	- c2.cp.v2022.1.Hs.symbols.gmt
+	- c2.cp.wikipathways.v2022.1.Hs.symbols.gmt
+	- c3.all.v2022.1.Hs.symbols.gmt
+	- c3.mir.mirdb.v2022.1.Hs.symbols.gmt
+	- c3.mir.mir_legacy.v2022.1.Hs.symbols.gmt
+	- c3.mir.v2022.1.Hs.symbols.gmt
+	- c3.tft.gtrd.v2022.1.Hs.symbols.gmt
+	- c3.tft.tft_legacy.v2022.1.Hs.symbols.gmt
+	- c3.tft.v2022.1.Hs.symbols.gmt
+	- c4.all.v2022.1.Hs.symbols.gmt
+	- c4.cgn.v2022.1.Hs.symbols.gmt
+	- c4.cm.v2022.1.Hs.symbols.gmt
+	- c5.all.v2022.1.Hs.symbols.gmt
+	- c5.go.bp.v2022.1.Hs.symbols.gmt
+	- c5.go.cc.v2022.1.Hs.symbols.gmt
+	- c5.go.mf.v2022.1.Hs.symbols.gmt
+	- c5.go.v2022.1.Hs.symbols.gmt
+	- c5.hpo.v2022.1.Hs.symbols.gmt
+	- c6.all.v2022.1.Hs.symbols.gmt
+	- c7.all.v2022.1.Hs.symbols.gmt
+	- c7.immunesigdb.v2022.1.Hs.symbols.gmt
+	- c7.vax.v2022.1.Hs.symbols.gmt
+	- c8.all.v2022.1.Hs.symbols.gmt
+	- h.all.v2022.1.Hs.symbols.gmt
+	- msigdb.v2022.1.Hs.symbols.gmt
