@@ -815,7 +815,7 @@ rule GSEA:
         rm -rf gsea/{wildcards.fname}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
 
         python workflow/script/rnk_to_upper.py {input.rnk} &>> {log}  # fix gene symbol error; standardize file format (xlsx, rnk, etc)
-        python workflow/script/gmt_to_upper.py {input.gmt} 1> {params.gmt_fmted} 2> {log}  # gene symbols to upper
+        python workflow/script/gmt_to_upper.py {input.db} 1> {params.gmt_fmted} 2> {log}  # gene symbols to upper
         
         which java &>> {log}
 
