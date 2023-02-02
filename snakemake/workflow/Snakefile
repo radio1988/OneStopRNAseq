@@ -792,6 +792,7 @@ rule GSEA:
         nplot=config["GSEA_NPLOTS"],
         label_db=lambda wildcards: wildcards["db"][:-12],
         rnk_flat_file= lambda wildcards: input_rnk_fname2(wildcards, config),
+        gmt_fmted= lambda wildcards: "gsea/" + wildcards['fname'] + "/" + wildcards['db'] + ".GseaPreranked/geneset.gmt"
     threads:
         1
     log:
@@ -813,12 +814,13 @@ rule GSEA:
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
         rm -rf gsea/{wildcards.fname}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
 
-        python workflow/script/fix_gsea_input.py {input.rnk} &>> {log}  # fix gene symbol error; change test.xlsx to test.rnk.txt
+        python workflow/script/rnk_to_upper.py {input.rnk} &>> {log}  # fix gene symbol error; standardize file format (xlsx, rnk, etc)
+        python workflow/script/gmt_to_upper.py {input.gmt} 1> {params.gmt_fmted} 2> {log}  # gene symbols to upper
         
         which java &>> {log}
 
         if workflow/envs/GSEA_4.3.2/gsea-cli.sh GSEAPreranked \
-        -gmx {input.db} -rnk {params.rnk_flat_file} -rpt_label {wildcards.db} \
+        -gmx {params.gmt_fmted} -rnk {params.rnk_flat_file} -rpt_label {wildcards.db} \
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
         -set_max 15000 -set_min 15 \
