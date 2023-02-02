@@ -34,7 +34,7 @@ if any(df.iloc[:, 0].str.islower()):
     df = df.apply(lambda x: x.astype(str).str.upper())
     over_write = True
 
-# remove space from gene symbols
+# remove spaces, quotes from gene symbols
 if any(df.iloc[:, 0].str.find(" ") >= 0):
     df = df.apply(lambda x: x.astype(str).str.replace(" ", ""))
     over_write = True
@@ -47,7 +47,7 @@ if any(df.iloc[:, 0].str.find("\'") >= 0):
     df = df.apply(lambda x: x.astype(str).str.replace("\'", ""))
     over_write = True
 
-# convert to upper 
+# output
 if over_write:
     df.to_csv(outname, index=False, header=True, sep="\t")
     print("fixed spaces, lower cases, quotes and saved to ", outname)
