@@ -108,7 +108,7 @@ def target_input(config, ASCN):
     l = ["Workflow_DAG.all.svg"]
 
     if config['START'] == 'FASTQ':
-        l.append([]'fastqc/trimmed_reads_multiqc_report.html','fastqc/raw_reads_multiqc_report.html'])
+        l.append(['fastqc/trimmed_reads_multiqc_report.html','fastqc/raw_reads_multiqc_report.html'])
 
     if config['START'] in ['FASTQ', 'BAM']:
         l.append('bam_qc/QoRTs_MultiPlot/plot-basic.pdf')
