@@ -158,6 +158,28 @@ rule targets:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
 
+rule Trimmomatic_PE:
+    input:
+        r1="fastq_raw/{sample}.R1.fastq.gz",
+        r2="fastq_raw/{sample}.R2.fastq.gz"
+    output:
+        r1="fastq/{sample}.R1.fastq.gz", 
+        r2="fastq/{sample}.R2.fastq.gz",
+        r1_unpaired="fastq_unpaired/{sample}.R1.fastq.gz",
+        r2_unpaired="fastq_unpaired/{sample}.R2.fastq.gz",
+    params:
+        trimmer=["ILLUMINACLIP:" + config['ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1500
+    threads:
+        4
+    log:
+        "fastq/{sample}.trim.log"
+    benchmark:
+        "fastq/{sample}.trim.log.benchmark"
+    wrapper:
+        "v1.23.3/bio/trimmomatic/pe"
+
 
 rule FastQC:
     input:
@@ -684,12 +706,12 @@ rule SalmonTE:
     shell:
         """
         which python &> {log}
-	rm -rf SalmonTE_output/
+    rm -rf SalmonTE_output/
         python workflow/envs/SalmonTE/SalmonTE.py --version >> {log}
         python workflow/envs/SalmonTE/SalmonTE.py quant \
-		--reference={params.ref} --exprtype=count \
-		--num_threads={threads} \
-		{input.reads} >> {log} 2>&1
+        --reference={params.ref} --exprtype=count \
+        --num_threads={threads} \
+        {input.reads} >> {log} 2>&1
         """
 
 
@@ -792,7 +814,7 @@ rule GSEA:
         nplot=config["GSEA_NPLOTS"],
         label_db=lambda wildcards: wildcards["db"][:-12],
         rnk_flat_file= lambda wildcards: input_rnk_fname2(wildcards, config),
-        gmt_fmted= lambda wildcards: "gsea/" + wildcards['fname'] + "/" + wildcards['db'] + ".GseaPreranked/geneset.gmt"
+        gmt_fmted= lambda wildcards: "gsea/gene_sets/" + wildcards['fname'] + "." + wildcards['db'] 
     threads:
         1
     log:
@@ -809,13 +831,13 @@ rule GSEA:
         echo wildcards.fname: {wildcards.fname} >> {log}
         echo wildcards.db: {wildcards.db} >> {log}
 
-        mkdir -p gsea && mkdir -p gsea/{wildcards.fname} &>> {log}
+        mkdir -p gsea gsea/gene_sets gsea/{wildcards.fname} &>> {log}
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
         rm -rf gsea/{wildcards.fname}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
 
         python workflow/script/rnk_to_upper.py {input.rnk} &>> {log}  # fix gene symbol error; standardize file format (xlsx, rnk, etc)
-        python workflow/script/gmt_to_upper.py {input.db} 1> {params.gmt_fmted} 2> {log}  # gene symbols to upper
+        python workflow/script/gmt_to_upper.py -f {input.db} 1> {params.gmt_fmted} 2> {log}  # gene symbols to upper
         
         which java &>> {log}
 
@@ -834,6 +856,9 @@ rule GSEA:
         fi
     
         cp workflow/envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
+
+    # clean
+    rm -f {params.gmt_fmted} &>> {log}
 
         # compress
         echo compress
@@ -923,18 +948,18 @@ rule rMATS:
 
         which python &> {log}
         rmats.py  \
-		--b1 rMATS.{wildcards.ascn}/params/b1.txt \
-		--b2  rMATS.{wildcards.ascn}/params/b2.txt \
-		--gtf {input.gtf} \
-		-t {params.type} \
-		--readLength {params.length} \
-		--variable-read-length \
-		--libType {params.strandness} \
-		--nthread {threads} \
-		--tstat {threads} \
-		--cstat 0.2 \
-		--od rMATS.{wildcards.ascn}/output/ \
-		--tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
+        --b1 rMATS.{wildcards.ascn}/params/b1.txt \
+        --b2  rMATS.{wildcards.ascn}/params/b2.txt \
+        --gtf {input.gtf} \
+        -t {params.type} \
+        --readLength {params.length} \
+        --variable-read-length \
+        --libType {params.strandness} \
+        --nthread {threads} \
+        --tstat {threads} \
+        --cstat 0.2 \
+        --od rMATS.{wildcards.ascn}/output/ \
+        --tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
 
         cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
         rm -rf rMATS.{wildcards.ascn}/tmp/   &>> {log}

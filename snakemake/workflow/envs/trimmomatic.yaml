@@ -1,0 +1,8 @@
+name: trimmomatic 
+
+channels:
+  - bioconda
+
+dependencies:
+  - trimmomatic
+

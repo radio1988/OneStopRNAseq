@@ -16,6 +16,7 @@ SAMPLES:
 START: FASTQ # FASTQ, BAM, COUNT, RNK # starting point of workflow
 
 PAIR_END: True  # True/False # Only change if start from FASTQ or BAM
+ADAPTORS: meta/adapters/NexteraPE-PE.fa
 
 GENOME: example_data/genome/mm10_chr19/mm10.chr19.fa #'fa' and 'fa.gz' both supported
 
