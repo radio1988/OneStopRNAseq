@@ -158,7 +158,7 @@ rule targets:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
 
-if config['PAIR_END']:
+if PAIR_END:
     rule Trimmomatic_PE:
         input:
             r1="fastq/{sample}.R1.fastq.gz",
@@ -200,44 +200,88 @@ else:
             "v1.23.3/bio/trimmomatic/se"
 
 
-rule FastQC:
+rule FastQC1:
     input:
-        ["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] if PAIR_END else \
-        "trimmed/{sample}.fastq.gz" 
+        ["fastq/{sample}.R1.fastq.gz", "fastq/{sample}.R2.fastq.gz"] if PAIR_END else \
+        "fastq/{sample}.fastq.gz" 
     output:
-        ["fastqc/details/{sample}.R1_fastqc.html", "fastqc/details/{sample}.R2_fastqc.html"] if PAIR_END else \
-        "fastqc/details/{sample}_fastqc.html",
-        ["fastqc/details/{sample}.R1_fastqc.zip", "fastqc/details/{sample}.R2_fastqc.zip"] if PAIR_END else \
-        "fastqc/details/{sample}_fastqc.zip"
+        ["fastqc/details_raw/{sample}.R1_fastqc.html", "fastqc/details_raw/{sample}.R2_fastqc.html"] if PAIR_END else \
+        "fastqc/details_raw/{sample}_fastqc.html",
+        ["fastqc/details_raw/{sample}.R1_fastqc.zip", "fastqc/details_raw/{sample}.R2_fastqc.zip"] if PAIR_END else \
+        "fastqc/details_raw/{sample}_fastqc.zip"
     conda:
         "envs/fastqc.yaml"
-    priority:
-        10
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
         1
     log:
-        "log/fastqc/{sample}.log"
+        "fastqc/log/{sample}.log"
     benchmark:
-        "log/fastqc/{sample}.benchmark"
+        "fastqc/log/{sample}.benchmark"
     shell:
         "which fastqc &> {log};"
-        "fastqc -t {threads} {input} -o fastqc/details &>> {log};"
+        "fastqc -t {threads} {input} -o fastqc/details_raw &>> {log};"
 
 
-rule FastQC_MultiQC:
+rule FastQC_MultiQC1:
     input:
-        [expand("fastqc/details/{sample}.R1_fastqc.zip", sample=SAMPLES), 
-        expand("fastqc/details/{sample}.R2_fastqc.zip", sample=SAMPLES)] \
+        [expand("fastqc/details_raw/{sample}.R1_fastqc.zip", sample=SAMPLES), 
+        expand("fastqc/details_raw/{sample}.R2_fastqc.zip", sample=SAMPLES)] \
         if PAIR_END else \
-        expand("fastqc/details/{sample}_fastqc.zip", sample=SAMPLES)
+        expand("fastqc/details_raw/{sample}_fastqc.zip", sample=SAMPLES)
     output:
-        "fastqc/multiqc_report.html"
+        "fastqc/raw_reads_multiqc_report.html"
     conda:
         "envs/fastqc.yaml"
-    priority:
-        10
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
+    threads:
+        1
+    log:
+        "fastqc/log/multiqc.log"
+    benchmark:
+        "fastqc/log/multiqc.benchmark"
+    shell:
+        """
+        which multiqc &> {log};
+        multiqc {input} -f -o fastqc -n raw_reads_multiqc_report.html &>> {log};
+        """
+
+rule FastQC2:
+    input:
+        ["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] if PAIR_END else \
+        "trimmed/{sample}.fastq.gz" 
+    output:
+        ["fastqc/details_trimmed/{sample}.R1_fastqc.html", "fastqc/details_trimmed/{sample}.R2_fastqc.html"] if PAIR_END else \
+        "fastqc/details_trimmed/{sample}_fastqc.html",
+        ["fastqc/details_trimmed/{sample}.R1_fastqc.zip", "fastqc/details_trimmed/{sample}.R2_fastqc.zip"] if PAIR_END else \
+        "fastqc/details_trimmed/{sample}_fastqc.zip"
+    conda:
+        "envs/fastqc.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
+    threads:
+        1
+    log:
+        "fastqc/details_trimmed/log/{sample}.log"
+    benchmark:
+        "fastqc/details_trimmed/log/{sample}.benchmark"
+    shell:
+        "which fastqc &> {log};"
+        "fastqc -t {threads} {input} -o fastqc/details_trimmed &>> {log};"
+
+
+rule FastQC_MultiQC2:
+    input:
+        [expand("fastqc/details_trimmed/{sample}.R1_fastqc.zip", sample=SAMPLES), 
+        expand("fastqc/details_trimmed/{sample}.R2_fastqc.zip", sample=SAMPLES)] \
+        if PAIR_END else \
+        expand("fastqc/details_trimmed/{sample}_fastqc.zip", sample=SAMPLES)
+    output:
+        "fastqc/trimmed_reads_multiqc_report.html"
+    conda:
+        "envs/fastqc.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
@@ -249,8 +293,7 @@ rule FastQC_MultiQC:
     shell:
         """
         which multiqc &> {log};
-        multiqc {input} -f -o fastqc &>> {log};
-        D=fastqc; rm  -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};
+        multiqc {input} -f -o fastqc -n trimmed_reads_multiqc_report.html &>> {log};
         """
 
 
@@ -409,8 +452,6 @@ rule Samtools_QC:
         idxstats="bam_qc/idxstats/{sample}.idxstats.txt",
     conda:
         "envs/samtools.yaml"
-    priority:
-        0
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000
     threads:
@@ -523,8 +564,6 @@ rule bamCoverage:
         4
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
-    priority:
-        0
     log:
         "log/bamCoverage/{sample}.bamCoverage.log"
     benchmark:
@@ -563,8 +602,6 @@ rule featureCounts:
                 '-M -Q 0 --primary --minOverlap 1 --fracOverlap 0'
     conda:
         "envs/subread.yaml" 
-    priority:
-        100
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     threads:
@@ -609,8 +646,6 @@ rule featureCounts_GeneLevel:
         mode = '-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
     conda:
         "envs/subread.yaml" 
-    priority:
-        0
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     threads:
@@ -840,8 +875,6 @@ rule GSEA:
         "log/gsea/{fname}.{db}.log"
     benchmark:
         "log/gsea/{fname}.{db}.benchmark"
-    priority:
-        100
     shell:
         """
         echo fname1: {input.rnk} > {log}
