@@ -1061,9 +1061,7 @@ rule DEXSeq_Count:
         "envs/bioconda_misc.yaml"
     params:
         strand=get_strandness_for_dexseq('meta/strandness.detected.txt'),
-        readType=('-p yes -r pos'
-            if config['PAIR_END']
-            else ' '), 
+        readType=('-p yes -r pos' if config['PAIR_END'] else ' '), 
         MAPQ=10
     resources:
          mem_mb=lambda wildcards, attempt: attempt * 16000
