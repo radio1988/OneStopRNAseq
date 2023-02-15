@@ -108,7 +108,7 @@ def target_input(config, ASCN):
     l = ["Workflow_DAG.all.svg"]
 
     if config['START'] == 'FASTQ':
-        l.append(['fastqc/trimmed_reads_multiqc_report.html','fastqc/raw_reads_multiqc_report.html'])
+        l.append("fastqc/fastqc.zip")
 
     if config['START'] in ['FASTQ', 'BAM']:
         l.append('bam_qc/QoRTs_MultiPlot/plot-basic.pdf')
@@ -295,6 +295,19 @@ rule FastQC_MultiQC2:
         which multiqc &> {log};
         multiqc {input} -f -o fastqc -n trimmed_reads_multiqc_report.html &>> {log};
         """
+
+rule fastqc_compress:
+    input:
+        "fastqc/trimmed_reads_multiqc_report.html", 
+        "fastqc/raw_reads_multiqc_report.html"
+    output:
+        "fastqc/fastqc.zip"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 2000   
+    threads:
+        1
+    shell:
+        "rm -f fastqc/fastqc.zip && [ -d fastqc ] && zip -rq  fastqc/fastqc.zip fastqc/"
 
 
 rule STAR_Index:
@@ -1309,7 +1322,7 @@ rule reset:
     shell:
         """
         echo 'deleting files..'
-        rm -rf log/ workflow.log fastqc/ bam_qc/ mapped_reads/ sorted_reads/ bam_qc/ bigWig/ \
+        rm -rf log/ workflow.log fastqc/ bam_qc/ trimmed/ mapped_reads/ sorted_reads/ bam_qc/ bigWig/ \
         feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ gsea/ gsea_compressed/ \
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \
