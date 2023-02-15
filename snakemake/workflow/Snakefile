@@ -160,13 +160,13 @@ rule targets:
 
 rule Trimmomatic_PE:
     input:
-        r1="fastq_raw/{sample}.R1.fastq.gz",
-        r2="fastq_raw/{sample}.R2.fastq.gz"
+        r1="fastq/{sample}.R1.fastq.gz",
+        r2="fastq/{sample}.R2.fastq.gz"
     output:
-        r1="fastq/{sample}.R1.fastq.gz", 
-        r2="fastq/{sample}.R2.fastq.gz",
-        r1_unpaired="fastq_unpaired/{sample}.R1.fastq.gz",
-        r2_unpaired="fastq_unpaired/{sample}.R2.fastq.gz",
+        r1="trimmed/{sample}.R1.fastq.gz", 
+        r2="trimmed/{sample}.R2.fastq.gz",
+        r1_unpaired="trimmed/unpaired/{sample}.R1.fastq.gz",
+        r2_unpaired="trimmed/unpaired/{sample}.R2.fastq.gz",
     params:
         trimmer=["ILLUMINACLIP:" + config['ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
     resources:
@@ -174,17 +174,17 @@ rule Trimmomatic_PE:
     threads:
         4
     log:
-        "fastq/{sample}.trim.log"
+        "trimmed/log/{sample}.trim.log"
     benchmark:
-        "fastq/{sample}.trim.log.benchmark"
+        "trimmed/log/{sample}.trim.log.benchmark"
     wrapper:
         "v1.23.3/bio/trimmomatic/pe"
 
 
 rule FastQC:
     input:
-        ["fastq/{sample}.R1.fastq.gz", "fastq/{sample}.R2.fastq.gz"] if PAIR_END else \
-        "fastq/{sample}.fastq.gz" 
+        ["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] if PAIR_END else \
+        "trimmed/{sample}.fastq.gz" 
     output:
         ["fastqc/details/{sample}.R1_fastqc.html", "fastqc/details/{sample}.R2_fastqc.html"] if PAIR_END else \
         "fastqc/details/{sample}_fastqc.html",
@@ -269,9 +269,9 @@ rule STAR:
     input:
         index=INDEX+"/SAindex",
         gtf=GTF,
-        reads=  ["fastq/{sample}.R1.fastq.gz","fastq/{sample}.R2.fastq.gz"] \
+        reads=  ["trimmed/{sample}.R1.fastq.gz","trimmed/{sample}.R2.fastq.gz"] \
                 if PAIR_END else \
-                "fastq/{sample}.fastq.gz"
+                "trimmed/{sample}.fastq.gz"
     output:
         log="mapped_reads/{sample}.Log.final.out",
         bam=temp("mapped_reads/{sample}.bam"),
@@ -666,8 +666,8 @@ rule Strand_Detection_GeneLevel:
 if config['PAIR_END']:
     rule SalmonTE_Prep:
         input:
-            r1=expand("fastq/{sample}.R1.fastq.gz", sample=SAMPLES),
-            r2=expand("fastq/{sample}.R2.fastq.gz", sample=SAMPLES)    
+            r1=expand("trimmed/{sample}.R1.fastq.gz", sample=SAMPLES),
+            r2=expand("trimmed/{sample}.R2.fastq.gz", sample=SAMPLES)    
         output:
             r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
             r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
@@ -688,7 +688,7 @@ rule SalmonTE:
         reads=  [expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
                 expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)] \
                 if PAIR_END else \
-                expand("fastq/{sample}.fastq.gz", sample=SAMPLES),
+                expand("trimmed/{sample}.fastq.gz", sample=SAMPLES),
     output:
         "SalmonTE_output/EXPR.csv"
     conda:
@@ -1160,9 +1160,9 @@ rule Hisat2:
     input:
         genome=config['GENOME'],
         index =config['GENOME'] + '.hisat2_build.finished',
-        reads=  ["fastq/{sample}.R1.fastq.gz","fastq/{sample}.R2.fastq.gz"] \
+        reads=  ["trimmed/{sample}.R1.fastq.gz","trimmed/{sample}.R2.fastq.gz"] \
                     if PAIR_END else \
-                "fastq/{sample}.fastq.gz",
+                "trimmed/{sample}.fastq.gz",
         strandness="meta/strandness.detected.txt"
     output:
         bam="hisat2/{sample}.bam",
@@ -1171,9 +1171,9 @@ rule Hisat2:
         "envs/hisat2.yaml" 
     params:
         strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt"), 
-        pe= "-1 fastq/{sample}.R1.fastq.gz -2 fastq/{sample}.R2.fastq.gz" \
+        pe= "-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
                 if PAIR_END else \
-            "-U fastq/{sample}.fastq.gz"
+            "-U trimmed/{sample}.fastq.gz"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000
     threads:
