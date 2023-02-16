@@ -690,14 +690,14 @@ rule Strand_Detection:
     input:
         strand_detection_input(config)
     output:
-        "feature_count/counts.{mode}.txt",
+        "feature_count/counts.strict.txt" if config['MODE'] == 'strict' else "feature_count/counts.liberal.txt",
         "meta/strandness.detected.txt"
     threads:
         1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     log:
-        "meta/log/strandness.detected.{mode}.txt.log"
+        "meta/log/strandness.detected.txt.log"
     script:
         "script/strandness_detection.py &> {log}"
 
