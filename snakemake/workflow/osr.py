@@ -200,7 +200,7 @@ def get_strandness_for_dexseq (strandFile="meta/strandness.detected.txt"):
         return (strand)
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
-        return (None)
+        return ("Strand File not found")
 
 def get_strandness_for_hisat2_PE (strandFile="meta/strandness.detected.txt"):
     book = {0 : ' ', 1 : '--rna-strandness FR', 2 : '--rna-strandness RF'}
@@ -215,7 +215,7 @@ def get_strandness_for_hisat2_PE (strandFile="meta/strandness.detected.txt"):
         return (strand)
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
-        return (None)
+        return ("Strand File not found")
 
 def get_strandness_for_hisat2_SE (strandFile="meta/strandness.detected.txt"):
     book = {0 : ' ', 1 : '--rna-strandness F', 2 : '--rna-strandness R'}
@@ -230,7 +230,7 @@ def get_strandness_for_hisat2_SE (strandFile="meta/strandness.detected.txt"):
         return (strand)
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
-        return (None)
+        return ("Strand File not found")
 
 def get_strandness_for_stringtie (strandFile="meta/strandness.detected.txt"):
     book = {0 : ' ', 1 : '--fr', 2 : '--rf'}
@@ -245,7 +245,7 @@ def get_strandness_for_stringtie (strandFile="meta/strandness.detected.txt"):
         return (strand)
     except FileNotFoundError:
         sys.stderr.write("meta/strandness.detected.txt will be found in real run, not in dry run\n")
-        return (None)
+        return ("Strand File not found")
 
 def read_length(lengthFile="meta/read_length.txt"):
     try:
