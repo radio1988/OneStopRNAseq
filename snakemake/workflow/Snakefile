@@ -743,8 +743,7 @@ if config['PAIR_END']:
 rule SalmonTE:
     # only start from Fastq
     input:
-        reads=  [expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
-                expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)] \
+        reads=  expand("fastq_salmon/{sample}_{n}.fastq.gz", n = [1,2], sample=SAMPLES) \
                 if PAIR_END else \
                 expand("trimmed/{sample}.fastq.gz", sample=SAMPLES),
     output:
@@ -754,7 +753,7 @@ rule SalmonTE:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     params:
-        ref=config['TE_REFERENCE']
+        ref=config['TE_REFERENCE'],
     threads:
         12
     log:
