@@ -359,11 +359,9 @@ rule STAR:
     threads:
         12
     log:
-        "log/mapped_reads/{sample}.star.log"
+        "mapped_reads/log/{sample}.bash.log"
     benchmark:
-        "log/mapped_reads/{sample}.star.benchmark"
-    # envmodules:
-    #     "star/2.7.5a"
+        "mapped_reads/log/{sample}.benchmark"
     shell:
         """
         which STAR > {log};
@@ -406,9 +404,7 @@ rule STAR_MultiQC:
     threads:
         1
     log:
-        'log/bam_qc/STAR_Align_summary_multiqc_report.log'
-    benchmark:
-        'log/bam_qc/STAR_Align_summary_multiqc_report.benchmark'
+        "bam_qc/STAR_Align_summary_multiqc_report.html.log",      
     shell:
         """
         mkdir -p bam_qc/STAR_Align_summary/
@@ -429,9 +425,9 @@ rule Samtools_Sort:
     threads:
         4
     log:
-        "log/samtools_sort/{sample}.sort.log"
+        "sorted_reads/log/{sample}.bam.log"
     benchmark:
-        "log/samtools_sort/{sample}.sort.benchmark"
+        "sorted_reads/log/{sample}.bam.benchmark"
     shell:
         "which samtools &> {log};"
         "samtools sort -@ {threads} -m 3G {input} -o {output} &>> {log}"
@@ -449,9 +445,9 @@ rule Samtools_Index:
     threads:
         1
     log:
-        "log/samtools_index/{sample}.index.log"
+        "sorted_reads/log/{sample}.bam.bai.log"
     benchmark:
-        "log/samtools_index/{sample}.index.benchmark"
+        "sorted_reads/log/{sample}.bam.bai.benchmark"
     shell:
         "which samtools &> {log};"
         "samtools index -@ {threads} {input} &>> {log}"
@@ -471,18 +467,14 @@ rule Samtools_QC:
     threads:
         2
     log:
-        idxstats="log/bam_qc/idxstats/{sample}.idxstats.log",
-        stats="log/bam_qc/stats/{sample}.stats.log",
-    benchmark:
-        "log/bam_qc/benchmark/{sample}.bam_qc.benchmark",
+        idxstats="bam_qc/stats/log/{sample}.stats.log",
+        stats="bam_qc/idxstats/log/{sample}.idxstats.log"
     shell:
         """
         samtools idxstats {input.bam} > {output.idxstats} 2> {log.idxstats} &
         samtools stats {input.bam} > {output.stats} 2> {log.stats} &
-
         wait
         """
-
 
 rule Samtools_QC_MultiQc:
     input:
@@ -498,9 +490,7 @@ rule Samtools_QC_MultiQc:
     threads:
         1
     log:
-        'log/bam_qc/samtools_multiqc_report.log'
-    benchmark:
-        'log/bam_qc/samtools_multiqc_report.benchmark'
+        "bam_qc/log/Samtools_MultiQc.log"
     shell:
         """
         multiqc {input.stats} -f --outdir bam_qc -n {output.stats} &> {log}
@@ -523,13 +513,12 @@ rule QoRTs:
     threads:
         1
     log:
-        "log/QoRTs/QoRTs.{sample}.log"
+        "bam_qc/QoRTs/log/{sample}.log"
     benchmark:
-        "log/QoRTs/QoRTs.{sample}.benchmark"
+        "bam_qc/QoRTs/log/{sample}.benchmark"
     shell:
         """
         which java &> {log}
-
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
         {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
         """
@@ -547,9 +536,9 @@ rule QoRTs_MultiPlot:
     threads:
         2
     log:
-        "log/QoRTs/multiplot.log"
+        "bam_qc/QoRTs_MultiPlot/log/QoRTs_MultiPlot.log"
     benchmark:
-        "log/QoRTs/multiplot.benchmark"
+        "bam_qc/QoRTs_MultiPlot/log/QoRTs_MultiPlot.benchmark"
     shell:
         """
         which python && which Rscript &> {log};
@@ -616,9 +605,9 @@ rule featureCounts:
     threads:
         4
     log:
-        "log/feature_count/counts.s{strand}.log"
+        "feature_count/log/counts.s{strand}.{mode}.txt.log"
     benchmark:
-        "log/feature_count/benchmark.s{strand}.benchmark"
+        "feature_count/log/counts.s{strand}.{mode}.txt.benchmark"
     shell:
         """
         which featureCounts &> {log}
@@ -660,17 +649,11 @@ rule featureCounts_GeneLevel:
     '''
     input:
         bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES), # sort by name -> faster
-        exon_counts="feature_count/counts.s{strand}.strict.txt" \
-                        if config["MODE"] == "strict" else \
-                    "feature_count/counts.s{strand}.liberal.txt",
+        exon_counts="feature_count/counts.s{strand}.{mode}.txt",
         gtf=GTF
     output:
-        ct = 'feature_count_gene_level/counts.s{strand}.strict.txt' \
-                    if config["MODE"] == "strict" else \
-                'feature_count_gene_level/counts.s{strand}.liberal.txt',
-        summary = 'feature_count_gene_level/counts.s{strand}.strict.txt.summary' \
-                    if config["MODE"] == "strict" else \
-                 'feature_count_gene_level/counts.s{strand}.liberal.txt.summary',
+        ct = 'feature_count_gene_level/counts.s{strand}.{mode}.txt',
+        summary = 'feature_count_gene_level/counts.s{strand}.{mode}.txt.summary'
     params:
         pe = '-p -B -C ' if PAIR_END else ' ',
         mode = '-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
@@ -681,9 +664,9 @@ rule featureCounts_GeneLevel:
     threads:
         4
     log:
-        "log/feature_count_gene_level/counts.s{strand}.log"
+        'feature_count_gene_level/log/counts.s{strand}.{mode}.log'
     benchmark:
-        "log/feature_count_gene_level/benchmark.s{strand}.benchmark"
+        'feature_count_gene_level/log/counts.s{strand}.{mode}.benchmark'
     shell:
         """
         # gene level count
@@ -707,20 +690,16 @@ rule Strand_Detection:
     input:
         strand_detection_input(config)
     output:
-        "feature_count/counts.strict.txt" \
-        if config["MODE"] == "strict" \
-        else  "feature_count/counts.liberal.txt",
+        "feature_count/counts.{mode}.txt",
         "meta/strandness.detected.txt"
     threads:
         1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     log:
-        "log/strand_detection.log"
-    benchmark:
-        "log/strand_detection.benchmark"
+        "meta/log/strandness.detected.txt.log"
     script:
-        "script/strandness_detection.py"
+        "script/strandness_detection.py &> {log}"
 
 
 
@@ -736,11 +715,9 @@ rule Strand_Detection_GeneLevel:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     log:
-        "log/feature_count_gene_level/strand_detection.log"
-    benchmark:
-        "log/feature_count_gene_level/strand_detection.benchmark"
+        "feature_count_gene_level/log/strandness.detected.txt.log"
     script:
-        "script/strandness_detection.ge.py"
+        "script/strandness_detection.ge.py &> {log}"
 
 
 # rule SalmonTE_prep
@@ -781,13 +758,13 @@ rule SalmonTE:
     threads:
         12
     log:
-        'log/SalmonTE/salmonte_count.log'
+        "SalmonTE_output/EXPR.csv.log"
     benchmark:
-        'log/SalmonTE/salmonte_count.benchmark'
+        "SalmonTE_output/EXPR.csv.benchmark"
     shell:
         """
         which python &> {log}
-    rm -rf SalmonTE_output/
+        rm -rf SalmonTE_output/
         python workflow/envs/SalmonTE/SalmonTE.py --version >> {log}
         python workflow/envs/SalmonTE/SalmonTE.py quant \
         --reference={params.ref} --exprtype=count \
@@ -810,13 +787,17 @@ rule Merge_TE_and_GE:
     threads:
         1
     log:
-        "log/merge_te_and_gene/merge_te_and_gene.log"
+        "feature_count_gene_level/log/TE_included.txt.log" \
+        if config['INTRON'] \
+        else "feature_count/log/TE_included.txt.log"
     benchmark:
-        "log/merge_te_and_gene/merge_te_and_gene.benchmark"
+        "feature_count_gene_level/log/TE_included.txt.benchmark" \
+        if config['INTRON'] \
+        else "feature_count/log/TE_included.txt.benchmark"
     shell:
         """
         python workflow/script/merge_featureCount_and_SalmonTE.py \
-        {input.gene} {input.te} {output} > {log} 2>&1
+        {input.gene} {input.te} {output} &> {log}
         """
 
 rule DESeq2:
@@ -829,7 +810,7 @@ rule DESeq2:
         "DESeq2/DESeq2.html",
         expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
     conda:
-        "envs/deseq2.yaml"  # test
+        "envs/deseq2.yaml" 
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     params:
@@ -899,9 +880,9 @@ rule GSEA:
     threads:
         1
     log:
-        "log/gsea/{fname}.{db}.log"
+        "gsea/log/{fname}/{db}.log"
     benchmark:
-        "log/gsea/{fname}.{db}.benchmark"
+        "gsea/log/{fname}/{db}.benchmark"
     shell:
         """
         echo fname1: {input.rnk} > {log}
@@ -959,9 +940,7 @@ rule Read_Length_Detection:
     threads:
         1
     log:
-        "log/read_length_detection_bam/read_length_detection_bam.log"
-    benchmark:
-        "log/read_length_detection_bam/read_length_detection_bam.benchmark"
+        "meta/log/read_length.log"
     run:
         import re
         import statistics
@@ -1014,9 +993,9 @@ rule rMATS:
         strandness=get_strandness("meta/strandness.detected.txt", config),
         MAX_FDR=MAX_FDR
     log:
-        "log/rMATS/rMATS.{ascn}.log"
+        "rMATS.{ascn}/rMATS.log"
     benchmark:
-        "log/rMATS/rMATS.{ascn}.benchmark"
+        "rMATS.{ascn}/rMATS.benchmark"
     shell:
         """
         rm -rf rMATS.{wildcards.ascn}
@@ -1066,9 +1045,9 @@ rule DEXSeq_GFF_Prep:
     threads:
         1
     log:
-        "log/DEXSeq/prep_gff.log"
+        DEXSeq_GFF + ".log"
     benchmark:
-        "log/DEXSeq/prep_gff.benchmark"
+        DEXSeq_GFF + ".benchmark"
     conda:
         "envs/bioconda_misc.yaml"
     shell:
@@ -1093,9 +1072,9 @@ rule DEXSeq_Count:
     resources:
          mem_mb=lambda wildcards, attempt: attempt * 16000
     log:
-        "log/DEXSeq/prep_count.{sample}.log"
+        "DEXSeq_count/log/{sample}_count.txt.log"
     benchmark:
-        "log/DEXSeq/prep_count.{sample}.benchmark"
+        "DEXSeq_count/log/{sample}_count.txt.benchmark"
     shell:
         "python workflow/script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output}"  
         # todo: maybe -r name (sort by name) is faster
@@ -1120,9 +1099,9 @@ rule DEXSeq:
         rmd="'workflow/script/dexseq.r'",
         annoFile=config["ANNO_TAB"],
     log:
-        "log/DEXSeq/DEXSeq.{ascn}.log"
+        "DEXSeq/contrast{ascn}/DEXSeq.log"
     benchmark:
-        "log/DEXSeq/DEXSeq.{ascn}.benchmark"
+        "DEXSeq/contrast{ascn}/DEXSeq.benchmark"
     shell:
         """
         mkdir -p DEXSeq 
@@ -1145,7 +1124,7 @@ rule Genome_Faidx:
     threads:
         1
     log:
-        "log/genome_faidx/faidx.log"
+        config['GENOME']+'.fai' + '.log'
     shell:
         "samtools faidx {input}  &> {log}"
 
@@ -1222,9 +1201,9 @@ rule Hisat2_Build:
     threads:
         8
     log:
-        "log/hisat2_build/hisat2_build.log"
+        config['GENOME'] + '.hisat2_build.log'
     benchmark:
-        "log/hisat2_build/hisat2_build.benchmark"
+        config['GENOME'] + '.hisat2_build.benchmark'
     shell:
         """
         hisat2_extract_splice_sites.py -v {input.gtf} > {output.ss} 2> {log}
@@ -1256,9 +1235,9 @@ rule Hisat2:
     threads:
         8
     log:
-        "log/hisat2/{sample}.hisat2.log"
+        "hisat2/log/{sample}.log"
     benchmark:
-        "log/hisat2/{sample}.hisat2.benchmark"
+        "hisat2/log/{sample}.benchmark"
     shell:
         """
         hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
@@ -1285,9 +1264,9 @@ rule Stringtie:  # todo: group level
     threads:
         4
     log:
-        "log/stringtie/{sample}.stringtie.log"
+        "stringtie/log/{sample}.stringtie.log"
     benchmark:
-        "log/stringtie/{sample}.stringtie.benchmark"
+        "stringtie/log/{sample}.stringtie.benchmark"
     shell:
         """
         stringtie -G {input.gtf} {params.strand} -o {output} {input.bam} 2> {log}
@@ -1306,9 +1285,9 @@ rule Stringtie_Merge:
     threads:
         4
     log:
-        "log/stringtie/stringtie.merged.log"
+        "stringtie/log/stringtie.merged.gtf.log"
     benchmark:
-        "log/stringtie/stringtie.merged.benchmark"
+        "stringtie/log/stringtie.merged.gtf.benchmark"
     shell:
         """
         stringtie --merge -G {input.gtf} -o {output} {input.stringties} 2> {log}
@@ -1323,7 +1302,7 @@ rule Create_DAG:
     output:
         "Workflow_DAG.all.svg"
     log:
-        "log/create_dag/Workflow_DAG.all.svg.log"
+        "Workflow_DAG.all.svg.log"
     envmodules:
         "graphviz/2.26.0"
     shell:
