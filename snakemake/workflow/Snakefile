@@ -697,7 +697,7 @@ rule Strand_Detection:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     log:
-        "meta/log/strandness.detected.txt.log"
+        "meta/log/strandness.detected.{mode}.txt.log"
     script:
         "script/strandness_detection.py &> {log}"
 
