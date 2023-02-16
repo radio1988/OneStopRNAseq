@@ -568,8 +568,7 @@ rule bamCoverage:
         bam="sorted_reads/{sample}.bam",
         bai="sorted_reads/{sample}.bam.bai"
     output:
-        "bigWig/{sample}.strict.cpm.bw" if MODE == 'strict' else \
-        "bigWig/{sample}.liberal.cpm.bw"
+        "bigWig/{sample}.{mode}.cpm.bw"
     params:
         "--minMappingQuality 20" if MODE == "strict" else " "
     conda:
@@ -579,9 +578,9 @@ rule bamCoverage:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     log:
-        "log/bamCoverage/{sample}.bamCoverage.log"
+        "bigWig/log/{sample}.{mode}.cpm.bw.log"
     benchmark:
-        "log/bamCoverage/{sample}.bamCoverage.benchmark"
+        "bigWig/log/{sample}.{mode}.cpm.bw.benchmark"
     shell:
         """
         which bamCoverage &> {log}
@@ -603,12 +602,8 @@ rule featureCounts:
         bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES), # sort by name -> faster
         gtf=GTF
     output:
-        COUNT="feature_count/counts.s{strand}.strict.txt" \
-                if MODE == "strict" else \
-                "feature_count/counts.s{strand}.liberal.txt",
-        summary="feature_count/counts.s{strand}.strict.txt.summary" \
-                if MODE == "strict" else \
-                "feature_count/counts.s{strand}.liberal.txt.summary",
+        COUNT="feature_count/counts.s{strand}.{mode}.txt",
+        summary="feature_count/counts.s{strand}.{mode}.txt.summary"
     params:
         pe = '-p' if PAIR_END else ' ', 
         mode = '-Q 20 --minOverlap 1 --fracOverlap 0 -B -C' \
@@ -635,13 +630,9 @@ rule featureCounts:
 
 rule featureCounts_multiqc:
     input:
-        "feature_count/counts.s{strand}.strict.txt.summary" \
-        if MODE == "strict" else \
-        "feature_count/counts.s{strand}.liberal.txt.summary",
+        "feature_count/counts.s{strand}.{mode}.txt.summary"
     output:
-        "feature_count/counts.s{strand}.strict.txt.summary.multiqc_report.html" \
-        if MODE == "strict" else \
-        "feature_count/counts.s{strand}.liberal.txt.summary.multiqc_report.html"
+        "feature_count/counts.s{strand}.{mode}.txt.summary.multiqc_report.html"
     conda:
         "envs/fastqc.yaml"
     resources:
@@ -649,13 +640,9 @@ rule featureCounts_multiqc:
     threads:
         1
     log:
-        "feature_count/log/counts.s{strand}.strict.txt.summary.multiqc_report.html.log" \
-        if MODE == "strict" else \
-        "feature_count/log/counts.s{strand}.liberal.txt.summary.multiqc_report.html.log"
+        "feature_count/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.log" 
     benchmark:
-       "feature_count/log/counts.s{strand}.strict.txt.summary.multiqc_report.html.benchmark" \
-        if MODE == "strict" else \
-       "feature_count/log/counts.s{strand}.liberal.txt.summary.multiqc_report.html.benchmark"
+       "feature_count/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.benchmark"
     shell:
         """
         which multiqc &> {log};

@@ -120,11 +120,11 @@ def DESeq2_input(config):
         return("feature_count_gene_level/TE_included.txt" \
                 if config['INTRON'] \
                 else "feature_count/TE_included.txt")
-
-    if not config['TE_ANALYSIS']:
-        folder = 'feature_count_gene_level' \
-                 if config['INTRON'] \
-                 else 'feature_count'
+    else:
+        if config['INTRON']:
+            folder = 'feature_count_gene_level'
+        else:
+            folder = 'feature_count'
         return (folder + '/counts.' + config['MODE'] + '.txt' )
         
 
