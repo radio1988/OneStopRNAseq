@@ -758,9 +758,9 @@ rule SalmonTE:
     threads:
         12
     log:
-        "SalmonTE_output/EXPR.csv.log"
+        "log/SalmonTE.log"
     benchmark:
-        "SalmonTE_output/EXPR.csv.benchmark"
+        "log/SalmonTE.benchmark"
     shell:
         """
         which python &> {log}
