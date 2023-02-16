@@ -739,13 +739,10 @@ rule Strand_Detection:
 
 rule Strand_Detection_GeneLevel:
     input:
-        expand("feature_count_gene_level/counts.s{strand}.strict.txt.summary", strand=STRAND) 
-        if config["MODE"] == "strict" 
-        else expand("feature_count/counts.s{strand}.liberal.txt.summary", strand=STRAND)
+        ["feature_count_gene_level/counts.s{}.{}.txt.summary".\
+        format(strand, config['MODE']) for strand in config['STRAND']]
     output:
-        "feature_count_gene_level/counts.strict.txt" \
-        if config["MODE"] == "strict" \
-        else  "feature_count_gene_level/counts.liberal.txt",
+        "feature_count_gene_level/counts.{}.txt".format(config['MODE']),
         "feature_count_gene_level/strandness.detected.txt"
     threads:
         1
