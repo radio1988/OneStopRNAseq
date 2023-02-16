@@ -247,7 +247,7 @@ rule FastQC_MultiQC1:
     shell:
         """
         which multiqc &> {log};
-        multiqc {input} -f -o fastqc -n raw_reads_multiqc_report.html &>> {log};
+        multiqc {input} -f -n {output} &>> {log};
         """
 
 rule FastQC2:
@@ -295,7 +295,7 @@ rule FastQC_MultiQC2:
     shell:
         """
         which multiqc &> {log};
-        multiqc {input} -f -o fastqc -n {output} &>> {log};
+        multiqc {input} -f -n {output} &>> {log};
         """
 
 rule fastqc_compress:
@@ -395,8 +395,8 @@ rule STAR_MultiQC:
     input:
         expand("mapped_reads/{sample}.Log.final.out", sample=SAMPLES)
     output:
-        expand("bam_qc/STAR_Align_summary/{sample}.Log.final.out", sample=SAMPLES),
-        "bam_qc/STAR_Align_summary_multiqc_report.html",    
+        log=expand("bam_qc/STAR_Align_summary/{sample}.Log.final.out", sample=SAMPLES),
+        report="bam_qc/STAR_Align_summary_multiqc_report.html",    
     conda:
         "envs/fastqc.yaml"
     resources:
@@ -409,7 +409,7 @@ rule STAR_MultiQC:
         """
         mkdir -p bam_qc/STAR_Align_summary/
         cp {input} bam_qc/STAR_Align_summary/
-        multiqc {input} -f --outdir bam_qc --title STAR_Align_summary &> {log}
+        multiqc {input} -f -n {output.report} &> {log}
         """
 
 
@@ -493,8 +493,8 @@ rule Samtools_QC_MultiQc:
         "bam_qc/log/Samtools_MultiQc.log"
     shell:
         """
-        multiqc {input.stats} -f --outdir bam_qc -n {output.stats} &> {log}
-        multiqc {input.idxstats} -f --outdir bam_qc -n {output.idxstats} &>> {log}
+        multiqc {input.stats} -f -n {output.stats} &> {log}
+        multiqc {input.idxstats} -f -n {output.idxstats} &>> {log}
         """
 
 
@@ -635,7 +635,7 @@ rule featureCounts_multiqc:
     shell:
         """
         which multiqc &> {log};
-        multiqc {input} -f -o feature_count -n {output} &>> {log};
+        multiqc {input} -f -n {output} &>> {log};
         """
 
 
