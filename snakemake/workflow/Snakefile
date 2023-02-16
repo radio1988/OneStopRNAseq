@@ -641,7 +641,7 @@ rule featureCounts_multiqc:
     output:
         "feature_count/counts.s{strand}.strict.txt.summary.multiqc_report.html" \
         if MODE == "strict" else \
-        "feature_count/counts.s{strand}.liberal.txt.summary.multiqc_report.html" \
+        "feature_count/counts.s{strand}.liberal.txt.summary.multiqc_report.html"
     conda:
         "envs/fastqc.yaml"
     resources:
@@ -651,11 +651,11 @@ rule featureCounts_multiqc:
     log:
         "feature_count/log/counts.s{strand}.strict.txt.summary.multiqc_report.html.log" \
         if MODE == "strict" else \
-        "feature_count/log/counts.s{strand}.liberal.txt.summary.multiqc_report.html.log" \
+        "feature_count/log/counts.s{strand}.liberal.txt.summary.multiqc_report.html.log"
     benchmark:
        "feature_count/log/counts.s{strand}.strict.txt.summary.multiqc_report.html.benchmark" \
         if MODE == "strict" else \
-       "feature_count/log/counts.s{strand}.liberal.txt.summary.multiqc_report.html.benchmark" \
+       "feature_count/log/counts.s{strand}.liberal.txt.summary.multiqc_report.html.benchmark"
     shell:
         """
         which multiqc &> {log};
