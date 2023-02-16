@@ -117,6 +117,8 @@ def target_input(config, ASCN):
             'bam_qc/samtools_stats_multiqc_report.html'])
         l.extend(['bigWig/{}.{}.cpm.bw'.format(sample, config['MODE']) \
                 for sample in config['SAMPLES']])
+        l.extend(["feature_count/counts.s{}.{}.txt.summary.multiqc_report.html".format(strand, config['MODE']) \
+                for strand in config['STRAND']])
 
     if config['DESEQ2_ANALYSIS']:
         if config['START'] not in ['FASTQ', 'BAM', 'COUNT']:
@@ -287,13 +289,13 @@ rule FastQC_MultiQC2:
     threads:
         1
     log:
-        "log/multiqc/multiqc.log"
+        "fastqc/log/trimmed_reads_multiqc_report.html.log"
     benchmark:
-        "log/multiqc/multiqc.benchmark"
+        "fastqc/log/trimmed_reads_multiqc_report.html.benchmark"
     shell:
         """
         which multiqc &> {log};
-        multiqc {input} -f -o fastqc -n trimmed_reads_multiqc_report.html &>> {log};
+        multiqc {input} -f -o fastqc -n {output} &>> {log};
         """
 
 rule fastqc_compress:
@@ -411,7 +413,6 @@ rule STAR_MultiQC:
         """
         mkdir -p bam_qc/STAR_Align_summary/
         cp {input} bam_qc/STAR_Align_summary/
-
         multiqc {input} -f --outdir bam_qc --title STAR_Align_summary &> {log}
         """
 
@@ -488,8 +489,8 @@ rule Samtools_QC_MultiQc:
         stats=expand("bam_qc/stats/{sample}.stats.txt", sample=SAMPLES),
         idxstats=expand("bam_qc/idxstats/{sample}.idxstats.txt", sample=SAMPLES)
     output:
-        "bam_qc/samtools_stats_multiqc_report.html",    
-        "bam_qc/samtools_idxstats_multiqc_report.html",   
+        stats="bam_qc/samtools_stats_multiqc_report.html",    
+        idxstats="bam_qc/samtools_idxstats_multiqc_report.html",   
     conda:
         "envs/fastqc.yaml"
     resources:
@@ -502,8 +503,8 @@ rule Samtools_QC_MultiQc:
         'log/bam_qc/samtools_multiqc_report.benchmark'
     shell:
         """
-        multiqc {input.stats} -f --outdir bam_qc --title samtools_stats &> {log}
-        multiqc {input.idxstats} -f --outdir bam_qc --title samtools_idxstats &>> {log}
+        multiqc {input.stats} -f --outdir bam_qc -n {output.stats} &> {log}
+        multiqc {input.idxstats} -f --outdir bam_qc -n {output.idxstats} &>> {log}
         """
 
 
@@ -630,6 +631,35 @@ rule featureCounts:
         -T {threads} -g gene_id -s {wildcards.strand} \
         {params.pe}  {params.mode} \
         {input.bams} &>> {log}
+        """
+
+rule featureCounts_multiqc:
+    input:
+        "feature_count/counts.s{strand}.strict.txt.summary" \
+        if MODE == "strict" else \
+        "feature_count/counts.s{strand}.liberal.txt.summary",
+    output:
+        "feature_count/counts.s{strand}.strict.txt.summary.multiqc_report.html" \
+        if MODE == "strict" else \
+        "feature_count/counts.s{strand}.liberal.txt.summary.multiqc_report.html" \
+    conda:
+        "envs/fastqc.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
+    threads:
+        1
+    log:
+        "feature_count/log/counts.s{strand}.strict.txt.summary.multiqc_report.html.log" \
+        if MODE == "strict" else \
+        "feature_count/log/counts.s{strand}.liberal.txt.summary.multiqc_report.html.log" \
+    benchmark:
+       "feature_count/log/counts.s{strand}.strict.txt.summary.multiqc_report.html.benchmark" \
+        if MODE == "strict" else \
+       "feature_count/log/counts.s{strand}.liberal.txt.summary.multiqc_report.html.benchmark" \
+    shell:
+        """
+        which multiqc &> {log};
+        multiqc {input} -f -o feature_count -n {output} &>> {log};
         """
 
 
