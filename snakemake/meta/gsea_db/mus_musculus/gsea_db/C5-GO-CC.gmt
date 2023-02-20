@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 GO_3M_COMPLEX	na	Ankra2	Ccdc8	Cul7	Fbxw8	Obsl1
 GO_90S_PRERIBOSOME	na	Bms1	Bop1	Fam207a	Heatr1	Imp3	Imp4	Kri1	Pwp2	Mphosph10	Noc2l	Noc4l	Nol6	Nop14	Nop9	Pes1	Pwp2	Rrp36	Rrp7a	Rsl1d1	Srfbp1	Tbl3	Utp18	Utp20	Utp4	Utp6	Wdr12	Wdr3	Wdr36
 GO_9PLUS0_NON_MOTILE_CILIUM	na	Abca4	Arl13b	Arl3	Arr3	Atp1a4	Atp8a2	Bbs4	Bbs7	C130074G19Rik	1700029J07Rik	Cacna1f	Ccdc66	Cdhr1	Cep250	Cep290	Cerkl	Cetn1	Cetn2	Cfap410	Cib2	Cnga1	Cngb1	Cngb3	Dhrs3	Drd1	Drd5	Dynll2	Fam161a	Galr2	Galr3	Gna11	Gnaq	Gnat1	Gnat2	Gnat3	Gnb1	Gngt1	Grk1	Grk4	Guca1a	Guca1b	Guca2b	Gucy2e	Gucy2f	Ift122	Ift140	Ift20	Ift52	Ift57	Ift80	Iftap	Impg1	Inha	Iqcb1	D630045J12Rik	Kif17	Kifap3	Lca5	Lyar	Mak	Map1b	Mchr1	Mertk	Myo5a	Myo7a	Napepld	Nmur1	Npffr1	Nphp1	Npy2r	Npy5r	Nxnl1	Ocrl	Opn1mw	Opn1mw	Opn1mw	Opn1mw	Opn1sw	Opn3	Opn4	Pcare	Pcdh15	Pcdhb16	Pcdhb22	Pdc	Pde6a	Pde6b	Pde6g	Pde6h	Pdzd7	Pex6	Phlpp2	Phyh	Ppef2	Prcd	Prlhr	Prom1	Prph2	Ptgs1	Ptprk	Rab27a	Rcvrn	Rd3	Rgr	Rgs9bp	Rho	Rom1	Rp1	Rp1l1	Rpgr	Rpgrip1	Rpgrip1l	Rrh	Sag	Sdccag8	Septin2	Shank2	Smo	Spata7	Sptbn5	Sstr3	Tbcc	Tmem237	Topors	Tsga10ip	Ttll4	Ttll6	Tulp1	Tulp3	Ush1c	Ush1g	Ush2a	Vcan	Wdr19	Whrn
@@ -2002,4 +2001,3 @@ GO_ZONA_PELLUCIDA_RECEPTOR_COMPLEX	na	CCT2	CCT3	CCT4	CCT8	HSPA1L	TCP1	ZPBP	ZPBP2
 GO_ZONULA_ADHERENS	na	CAMSAP3	CTNNA1	CTNND1	JUP	KIFC3	NECTIN2	PLEKHA7	SORBS1
 GO_ZYMOGEN_GRANULE	na	CLCA1	CUZD1	DMBT1	GNAI3	HSPD1	RAB27B	RAB3D	REG1	SCAMP1	STX3	STXBP2	TMED10	TMED2	VAMP2	ZG16
 GO_ZYMOGEN_GRANULE_MEMBRANE	na	CLCA1	CUZD1	DMBT1	RAB27B	SCAMP1	STX3	STXBP2	TMED10	TMED2	VAMP2	ZG16
->>>>>>> 9767867d21af81320e04fd6a7803829df7e18a0b
