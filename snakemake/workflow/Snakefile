@@ -724,8 +724,8 @@ rule Strand_Detection_GeneLevel:
 if config['PAIR_END']:
     rule SalmonTE_Prep:
         input:
-            r1=expand("fastq/{sample}.R1.fastq.gz", sample=SAMPLES),
-            r2=expand("fastq/{sample}.R2.fastq.gz", sample=SAMPLES)    
+            r1=expand("trimmed/{sample}.R1.fastq.gz", sample=SAMPLES),
+            r2=expand("trimmed/{sample}.R2.fastq.gz", sample=SAMPLES)    
         output:
             r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
             r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
