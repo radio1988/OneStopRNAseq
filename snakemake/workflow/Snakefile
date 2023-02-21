@@ -806,7 +806,6 @@ rule Merge_TE_and_GE:
         """
 
 rule DESeq2:
-# todo: use softlinked workflow/script/DESeq2.rmd, use softlinked example_data/ at COUNT-START
     input:
         cnt=DESeq2_input(config),
         meta=META,
