@@ -21,7 +21,7 @@ SAMPLES:
 
 START: FASTQ # FASTQ, BAM, COUNT, RNK
 PAIR_END: True  # True/False
-ADAPTORS: meta/adapters/NexteraPE-PE.fa
+ADAPTORS: meta/adapters/merged.fa
 STRAND: [0, 1, 2]  # can input [0, 1, 2] to get all possible results, then workflow auto inferrs the correct one # [2] if you know it's reverse, [1] if you know it's forward, [0] if you know it's un-stranded
 
 GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/mm10.ucsc.fa

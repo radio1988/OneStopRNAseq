@@ -15,7 +15,7 @@ SAMPLES:
 
 START: FASTQ # FASTQ, BAM, COUNT, RNK
 PAIR_END: False  # True/False
-ADAPTORS: meta/adapters/TruSeq3-SE.fa
+ADAPTORS: meta/adapters/merged.fa
 GENOME: resources/genome/mm10.chr19.fa
 #/home/rui.li-umw/genomes/mm10/mm10.ucsc.fa
 #/home/rui.li-umw/genomes/hg38/hg38.primary.fa

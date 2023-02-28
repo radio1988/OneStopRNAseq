@@ -21,7 +21,7 @@ SAMPLES:
 
 START: FASTQ # FASTQ, BAM, COUNT, RNK
 PAIR_END: True  # True/False
-ADAPTORS: meta/adapters/NexteraPE-PE.fa
+ADAPTORS: meta/adapters/merged.fa
 STRAND: [0, 1, 2]  
         # [0, 1, 2]: auto detect
         # [0]: unstranded
