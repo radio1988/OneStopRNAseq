@@ -1319,7 +1319,7 @@ rule reset:
         _STARgenome _STARtmp \
         feature_count_gene_level hisat2 stringtie \
         lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.svg \
-        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt
+        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt Workflow_DAG.all.svg.log
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
