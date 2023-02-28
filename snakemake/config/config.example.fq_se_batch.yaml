@@ -48,19 +48,7 @@ blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlie
 GSEA_ANALYSIS: True
 GSEA_NPLOTS: 100  
 GSEA_PLOT_SVG: False  
-GSEA_DBS:  
-#  - c1.all.v7.1.symbols.gmt
-#  - c2.cgp.v7.1.symbols.gmt
-#  - c2.cp.v7.1.symbols.gmt
-#  - c3.all.v7.1.symbols.gmt
-#  - c4.all.v7.1.symbols.gmt
-#  - c5.bp.v7.1.symbols.gmt
-#  - c5.cc.v7.1.symbols.gmt
-#  - c5.mf.v7.1.symbols.gmt
-#  - c6.all.v7.1.symbols.gmt
-#  - c7.all.v7.1.symbols.gmt
-  - mh.all.v2022.1.Mm.symbols.gmt
-
+GSEA_DB_PATH: meta/gsea_db/
 
 
 # Only if start from COUNT

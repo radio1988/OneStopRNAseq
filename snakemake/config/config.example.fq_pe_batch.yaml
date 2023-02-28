@@ -47,27 +47,7 @@ blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlie
 GSEA_ANALYSIS: True
 GSEA_NPLOTS: 100  
 GSEA_PLOT_SVG: False  
-GSEA_DBS:
-        #        - m1.all.v2022.1.Mm.symbols.gmt
-        #        - m2.all.v2022.1.Mm.symbols.gmt
-        #        - m2.cgp.v2022.1.Mm.symbols.gmt
-        #        - m2.cp.biocarta.v2022.1.Mm.symbols.gmt
-        #        - m2.cp.reactome.v2022.1.Mm.symbols.gmt
-        #        - m2.cp.v2022.1.Mm.symbols.gmt
-        #        - m2.cp.wikipathways.v2022.1.Mm.symbols.gmt
-        #        - m3.all.v2022.1.Mm.symbols.gmt
-        #        - m3.gtrd.v2022.1.Mm.symbols.gmt
-        #        - m3.mirdb.v2022.1.Mm.symbols.gmt
-        #        - m5.all.v2022.1.Mm.symbols.gmt
-        #        - m5.go.bp.v2022.1.Mm.symbols.gmt
-        #        - m5.go.cc.v2022.1.Mm.symbols.gmt
-        #        - m5.go.mf.v2022.1.Mm.symbols.gmt
-        #        - m5.go.v2022.1.Mm.symbols.gmt
-        #        - m5.mpt.v2022.1.Mm.symbols.gmt
-        #        - m8.all.v2022.1.Mm.symbols.gmt
-        #        - mh.all.v2022.1.Mm.symbols.gmt
-        - msigdb.v2022.1.Mm.symbols.gmt
-
+GSEA_DB_PATH: meta/gsea_db
 
 # Only if start from COUNT
 COUNT_FILE: meta/COUNT.xlsx  # must have same format as feature_count output c1-c7 meta, c7- count

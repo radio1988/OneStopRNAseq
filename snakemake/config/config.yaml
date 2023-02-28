@@ -50,20 +50,7 @@ blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlie
 GSEA_ANALYSIS: True
 GSEA_NPLOTS: 100  
 GSEA_PLOT_SVG: False  
-GSEA_DBS:  
-#  - c1.all.v7.1.symbols.gmt
-#  - c2.cgp.v7.1.symbols.gmt
-#  - c2.cp.v7.1.symbols.gmt
-#  - c3.all.v7.1.symbols.gmt
-#  - c4.all.v7.1.symbols.gmt
-#  - c5.bp.v7.1.symbols.gmt
-#  - c5.cc.v7.1.symbols.gmt
-#  - c5.mf.v7.1.symbols.gmt
-#  - c6.all.v7.1.symbols.gmt
-#  - c7.all.v7.1.symbols.gmt
-  - h.all.v7.1.symbols.gmt  # todo: gsea err handling
-
-
+GSEA_DB_PATH: meta/gsea_db/ 
 
 # Only if start from COUNT
 COUNT_FILE: meta/COUNT.xlsx  # must have same format as feature_count output c1-c7 meta, c7- count

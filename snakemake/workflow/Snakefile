@@ -20,10 +20,15 @@ container: "docker://continuumio/miniconda3:4.4.10"
 
 def GSEA_OUTPUT(config):
     if config["GSEA_ANALYSIS"]:
+        gsea_dbs = []
+        for f in os.listdir(config['GSEA_DB_PATH']):
+            if f.endswith('.gmt'):
+                gsea_dbs.append(f)
+        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=config["GSEA_DBS"]))
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=gsea_dbs))
         else:
-            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=config["GSEA_DBS"]))
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=gsea_dbs))
     else:
         return("Workflow_DAG.all.svg")
 
