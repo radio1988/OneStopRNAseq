@@ -116,10 +116,7 @@ def target_input(config, ASCN):
         l.append("fastqc/fastqc.zip")
 
     if config['START'] in ['FASTQ', 'BAM']:
-        l.append('bam_qc/QoRTs_MultiPlot/plot-basic.pdf')
-        l.extend([
-            'bam_qc/STAR_Align_summary_multiqc_report.html',
-            'bam_qc/samtools_stats_multiqc_report.html'])
+        l.append('bam_qc/bam_qc.zip')
         l.extend(['bigWig/{}.{}.cpm.bw'.format(sample, config['MODE']) \
                 for sample in config['SAMPLES']])
         l.extend(["feature_count/counts.s{}.{}.txt.summary.multiqc_report.html".format(strand, config['MODE']) \
@@ -551,11 +548,25 @@ rule QoRTs_MultiPlot:
         Rscript workflow/script/QoRT.R &>> {log}; # needs QoRT package in R
         mkdir -p bam_qc/QoRTs_MultiPlot/details/;
         mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/;
-
-        D=bam_qc  ; # todo: more robust rule in case other bam_qc finishes faster (highly unlikely)
-        rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ 
         """
 
+rule zip_bam_qc:
+    input:
+        "bam_qc/QoRTs_MultiPlot/plot-basic.pdf",
+        "bam_qc/STAR_Align_summary_multiqc_report.html",
+        "bam_qc/samtools_stats_multiqc_report.html",    
+        "bam_qc/samtools_idxstats_multiqc_report.html"
+    output:
+        "bam_qc/bam_qc.zip"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 2000
+    threads:
+        1
+    shell:
+        """
+        D=bam_qc 
+        rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/
+        """
 
 rule bamCoverage:
     input:
