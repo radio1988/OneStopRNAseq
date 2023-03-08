@@ -574,7 +574,12 @@ if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
   cat(paste("Data dim after filtering:"))
   dim(cts)
   print(group_count)
-  boxplot(log10(cts+1), las=2, main = "library size after filtering")
+  boxplot(
+            log10(cts+1), 
+            las=2, 
+            main = "Raw Gene Count Distribution After Filtering",
+            ylab = 'log10(count+1)'
+        )
 }else{
   print("Library size too small: too few genes/samples would be left after filtering, so skipped filtering.")
   print("Please interpret results with caution")
