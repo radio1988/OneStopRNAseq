@@ -929,7 +929,7 @@ rule GSEA:
             gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}
         fi
     
-        cp workflow/envs/GSEA_MSigDB_ReadMe.html gsea/ &>> {log}
+        cp workflow/envs/GSEA_ReadMe.html gsea/ &>> {log}
 
     # clean
     rm -f {params.gmt_fmted} &>> {log}
