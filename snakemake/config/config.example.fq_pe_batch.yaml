@@ -47,7 +47,7 @@ blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlie
 GSEA_ANALYSIS: True
 GSEA_NPLOTS: 100  
 GSEA_PLOT_SVG: False  
-GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/gsea_db/
+GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/gsea_db
 
 # Only if start from COUNT
 COUNT_FILE: meta/COUNT.xlsx  # must have same format as feature_count output c1-c7 meta, c7- count
@@ -71,7 +71,7 @@ RMATS_STRANDNESS:
   2 : fr-secondstrand}
 
 # DEXSeq analysis
-MIN_GENE_COUNT: 10  # genes with less reads per sample will be removed from DEXSeq analysis, default 100, test with 10
+MIN_GENE_COUNT: 100  # genes with less reads per sample will be removed from DEXSeq analysis, default 100, test with 10
 
 # TE analysis (SalmonTE)
 TE_ANALYSIS: True # True, include TE analysis in DESeq2 results (only if FASTQ provided); False, skip
