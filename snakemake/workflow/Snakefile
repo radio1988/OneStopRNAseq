@@ -877,7 +877,7 @@ rule GSEA:
             if config["START"] == "RNK"
             else "DESeq2/DESeq2.html" , # DESEq2, then GSEA
         rnk=lambda wildcards: input_rnk_fname1(wildcards, config),
-        db="meta/gsea_db/{db}",
+        db=config['GSEA_DB_PATH']
     output:
         "gsea/{fname}/{db}.GseaPreranked/index.html"
     conda:
@@ -885,7 +885,6 @@ rule GSEA:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 24000,
     params:
-        #svg=config["GSEA_PLOT_SVG"] if config["GSEA_NPLOTS"] <= 200 else False,  # no svg if nplots > 200 (to save time and space) # todo: move this to front end, when making workflow portable
         svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
         label_db=lambda wildcards: wildcards["db"][:-12],

@@ -1,5 +1,5 @@
 # mouse
-# cd meta/; ln -s $github/meta/gsea_db/mus_musculus/msigdb_v2022.1.Mm_GMTs/ gsea_db
+# cd meta/; ln -s $github/workflow/resources/gsea_db/mus_musculus/msigdb_v2022.1.Mm_GMTs/ gsea_db
 GSEA_DBS:
         - m1.all.v2022.1.Mm.symbols.gmt
         - m2.all.v2022.1.Mm.symbols.gmt

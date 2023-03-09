@@ -21,7 +21,7 @@ SAMPLES:
 
 START: FASTQ # FASTQ, BAM, COUNT, RNK
 PAIR_END: True  # True/False
-ADAPTORS: meta/adapters/merged.fa
+ADAPTORS: workflow/resources/adapters/merged.fa
 STRAND: [0, 1, 2]  
         # [0, 1, 2]: auto detect
         # [0]: unstranded
@@ -30,7 +30,7 @@ STRAND: [0, 1, 2]
 
 GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/mm10.ucsc.fa
 GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/gencode.vM25.primary_assembly.annotation.gtf
-ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/mm10.gencode.vm25.te_included.anno.txt
+ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt
 
 MODE: strict # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
 INTRON: False  # will also perform gene level featureCount as well as exon level, and max(gene-count, exon-count) will be taken as gene-count
