@@ -15,7 +15,7 @@ get_strandness_for_hisat2_SE, get_strandness_for_stringtie
 
 min_version("5.17.0")  # check snakemake version
 configfile: "config.yaml"
-container: "docker://continuumio/miniconda3:4.4.10"
+containerized: "docker://liruiradiant/osr-dev:test0"
 
 
 def GSEA_OUTPUT(config):
