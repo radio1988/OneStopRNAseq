@@ -5,6 +5,14 @@ import os
 import math
 import shutil
 
+def read_table(fname='meta/contrast.de.xlsx'):
+    if fname.endswith(".txt"):
+        df = pd.read_table(fname)
+    elif fname.endswith(".xlsx"):
+        df = pd.read_excel(fname, engine='openpyxl')
+    else:
+        sys.exit("fname not xlsx nor txt")
+    return (df)
 
 def gunzip(fname):
     import gzip
@@ -21,7 +29,7 @@ def gunzip(fname):
 ### get CONTRASTS from meta/contrast.xlsx  ###
 def get_contrast_fnames (fname):
     '''Get contrast name for DESeq2'''
-    df=pd.read_excel(fname, engine='openpyxl')
+    df=read_table(fname)
     CONTRASTS = []
     for j in range(df.shape[1]):
         c1 = df.iloc[0,j]
@@ -41,7 +49,7 @@ def get_contrast_fnames (fname):
     return (CONTRASTS)
 
 def get_contrast_groups (fname):
-    df2=pd.read_excel(fname, engine='openpyxl')
+    df2=read_table(fname)
     C1S = []; C2S = []
     for j in range(df2.shape[1]):
         c1 = df2.iloc[0, j].strip()
@@ -57,7 +65,7 @@ def get_contrast_groups (fname):
     return ([C1S, C2S])
 
 def get_dict_from_meta (fname):
-    df = pd.read_excel(fname, engine='openpyxl')
+    df = read_table(fname)
     d = {}
     for i in range(df.shape[0]):
         sample = df.iloc[i, 0]

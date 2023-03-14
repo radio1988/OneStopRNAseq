@@ -1,7 +1,7 @@
 import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
-from osr import gunzip, read_length
+from osr import gunzip, read_length, read_table
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, \
 Merge_TE_and_Gene_input, strand_detection_input
@@ -93,7 +93,7 @@ if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
     # print("B2S:", B2S)
 
     # Get contrast for rMATS
-    df2 = pd.read_excel(CONTRAST_AS, engine='openpyxl')
+    df2 = read_table(CONTRAST_AS)
     ASCN = df2.shape[1] # alternative splicing contrast count
     #print("ASCN", ASCN)
 else:
@@ -223,7 +223,7 @@ rule FastQC1:
     benchmark:
         "fastqc/log/{sample}.benchmark"
     shell:
-        "which fastqc &> {log};"
+#        "which fastqc &> {log};"
         "fastqc -t {threads} {input} -o fastqc/details_raw &>> {log};"
 
 
