@@ -12,10 +12,10 @@ get_strandness_for_hisat2_SE, get_strandness_for_stringtie
 # named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
 # {sample}.fastq.gz for SE reads
 
-min_version("5.17.0")  # check snakemake version
+min_version("7.24.0")  # check snakemake version
 configfile: "config.yaml"
-containerized: "docker://liruiradiant/osr-dev:test0"
-
+#containerized: "docker://liruiradiant/osr-dev:test0"
+container: "docker://snakemake/snakemake:v7.24.1"
 
 def GSEA_OUTPUT(config):
     if config["GSEA_ANALYSIS"]:
@@ -988,8 +988,6 @@ rule rMATS:
     envmodules:
         "rMATS/4.1.0 "
         "gcc/8.1.0 " # must have space
-    container:
-        'envs/rmats.sif'
     conda:
        "envs/rmats.yaml"
     resources:
