@@ -11,6 +11,7 @@ channels:
 
 dependencies:
   - anaconda::openpyxl # anaconda
+  - anaconda::graphviz # for dot
   - bioconda::snakemake-wrapper-utils # bioconda
   - bioconda::snakemake # bioconda
   - conda-forge::mamba # conda-forge
