@@ -223,8 +223,7 @@ rule FastQC1:
     benchmark:
         "fastqc/log/{sample}.benchmark"
     shell:
-#        "which fastqc &> {log};"
-        "fastqc -t {threads} {input} -o fastqc/details_raw &>> {log};"
+        "fastqc -t {threads} {input} -o fastqc/details_raw &> {log};"
 
 
 rule FastQC_MultiQC1:
@@ -246,10 +245,7 @@ rule FastQC_MultiQC1:
     benchmark:
         "fastqc/log/multiqc.benchmark"
     shell:
-        """
-        which multiqc &> {log};
-        multiqc {input} -f -n {output} &>> {log};
-        """
+        "multiqc {input} -f -n {output} &> {log};"
 
 rule FastQC2:
     input:
@@ -271,8 +267,7 @@ rule FastQC2:
     benchmark:
         "fastqc/details_trimmed/log/{sample}.benchmark"
     shell:
-        "which fastqc &> {log};"
-        "fastqc -t {threads} {input} -o fastqc/details_trimmed &>> {log};"
+        "fastqc -t {threads} {input} -o fastqc/details_trimmed &> {log};"
 
 
 rule FastQC_MultiQC2:
@@ -295,8 +290,7 @@ rule FastQC_MultiQC2:
         "fastqc/log/trimmed_reads_multiqc_report.html.benchmark"
     shell:
         """
-        which multiqc &> {log};
-        multiqc {input} -f -n {output} &>> {log};
+        multiqc {input} -f -n {output} &> {log};
         """
 
 rule fastqc_compress:
@@ -334,7 +328,6 @@ rule STAR_Index:
     shell:
         """
         whoami > {log};
-        which STAR >> {log};
 
         STAR --runThreadN {threads} \
         --runMode genomeGenerate \
@@ -365,8 +358,6 @@ rule STAR:
         "mapped_reads/log/{sample}.benchmark"
     shell:
         """
-        which STAR > {log};
-
         STAR --runThreadN {threads} --genomeDir {INDEX} --sjdbGTFfile {input.gtf} \
         --readFilesCommand zcat --readFilesIn {input.reads} \
         --outFileNamePrefix mapped_reads/{wildcards.sample}. \
@@ -385,7 +376,7 @@ rule STAR:
         --outSAMtype BAM Unsorted \
         --quantMode GeneCounts \
         --outReadsUnmapped Fastx \
-        >> {log} 2>&1
+        > {log} 2>&1
 
         mv mapped_reads/{wildcards.sample}.Aligned.out.bam mapped_reads/{wildcards.sample}.bam &>> {log}
         pigz -p {threads} -f mapped_reads/{wildcards.sample}.Unmapped.out.mate*  &>> {log}
@@ -430,8 +421,7 @@ rule Samtools_Sort:
     benchmark:
         "sorted_reads/log/{sample}.bam.benchmark"
     shell:
-        "which samtools &> {log};"
-        "samtools sort -@ {threads} -m 3G {input} -o {output} &>> {log}"
+        "samtools sort -@ {threads} -m 3G {input} -o {output} &> {log}"
 
 
 rule Samtools_Index:
@@ -450,8 +440,7 @@ rule Samtools_Index:
     benchmark:
         "sorted_reads/log/{sample}.bam.bai.benchmark"
     shell:
-        "which samtools &> {log};"
-        "samtools index -@ {threads} {input} &>> {log}"
+        "samtools index -@ {threads} {input} &> {log}"
 
 
 rule Samtools_QC:
@@ -519,9 +508,8 @@ rule QoRTs:
         "bam_qc/QoRTs/log/{sample}.benchmark"
     shell:
         """
-        which java &> {log}
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
-        {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
+        {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
         """
 
 
@@ -542,8 +530,7 @@ rule QoRTs_MultiPlot:
         "bam_qc/QoRTs_MultiPlot/log/QoRTs_MultiPlot.benchmark"
     shell:
         """
-        which python && which Rscript &> {log};
-        python workflow/script/meta_to_decoder.py &>> {log};
+        python workflow/script/meta_to_decoder.py &> {log};
         Rscript workflow/script/QoRT.R &>> {log}; # needs QoRT package in R
         mkdir -p bam_qc/QoRTs_MultiPlot/details/;
         mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/;
@@ -587,11 +574,9 @@ rule bamCoverage:
         "bigWig/log/{sample}.{mode}.cpm.bw.benchmark"
     shell:
         """
-        which bamCoverage &> {log}
-
         bamCoverage --bam {input.bam} -o  {output} --numberOfProcessors {threads} \
         --outFileFormat bigwig --normalizeUsing CPM --binSize 50 \
-        {params} &>> {log}
+        {params} &> {log}
         """
 
 
@@ -625,11 +610,10 @@ rule featureCounts:
         "feature_count/log/counts.s{strand}.{mode}.txt.benchmark"
     shell:
         """
-        which featureCounts &> {log}
         featureCounts -a {input.gtf} -o {output.COUNT} \
         -T {threads} -g gene_id -s {wildcards.strand} \
         {params.pe}  {params.mode} \
-        {input.bams} &>> {log}
+        {input.bams} &> {log}
         """
 
 rule featureCounts_multiqc:
@@ -649,8 +633,7 @@ rule featureCounts_multiqc:
        "feature_count/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.benchmark"
     shell:
         """
-        which multiqc &> {log};
-        multiqc {input} -f -n {output} &>> {log};
+        multiqc {input} -f -n {output} &> {log};
         """
 
 
@@ -777,13 +760,12 @@ rule SalmonTE:
         "log/SalmonTE.benchmark"
     shell:
         """
-        which python &> {log}
         rm -rf SalmonTE_output/
         python workflow/envs/SalmonTE/SalmonTE.py --version >> {log}
         python workflow/envs/SalmonTE/SalmonTE.py quant \
         --reference={params.ref} --exprtype=count \
         --num_threads={threads} \
-        {input.reads} >> {log} 2>&1
+        {input.reads} > {log} 2>&1
         """
 
 
@@ -911,8 +893,6 @@ rule GSEA:
         python workflow/script/rnk_to_upper.py {input.rnk} &>> {log}  # fix gene symbol error; standardize file format (xlsx, rnk, etc)
         python workflow/script/gmt_to_upper.py -f {input.db} 1> {params.gmt_fmted} 2> {log}  # gene symbols to upper
         
-        which java &>> {log}
-
         if workflow/envs/GSEA_4.3.2/gsea-cli.sh GSEAPreranked \
         -gmx {params.gmt_fmted} -rnk {params.rnk_flat_file} -rpt_label {wildcards.db} \
         -norm meandiv -nperm 1000  -scoring_scheme classic \
@@ -1014,7 +994,6 @@ rule rMATS:
         echo {params.b1} > rMATS.{wildcards.ascn}/params/b1.txt
         echo {params.b2} > rMATS.{wildcards.ascn}/params/b2.txt
 
-        which python &> {log}
         rmats.py  \
         --b1 rMATS.{wildcards.ascn}/params/b1.txt \
         --b2  rMATS.{wildcards.ascn}/params/b2.txt \
@@ -1027,7 +1006,7 @@ rule rMATS:
         --tstat {threads} \
         --cstat 0.2 \
         --od rMATS.{wildcards.ascn}/output/ \
-        --tmp rMATS.{wildcards.ascn}/tmp/  &>> {log}
+        --tmp rMATS.{wildcards.ascn}/tmp/  &> {log}
 
         cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
         rm -rf rMATS.{wildcards.ascn}/tmp/   &>> {log}
@@ -1115,8 +1094,7 @@ rule DEXSeq:
     shell:
         """
         mkdir -p DEXSeq 
-        which Rscript &> {log}
-        cp workflow/script/dexseq.r DEXSeq/ &>> {log}
+        cp workflow/script/dexseq.r DEXSeq/ &> {log}
         Rscript workflow/script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} {threads} {MIN_GENE_COUNT} {wildcards.ascn} &>> {log}
         D=DEXSeq/contrast{wildcards.ascn}
         rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
@@ -1317,7 +1295,6 @@ rule Create_DAG:
         "graphviz/2.26.0"
     shell:
         "snakemake --dag targets > dag 2> {log};"
-        "which dot &>> {log};"
         "cat dag|dot -Tsvg > {output} 2>> {log}"
 
 
