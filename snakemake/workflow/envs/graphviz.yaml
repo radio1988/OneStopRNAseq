@@ -1,0 +1,8 @@
+name: graphviz 
+
+channels:
+  - anaconda
+
+dependencies:
+  - graphviz
+

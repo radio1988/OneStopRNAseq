@@ -323,8 +323,6 @@ rule STAR_Index:
         "log/star_idx/star_idx.log"
     benchmark:
         "log/star_idx/star_idx.benchmark"
-    # envmodules:
-    #     "star/2.7.5a"
     shell:
         """
         whoami > {log};
@@ -965,9 +963,6 @@ rule rMATS:
         strand_file="meta/strandness.detected.txt",
     output:
         "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt"
-    envmodules:
-        "rMATS/4.1.0 "
-        "gcc/8.1.0 " # must have space
     conda:
        "envs/rmats.yaml"
     resources:
@@ -1291,8 +1286,8 @@ rule Create_DAG:
         "Workflow_DAG.all.svg"
     log:
         "Workflow_DAG.all.svg.log"
-    envmodules:
-        "graphviz/2.26.0"
+    conda:
+        "envs/graphviz.yaml"
     shell:
         "snakemake --dag targets > dag 2> {log};"
         "cat dag|dot -Tsvg > {output} 2>> {log}"
