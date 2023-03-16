@@ -1,18 +1,4 @@
 # Analysis Params
-SAMPLES:
-        - KO_D0_1
-        - KO_D0_2
-        - KO_D2_1
-        - KO_D2_2
-        - KO_D8_1
-        - KO_D8_2
-        - WT_D0_1
-        - WT_D0_2
-        - WT_D2_1
-        - WT_D2_2
-        - WT_D8_1
-        - WT_D8_2
-
 START: FASTQ # FASTQ, BAM, COUNT, RNK
 PAIR_END: False  # True/False
 ADAPTORS: meta/adapters/merged.fa

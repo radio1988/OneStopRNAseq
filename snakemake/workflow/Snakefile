@@ -46,7 +46,6 @@ if config["VCF"].endswith(".gz"):
 
 
 # params todo: check yaml format
-SAMPLES=config['SAMPLES']
 PAIR_END=config['PAIR_END']
 GENOME=config["GENOME"]
 INDEX=GENOME+'.star_idx'
@@ -60,6 +59,7 @@ MIN_GENE_COUNT= config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100 
 CONTRAST_AS = config['CONTRAST_AS']
 META = config['META']
 
+SAMPLES=read_table(config['META']).iloc[:,0].tolist()
 
 # for DESeq2
 if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
@@ -117,7 +117,7 @@ def target_input(config, ASCN):
     if config['START'] in ['FASTQ', 'BAM']:
         l.append('bam_qc/bam_qc.zip')
         l.extend(['bigWig/{}.{}.cpm.bw'.format(sample, config['MODE']) \
-                for sample in config['SAMPLES']])
+                for sample in SAMPLES])
         l.extend(["feature_count/counts.s{}.{}.txt.summary.multiqc_report.html".format(strand, config['MODE']) \
                 for strand in config['STRAND']])
 
@@ -1287,8 +1287,6 @@ rule Create_DAG:
         "Workflow_DAG.all.svg"
     log:
         "Workflow_DAG.all.svg.log"
-    conda:
-        "envs/graphviz.yaml"
     shell:
         "snakemake --dag targets > dag 2> {log};"
         "cat dag|dot -Tsvg > {output} 2>> {log}"
