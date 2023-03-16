@@ -12,7 +12,7 @@ get_strandness_for_hisat2_SE, get_strandness_for_stringtie
 # named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
 # {sample}.fastq.gz for SE reads
 
-min_version("7.24.0")  # check snakemake version
+min_version("7.2")  # check snakemake version
 configfile: "config.yaml"
 containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
@@ -411,8 +411,7 @@ elif config['ALIGNER'] == 'HISAT2':
                         if PAIR_END else \
                     "trimmed/{sample}.fastq.gz",
         output:
-            bam="mapped_reads/{sample}.bam",
-            bai="mapped_reads/{sample}.bam.bai"
+            bam="mapped_reads/{sample}.bam"
         conda:
             "envs/hisat2.yaml" 
         params:
