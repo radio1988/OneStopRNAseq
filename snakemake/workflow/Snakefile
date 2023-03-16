@@ -564,8 +564,8 @@ rule QoRTs_MultiPlot:
         "bam_qc/QoRTs_MultiPlot/log/QoRTs_MultiPlot.benchmark"
     shell:
         """
-        python workflow/script/meta_to_decoder.py {config[META]} &> {log};
-        Rscript workflow/script/QoRT.R &>> {log}; # needs QoRT package in R
+        python workflow/script/meta_to_decoder.py {config[META]} > {log} 2>&1;
+        Rscript workflow/script/QoRT.R > {log} 2>&1;
         mkdir -p bam_qc/QoRTs_MultiPlot/details/;
         mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/;
         """
@@ -610,7 +610,7 @@ rule bamCoverage:
         """
         bamCoverage --bam {input.bam} -o  {output} --numberOfProcessors {threads} \
         --outFileFormat bigwig --normalizeUsing CPM --binSize 50 \
-        {params} &> {log}
+        {params} > {log} 2>&1
         """
 
 
@@ -648,7 +648,7 @@ rule featureCounts:
         featureCounts -a {input.gtf} -o {output.COUNT} \
         -T {threads} -g gene_id -s {wildcards.strand} \
         {params.pe}  {params.mode} \
-        {input.bams} &> {log}
+        {input.bams} > {log} 2>&1
         """
 
 rule featureCounts_multiqc:
@@ -668,7 +668,7 @@ rule featureCounts_multiqc:
        "feature_count/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.benchmark"
     shell:
         """
-        multiqc {input} -f -n {output} &> {log};
+        multiqc {input} -f -n {output} > {log} 2>&1;
         """
 
 
@@ -829,7 +829,7 @@ rule Merge_TE_and_GE:
     shell:
         """
         python workflow/script/merge_featureCount_and_SalmonTE.py \
-        {input.gene} {input.te} {output} &> {log}
+        {input.gene} {input.te} {output} > {log} 2>&1;
         """
 
 rule DESeq2:
@@ -878,7 +878,7 @@ rule DESeq2:
             blackSamples=\'{params.blackSamples}\' \
             ), \
         output_file={params.o})" > {log} 2>&1 ;'
-        'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};'
+        'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
 
 
 
@@ -921,12 +921,12 @@ rule GSEA:
         echo wildcards.fname: {wildcards.fname} >> {log}
         echo wildcards.db: {wildcards.db} >> {log}
 
-        mkdir -p gsea gsea/gene_sets gsea/{wildcards.fname} &>> {log}
+        mkdir -p gsea gsea/gene_sets gsea/{wildcards.fname} >> {log} 2>&1;
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
         rm -rf gsea/{wildcards.fname}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
 
-        python workflow/script/rnk_to_upper.py {input.rnk} &>> {log}  # fix gene symbol error; standardize file format (xlsx, rnk, etc)
+        python workflow/script/rnk_to_upper.py {input.rnk} >> {log} 2>&1;  # fix gene symbol error; standardize file format (xlsx, rnk, etc)
         python workflow/script/gmt_to_upper.py -f {input.db} 1> {params.gmt_fmted} 2> {log}  # gene symbols to upper
         
         if workflow/envs/GSEA_4.3.2/gsea-cli.sh GSEAPreranked \
@@ -934,24 +934,24 @@ rule GSEA:
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
         -set_max 15000 -set_min 15 \
-        -plot_top_x {params.nplot} -out ./gsea/{wildcards.fname} &>> {log}
+        -plot_top_x {params.nplot} -out ./gsea/{wildcards.fname} >> {log} 2>&1;
         then
             mv gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/ \
-            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log} 
+            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  >> {log} 2>&1;
         else
             mv gsea/{wildcards.fname}/*{wildcards.db}.GseaPreranked*/ \
-            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}
+            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  >> {log} 2>&1;
         fi
     
-        cp workflow/envs/GSEA_ReadMe.html gsea/ &>> {log}
+        cp workflow/envs/GSEA_ReadMe.html gsea/ >> {log} 2>&1;
 
     # clean
-    rm -f {params.gmt_fmted} &>> {log}
+    rm -f {params.gmt_fmted} >> {log} 2>&1;
 
         # compress
         echo compress
         D=gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked
-        rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
+        rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ >> {log} 2>&1;
         """
 
 # todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
@@ -1039,13 +1039,13 @@ rule rMATS:
         --tstat {threads} \
         --cstat 0.2 \
         --od rMATS.{wildcards.ascn}/output/ \
-        --tmp rMATS.{wildcards.ascn}/tmp/  &> {log}
+        --tmp rMATS.{wildcards.ascn}/tmp/  > {log} 2>&1
 
-        cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
-        rm -rf rMATS.{wildcards.ascn}/tmp/   &>> {log}
-        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
-        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/  &>> {log}
-        mkdir -p rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
+        cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  >>{log} 2>&1;
+        rm -rf rMATS.{wildcards.ascn}/tmp/   >> {log} 2>&1;
+        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ >> {log} 2>&1;
+        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/  >> {log} 2>&1;
+        mkdir -p rMATS.{wildcards.ascn}/output/fromGTF/ >> {log} 2>&1;
         mv rMATS.{wildcards.ascn}/output/*JCEC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/ &>> {log}
         mv rMATS.{wildcards.ascn}/output/*JC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
         mv rMATS.{wildcards.ascn}/output/fromGTF*txt  rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
