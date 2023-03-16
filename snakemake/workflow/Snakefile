@@ -491,9 +491,7 @@ rule QoRTs:
         bam="sorted_reads/{sample}.bam",
         gtf=config['GTF']
     output:
-        "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
-    shadow: 
-        "shallow"
+        temp(directory("bam_qc/QoRTs/{sample}"))
     params:
         pe = ' ' if PAIR_END else '--singleEnded'
     conda:
@@ -515,7 +513,7 @@ rule QoRTs:
 
 rule QoRTs_MultiPlot:
     input:
-        expand("bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK", sample=SAMPLES)
+        expand("bam_qc/QoRTs/{sample}", sample=SAMPLES)
     output:
         "bam_qc/QoRTs_MultiPlot/plot-basic.pdf"
     conda:
@@ -530,7 +528,7 @@ rule QoRTs_MultiPlot:
         "bam_qc/QoRTs_MultiPlot/log/QoRTs_MultiPlot.benchmark"
     shell:
         """
-        python workflow/script/meta_to_decoder.py &> {log};
+        python workflow/script/meta_to_decoder.py {config[META]} &> {log};
         Rscript workflow/script/QoRT.R &>> {log}; # needs QoRT package in R
         mkdir -p bam_qc/QoRTs_MultiPlot/details/;
         mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/;
@@ -1062,7 +1060,7 @@ rule DEXSeq_Count:
     benchmark:
         "DEXSeq_count/log/{sample}_count.txt.benchmark"
     shell:
-        "python workflow/script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output}"  
+        "python workflow/script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output} &> {log}"  
         # todo: maybe -r name (sort by name) is faster
 
 
@@ -1227,7 +1225,8 @@ rule Hisat2:
         """
         hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
         {params.pe} {params.strand} 2> {log} | \
-        samtools sort -@ 2 -o {output.bam}
+        samtools sort -@ 2 -o {output.bam} 2>> {log}
+
         samtools index {output.bam}
         """
 
