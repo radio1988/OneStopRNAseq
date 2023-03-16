@@ -88,9 +88,15 @@ fix_hyphen <- function(x){
 }
 
 readExcel <- function(fname){
-  df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
-  df <- data.frame(df)  #important
-  #df <- data.frame(lapply(df, fix_hyphen))
+  if (str_ends(fname, '.txt')){
+      df <- read_table(fname)
+   } else if (str_ends(fname, '.xlsx')){
+      df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
+      df <- data.frame(df)  #important
+      #df <- data.frame(lapply(df, fix_hyphen))
+  } else{
+      stop("file format not supported")
+  }
   return (df)
 }
 
