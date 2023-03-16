@@ -527,7 +527,8 @@ rule QoRTs:
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
-        pe = ' ' if PAIR_END else '--singleEnded'
+        pe = ' ' if PAIR_END else '--singleEnded',
+        aligner = "--minMAPQ 60" if config['ALIGNER'] == 'HISAT2' else "" # only support STAR and HISAT2
     conda:
         "envs/java11.yaml"
     resources:
@@ -541,6 +542,7 @@ rule QoRTs:
     shell:
         """
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
+        {params.aligner} \
         {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
         """
 
@@ -1245,8 +1247,7 @@ rule HISAT2:
     conda:
         "envs/hisat2.yaml" 
     params:
-#        strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt"),  # todo: SE?
-        strand=" ", # all set to unstranded for now(test)
+        strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt"),  # todo: SE?
         pe= "-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
                 if PAIR_END else \
             "-U trimmed/{sample}.fastq.gz"
