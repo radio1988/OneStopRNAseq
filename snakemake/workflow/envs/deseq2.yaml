@@ -4,6 +4,7 @@ channels:
   - conda-forge
   - bioconda
   - r
+  - anaconda
 
 dependencies:
   # conda-forge
@@ -30,3 +31,5 @@ dependencies:
   - r-rmarkdown
   - r-gdata 
   - r-gridextra 
+
+  - anaconda::zip

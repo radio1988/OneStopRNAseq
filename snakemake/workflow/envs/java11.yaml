@@ -10,4 +10,4 @@ dependencies:
   # anaconda
   - python=3.8
   - pandas
- 
+  - zip 
