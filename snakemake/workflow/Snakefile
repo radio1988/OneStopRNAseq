@@ -14,8 +14,8 @@ get_strandness_for_hisat2_SE, get_strandness_for_stringtie
 
 min_version("7.24.0")  # check snakemake version
 configfile: "config.yaml"
-#containerized: "docker://liruiradiant/osr-dev:test0"
-container: "docker://snakemake/snakemake:v7.24.1"
+containerized: "docker://liruiradiant/osr-dev:test0"
+#container: "docker://snakemake/snakemake:v7.24.1"
 
 def GSEA_OUTPUT(config):
     if config["GSEA_ANALYSIS"]:
@@ -390,7 +390,7 @@ rule STAR_MultiQC:
     conda:
         "envs/fastqc.yaml"
     resources:
-        mem_mb="2000"
+        mem_mb=2000
     threads:
         1
     log:
@@ -407,7 +407,7 @@ rule Samtools_Sort:
     input:
         "mapped_reads/{sample}.bam"
     output:
-        "sorted_reads/{sample}.bam"
+        protected("sorted_reads/{sample}.bam")
     conda:
         "envs/samtools.yaml"
     resources:
@@ -474,7 +474,7 @@ rule Samtools_QC_MultiQc:
     conda:
         "envs/fastqc.yaml"
     resources:
-        mem_mb="2000"
+        mem_mb=2000
     threads:
         1
     log:
@@ -492,6 +492,8 @@ rule QoRTs:
         gtf=config['GTF']
     output:
         "bam_qc/QoRTs/{sample}/QC.QORTS_COMPLETED_OK"
+    shadow: 
+        "shallow"
     params:
         pe = ' ' if PAIR_END else '--singleEnded'
     conda:
@@ -926,7 +928,7 @@ rule Read_Length_Detection:
     output:
         "meta/read_length.txt"
     resources:
-        mem_mb="1000",
+        mem_mb=1000,
     threads:
         1
     log:
