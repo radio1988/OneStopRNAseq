@@ -273,3 +273,20 @@ def strand_detection_input(config):
     mode=config["MODE"]
     return ([folder + 'counts.s' + str(s) + '.'  + config['MODE'] + '.txt.summary' \
              for s in config['STRAND']])
+
+
+def mapped_bam_inputs(config, SAMPLES):
+    if config['ALIGNER'] == 'STAR':
+        return( ["mapped_reads/{}.bam".format(s) for s in SAMPLES])
+    elif  config['ALIGNER'] == 'HISAT2':
+        return( ["hisat2/{}.bam".format(s) for s in SAMPLES])
+    else:
+        sys.exit("config['ALIGNER'] not recognized")
+
+def mapped_bam_single_input(config):
+    if config['ALIGNER'] == 'STAR':
+        return "mapped_reads/{sample}.bam"
+    elif  config['ALIGNER'] == 'HISAT2':
+        return "hisat2/{sample}.bam"
+    else:
+        sys.exit("config['ALIGNER'] not recognized")

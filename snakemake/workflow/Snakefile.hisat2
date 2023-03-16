@@ -2,6 +2,7 @@ import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
 from osr import gunzip, read_length, read_table
+from osr import mapped_bam_inputs, mapped_bam_single_input
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, \
 Merge_TE_and_Gene_input, strand_detection_input
@@ -402,45 +403,10 @@ if config['ALIGNER'] == 'STAR':
             cp {input} bam_qc/STAR_Align_summary/
             multiqc {input} -f -n {output.report} &> {log}
             """
-elif config['ALIGNER'] == 'HISAT2':
-    rule HISAT2_UNSTRANDED:
-        input:
-            genome=config['GENOME'],
-            index =config['GENOME'] + '.hisat2_build.finished',
-            reads=  ["trimmed/{sample}.R1.fastq.gz","trimmed/{sample}.R2.fastq.gz"] \
-                        if PAIR_END else \
-                    "trimmed/{sample}.fastq.gz",
-        output:
-            bam="mapped_reads/{sample}.bam",
-            bai="mapped_reads/{sample}.bam.bai"
-        conda:
-            "envs/hisat2.yaml" 
-        params:
-            strand=" ", # all set to unstranded for now(test)
-            pe= "-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
-                    if PAIR_END else \
-                "-U trimmed/{sample}.fastq.gz"
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 2000
-        threads:
-            8
-        log:
-            "hisat2/log/{sample}.log"
-        benchmark:
-            "hisat2/log/{sample}.benchmark"
-        shell:
-            """
-            hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
-            {params.pe} {params.strand} > {output.bam} 2> {log} 
-            """
-else:
-    sys.exit("config['ALIGNER'] option not recognized")
-    
 
 rule SAMtools_sort:
     input:
-        #mapped_bam_single_input(config)
-        "mapped_reads/{sample}.bam"
+        mapped_bam_single_input(config)
     output:
         protected("sorted_reads/{sample}.bam")
     conda:
@@ -621,8 +587,7 @@ rule featureCounts:
         - PAIR_END: True, False
     '''
     input:
-#        bams=mapped_bam_inputs(config, SAMPLES),
-        bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES),
+        bams=mapped_bam_inputs(config, SAMPLES),
         gtf=GTF
     output:
         COUNT="feature_count/counts.s{strand}.{mode}.txt",
@@ -680,8 +645,7 @@ rule featureCounts_GeneLevel:
         - PAIR_END: True, False
     '''
     input:
-        #bams=mapped_bam_inputs(config, SAMPLES),
-        bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES),
+        bams=mapped_bam_inputs(config, SAMPLES),
         exon_counts="feature_count/counts.s{strand}.{mode}.txt",
         gtf=GTF
     output:
