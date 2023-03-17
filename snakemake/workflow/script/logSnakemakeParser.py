@@ -39,7 +39,7 @@ with open(filename) as f:
 #  For each rule, parse out total jobs and save in dict:
 with open(filename) as f:
     for i, line in enumerate(f):
-        if i in range(lineMetaStart + 1, lineMetaEnd - 2):
+        if i in range(lineMetaStart + 1, lineMetaEnd - 1):
             tem = line.split()
             jobNum = tem[1]
             ruleName = tem[0]
