@@ -22,7 +22,7 @@ else
     PREFS_PROP=
 fi;
 
-exec java --module-path="${prefix}/modules" -Xmx4g \
+exec java --module-path="${prefix}/modules" -Xmx8g \
     -Djava.awt.headless=true $PREFS_PROP \
     -Djava.util.logging.config.file="${prefix}/logging.properties" \
     @"${prefix}/gsea.args" \

@@ -921,7 +921,7 @@ rule GSEA:
     conda:
         "envs/java11.yaml"  # test
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 24000,
+        mem_mb=lambda wildcards, attempt: attempt * 8200,
     params:
         svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
@@ -936,13 +936,13 @@ rule GSEA:
         "gsea/log/{fname}/{db}.benchmark"
     shell:
         """
-        echo fname1: {input.rnk} > {log}
-        echo fname2: {params.rnk_flat_file} >> {log}
+        echo rnkfile: {input.rnk} > {log}
+        echo rnkfile.cleaned: {params.rnk_flat_file} >> {log}
         echo label_db: {params.label_db} >> {log}
-        echo wildcards.fname: {wildcards.fname} >> {log}
-        echo wildcards.db: {wildcards.db} >> {log}
+        echo fname: {wildcards.fname} >> {log}
+        echo dbname: {wildcards.db} >> {log}
 
-        mkdir -p gsea gsea/gene_sets gsea/{wildcards.fname} >> {log} 2>&1;
+        mkdir -p gsea gsea/gene_sets gsea/{wildcards.fname} >> {log} 2>&1
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
         rm -rf gsea/{wildcards.fname}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
@@ -966,16 +966,12 @@ rule GSEA:
     
         cp workflow/envs/GSEA_ReadMe.html gsea/ >> {log} 2>&1;
 
-    # clean
-    rm -f {params.gmt_fmted} >> {log} 2>&1;
-
         # compress
-        echo compress
-        D=gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked
-        rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ >> {log} 2>&1;
+        cd gsea/{wildcards.fname}/
+        rm -f {wildcards.db}.GseaPreranked.zip && \
+        [ -d {wildcards.db}.GseaPreranked/ ] && \
+        zip -rq {wildcards.db}.GseaPreranked.zip {wildcards.db}.GseaPreranked/ >> {log} 2>&1
         """
-
-# todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
 
 rule Read_Length_Detection:
     input:
