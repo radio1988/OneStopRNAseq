@@ -115,46 +115,43 @@ def target_input(config, ASCN):
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
 
+        if config["ASSEMBLY_ANALYSIS"]:
+            if config['START'] not in ['FASTQ']:
+                raise Exception ('config Error: START and ASSEMBLY_ANALYSIS incompatible')
+            l.append('stringtie/stringtie.merged.gtf')
+
     if config['START'] in ['FASTQ', 'BAM']:
         l.append('bam_qc/bam_qc.zip')
+
         l.extend(['bigWig/{}.{}.cpm.bw'.format(sample, config['MODE']) \
-                for sample in config['SAMPLES']])
+                for sample in SAMPLES])
+
         l.extend(["feature_count/counts.s{}.{}.txt.summary.multiqc_report.html".format(strand, config['MODE']) \
                 for strand in config['STRAND']])
 
-    if config['DESEQ2_ANALYSIS']:
-        if config['START'] not in ['FASTQ', 'BAM', 'COUNT']:
-            raise Exception ('config Error: START and DESEQ2_ANALYSIS incompatible')
-        l.append("DESeq2/DESeq2.html")
+        if config['RMATS_ANALYSIS']:
+            l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt'.\
+                format(ascn=ascn) for ascn in range(1, 1+ASCN)])
+
+        if config['DEXSEQ_ANALYSIS']:
+            l.append(["DEXSeq/contrast{ascn}/contrast{ascn}.RData".\
+                format(ascn=ascn) for ascn in range(1,ASCN+1)])
+
+        # todo: fix GATK env
+        if config['ASE_ANALYSIS']:
+            l.extend(["GATK_ASEReadCounter/{sample}.table".\
+                format(sample=sample) for sample in SAMPLES])
+
+    if config['START'] in ['FASTQ', 'BAM', 'COUNT']:
+        if config['DESEQ2_ANALYSIS']:
+            l.append("DESeq2/DESeq2.html")
 
     if config['GSEA_ANALYSIS']:
         l.extend(GSEA_OUTPUT(config))
 
-    if config['RMATS_ANALYSIS']:
-        if config['START'] not in ['FASTQ', 'BAM']:
-            raise Exception ('config Error: START and RMATS_ANALYSIS incompatible')
-        l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt'.\
-            format(ascn=ascn) for ascn in range(1, 1+ASCN)])
-
-    if config['DEXSEQ_ANALYSIS']:
-        if config['START'] not in ['FASTQ', 'BAM']:
-            raise Exception ('config Error: START and DEXSEQ_ANALYSIS incompatible')
-        l.append(["DEXSeq/contrast{ascn}/contrast{ascn}.RData".\
-            format(ascn=ascn) for ascn in range(1,ASCN+1)])
-
-    if config["ASSEMBLY_ANALYSIS"]:
-        if config['START'] not in ['FASTQ']:
-            raise Exception ('config Error: START and ASSEMBLY_ANALYSIS incompatible')
-        l.append('stringtie/stringtie.merged.gtf')
-
-    # todo: fix GATK env
-    if config['ASE_ANALYSIS']:
-        if config['START'] not in ['FASTQ', 'BAM']:
-            raise Exception ('config Error: START and ASE_ANALYSIS incompatible')
-        l.extend(["GATK_ASEReadCounter/{sample}.table".\
-            format(sample=sample) for sample in SAMPLES])
 
     return (l)
+
 
 rule targets:
     input:
