@@ -921,7 +921,7 @@ rule GSEA:
     conda:
         "envs/java11.yaml"  # test
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 8200,
+        mem_mb=lambda wildcards, attempt: attempt * 4100,
     params:
         svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
@@ -929,7 +929,7 @@ rule GSEA:
         rnk_flat_file= lambda wildcards: input_rnk_fname2(wildcards, config),
         gmt_fmted= lambda wildcards: "gsea/gene_sets/" + wildcards['fname'] + "." + wildcards['db'] 
     threads:
-        1
+        2
     log:
         "gsea/log/{fname}/{db}.log"
     benchmark:
@@ -966,11 +966,10 @@ rule GSEA:
     
         cp workflow/envs/GSEA_ReadMe.html gsea/ >> {log} 2>&1;
 
-        # compress
-        cd gsea/{wildcards.fname}/
-        rm -f {wildcards.db}.GseaPreranked.zip && \
-        [ -d {wildcards.db}.GseaPreranked/ ] && \
-        zip -rq {wildcards.db}.GseaPreranked.zip {wildcards.db}.GseaPreranked/ >> {log} 2>&1
+        # # compress
+        # cd gsea/{wildcards.fname}/
+        # rm -f {wildcards.db}.GseaPreranked.zip
+        # zip -rq {wildcards.db}.GseaPreranked.zip {wildcards.db}.GseaPreranked/ >> {log} 2>&1
         """
 
 rule Read_Length_Detection:
