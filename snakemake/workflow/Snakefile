@@ -131,6 +131,9 @@ def target_input(config, ASCN):
         l.extend(["feature_count/counts.s{}.{}.txt.summary.multiqc_report.html".format(strand, config['MODE']) \
                 for strand in config['STRAND']])
 
+        l.extend(["feature_count_gene_level/counts.s{}.{}.txt.summary.multiqc_report.html".format(strand, config['MODE']) \
+                for strand in config['STRAND']])
+
         if config['RMATS_ANALYSIS']:
             l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt'.\
                 format(ascn=ascn) for ascn in range(1, 1+ASCN)])
@@ -613,7 +616,7 @@ rule bamCoverage:
         """
 
 
-rule featureCounts:
+rule featureCounts_EXON:
     '''
     exon read count
     recognizes config.yaml: 
@@ -650,7 +653,7 @@ rule featureCounts:
         {input.bams} > {log} 2>&1
         """
 
-rule featureCounts_multiqc:
+rule featureCounts_EXON_multiqc:
     input:
         "feature_count/counts.s{strand}.{mode}.txt.summary"
     output:
@@ -671,7 +674,7 @@ rule featureCounts_multiqc:
         """
 
 
-rule featureCounts_GeneLevel:
+rule featureCounts_GENE:
     '''
     gene read count, including exon and intron reads
     the larger one of gene-count/exon-count for each gene, is used as gene-count
@@ -716,6 +719,25 @@ rule featureCounts_GeneLevel:
         """
 
 
+rule featureCounts_GENE_multiqc:
+    input:
+        'feature_count_gene_level/counts.s{strand}.{mode}.txt.summary'
+    output:
+        "feature_count_gene_level/counts.s{strand}.{mode}.txt.summary.multiqc_report.html"
+    conda:
+        "envs/fastqc.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 1000   
+    threads:
+        1
+    log:
+        "feature_count_gene_level/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.log" 
+    benchmark:
+       "feature_count_gene_level/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.benchmark"
+    shell:
+        """
+        multiqc {input} -f -n {output} > {log} 2>&1;
+        """
 
 
 
