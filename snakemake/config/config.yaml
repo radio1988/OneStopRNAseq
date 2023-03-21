@@ -1,6 +1,7 @@
 # Analysis Params
 START: FASTQ # FASTQ, BAM, COUNT, RNK
 PAIR_END: True  # True/False
+ALIGNER: STAR # HISAT2, STAR
 ADAPTORS: workflow/resources/adapters/merged.fa
 STRAND: [0, 1, 2]  
         # [0, 1, 2]: auto detect
