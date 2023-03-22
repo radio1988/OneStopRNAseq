@@ -8,6 +8,8 @@ output:
 params: 
   max_fdr: 0.05
   min_lfc: 0.585
+  min_rowsum: 10
+  min_colsum: 2e4
   indfilter: FALSE
   cookscutoff: TRUE
   countFile: '../example_data/counts/featureCounts.mm10.txt' # all three formats need to be tested in development
@@ -194,6 +196,7 @@ rename_num_vector_by_order <- function(l){
   return(l)
 }
 
+
 Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
   if (dim(df)[1] > nclass){
     # Heatmap Pre-plot to get hclust
@@ -205,7 +208,16 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                   cluster_cols = F, 
                   border_color = NA,
                   cutree_rows = nclass, 
-                  show_rownames = F, filename = 'null.pdf')
+                  breaks = seq(-3, 3, length.out = 100), 
+                  show_rownames = F)
+    p <- pheatmap(df, 
+                  annotation_col = my_sample_col,
+                  main = main,
+                  cluster_cols = T, 
+                  border_color = NA,
+                  cutree_rows = nclass, 
+                  breaks = seq(-3, 3, length.out = 100),                   
+                  show_rownames = F)
     
     ## Print out gene classification (https://www.biostars.org/p/287512/)
     # cutree manually
@@ -237,6 +249,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                      border_color = NA,
                      cluster_cols = F,
                      cutree_rows = nclass,
+                     breaks = seq(-3, 3, length.out = 100),
                      show_rownames = F,
                      annotation_row = annotation_row,
                      cellheight = 20,
@@ -247,6 +260,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                      border_color = NA,
                      cluster_cols = T,
                      cutree_rows = nclass,
+                     breaks = seq(-3, 3, length.out = 100),
                      show_rownames = F,
                      annotation_row = annotation_row,
                      cellheight = 20,
@@ -259,6 +273,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                      cluster_cols = F,
                      cutree_rows = nclass,
                      show_rownames = F,
+                     breaks = seq(-3, 3, length.out = 100),
                      annotation_row = annotation_row,
                      filename = paste(fname, "pdf", sep = "."))
       p3 <- pheatmap(df, # sample clustering
@@ -268,6 +283,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                      cluster_cols = T,
                      cutree_rows = nclass,
                      show_rownames = F,
+                     breaks = seq(-3, 3, length.out = 100),
                      annotation_row = annotation_row,
                      filename = paste(fname, "v2.pdf", sep = "."))
     }
@@ -282,6 +298,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                      cluster_rows = F,
                      border_color = NA,
                      show_rownames = F,
+                     breaks = seq(-3, 3, length.out = 100),
                      cellheight = 20,
                      filename = paste(fname, "pdf", sep = "."))
       p3 <- pheatmap(df,
@@ -291,6 +308,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                      cluster_rows = F,
                      border_color = NA,
                      show_rownames = F,
+                     breaks = seq(-3, 3, length.out = 100),
                      cellheight = 20,
                      filename = paste(fname, "v2.pdf", sep = "."))
     }else{
@@ -300,6 +318,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                      cluster_cols = F,
                      cluster_rows = F,
                      border_color = NA,
+                     breaks = seq(-3, 3, length.out = 100),
                      show_rownames = F,
                      filename = paste(fname, "pdf", sep = "."))
       p3 <- pheatmap(df,
@@ -308,11 +327,13 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
                      cluster_cols = T,
                      cluster_rows = F,
                      border_color = NA,
+                     breaks = seq(-3, 3, length.out = 100),
                      show_rownames = F,
                      filename = paste(fname, "v2.pdf", sep = "."))
     }
   }else{ print("no sig DEG for heatmap")}
 }
+
 
 
 process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='name', anno='anno.df', norm_exp="tpm.df"){
@@ -554,10 +575,10 @@ if (!TEST){
 
 ## Filtering
 ```{r filtering}
-min_rowsum <- 10
+min_rowsum <- params$min_rowsum
 expression_filter <- rowSums(cts) >= min_rowsum  # default 10
 
-min_colsum <- 2e4
+min_colsum <- params$min_colsum
 sample_filter <- colSums(cts) >= min_colsum
 
 if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
