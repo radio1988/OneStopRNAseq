@@ -130,7 +130,7 @@ def target_input(config, ASCN):
                 for strand in config['STRAND']])
 
         if config['RMATS_ANALYSIS']:
-            l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt'.\
+            l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.sig.tsv'.\
                 format(ascn=ascn) for ascn in range(1, 1+ASCN)])
 
         if config['DEXSEQ_ANALYSIS']:
@@ -982,12 +982,16 @@ rule rMATS:
         length_file="meta/read_length.txt" , 
         strand_file="meta/strandness.detected.txt",
     output:
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt"
-    envmodules:
-        "rMATS/4.1.0 "
-        "gcc/8.1.0 " # must have space
-    container:
-        'envs/rmats.sif'
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/SE.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/MXE.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/A3SS.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/A5SS.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/SE.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/MXE.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A3SS.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A5SS.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/RI.MATS.JCEC.txt",
     conda:
        "envs/rmats.yaml"
     resources:
@@ -1038,9 +1042,42 @@ rule rMATS:
         mv rMATS.{wildcards.ascn}/output/*JC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
         mv rMATS.{wildcards.ascn}/output/fromGTF*txt  rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
         rm -f rMATS.{wildcards.ascn}/output/*raw.input* &>> {log}
-        D=rMATS.{wildcards.ascn};
-        rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};
         """
+
+rule rMATS_FLT:
+    input:
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/SE.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/MXE.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/A3SS.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/A5SS.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/SE.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/MXE.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A3SS.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A5SS.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/RI.MATS.JCEC.txt",
+    output:
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/SE.MATS.JC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/MXE.MATS.JC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/A3SS.MATS.JC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/A5SS.MATS.JC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/SE.MATS.JCEC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/MXE.MATS.JCEC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A3SS.MATS.JCEC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A5SS.MATS.JCEC.sig.tsv",
+        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/RI.MATS.JCEC.sig.tsv",
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    threads:
+        1
+    run:
+        for f in input:
+            df = pd.read_table(f)
+            out = df[df['PValue'] < 1]
+            outname = re.sub(".txt$", ".sig.tsv", f)
+            out.to_csv(outname, sep="\t")
+    
 
 
 DEXSeq_GFF = config['GTF']+".dexseq.gff"

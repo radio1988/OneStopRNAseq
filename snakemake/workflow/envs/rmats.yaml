@@ -1,5 +1,4 @@
 name: rmats4
-# not working on zhuapp yet
 
 channels:
         - bioconda
