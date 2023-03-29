@@ -1064,6 +1064,8 @@ rule rMATS:
         --nthread {threads} \
         --tstat {threads} \
         --cstat 0.2 \
+        --allow-clipping \
+        --novelSS --mil 20 --mel 2000 \
         --od rMATS.{wildcards.ascn}/output/ \
         --tmp rMATS.{wildcards.ascn}/tmp/  > {log} 2>&1
 
