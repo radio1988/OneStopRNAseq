@@ -520,6 +520,7 @@ rule QoRTs:
         which java &> {log}
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
         {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &>> {log}
+        # --maxReadLength 50 \
         """
 
 
