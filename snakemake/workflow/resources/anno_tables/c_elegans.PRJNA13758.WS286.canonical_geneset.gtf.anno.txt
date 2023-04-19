@@ -1,3 +1,4 @@
+Gene	Name	Type	Chr	Start	End
 WBGene00014450	MTCE.1	tRNA	MtDNA	1	55
 WBGene00014451	MTCE.2	tRNA	MtDNA	58	111
 WBGene00010957	nduo-6	protein_coding	MtDNA	113	549
