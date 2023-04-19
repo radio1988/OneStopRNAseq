@@ -9,7 +9,7 @@ params:
   max_fdr: 0.05
   min_lfc: 0.585
   min_rowsum: 10
-  min_colsum: 2e4
+  min_colsum: 20000
   indfilter: FALSE
   cookscutoff: TRUE
   countFile: '../example_data/counts/featureCounts.mm10.txt' # all three formats need to be tested in development
