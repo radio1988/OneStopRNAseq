@@ -18,6 +18,7 @@ containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
 
 def GSEA_OUTPUT(config):
+    L = []
     if config["GSEA_ANALYSIS"]:
         gsea_dbs = []
         for f in os.listdir(config['GSEA_DB_PATH']):
@@ -25,11 +26,28 @@ def GSEA_OUTPUT(config):
                 gsea_dbs.append(f)
         gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=gsea_dbs))
+            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=gsea_dbs)
         else:
-            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=gsea_dbs))
+            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=gsea_dbs)
     else:
-        return("Workflow_DAG.all.pdf")
+        L = ["Workflow_DAG.all.pdf"]
+    return (L)
+
+def GSEACOMPRESS_OUTPUT(config):
+    L = []
+    if config["GSEA_ANALYSIS"]:
+        gsea_dbs = []
+        for f in os.listdir(config['GSEA_DB_PATH']):
+            if f.endswith('.gmt'):
+                gsea_dbs.append(f)
+        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
+        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+            L = expand("gsea/{contrast}.tar.gz", contrast=CONTRASTS_DE)
+        else:
+            L = expand("gsea/{contrast}.tar.gz", contrast=config["RNKS"])
+    else:
+        L = ["Workflow_DAG.all.pdf"]
+    return (L)
 
 # umcompress files (todo: make it a rule)
 if config["GENOME"].endswith(".gz"):
@@ -154,6 +172,7 @@ def target_input(config, ASCN):
 
     if config['GSEA_ANALYSIS']:
         l.extend(GSEA_OUTPUT(config))
+        l.extend(GSEACOMPRESS_OUTPUT(config))
 
 
     return (l)
@@ -972,6 +991,19 @@ rule GSEA:
         # rm -f {wildcards.db}.GseaPreranked.zip
         # zip -rq {wildcards.db}.GseaPreranked.zip {wildcards.db}.GseaPreranked/ >> {log} 2>&1
         """
+
+rule GSEA_compression:
+    input:
+        GSEA_OUTPUT(config)
+    output:
+        "gsea/{contrast}.tar.gz"
+    resources:
+        mem_mb=1000
+    threads:
+        4
+    shell:
+        "tar cf - gsea/{wildcards.contrast} | pigz -p {threads} > {output} "
+
 
 rule Read_Length_Detection:
     input:
