@@ -29,7 +29,7 @@ def GSEA_OUTPUT(config):
         else:
             return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=gsea_dbs))
     else:
-        return("Workflow_DAG.all.svg")
+        return("Workflow_DAG.all.pdf")
 
 # umcompress files (todo: make it a rule)
 if config["GENOME"].endswith(".gz"):
@@ -112,7 +112,7 @@ def target_input(config, ASCN):
     - define target results to generate
     - check config logic error (in-compatibility)
     '''
-    l = ["Workflow_DAG.all.svg"]
+    l = ["Workflow_DAG.all.pdf"]
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
@@ -912,7 +912,7 @@ rule GSEA:
     rnk file must be named xxx.rnk.txt when feeded to GSEA
     """
     input: 
-        deseq2= "Workflow_DAG.all.svg" # dummy assume existing
+        deseq2= "Workflow_DAG.all.pdf" # dummy assume existing
             if config["START"] == "RNK"
             else "DESeq2/DESeq2.html" , # DESEq2, then GSEA
         rnk=lambda wildcards: input_rnk_fname1(wildcards, config),
@@ -1383,12 +1383,14 @@ rule Create_DAG:
     threads:
         1
     output:
-        "Workflow_DAG.all.svg"
+        "Workflow_DAG.all.pdf",
+        "rulegraph.pdf"
     log:
-        "Workflow_DAG.all.svg.log"
+        "Workflow_DAG.all.pdf.log"
     shell:
         "snakemake --dag targets > dag 2> {log};"
-        "cat dag|dot -Tsvg > {output} 2>> {log}"
+        "cat dag|dot -Tpdf > Workflow_DAG.all.pdf 2>> {log};"
+        "snakemake  --rulegraph targets > rulegraph; cat rulegraph| dot -Tpdf > rulegraph.pdf 2>> {log}"
 
 
 rule reset:
@@ -1400,8 +1402,8 @@ rule reset:
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \
         feature_count_gene_level hisat2 stringtie \
-        lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.svg \
-        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt Workflow_DAG.all.svg.log
+        lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.pdf \
+        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt Workflow_DAG.all.pdf.log
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
