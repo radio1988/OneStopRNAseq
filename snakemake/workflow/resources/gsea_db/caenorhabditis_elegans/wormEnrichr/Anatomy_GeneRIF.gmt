@@ -1,0 +1,33 @@
+anterior-posterior		vang-1	gpa-16	mex-5	pak-1	dsh-2	pop-1	dsh-1	cdh-4	cyk-1	mbk-2	cwn-2	let-502	cwn-1	mel-11	nmy-1	lin-44	nmy-2	pho-1	pfn-1	let-99	unc-34	goa-1	zyg-11	spd-2	ced-3	mom-5	ced-4	plk-1	src-1	rig-6	cdc-42	fli-1	egl-20	lin-5	unc-40	lat-1	cgef-1	gpb-1	lin-17	lin-18	ceh-34	gpr-1	gpr-2	egl-15	ptp-3	cul-2	mig-21	chin-1	sys-1	arx-1	sas-7	egl-5	par-6	wrm-1	eya-1	par-2	par-3	lin-32	dgn-1	
+basal_lamina		ost-1	lam-3	gar-3	lin-39	hlh-2	emb-9	pxn-2	fos-1	unc-52	aex-3	daf-18	dpy-18	daf-16	spon-1	ina-1	nck-1	vab-10	rab-3	egl-5	mig-17	pat-4	mig-38	ten-1	mig-15	nid-1	gdi-1	cdc-42	egl-43	mig-10	mab-5	him-4	fbl-1	unc-112	unc-40	unc-60	
+blastopore		par-6	pfn-1	cyk-1	arx-1	mom-2	par-3	
+body_wall		unc-89	unc-129	lin-39	rnf-5	vpr-1	rho-1	rde-4	nfyc-1	sid-5	acr-23	smn-1	col-99	let-502	mel-11	plx-2	tbx-2	sec-22	alp-1	tni-3	rig-3	spon-1	ric-3	gstk-1	gstk-2	nrf-5	sax-3	daf-12	ten-1	nid-1	vab-1	mab-5	mom-2	let-2	unc-22	pcm-1	pxl-1	ceh-34	dyb-1	aak-2	pxn-1	nfyb-1	let-721	pdfr-1	tmc-1	mlc-4	clhm-1	ina-1	vig-1	lect-2	egl-5	elp-1	cpna-1	glp-1	dct-17	mig-17	zyx-1	mak-1	eya-1	dys-1	pix-1	unc-130	nhx-2	unc-60	slo-1	par-4	
+cuticle		rnf-5	nas-36	nas-37	hbl-1	sqt-3	calu-1	lpr-3	sid-3	cpz-1	lpr-1	snf-12	ifb-1	tax-6	pdi-3	dpy-17	cut-6	sec-23	cut-1	rol-3	qua-1	cah-4	eaf-1	tpst-1	let-653	mab-9	pst-1	pst-2	cdc-42	hlh-6	suro-1	dpy-5	pxf-1	tsp-15	cpi-2	sym-1	peb-1	dapk-1	trxr-1	pah-1	prdx-2	act-1	rap-1	dpy-31	catp-1	lin-28	erm-1	ell-1	vab-10	lec-1	sta-2	bli-5	bli-3	lon-8	bli-1	lon-3	mua-6	cpi-1	glf-1	cuti-1	myrf-1	
+dorsal-ventral		vang-1	unc-129	unc-6	let-502	rga-2	arr-1	unc-130	madd-4	sax-3	mig-1	dgn-1	
+dorsal_nerve_cord		sod-1	enu-3.1	cdk-8	unc-6	endu-2	oig-1	
+eggshell		sep-1	vha-19	gspd-1	rab-11.1	egg-5	egg-4	chs-1	cyp-31A3	egg-3	lpr-3	ipla-1	chs-2	cyp-31A2	lpr-1	
+excretory_canal		aqp-8	gtl-2	nck-1	erm-1	abi-1	exc-5	hmit-1.1	nhr-31	hmit-1.2	ccm-3	ral-1	let-60	unc-73	exc-9	daf-7	pigv-1	exc-7	
+excretory_duct		nphp-4	let-653	lpr-3	ces-2	lpr-1	ekl-1	atf-2	lin-48	mls-2	let-60	nphp-1	
+excretory_pore		nphp-4	lpr-1	mls-2	plep-1	let-60	nphp-1	
+gonad		pgl-3	pgl-1	hlh-2	vpr-1	aak-2	ubr-5	let-502	alg-1	bec-1	mlc-4	irg-7	hlh-30	cnnm-1	cnnm-3	exc-6	fhod-1	daf-16	pash-1	unc-119	apx-1	alg-2	daf-12	glp-1	dpff-1	glh-1	lin-12	cacn-1	din-1	par-4	
+gonadal_primordium		glp-1	mig-38	mig-15	hlh-2	nck-1	lin-12	dsh-2	hnd-1	
+hermaphrodite		pgl-3	clh-3	fkh-9	pgl-1	grk-2	pak-1	wdr-5.1	tiar-1	blmp-1	pkd-2	cyl-1	vbh-1	pdfr-1	vit-2	unc-7	snf-10	amx-2	srb-13	fem-3	zfp-1	daf-16	nck-1	fbf-2	fbf-1	mapk-15	ins-18	plep-1	dre-1	pdf-1	cdk-11.2	cdk-11.1	ham-1	glp-1	tra-1	mig-38	mig-15	elt-2	cdc-25.3	egl-43	mig-10	dpy-21	lin-12	spe-8	tsp-17	gld-1	dop-2	mab-3	cpb-1	
+hook		plx-1	fbf-1	ccf-1	ajm-1	lov-1	dlg-1	let-413	lip-1	lin-2	unc-7	mab-5	gld-1	dop-2	sut-2	gld-2	smp-1	
+intestinal_lumen		wrt-5	pgp-3	pgp-2	sma-5	cdf-2	apg-1	dlg-1	sid-2	vha-6	ooc-5	ifc-2	pept-1	unc-94	erm-1	ttm-1	lec-10	let-363	rab-11.1	elt-2	ccm-3	lec-6	vha-20	pgp-5	wts-1	nhx-2	
+intestine		crt-1	ins-11	elt-2	elt-7	glit-1	rict-1	wve-1	
+isthmus		unc-119	ceh-28	pha-2	unc-6	unc-51	unc-73	sax-3	ser-7	pyr-1	unc-61	
+left-right		ref-1	gpa-16	sdn-1	unc-37	abl-1	lsy-22	cdh-4	lsy-2	ptp-3	die-1	mys-1	ncx-9	hlh-16	vab-1	nhr-67	egl-20	vab-2	mig-21	mab-5	fozi-1	lim-6	unc-40	lsy-6	
+metacorpus		unc-119	unc-6	unc-51	unc-73	sax-3	unc-61	
+midbody		daf-2	lin-39	nud-1	nck-1	sep-1	dyn-1	air-2	par-6	mig-38	txdc-9	mig-15	cep-1	ani-1	rack-1	elt-6	lem-3	lin-26	par-3	
+nerve_ring		pfn-1	unc-119	sdn-1	tyra-2	mls-2	dnj-14	vab-3	cam-1	cwn-2	rnf-1	hlh-16	unc-6	hlh-17	sup-1	unc-40	madd-2	
+pharyngeal-intestinal_valve		mir-259	daf-16	wrt-5	rsks-1	lec-8	nnt-1	aak-2	
+pharyngeal_lumen		hlh-6	wrt-5	lam-3	ceh-28	calu-1	lec-6	chs-1	chs-2	lec-10	pgp-5	
+pharyngeal_nerve		crt-1	pfn-1	tol-1	tax-6	unc-119	zag-1	tyra-2	ast-1	sax-3	hlh-11	rft-2	rnf-1	glit-1	rft-1	unc-6	shn-1	unc-51	unc-73	tbx-2	unc-61	
+pharyngeal_nerve_process		unc-119	unc-6	unc-51	unc-73	sax-3	unc-61	
+pharynx		hlh-6	crt-1	sup-35	ceh-19	lam-3	gtl-2	sup-37	pmr-1	aak-2	nfyb-1	nfyc-1	smn-1	col-99	ilys-3	tmc-1	acr-7	tbx-2	dbl-1	skn-1	tni-3	daf-16	rsks-1	daf-2	ceh-28	svh-1	mdt-15	daf-31	gur-3	hid-1	ser-7	mir-259	rft-2	osm-11	elt-7	glit-1	rft-1	pha-1	lite-1	mib-1	pgp-5	slo-1	eat-17	
+reproductive_tract		mir-259	daf-16	rsks-1	spe-45	srb-13	aak-2	inx-14	nhr-114	
+sensillum		nphp-4	pvf-1	ced-10	mks-3	qua-1	vab-3	unc-6	lin-2	unc-7	hlh-17	mab-5	unc-40	dop-2	smp-1	osm-1	
+sex_organ		vab-3	egl-15	tra-1	fox-1	hlh-2	ina-1	cdc-48.1	cul-2	sup-12	pat-2	
+somatic_gonad_		pat-10	unc-87	vpr-1	egl-38	hbl-1	rrf-1	cwn-2	cwn-1	lin-44	exc-6	egrh-1	cki-1	daf-16	set-2	exo-3	apx-1	dre-1	daf-12	inx-14	ego-1	ppk-1	ten-1	cep-1	lin-3	egl-20	hlh-2	mls-2	mir-61	let-765	efl-1	vbh-1	hecd-1	msp-51	mlc-4	try-5	irg-7	ina-1	mys-1	hlh-29	egl-43	hlh-28	lin-35	unc-60	par-3	par-4	pgl-3	pgl-1	sup-37	bar-1	vrk-1	mex-3	dsh-2	pop-1	hnd-1	blmp-1	acs-1	let-502	dpl-1	scc-3	iff-1	pfn-1	unc-119	daf-2	tni-1	nck-1	mig-38	mcm-4	xnp-1	vab-1	cdc-42	fli-1	pha-1	unc-112	cacn-1	htz-1	sacy-1	hpl-2	hpl-1	aak-2	zmp-2	let-721	riok-1	alg-1	let-60	sys-1	egl-17	fhod-1	pash-1	ire-1	ceh-22	arl-8	alg-2	rom-1	mett-10	ceh-20	puf-8	egl-5	pat-4	mig-15	nhr-25	phb-1	wrm-1	glh-1	nhr-6	lev-11	dgn-1	pat-2	
+tail		pat-3	pkd-2	dep-1	unc-54	ndc-80	cdc-25.2	nfm-1	mapk-15	gld-2	
+ventral_nerve_cord		hda-1	vang-1	uaf-1	lin-17	max-2	ddr-1	let-7	vrk-1	dpy-23	ddr-2	zag-1	ast-1	crm-1	zig-8	vem-1	unc-8	hbl-1	cdk-5	usp-46	fmi-1	cdk-8	unc-6	lin-23	apa-2	oig-1	egl-17	aex-3	dpy-18	unc-33	cmk-1	sup-26	klp-4	aps-2	enu-3.1	rab-3	puf-9	sax-3	glr-1	glr-2	rig-6	sax-7	wrk-1	cam-1	zig-3	zig-4	zig-5	daf-7	magi-1	

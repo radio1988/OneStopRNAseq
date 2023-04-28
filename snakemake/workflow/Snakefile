@@ -7,6 +7,7 @@ from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, \
 Merge_TE_and_Gene_input, strand_detection_input
 from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
 get_strandness_for_hisat2_SE, get_strandness_for_stringtie
+from osr import mapped_bam_single_input, mapped_bam_inputs
 ###  Usage Requirements  ###
 # inputs in ./fastq/
 # named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
@@ -461,8 +462,7 @@ else:
 
 rule SAMtools_sort:
     input:
-        #mapped_bam_single_input(config)
-        "mapped_reads/{sample}.bam"
+        mapped_bam_single_input(config)
     output:
         protected("sorted_reads/{sample}.bam")
     conda:
@@ -567,6 +567,7 @@ rule QoRTs:
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
         {params.aligner} \
         {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
+        # --maxReadLength 50 \
         """
 
 
@@ -645,8 +646,7 @@ rule featureCounts_EXON:
         - PAIR_END: True, False
     '''
     input:
-#        bams=mapped_bam_inputs(config, SAMPLES),
-        bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES),
+        bams=mapped_bam_inputs(config, SAMPLES),
         gtf=GTF
     output:
         COUNT="feature_count/counts.s{strand}.{mode}.txt",
@@ -704,8 +704,7 @@ rule featureCounts_GENE:
         - PAIR_END: True, False
     '''
     input:
-        #bams=mapped_bam_inputs(config, SAMPLES),
-        bams=expand("mapped_reads/{sample}.bam", sample=SAMPLES),
+        bams=mapped_bam_inputs(config, SAMPLES),
         exon_counts="feature_count/counts.s{strand}.{mode}.txt",
         gtf=GTF
     output:

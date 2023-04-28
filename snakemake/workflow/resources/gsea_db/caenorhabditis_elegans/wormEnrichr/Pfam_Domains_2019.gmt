@@ -1,0 +1,104 @@
+AAA		rpt-3	rpt-2	pch-2	rpt-1	lex-1	rfc-4	rpt-5	nsf-1	rpt-4	spas-1	figl-1	atad-3	mspn-1	lonp-2	lonp-1	cdc-48.1	cdc-48.3	ymel-1	cdc-48.2	spg-7	mei-1	mac-1	
+ABC_tran		pgp-3	wht-3	pgp-1	ced-7	wht-1	
+Abhydrolase_1		abhd-5.1	abhd-3.2	ceeh-1	ceeh-2	lid-1	abhd-5.2	
+Arf		arl-1	evl-20	arc-1	arf-1.2	arl-3	arf-1.1	arl-13	arl-5	arl-6	
+Astacin		toh-1	nas-30	nas-31	nas-10	nas-32	nas-11	nas-33	nas-12	nas-13	nas-36	nas-14	nas-37	nas-9	nas-15	nas-38	nas-16	nas-8	nas-39	nas-7	nas-17	nas-6	nas-18	nas-19	nas-1	dpy-31	nas-5	nas-4	nas-3	nas-2	nas-20	nas-21	nas-22	nas-23	nas-24	nas-25	nas-27	nas-28	nas-29	hch-1	
+BTB		bath-45	bath-34	bath-43	bath-39	bath-38	bath-15	bath-36	bath-47	bath-42	bath-41	bath-40	kel-10	kel-8	cyk-7	btb-14	mel-26	
+Bromodomain		bet-1	lex-1	cbp-1	nurf-1	lin-49	taf-1	
+C1_1		pkc-2	dkf-2	pkc-3	dkf-1	vav-1	mrck-1	unc-13	pkc-1	lin-45	dgk-3	dgk-5	tpa-1	
+C2		piki-1	unc-10	gap-2	nra-1	unc-13	syd-1	rbf-1	pkc-2	plc-3	rgs-7	aex-1	snt-1	snt-2	plc-1	pkc-1	fer-1	cla-1	
+CENP-T_C		his-60	his-50	his-46	his-14	his-26	his-37	his-38	his-64	his-31	his-10	his-67	his-56	his-5	his-28	his-18	his-1	
+CH		unc-53	vav-1	anc-1	pat-6	dys-1	
+CUB		nas-38	nas-39	nas-29	mig-13	toh-1	tag-53	sol-1	dpy-31	nas-36	
+Chromo		cec-3	cec-4	cec-1	chd-3	let-418	
+Cullin_Nedd8		cul-1	cul-3	cul-2	cul-5	cul-4	cul-6	
+Cyclin_N		cyb-1	cic-1	cya-1	cit-1.2	cye-1	cit-1.1	cyb-3	cyd-1	cyy-1	
+DEAD		snrp-200	rde-12	cgh-1	ddx-15	mtr-4	polq-1	laf-1	ddx-35	wrn-1	glh-3	glh-4	rha-2	glh-1	glh-2	rha-1	mog-1	hel-1	him-6	inf-1	
+DSPc		cdc-14	lip-1	pir-1	vhp-1	cel-1	
+DUF1943		vit-1	vit-2	vit-3	vit-4	vit-5	vit-6	
+DUF21		cnnm-5	cnnm-4	cnnm-1	cnnm-3	cnnm-2	
+DnaJ		dnj-2	dnj-5	dnj-1	dnj-10	dnj-20	
+EF-hand_7		cal-1	tnc-2	cmd-1	cnb-1	ncs-1	ncs-2	
+EF-hand_8		micu-1	mlc-4	mlc-5	rsef-1	mlc-3	ncs-2	
+EGF		glp-1	eat-20	apx-1	mup-4	mua-3	lag-2	lin-12	slt-1	cdh-4	
+EGF_CA		nas-39	mup-4	mua-3	fbl-1	lin-12	
+FA_desaturase		fat-4	fat-3	fat-2	fat-1	ttm-5	
+G-alpha		gpa-5	gpa-4	gpa-3	gpa-15	goa-1	gpa-2	gpa-16	gpa-1	gpa-10	odr-3	gpa-13	gpa-14	gpa-11	gpa-12	gpa-9	gpa-8	gpa-7	gpa-6	
+GST_C_3		gst-7	gst-6	gst-9	gst-8	gst-36	gst-1	gst-3	gst-2	gst-10	gst-5	gst-42	gst-4	
+GST_N		gsto-1	gst-36	gst-1	gst-3	gst-2	gst-10	gst-5	gst-42	gst-4	gst-7	gst-6	gst-9	gst-8	
+GTP_EFTU		eef-2	nst-1	eft-4	eft-3	gfm-1	cgp-1	
+GTP_EFTU_D2		eef-2	eft-4	eft-3	gfm-1	cgp-1	
+Guanylate_cyc		gcy-31	gcy-33	gcy-11	gcy-32	odr-1	gcy-17	gcy-19	gcy-18	gcy-35	gcy-13	gcy-12	gcy-34	gcy-15	gcy-37	gcy-36	gcy-14	gcy-20	gcy-22	gcy-21	daf-11	gcy-9	gcy-3	gcy-28	gcy-4	gcy-27	gcy-1	gcy-29	gcy-2	gcy-7	gcy-8	gcy-23	gcy-5	gcy-6	gcy-25	
+HA2		ddx-15	mog-4	rha-2	rha-1	mog-1	ddx-35	mog-5	
+HLH		hlh-6	hlh-11	hlh-8	hlh-13	hlh-3	hlh-26	hlh-4	cnd-1	aha-1	hlh-1	mml-1	lin-32	
+HMG_box		hmg-1.2	egl-13	hmg-4	sox-2	pop-1	sem-2	hmg-3	
+HNOB		gcy-31	gcy-33	gcy-32	gcy-35	gcy-34	gcy-37	gcy-36	
+HNOBA		gcy-20	gcy-31	gcy-22	gcy-33	gcy-32	gcy-17	gcy-1	gcy-2	gcy-35	gcy-7	gcy-13	gcy-34	gcy-37	gcy-36	gcy-14	gcy-6	
+Histone		his-61	his-62	his-63	his-68	his-69	his-25	his-27	his-20	his-21	his-65	his-66	his-22	his-17	his-19	his-51	his-52	his-13	his-57	his-58	his-59	his-15	his-16	his-53	his-54	his-11	his-55	his-12	his-6	his-7	hcp-3	his-4	his-8	his-9	his-2	his-3	htz-1	his-41	his-47	his-48	his-49	his-42	his-43	his-44	his-45	his-71	his-72	his-74	his-30	cpar-1	his-70	his-32	his-33	his-34	his-29	
+Homeodomain		dsc-1	ceh-19	ceh-18	unc-86	ceh-39	lin-39	ceh-38	ceh-16	ceh-37	ceh-14	ceh-36	zag-1	ceh-13	ceh-12	ceh-34	pal-1	ceh-33	ceh-10	ceh-32	ceh-31	vab-7	ceh-30	unc-4	unc-30	ttx-3	vab-15	ceh-24	ceh-2	ceh-23	ceh-22	ceh-44	ceh-21	unc-39	ceh-43	ceh-20	ceh-1	ceh-6	ceh-40	ceh-62	ceh-7	egl-5	ceh-5	ceh-8	ceh-9	mab-5	lin-11	mec-3	
+Hormone_recep		nhr-5	nhr-106	nhr-4	nhr-3	nhr-108	hizr-1	nhr-1	nhr-90	nhr-91	nhr-10	nhr-54	nhr-98	nhr-53	nhr-97	nhr-96	nhr-52	nhr-51	nhr-14	nhr-13	nhr-57	nhr-12	nhr-150	nhr-55	nhr-11	nhr-153	nhr-18	nhr-197	nhr-16	nhr-199	nhr-154	nhr-59	nhr-115	nhr-19	nhr-86	nhr-42	nhr-41	nhr-40	nhr-47	nhr-44	nhr-49	nhr-121	nhr-124	nhr-167	nhr-169	nhr-125	nhr-127	nhr-71	nhr-31	nhr-75	nhr-79	nhr-35	nhr-34	nhr-77	nhr-174	nhr-130	nhr-133	nhr-134	nhr-213	nhr-136	unc-55	nhr-218	nhr-61	nhr-60	nhr-65	nhr-20	nhr-64	nhr-62	nhr-25	nhr-69	nhr-23	nhr-22	nhr-28	nhr-100	nhr-9	nhr-8	nhr-6	nhr-268	nhr-103	
+I-set		unc-22	unc-89	rig-4	igdb-2	syg-2	ttn-1	syg-1	zig-8	pxn-1	sax-3	sma-10	rig-6	egl-15	ptp-3	cam-1	zig-2	zig-3	zig-4	zig-5	dim-1	madd-4	unc-52	oig-1	
+IF4E		ife-5	ife-4	ife-3	ife-2	ife-1	
+Ig_2		unc-5	ver-1	syg-1	unc-52	rig-6	
+JmjC		rbr-2	psr-1	jmjd-2	jmjd-3.1	jmjd-1.2	
+KH_1		mask-1	mxt-1	asd-2	akap-1	gld-1	
+Kinesin		klp-3	unc-116	klp-20	unc-104	osm-3	vab-8	
+LIM		pin-2	unc-97	zyx-1	ttx-3	pxl-1	ceh-14	unc-95	lin-11	mec-3	
+LSM		snr-1	snr-2	snr-3	snr-4	snr-5	snr-6	snr-7	lsm-4	
+LTD		lmn-1	ifa-4	ifd-1	ifa-3	ifb-1	
+Laminin_EGF		epi-1	lam-2	unc-6	ced-1	tag-53	unc-52	
+Laminin_G_2		epi-1	hmr-1	unc-52	cdh-3	cdh-4	
+Lectin_C		clec-162	clec-161	clec-160	clec-88	clec-87	clec-180	irg-7	clec-91	
+Linker_histone		hil-1	hil-2	his-24	hil-5	hil-6	hil-3	hil-4	
+MATH		bath-45	bath-43	bath-39	bath-38	bath-15	bath-36	bath-47	math-33	
+Metallophos		tax-6	gsp-1	gsp-3	gsp-2	gsp-4	asm-3	pef-1	pph-6	pph-5	asm-1	asm-2	pph-4.2	pph-4.1	dbr-1	mre-11	let-92	
+Motile_Sperm		msp-64	msp-65	msp-45	msp-142	msp-49	ssp-9	msp-50	msp-51	ssp-34	ssp-11	ssp-10	ssp-32	ssp-31	ssp-19	msp-19	ssp-16	msp-53	msp-31	msp-10	msp-32	msp-76	msp-77	msp-33	msp-55	msp-113	msp-78	msp-56	msp-57	msp-79	msp-36	msp-152	msp-59	msp-38	msp-81	msp-40	msp-63	msp-3	
+Myosin_head		myo-3	unc-54	hum-6	myo-1	myo-2	
+Myotub-related		mtm-9	mtm-6	mtm-5	mtm-3	mtm-1	
+NUDIX		ndx-9	ndx-8	ndx-4	ndx-7	dcap-2	ndx-6	ndx-1	ndx-3	ndx-2	
+OB_NTP_bind		ddx-15	mog-4	rha-2	rha-1	mog-1	ddx-35	mog-5	
+PCI		rpn-7	rpn-6.1	rpn-6.2	egl-45	cif-1	eif-3.C	csn-1	csn-3	eif-3.E	csn-2	csn-4	rpn-3	
+PDEase_I		pde-6	pde-5	pde-2	pde-1	pde-4	pde-3	
+PDZ		mig-5	pxf-1	cnk-1	syd-1	ptp-1	dlg-1	let-413	par-6	lin-2	mics-1	stn-1	par-3	lin-10	
+PH		unc-31	pac-1	soc-1	vav-1	akt-1	dyn-1	cnk-1	unc-104	akt-2	grp-1	cnt-1	ani-2	ani-3	dkf-2	sos-1	ani-1	mig-10	unc-112	stn-1	tag-325	mtm-5	
+PHD		dpff-1	rbr-2	nurf-1	chd-3	set-9	let-418	lin-59	set-26	
+PID		feh-1	shc-1	ced-6	dyc-1	num-1	lin-10	
+Peptidase_C1		cpr-6	cpr-5	cpr-4	cpr-3	cpr-1	
+Peptidase_S8		egl-3	bli-4	kpc-1	aex-5	tpp-2	
+Pkinase		pek-1	unc-89	max-2	air-2	nipi-3	pmk-1	pmk-3	pmk-2	lrk-1	kin-29	sgk-1	mnk-1	mkk-4	zyg-1	sel-5	mrck-1	rskn-2	rskn-1	lin-2	pct-1	zyg-8	dyf-5	grk-1	akt-1	grk-2	akt-2	chk-2	chk-1	nsy-1	dlk-1	drl-1	sek-1	wee-1.3	wee-1.1	madd-3	cdk-12	cmk-1	tlk-1	cdkl-1	nekl-4	nekl-2	nekl-3	cst-1	dkf-2	dkf-1	prk-2	mak-2	mak-1	spk-1	par-1	gcy-7	par-4	tpa-1	kin-3	strd-1	unc-43	vrk-1	kin-1	hpk-1	pak-2	pak-1	jkk-1	pig-1	odr-1	gcn-2	pik-1	mbk-2	let-502	mbk-1	gcy-19	sad-1	unc-51	daf-4	pdk-1	pink-1	ckk-1	jnk-1	ttn-1	plk-3	mapk-15	plk-1	plk-2	sax-1	lit-1	wts-1	unc-22	csnk-1	sma-6	gck-1	sma-5	aak-1	aak-2	dapk-1	cdk-2	gck-3	cdk-1	pkc-2	cdk-7	pkc-3	cdk-4	cdk-5	ttbk-6	cdk-8	cdk-9	pkc-1	kgb-1	mpk-1	flr-4	ire-1	rsks-1	gsk-3	bub-1	kin-20	cdk-11.1	egl-4	mig-15	kin-18	kin-19	wnk-1	spe-6	mek-2	mek-1	ikke-1	
+Pkinase_Tyr		gcy-11	ddr-1	ver-3	ver-4	ver-1	ver-2	kin-32	nipi-4	ark-1	sid-3	gcy-17	lin-45	gcy-18	gcy-13	gcy-12	gcy-15	gcy-14	src-2	daf-1	daf-2	mom-4	daf-11	src-1	rol-3	vab-1	let-23	lin-18	egl-15	ksr-1	csk-1	ksr-2	scd-2	mlk-1	gcy-20	svh-4	svh-2	gcy-22	gcy-21	old-1	abl-1	kin-15	frk-1	kin-16	pat-4	mes-1	cam-1	gcy-9	gcy-3	gcy-28	gcy-4	gcy-27	spe-8	gcy-1	gcy-29	gcy-2	gcy-8	gcy-23	gcy-5	gcy-6	gcy-25	
+Pro_isomerase		cyn-1	cyn-5	cyn-4	cyn-3	cyn-2	cyn-9	cyn-10	cyn-8	cyn-7	cyn-6	sig-7	cyn-11	
+Proteasome		pas-4	pbs-5	pas-5	pbs-6	pas-6	pas-7	pas-1	pas-2	pbs-3	pbs-4	pas-3	
+Proteasome_A_N		pas-4	pas-5	pas-6	pas-7	pas-1	pas-2	pas-3	
+Pyr_redox_2		gsr-1	trxr-1	trxr-2	dld-1	dpyd-1	
+RGS		grk-1	grk-2	pry-1	rgs-10	rgs-11	rgs-6	rgs-7	rgs-5	rgs-2	rgs-3	rgs-1	egl-10	rgs-9	
+RRM_1		set-2	fox-1	uaf-1	rsp-7	hrp-1	sym-2	sap-49	rsp-3	rsp-4	rsp-5	rsp-6	tofu-6	rnp-1	rsp-1	rsp-2	daz-1	ncbp-2	tdp-1	eif-3.G	din-1	sig-7	
+Ras		miro-1	ced-10	kbrl-1	rheb-1	rsef-1	rho-1	cnt-2	rac-2	rab-3	rab-18	rap-1	rab-11.1	rab-28	rab-10	rab-33	drn-1	cdc-42	ran-1	rab-6.1	rab-6.2	let-60	
+Reprolysin		mig-17	adt-1	adt-2	gon-1	unc-71	
+Rhodanese		cdc-25.1	moc-3	cdc-25.2	cdc-25.3	mpst-1	mpst-4	vhp-1	
+Ricin_B_lectin		gly-9	gly-6	gly-7	gly-11	gly-4	gly-5	gly-3	gly-10	
+SH2		src-2	vav-1	ced-2	sem-5	sta-1	abl-1	src-1	soem-1	ptp-2	frk-1	plc-3	shc-1	csk-1	spe-8	
+SH3_1		toca-1	plc-3	src-2	toca-2	ape-1	ced-2	sem-5	unc-57	abl-1	stam-1	src-1	
+SH3_2		dlg-1	ark-1	vav-1	ced-2	lin-2	sid-3	
+SMC_N		dpy-27	him-1	smc-6	smc-5	smc-4	smc-3	smcl-1	mix-1	
+SMC_hinge		dpy-27	him-1	smc-4	smc-3	mix-1	
+ShK		suro-1	tyr-3	tyr-1	nas-10	nas-32	mlt-7	nas-11	nas-12	nas-13	skpo-1	nas-14	nas-9	nas-15	nas-8	nas-7	nas-6	
+T-box		tbx-7	tbx-8	mls-1	tbx-9	tbx-39	tbx-37	tbx-38	tbx-35	tbx-36	tbx-33	tbx-11	tbx-34	tbx-42	tbx-31	tbx-32	tbx-40	sea-1	tbx-41	tbx-30	mab-9	tbx-2	
+TSP_1		nas-37	mig-6	adt-1	adt-2	unc-5	gon-1	mig-21	dpy-31	madd-4	nas-36	
+ThiF		aos-1	moc-3	uba-5	uba-2	rfl-1	ula-1	
+Thioredoxin		pdi-2	png-1	pdi-1	txdc-9	erp-44.2	pdi-6	trx-1	trx-2	
+Tubulin		tba-2	tbb-2	tbb-4	mec-7	tbg-1	tba-8	mec-12	
+Tubulin_C		tba-2	tbb-2	tbb-4	mec-7	tbg-1	tba-8	mec-12	
+UQ_con		ubc-25	ubc-13	ubc-7	ubc-17	ubc-1	uev-1	let-70	uev-3	ubc-21	ubc-12	ubc-9	
+VWA		clec-160	unc-36	dig-1	mup-4	mua-3	irg-7	
+Y_phosphatase		daf-18	dep-1	sdf-9	clr-1	eak-6	ptp-1	ptp-2	ptp-3	ptp-4	egg-5	egg-4	egg-3	ida-1	
+adh_short		dhs-16	dhs-27	dhs-5	stdh-3	stdh-4	dhs-3	stdh-1	let-767	stdh-2	
+cNMP_binding		kin-2	tax-4	epac-1	unc-103	egl-4	
+fn3		unc-22	unc-89	rig-4	dep-1	igdb-2	syg-2	ttn-1	jac-1	sax-3	rig-6	ptp-3	ptp-4	vab-1	dig-1	igdb-1	
+p450		cyp-13A3	cyp-13A4	cyp-36A1	cyp-13A1	cyp-13A2	cyp-13B1	cyp-44A1	cyp-13A10	daf-9	cyp-13A7	cyp-13A8	cyp-13A5	cyp-13A6	
+ubiquitin		ubq-2	ubq-1	ned-8	art-1	ubql-1	ubl-1	
+zf-C2H2		che-1	blmp-1	tra-1	hbl-1	mnm-2	zag-1	odd-2	odd-1	ztf-30	zfp-2	
+zf-C4		nhr-5	nhr-106	nhr-4	nhr-3	nhr-108	nhr-2	hizr-1	nhr-1	nhr-90	odr-7	nhr-91	nhr-10	nhr-54	nhr-98	nhr-53	nhr-97	nhr-96	nhr-52	nhr-51	nhr-14	nhr-13	nhr-57	nhr-12	nhr-150	nhr-55	nhr-11	nhr-153	nhr-18	nhr-197	nhr-111	nhr-16	nhr-199	nhr-154	nhr-59	nhr-115	nhr-19	sex-1	daf-12	nhr-86	nhr-42	nhr-85	nhr-41	nhr-40	nhr-47	nhr-89	nhr-44	nhr-164	nhr-49	nhr-48	nhr-121	nhr-124	nhr-167	nhr-169	nhr-125	nhr-127	nhr-71	nhr-31	nhr-75	nhr-79	nhr-35	nhr-34	nhr-77	nhr-174	nhr-130	nhr-133	nhr-134	nhr-213	nhr-136	unc-55	nhr-218	nhr-217	nhr-61	nhr-60	nhr-65	nhr-20	nhr-64	nhr-62	nhr-25	nhr-69	nhr-23	nhr-67	nhr-22	nhr-28	nhr-100	nhr-9	nhr-8	nhr-7	nhr-6	nhr-268	nhr-103	
+zf-CCHC		lin-28	glh-3	glh-4	glh-1	glh-2	
+zf-RING_2		rnf-121	plr-1	rpy-1	rpm-1	hrdl-1	sel-11	brap-2	
+zf-Tim10_DDP		ddp-1	tin-9.1	tin-13	tin-9.2	tin-10	
