@@ -7,7 +7,7 @@ from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, \
 Merge_TE_and_Gene_input, strand_detection_input
 from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
 get_strandness_for_hisat2_SE, get_strandness_for_stringtie
-from osr import mapped_bam_single_input, mapped_bam_inputs
+from osr import mapped_bam_single_input, mapped_bam_inputs, check_meta_data
 ###  Usage Requirements  ###
 # inputs in ./fastq/
 # named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
@@ -17,6 +17,8 @@ min_version("7.2")  # check snakemake version
 configfile: "config.yaml"
 containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
+
+check_meta_data(config)
 
 def GSEA_OUTPUT(config):
     L = []

@@ -290,3 +290,22 @@ def mapped_bam_single_input(config):
         return "hisat2/{sample}.bam"
     else:
         sys.exit("config['ALIGNER'] not recognized")
+
+
+def check_contrast_file(fname="meta/contrast.de.txt"):
+    df = read_table(fname)
+    if df.transpose().duplicated().any():
+        raise ValueError(fname + " has duplicated contrasts, please fix and re-run")
+
+def check_meta_file(fname="meta/meta.txt"):
+    df =  read_table(fname)
+    if df.duplicated().any():
+        raise ValueError(fname + " has duplicated rows, please fix and re-run")
+        
+def check_meta_data(config):
+    if config['CONTRAST_DE']:
+        check_contrast_file(config['CONTRAST_DE'])
+    if config['CONTRAST_AS']:
+        check_contrast_file(config['CONTRAST_AS'])
+    if config['META']:
+        check_meta_file(config['META'])
