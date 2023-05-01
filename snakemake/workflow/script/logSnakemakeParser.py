@@ -39,7 +39,8 @@ with open(filename) as f:
 #  For each rule, parse out total jobs and save in dict:
 with open(filename) as f:
     for i, line in enumerate(f):
-        if i in range(lineMetaStart + 1, lineMetaEnd - 2):
+        if i in range(lineMetaStart + 1, lineMetaEnd - 1):
+            print(line)
             tem = line.split()
             jobNum = tem[1]
             ruleName = tem[0]
@@ -48,6 +49,8 @@ with open(filename) as f:
                 ruleDict[ruleName] = [jobNum, [], []]
 
 # exit()
+# print(ruleDict)
+
 # For each rule, parse out submitted job IDs:
 fileList = [line for line in open(filename)]
 with open(filename) as f:
@@ -73,7 +76,6 @@ with open(filename) as f:
 
 # for key in ruleDict:
 #     print(key, ruleDict[key])
-
 for key in ruleDict:
     jt = ruleDict[key][0] # total job number
     js = len(ruleDict[key][1]) # submitted job number
