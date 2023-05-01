@@ -1146,6 +1146,11 @@ rule rMATS_FLT:
             out = df[df['PValue'] < 1]
             outname = re.sub(".txt$", ".sig.tsv", f)
             out.to_csv(outname, sep="\t")
+        import shutil
+        shutil.make_archive('rMATS.'+str(wildcards.ascn), 'zip', \
+                root_dir="./", base_dir='rMATS.'+str(wildcards.ascn))
+        shutil.move('rMATS.'+str(wildcards.ascn)+'.zip', 'rMATS.'+str(wildcards.ascn))
+        
     
 
 
