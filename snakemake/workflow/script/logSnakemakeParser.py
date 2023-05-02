@@ -40,7 +40,6 @@ with open(filename) as f:
 with open(filename) as f:
     for i, line in enumerate(f):
         if i in range(lineMetaStart + 1, lineMetaEnd - 1):
-            print(line)
             tem = line.split()
             jobNum = tem[1]
             ruleName = tem[0]
