@@ -1,26 +1,7 @@
 # Analysis Params
-SAMPLES:
-        - KO_D0_1
-        - KO_D0_2
-        - KO_D0_3
-        - KO_D2_1
-        - KO_D2_2
-        - KO_D2_3
-        - KO_D8_1
-        - KO_D8_2
-        - KO_D8_3
-        - WT_D0_1
-        - WT_D0_2
-        - WT_D0_3
-        - WT_D2_1
-        - WT_D2_2
-        - WT_D2_3
-        - WT_D8_1
-        - WT_D8_2
-        - WT_D8_3
-
 START: FASTQ # FASTQ, BAM, COUNT, RNK
 PAIR_END: True  # True/False
+ALIGNER: STAR  # HISAT2, STAR
 ADAPTORS: workflow/resources/adapters/merged.fa
 STRAND: [0, 1, 2]  # can input [0, 1, 2] to get all possible results, then workflow auto inferrs the correct one # [2] if you know it's reverse, [1] if you know it's forward, [0] if you know it's un-stranded
 
@@ -36,8 +17,8 @@ INTRON: False  # will also perform gene level featureCount as well as exon level
 DESEQ2_ANALYSIS: True
 MAX_FDR: 0.05
 MIN_LFC: 0.585 
-META: meta/meta.xlsx
-CONTRAST_DE: meta/contrast.de.xlsx
+META: meta/meta.xlsx.txt
+CONTRAST_DE: meta/contrast.de.xlsx.txt
 cooksCutoff: 'FALSE'
 independentFilter: 'FALSE'
 blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlier, e.g. KO_D0_1_S2, excluded in DESeq2 analysis only, optional
@@ -46,8 +27,8 @@ blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlie
 # GSEA
 GSEA_ANALYSIS: True
 GSEA_NPLOTS: 100  
-GSEA_PLOT_SVG: False  
-GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/gsea_db
+GSEA_PLOT_SVG: True  
+GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/test
 
 # Only if start from COUNT
 COUNT_FILE: meta/COUNT.xlsx  # must have same format as feature_count output c1-c7 meta, c7- count
@@ -64,7 +45,7 @@ RNKS:
 # Alternative Splicing analysis (rMATS)
 DEXSEQ_ANALYSIS: True
 RMATS_ANALYSIS: True
-CONTRAST_AS: meta/contrast.as.xlsx
+CONTRAST_AS: meta/contrast.as.xlsx.txt
 RMATS_STRANDNESS:
   {0 : fr-unstranded,
   1 : fr-firststrand, 
@@ -85,5 +66,5 @@ TE_REFERENCE: mm # mm, hs, dm, dr
 ASE_ANALYSIS: False
 VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
 
-ASSEMBLY_ANALYSIS: True
+ASSEMBLY_ANALYSIS: False
 # todo: DE analysis with new ASSEMBLY GTF

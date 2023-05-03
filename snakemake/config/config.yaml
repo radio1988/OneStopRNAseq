@@ -1,26 +1,7 @@
 # Analysis Params
-SAMPLES:
-        - KO_D0_1
-        - KO_D0_2
-        - KO_D0_3
-        - KO_D2_1
-        - KO_D2_2
-        - KO_D2_3
-        - KO_D8_1
-        - KO_D8_2
-        - KO_D8_3
-        - WT_D0_1
-        - WT_D0_2
-        - WT_D0_3
-        - WT_D2_1
-        - WT_D2_2
-        - WT_D2_3
-        - WT_D8_1
-        - WT_D8_2
-        - WT_D8_3
-
 START: FASTQ # FASTQ, BAM, COUNT, RNK
 PAIR_END: True  # True/False
+ALIGNER: STAR # HISAT2, STAR
 ADAPTORS: workflow/resources/adapters/merged.fa
 STRAND: [0, 1, 2]  
         # [0, 1, 2]: auto detect

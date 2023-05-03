@@ -1,0 +1,152 @@
+Alzheimer's disease(DOID:10652)		xbp-1	feh-1	spr-4	svh-1	sma-9	pis-1	acn-1	apl-1	trxr-2	sel-12		
+multiple pterygium syndrome(DOID:0080110)		lev-1	unc-54	unc-38	lev-8	unc-29	acr-3	acr-12	myo-3	acr-2	myo-5	myo-6	acr-6	unc-63	myo-1		acr-8	myo-2	
+congenital myasthenic syndrome 4C(DOID:0110679)		acr-3	acr-2	lev-1	gfat-2	unc-29	gfat-1		
+congenital myasthenic syndrome 1A(DOID:0110663)		acr-12	unc-38	lev-8	acr-6	unc-63		acr-8	
+autosomal dominant nocturnal frontal lobe epilepsy 4(DOID:0060685)		acr-12	unc-38	lev-8	acr-6	unc-63		acr-8	
+congenital myasthenic syndrome 1B(DOID:0110662)		acr-12	unc-38	lev-8	acr-6	unc-63		acr-8	
+autosomal dominant nocturnal frontal lobe epilepsy 1(DOID:0060682)		acr-12	unc-38	lev-8	acr-6	unc-63		acr-8	
+dilated cardiomyopathy 1R(DOID:0110456)		act-1	act-3	act-2	act-5	act-4		
+hypertrophic cardiomyopathy 11(DOID:0110317)		act-1	act-3	act-2	act-5	act-4		
+nemaline myopathy 3(DOID:0110927)		act-1	act-3	act-2	act-5	act-4		
+thoracic aortic aneurysm(DOID:14004)		act-1	act-3	act-2	nmy-1	act-5	act-4		nmy-2	egl-4	
+atrial heart septal defect 5(DOID:0110110)		act-1	act-3	act-2	act-5	act-4		
+congenital fiber-type disproportion(DOID:0080102)		unc-54	unc-68	act-1	myo-3	act-3	myo-5	act-2	myo-6	act-5	act-4	myo-1		lev-11	myo-2	
+Moyamoya disease(DOID:13099)		act-1	gcy-31	act-3	act-2	gcy-35	act-5	act-4		
+essential hypertension(DOID:10825)		add-2	cyp-25A2	add-1	rgs-7	cyp-25A3	gpb-1	cyp-25A1	nkb-1	nkb-3	cyp-25A6	cyp-25A4		
+colorectal cancer(DOID:9256)		egl-15	hmp-2	bar-1	gei-1	cbp-1	age-1	flcn-1	let-60	unc-40		
+Cowden disease(DOID:6457)		daf-18	sdhb-1	akt-1	age-1	akt-2		sdhd-1	
+stomach cancer(DOID:10534)		egl-15	let-23	age-1	let-60		klf-2	
+ovarian cancer(DOID:2394)		hmp-2	bar-1	akt-1	age-1	akt-2	pdr-1		
+lung cancer(DOID:1324)		cyp-33C12	let-23	paa-1	age-1	cyp-33D1	cyp-33C8	cyp-14A2	cyp-33C7	cyp-14A3	cyp-33C6	cyp-36A1	cyp-33C5	cyp-14A1	cyp-33C4	cyp-33C3	cyp-33A1	cyp-33C2	cyp-33C1	pdr-1	lin-45	let-60	csb-1	cyp-14A4		cyp-33C9	cyp-33C11	cyp-14A5	F53H4.6	cyp-33E2	C53B4.3	cyp-33E1	rsf-1	cyp-23A1	cyp-33B1	cyp-33D3	daf-9	
+breast cancer(DOID:1612)		akt-1	age-1	epg-7	akt-2	C53B4.3	chk-2	dog-1	phb-1	T08D2.7	rad-54	let-60	tsg-101		Y54F10BM.1	
+type 2 diabetes mellitus(DOID:9352)		akt-1	akt-2	pop-1	cdf-2	hxk-3	jip-1	nhr-14	nhr-35	R09B5.11	gon-1	irk-1	irk-3	irk-2	fgt-1	Y92H12BL.1		hxk-2	hxk-1	nhr-64	eyg-1	nhr-85	nhr-69	C27A7.1	cnd-1	nhr-49	C27A7.3	imph-1	
+schizophrenia(DOID:5419)		akt-1	cht-1	ser-1	akt-2	daao-1	tyra-3	mthf-1	snn-1		
+Emery-Dreifuss muscular dystrophy(DOID:11726)		zyg-12	anc-1	lmn-1	lem-2		emr-1	unc-83	
+Bardet-Biedl syndrome(DOID:1935)		osm-12	bbs-2	bbs-1	bbs-5	bbs-4	bbs-9	bbs-8		arl-6	
+combined oxidative phosphorylation deficiency(DOID:0060286)		ZK1010.2	T23B5.4	mrps-16	vars-1	gfm-1	mrps-22	BE0003N10.1	hoe-1	mtcu-2	atp-1	mtcu-1	tars-1	aars-1	tufm-1	mrps-18C	nars-2	fars-2		tsfm-1	
+Parkinson's disease(DOID:14330)		ptc-1	hda-6	mir-48	hpk-1	glrx-10	pmk-1	mir-83	mir-84	lrk-1	mir-80	mdl-1	fpn-1.1	pdr-1	djr-1.1		ida-1	djr-1.2	sec-22	daf-16	pink-1	daf-2	atx-2	sel-5	mir-1	mir-77	mir-238	mir-230	gpi-1	rtcb-1	mrp-7	yif-1	mir-64	mir-65	ptl-1	vps-41	npr-24	tor-2	zip-2	hpo-21	sek-1	mir-241	catp-6	ubh-1	gipc-1	H24K24.3	mir-50	gba-1	gba-2	npr-4	dop-2	nhr-6	
+hyperekplexia 1(DOID:0060696)		moc-1	lin-46	avr-15	glc-4	avr-14	glc-2	glc-3		glc-1	
+hyperekplexia 2(DOID:0060697)		avr-15	glc-4	avr-14	glc-2	glc-3		glc-1	
+obesity(DOID:9970)		hlh-34	kat-1	nhr-85	adpr-1	bbs-1	rab-7	rbg-3	C27A7.1	C27A7.3	tub-1	pept-1		
+complex cortical dysplasia with other brain malformations 6(DOID:0090136)		tbb-1	tbb-2	tbb-4	ben-1	mec-7		
+congenital fibrosis of the extraocular muscles(DOID:0080143)		klp-12	ceh-17	tbb-1	tbb-2	tbb-4	ben-1	mec-7		
+complex cortical dysplasia with other brain malformations 1(DOID:0090137)		tbb-1	tbb-2	tbb-4	ben-1	mec-7		
+complex cortical dysplasia with other brain malformations 5(DOID:0090135)		tbb-1	tbb-2	tbb-4	ben-1	mec-7		
+complex cortical dysplasia with other brain malformations 7(DOID:0090132)		tbb-1	tbb-2	tbb-4	ben-1	mec-7		
+rickets(DOID:10609)		cyp-33C12	cyp-33D1	cyp-33C8	cyp-14A2	cyp-33C7	cyp-14A3	cyp-33C6	cyp-36A1	cyp-33C5	cyp-14A1	cyp-33C4	cyp-33C3	cyp-33A1	cyp-33C2	cyp-33C1	cyp-14A4		cyp-33C9	cyp-33C11	cyp-14A5	cyp-33E2	cyp-33E1	cyp-23A1	cyp-44A1	cyp-33B1	cyp-33D3	daf-9	
+hereditary spastic paraplegia 56(DOID:0110808)		cyp-33C12	cyp-33D1	cyp-33C8	cyp-14A2	cyp-33C7	cyp-14A3	cyp-33C6	cyp-36A1	cyp-33C5	cyp-14A1	cyp-33C4	cyp-33C3	cyp-33A1	cyp-33C2	cyp-33C1	cyp-14A4		cyp-33C9	cyp-33C11	cyp-14A5	cyp-33E2	cyp-33E1	cyp-23A1	cyp-33B1	cyp-33D3	daf-9	
+congenital adrenal hyperplasia(DOID:0050811)		cyp-35A4	cyp-34A5	cyp-35A3	cyp-34A4	cyp-35B3	cyp-35A2	cyp-35B2	cyp-35A1	cyp-34A2	cyp-34A1	cyp-35B1	cyp-35C1	cyp-44A1	cyp-35D1	cyp-33E3	cyp-34A10	cyp-34A9	cyp-34A8	cyp-34A7		cyp-35A5	cyp-34A6	
+cancer(DOID:162)		tsp-21	glp-1	cdk-4	ras-1	tsp-14	let-7	tsp-12	cnt-1	let-60		
+lissencephaly(DOID:0050453)		lam-1	nud-1	nud-2	tba-1	tba-2	tba-4	tba-7	tba-8	dhc-1	cdk-5	cdka-1	lis-1	zyg-8		mec-12	
+microphthalmia(DOID:10629)		ttx-1	cchl-1	sox-2	ceh-10	ceh-32	K10C3.4		
+papillary thyroid carcinoma(DOID:3969)		kin-2	ceh-27	ncl-1	ceh-24	nhl-2	T24B1.1		T09B9.4	
+prostate cancer(DOID:10283)		daf-18	tsp-11	ehbp-1	mdl-1	chk-2	T08D2.7	hoe-1		klf-2	
+Duchenne muscular dystrophy(DOID:11723)		dyc-1	chn-1	dyb-1	ctn-1	elp-1	clp-1	dys-1	stn-1	snf-6	stn-2	egl-19	slo-1		
+megaconial type congenital muscular dystrophy(DOID:0110632)		ckb-4	cka-2	ckb-1	cka-1	ckb-3	ckb-2		
+autosomal recessive limb-girdle muscular dystrophy type 2A(DOID:0110275)		clp-7	clp-4	clp-3	clp-6		clp-1	
+Cornelia de Lange syndrome(DOID:11725)		pqn-85	him-1	scc-1	coh-1	smc-3		
+nephrotic syndrome(DOID:1184)		mec-2	rhi-1	lam-1	plc-1	coq-8	sto-3	dgk-2		
+MELAS syndrome(DOID:3687)		nduo-5	ctc-1	ctb-1	ctc-3	nduo-1		ctc-2	
+Leber hereditary optic neuropathy(DOID:705)		nduo-5	nduo-4	ctb-1	ctc-3	nduo-1		
+premature ovarian failure(DOID:5426)		nhr-2	cyk-1	nhr-25	scc-3	dbl-1		nhr-91	
+hyperinsulinemic hypoglycemia(DOID:13317)		daf-2	gem-1	mct-6	mct-4	mct-5	mct-2	mct-3	hxk-2	hxk-1	mct-1	hxk-3	gdh-1	irk-1	irk-3	irk-2	F54C8.1	B0272.3		
+neural tube defect(DOID:0080074)		mtrr-1	K07E3.4	dao-3	mthf-1	metr-1		
+Liddle syndrome(DOID:0050477)		del-4	asic-1	unc-105	egas-1	egas-4	egas-2	egas-3	unc-8	deg-1	asic-2	mec-10	mec-4	del-1		
+autosomal recessive pseudohypoaldosteronism type 1(DOID:0060854)		del-4	asic-1	unc-105	egas-1	egas-4	egas-2	egas-3	unc-8	deg-1	asic-2	mec-10	mec-4	del-1		
+bronchiectasis(DOID:9563)		del-4	asic-1	unc-105	egas-1	egas-4	egas-2	egas-3	unc-8	deg-1	asic-2	mec-10	mec-4	del-1		
+neurodegenerative disease(DOID:1289)		deg-1	mec-17	glt-3	tsp-17	deg-3	mec-4		
+non-syndromic X-linked intellectual disability(DOID:0050776)		dlg-1	Y48G8AL.10	alr-1	gdi-1	rskn-1	klp-19	pix-1	R74.7	dhhc-4		bris-1	
+amyotrophic lateral sclerosis type 1(DOID:0060193)		sod-1	sod-5	dnc-1	ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+esophageal atresia/tracheoesophageal fistula(DOID:0080171)		tra-1	ztf-14	sox-2	dog-1	chd-7	xpf-1		
+azoospermia(DOID:14227)		rps-4	dpy-19	nhr-2	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6	sulp-7	taf-4	nhr-91	sulp-8	rbr-2	nhr-25		
+Down syndrome(DOID:14250)		pad-2	pad-1	elt-1	mbk-2	unc-26	mbk-1	rcan-1	cysl-2		
+cutis laxa(DOID:3144)		unc-32	M153.1	alh-13	vha-7	vha-6	fbl-1	vha-5		
+mitochondrial complex I deficiency(DOID:0060536)		lpd-5	nuaf-3	nduf-6	gas-1	M04B2.4	nduf-2.2	nuo-2	nuo-5	F53F4.10	nuo-1	C16A3.5	K09E4.3	nuaf-1		
+cataract 13 with adult i phenotype(DOID:0110242)		gly-15	gly-16	gly-17	gly-18	gly-1	gly-19		
+congenital disorder of glycosylation type II(DOID:0050571)		cogc-4	W02B12.11	ugtp-1	gly-20	nstp-10	nstp-9	cogc-6	mogs-1		Y54F10AL.1	
+Ohtahara syndrome(DOID:0050709)		spc-1	slc-25A18.2	goa-1	slc-25A18.1	F21D5.5	F54B3.1	kqt-1	unc-18	slo-2		T07A9.10	
+dilated cardiomyopathy 1II(DOID:0110450)		hsp-16.48	F08H9.3	hsp-16.49	hsp-16.11	hsp-16.2	F08H9.4	sip-1	hsp-16.1	hsp-17	hsp-16.41		
+cataract 9 multiple types(DOID:0110266)		hsp-16.48	F08H9.3	hsp-16.49	hsp-16.11	hsp-16.2	F08H9.4	sip-1	hsp-16.1	hsp-17	hsp-16.41		
+myofibrillar myopathy 2(DOID:0080093)		hsp-16.48	F08H9.3	hsp-16.49	hsp-16.11	hsp-16.2	F08H9.4	sip-1	hsp-16.1	hsp-17	hsp-16.41		
+Charcot-Marie-Tooth disease axonal type 2F(DOID:0110163)		hsp-16.48	F08H9.3	hsp-16.49	hsp-16.11	hsp-16.2	F08H9.4	sip-1	hsp-16.1	hsp-17	hsp-16.41		
+cataract 16 multiple types(DOID:0110250)		hsp-16.48	F08H9.3	hsp-16.49	hsp-16.11	hsp-16.2	F08H9.4	sip-1	hsp-16.1	hsp-17	hsp-16.41		
+myofibrillar myopathy 7(DOID:0080098)		hsp-16.48	F08H9.3	hsp-16.49	hsp-16.11	hsp-16.2	F08H9.4	sip-1	hsp-16.1	hsp-17	hsp-16.41		
+myofibrillar myopathy 1(DOID:0080092)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+Charcot-Marie-Tooth disease type 2E(DOID:0110165)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+epidermolytic hyperkeratosis(DOID:4603)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+Alexander disease(DOID:4252)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+monilethrix(DOID:0050472)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+epidermolysis bullosa simplex Dowling-Meara type(DOID:0060735)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+autosomal recessive limb-girdle muscular dystrophy type 2R(DOID:0110286)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+hypotrichosis 3(DOID:0110700)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+nonepidermolytic palmoplantar keratoderma(DOID:0050428)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+epidermolysis bullosa simplex(DOID:4644)		ifa-1	mua-6	vab-10	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+Meesmann corneal dystrophy(DOID:0060451)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+Charcot-Marie-Tooth disease type 1F(DOID:0110149)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+hereditary mucosal leukokeratosis(DOID:0050448)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+Dowling-Degos disease(DOID:0060256)		ifa-1	mua-6	C15C7.7	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+hypotrichosis 13(DOID:0110710)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+ichthyosis bullosa of Siemens(DOID:0060877)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+cataract 30(DOID:0110248)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+dilated cardiomyopathy 1I(DOID:0110431)		ifa-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3		ifb-1	
+short QT syndrome(DOID:0050793)		unc-103	irk-1	irk-3	irk-2	kqt-3		
+familial atrial fibrillation(DOID:0050650)		irk-1	irk-3	npp-8	irk-2	kqt-3	shk-1		
+permanent neonatal diabetes mellitus(DOID:0060639)		hxk-3	irk-1	irk-3	irk-2	hxk-2		hxk-1	
+Carney complex(DOID:0050471)		myo-3	kin-2	myo-5	unc-54	myo-6	myo-1		myo-2	
+infantile epileptic encephalopathy(DOID:2481)		spc-1	slc-25A18.2	slc-25A18.1	F21D5.5	kqt-1	unc-18		T07A9.10	
+inclusion body myositis(DOID:3429)		myo-3	msra-1	myo-5	unc-54	myo-6	myo-1		myo-2	
+distal arthrogryposis(DOID:0050646)		tni-3	unc-54	tni-4	tni-1	unc-27	mua-3	pezo-1	myo-3	myo-5	myo-6	mup-4	myo-1		lev-11	myo-2	
+scapuloperoneal myopathy(DOID:0060253)		myo-3	myo-5	unc-54	myo-6	myo-1		myo-2	
+hypertrophic cardiomyopathy 1(DOID:0110307)		myo-3	myo-5	unc-54	myo-6	mlck-1	myo-1		myo-2	
+dilated cardiomyopathy 1S(DOID:0110454)		myo-3	myo-5	unc-54	myo-6	myo-1		myo-2	
+hypertrophic cardiomyopathy 14(DOID:0110320)		myo-3	myo-5	unc-54	myo-6	myo-1		myo-2	
+distal muscular dystrophy(DOID:11720)		myo-3	myo-5	unc-54	myo-6	myo-1		myo-2	
+dilated cardiomyopathy 1EE(DOID:0110453)		myo-3	myo-5	unc-54	myo-6	myo-1		myo-2	
+atrial heart septal defect 3(DOID:0110108)		myo-3	myo-5	unc-54	myo-6	myo-1		myo-2	
+autism spectrum disorder(DOID:0060041)		nrx-1	lin-2	nre-1	shn-1	sel-2	nlg-1	mef-2	mocs-1		
+Leigh disease(DOID:3652)		sft-1	sdha-2	lpd-5	sdha-1	M04B2.4	B0334.5	cox-15	T20H4.5	nuo-2	Y63D3A.7	Y53G8AL.2	nduf-7	cox-10		Y94H6A.8	
+amyotrophic lateral sclerosis type 22(DOID:0060355)		tba-1	tba-2	tba-4	tba-7	tba-8		mec-12	
+paraganglioma(DOID:0050773)		sdhb-1	sdha-2	Y57A10A.29	sdha-1	mev-1		sdhd-1	
+Dubin-Johnson syndrome(DOID:12308)		mrp-8	mrp-7	mrp-4	mrp-3	mrp-2	mrp-1		
+pseudoxanthoma elasticum(DOID:2738)		mrp-8	mrp-7	mrp-4	mrp-3	sqv-6	mrp-2	mrp-1		
+arterial calcification of infancy(DOID:0050644)		mrp-8	mrp-7	mrp-4	mrp-3	C27A7.1	mrp-2	mrp-1	C27A7.3		
+oculocutaneous albinism(DOID:0050632)		mrp-8	mrp-7	mrp-4	mrp-3	mrp-2	mrp-1		
+46 XY gonadal dysgenesis(DOID:14448)		Y106G6A.1	nhr-2	nhr-25	Y39G8B.2	Y39G8B.1		nhr-91	
+maturity-onset diabetes of the young type 1(DOID:0111099)		nhr-64	nhr-69	nhr-14	nhr-35	nhr-49		
+Charcot-Marie-Tooth disease axonal type 2C(DOID:0110182)		osm-9	ocr-2	ocr-3	ocr-1	ocr-4		
+brachyolmia(DOID:0050690)		osm-9	ocr-2	ocr-3	ocr-1	ocr-4		
+Diamond-Blackfan anemia(DOID:1339)		rps-10	rps-7	rpl-15	rpl-33	rps-17	rps-26	rpl-11.1	rpl-11.2	rps-24		rpl-5	
+autosomal recessive non-syndromic intellectual disability(DOID:0060308)		Y37H9A.3	ZK686.3	Y53F4B.21	taf-2		Y48G8AL.5	T19B10.8	M18.6	
+spinocerebellar ataxia type 11(DOID:0050961)		C56C10.6	Y47G6A.13	tag-191	ttbk-4	ttbk-7	ttbk-5	ttbk-6	M05D6.1	F54H5.2	F35C11.3		K06H7.8	D2045.5	
+congenital disorder of glycosylation type I(DOID:0050570)		C08H9.3	ostb-1	C08B11.8	ZK180.3	F52B11.2	C14A4.3	Y56A3A.36	dpm-1	C05C8.7	B0024.13	F38E1.9	algn-7	stt-3	ZC513.5	ZK632.4	K09E4.2	algn-1	algn-2		algn-11	
+retinitis pigmentosa 50(DOID:0110396)		best-10	best-17	best-18	best-15	best-16	best-13	best-14	best-11	best-12	best-19		best-20	best-21	best-1	best-2	best-3	best-4	best-26	best-5	best-6	best-24	best-25	best-7	best-8	best-22	best-23	best-9	C09B9.85	
+vitelliform macular dystrophy(DOID:0050661)		best-10	best-17	best-18	best-15	best-16	best-13	best-14	best-11	best-12	best-19		best-20	best-21	best-1	best-2	best-3	best-4	best-26	best-5	best-6	best-24	best-25	best-7	best-8	best-22	best-23	best-9	C09B9.85	
+bestrophinopathy(DOID:0050662)		best-10	best-17	best-18	best-15	best-16	best-13	best-14	best-11	best-12	best-19		best-20	best-21	best-1	best-2	best-3	best-4	best-26	best-5	best-6	best-24	best-25	best-7	best-8	best-22	best-23	best-9	C09B9.85	
+Kabuki syndrome(DOID:0060473)		utx-1	jmjd-3.3	jmjd-3.2	set-16	jmjd-3.1		
+pyruvate decarboxylase deficiency(DOID:3649)		pdha-1	pdhb-1	pdp-1	dlat-1	dlat-2		
+platelet-type bleeding disorder 14(DOID:0111047)		cyp-25A2	cyp-25A3	cyp-25A1	cyp-25A6	cyp-25A4		
+peroxisomal acyl-CoA oxidase deficiency(DOID:0050797)		acox-1.5	acox-1.4	acox-1.6	acox-1.1	acox-1.3	acox-1.2		
+autosomal recessive congenital ichthyosis 8(DOID:0060717)		lipl-8	lipl-7	lipl-6	lipl-5	lipl-4	lipl-3	lipl-2	lipl-1		
+familial temporal lobe epilepsy 5(DOID:0060752)		suro-1	W01A8.6	Y47G6A.19	T06A4.1	Y18H1A.9	Y59C2A.1	T06A4.3	ZC434.9	F02D8.4		
+neuronal ceroid lipofuscinosis 7(DOID:0110722)		Y53G8AR.7	W03C9.6	F52F10.2	F58G11.4	W01B6.3	srsx-34	F14D7.6	F57A8.7	ZK550.2	F27D9.2	W05E10.1	C25E10.4	T28C12.1	T28C12.2	C25E10.5		
+neurodegeneration with brain iron accumulation 2a(DOID:0110735)		ipla-3	ipla-2	ipla-5	ipla-4	C45B2.6	ipla-7		
+autosomal recessive Parkinson disease 14(DOID:0060900)		ipla-3	ipla-2	ipla-5	ipla-4	C45B2.6	ipla-7		
+neurodegeneration with brain iron accumulation 2b(DOID:0110736)		ipla-3	ipla-2	ipla-5	ipla-4	C45B2.6	ipla-7		
+Walker-Warburg syndrome(DOID:0050560)		W02B3.7	T07D3.4	T07A5.1	W02B3.4	Y22D7AL.11		lge-1	
+muscular dystrophy-dystroglycanopathy(DOID:0050588)		W02B3.7	T07D3.4	T07A5.1	W02B3.4	Y22D7AL.11		lge-1	
+multiple epiphyseal dysplasia(DOID:12721)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+enlarged vestibular aqueduct(DOID:0050332)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+atelosteogenesis(DOID:0050648)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+diastrophic dysplasia(DOID:14687)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+Pendred Syndrome(DOID:0060744)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+congenital secretory chloride diarrhea 1(DOID:0060296)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+autosomal recessive nonsyndromic deafness 4(DOID:0110498)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+autosomal recessive nonsyndromic deafness 61(DOID:0110513)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+achondrogenesis type IB(DOID:0080055)		sulp-8	sulp-2	sulp-3	sulp-4	sulp-5	sulp-6		sulp-7	
+nephronophthisis(DOID:12712)		nphp-4	ift-139	mks-3	mksr-1	mks-1	mksr-2	mks-2	nphp-1		
+Fukuyama congenital muscular dystrophy(DOID:0050559)		W02B3.7	T07D3.4	T07A5.1	W02B3.4	Y22D7AL.11		
+autosomal recessive limb-girdle muscular dystrophy type 2M(DOID:0110296)		W02B3.7	T07D3.4	T07A5.1	W02B3.4	Y22D7AL.11		
+dilated cardiomyopathy 1X(DOID:0110444)		W02B3.7	T07D3.4	T07A5.1	W02B3.4	Y22D7AL.11		
+basal ganglia calcification(DOID:0060230)		pitr-3	pitr-5	pitr-6	pitr-1	pitr-2		
+cytochrome-c oxidase deficiency disease(DOID:3762)		Y39B6A.34	sco-1	taco-1	cox-10		cox-6B	
+Meckel syndrome(DOID:0050778)		mks-3	mksr-1	mks-1	mksr-2	mks-2	tmem-231	

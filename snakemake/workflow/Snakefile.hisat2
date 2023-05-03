@@ -2,26 +2,23 @@ import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
 from osr import gunzip, read_length, read_table
+from osr import mapped_bam_inputs, mapped_bam_single_input
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, \
 Merge_TE_and_Gene_input, strand_detection_input
 from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
 get_strandness_for_hisat2_SE, get_strandness_for_stringtie
-from osr import mapped_bam_single_input, mapped_bam_inputs, check_meta_data
 ###  Usage Requirements  ###
 # inputs in ./fastq/
 # named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
 # {sample}.fastq.gz for SE reads
 
-min_version("7.2")  # check snakemake version
+min_version("7.24.0")  # check snakemake version
 configfile: "config.yaml"
 containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
 
-check_meta_data(config)
-
 def GSEA_OUTPUT(config):
-    L = []
     if config["GSEA_ANALYSIS"]:
         gsea_dbs = []
         for f in os.listdir(config['GSEA_DB_PATH']):
@@ -29,28 +26,11 @@ def GSEA_OUTPUT(config):
                 gsea_dbs.append(f)
         gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=gsea_dbs)
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=gsea_dbs))
         else:
-            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=gsea_dbs)
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=gsea_dbs))
     else:
-        L = ["Workflow_DAG.all.pdf"]
-    return (L)
-
-def GSEACOMPRESS_OUTPUT(config):
-    L = []
-    if config["GSEA_ANALYSIS"]:
-        gsea_dbs = []
-        for f in os.listdir(config['GSEA_DB_PATH']):
-            if f.endswith('.gmt'):
-                gsea_dbs.append(f)
-        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
-        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea/{contrast}.tar.gz", contrast=CONTRASTS_DE)
-        else:
-            L = expand("gsea/{contrast}.tar.gz", contrast=config["RNKS"])
-    else:
-        L = ["Workflow_DAG.all.pdf"]
-    return (L)
+        return("Workflow_DAG.all.svg")
 
 # umcompress files (todo: make it a rule)
 if config["GENOME"].endswith(".gz"):
@@ -80,10 +60,7 @@ MIN_GENE_COUNT= config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100 
 CONTRAST_AS = config['CONTRAST_AS']
 META = config['META']
 
-if config['START'] != 'RNK':
-    SAMPLES=read_table(config['META']).iloc[:,0].tolist()
-else:
-    SAMPLES=['placeholder']
+SAMPLES=read_table(config['META']).iloc[:,0].tolist()
 
 # for DESeq2
 if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
@@ -133,53 +110,51 @@ def target_input(config, ASCN):
     - define target results to generate
     - check config logic error (in-compatibility)
     '''
-    l = ["Workflow_DAG.all.pdf"]
+    l = ["Workflow_DAG.all.svg"]
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
 
-        if config["ASSEMBLY_ANALYSIS"]:
-            if config['START'] not in ['FASTQ']:
-                raise Exception ('config Error: START and ASSEMBLY_ANALYSIS incompatible')
-            l.append('stringtie/stringtie.merged.gtf')
-
     if config['START'] in ['FASTQ', 'BAM']:
         l.append('bam_qc/bam_qc.zip')
-
         l.extend(['bigWig/{}.{}.cpm.bw'.format(sample, config['MODE']) \
                 for sample in SAMPLES])
-
         l.extend(["feature_count/counts.s{}.{}.txt.summary.multiqc_report.html".format(strand, config['MODE']) \
                 for strand in config['STRAND']])
 
-        if config['INTRON']:
-            l.extend(["feature_count_gene_level/counts.s{}.{}.txt.summary.multiqc_report.html".format(strand, config['MODE']) \
-                    for strand in config['STRAND']])
-
-        if config['RMATS_ANALYSIS']:
-            l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.sig.tsv'.\
-                format(ascn=ascn) for ascn in range(1, 1+ASCN)])
-
-        if config['DEXSEQ_ANALYSIS']:
-            l.append(["DEXSeq/contrast{ascn}/contrast{ascn}.RData".\
-                format(ascn=ascn) for ascn in range(1,ASCN+1)])
-
-        # todo: fix GATK env
-        if config['ASE_ANALYSIS']:
-            l.extend(["GATK_ASEReadCounter/{sample}.table".\
-                format(sample=sample) for sample in SAMPLES])
-
-    if config['START'] in ['FASTQ', 'BAM', 'COUNT']:
-        if config['DESEQ2_ANALYSIS']:
-            l.append("DESeq2/DESeq2.html")
+    if config['DESEQ2_ANALYSIS']:
+        if config['START'] not in ['FASTQ', 'BAM', 'COUNT']:
+            raise Exception ('config Error: START and DESEQ2_ANALYSIS incompatible')
+        l.append("DESeq2/DESeq2.html")
 
     if config['GSEA_ANALYSIS']:
         l.extend(GSEA_OUTPUT(config))
-        l.extend(GSEACOMPRESS_OUTPUT(config))
 
+    if config['RMATS_ANALYSIS']:
+        if config['START'] not in ['FASTQ', 'BAM']:
+            raise Exception ('config Error: START and RMATS_ANALYSIS incompatible')
+        l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt'.\
+            format(ascn=ascn) for ascn in range(1, 1+ASCN)])
+
+    if config['DEXSEQ_ANALYSIS']:
+        if config['START'] not in ['FASTQ', 'BAM']:
+            raise Exception ('config Error: START and DEXSEQ_ANALYSIS incompatible')
+        l.append(["DEXSeq/contrast{ascn}/contrast{ascn}.RData".\
+            format(ascn=ascn) for ascn in range(1,ASCN+1)])
+
+    if config["ASSEMBLY_ANALYSIS"]:
+        if config['START'] not in ['FASTQ']:
+            raise Exception ('config Error: START and ASSEMBLY_ANALYSIS incompatible')
+        l.append('stringtie/stringtie.merged.gtf')
+
+    # todo: fix GATK env
+    if config['ASE_ANALYSIS']:
+        if config['START'] not in ['FASTQ', 'BAM']:
+            raise Exception ('config Error: START and ASE_ANALYSIS incompatible')
+        l.extend(["GATK_ASEReadCounter/{sample}.table".\
+            format(sample=sample) for sample in SAMPLES])
 
     return (l)
-
 
 rule targets:
     input:
@@ -428,39 +403,6 @@ if config['ALIGNER'] == 'STAR':
             cp {input} bam_qc/STAR_Align_summary/
             multiqc {input} -f -n {output.report} &> {log}
             """
-elif config['ALIGNER'] == 'HISAT2':
-    rule HISAT2_UNSTRANDED:
-        input:
-            genome=config['GENOME'],
-            index =config['GENOME'] + '.hisat2_build.finished',
-            reads=  ["trimmed/{sample}.R1.fastq.gz","trimmed/{sample}.R2.fastq.gz"] \
-                        if PAIR_END else \
-                    "trimmed/{sample}.fastq.gz",
-        output:
-            bam="mapped_reads/{sample}.bam"
-        conda:
-            "envs/hisat2.yaml" 
-        params:
-            strand=" ", # all set to unstranded for now(test)
-            pe= "-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
-                    if PAIR_END else \
-                "-U trimmed/{sample}.fastq.gz"
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 2000
-        threads:
-            8
-        log:
-            "hisat2/log/{sample}.log"
-        benchmark:
-            "hisat2/log/{sample}.benchmark"
-        shell:
-            """
-            hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
-            {params.pe} {params.strand} > {output.bam} 2> {log} 
-            """
-else:
-    sys.exit("config['ALIGNER'] option not recognized")
-    
 
 rule SAMtools_sort:
     input:
@@ -552,8 +494,7 @@ rule QoRTs:
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
-        pe = ' ' if PAIR_END else '--singleEnded',
-        aligner = "--minMAPQ 60" if config['ALIGNER'] == 'HISAT2' else "" # only support STAR and HISAT2
+        pe = ' ' if PAIR_END else '--singleEnded'
     conda:
         "envs/java11.yaml"
     resources:
@@ -567,9 +508,7 @@ rule QoRTs:
     shell:
         """
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
-        {params.aligner} \
         {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
-        # --maxReadLength 50 \
         """
 
 
@@ -590,8 +529,8 @@ rule QoRTs_MultiPlot:
         "bam_qc/QoRTs_MultiPlot/log/QoRTs_MultiPlot.benchmark"
     shell:
         """
-        python workflow/script/meta_to_decoder.py {config[META]} > {log} 2>&1;
-        Rscript workflow/script/QoRT.R > {log} 2>&1;
+        python workflow/script/meta_to_decoder.py {config[META]} &> {log};
+        Rscript workflow/script/QoRT.R &>> {log}; # needs QoRT package in R
         mkdir -p bam_qc/QoRTs_MultiPlot/details/;
         mv bam_qc/QoRTs_MultiPlot/plot-sample* bam_qc/QoRTs_MultiPlot/details/;
         """
@@ -636,11 +575,11 @@ rule bamCoverage:
         """
         bamCoverage --bam {input.bam} -o  {output} --numberOfProcessors {threads} \
         --outFileFormat bigwig --normalizeUsing CPM --binSize 50 \
-        {params} > {log} 2>&1
+        {params} &> {log}
         """
 
 
-rule featureCounts_EXON:
+rule featureCounts:
     '''
     exon read count
     recognizes config.yaml: 
@@ -673,10 +612,10 @@ rule featureCounts_EXON:
         featureCounts -a {input.gtf} -o {output.COUNT} \
         -T {threads} -g gene_id -s {wildcards.strand} \
         {params.pe}  {params.mode} \
-        {input.bams} > {log} 2>&1
+        {input.bams} &> {log}
         """
 
-rule featureCounts_EXON_multiqc:
+rule featureCounts_multiqc:
     input:
         "feature_count/counts.s{strand}.{mode}.txt.summary"
     output:
@@ -693,11 +632,11 @@ rule featureCounts_EXON_multiqc:
        "feature_count/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.benchmark"
     shell:
         """
-        multiqc {input} -f -n {output} > {log} 2>&1;
+        multiqc {input} -f -n {output} &> {log};
         """
 
 
-rule featureCounts_GENE:
+rule featureCounts_GeneLevel:
     '''
     gene read count, including exon and intron reads
     the larger one of gene-count/exon-count for each gene, is used as gene-count
@@ -741,25 +680,6 @@ rule featureCounts_GENE:
         """
 
 
-rule featureCounts_GENE_multiqc:
-    input:
-        'feature_count_gene_level/counts.s{strand}.{mode}.txt.summary'
-    output:
-        "feature_count_gene_level/counts.s{strand}.{mode}.txt.summary.multiqc_report.html"
-    conda:
-        "envs/fastqc.yaml"
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 1000   
-    threads:
-        1
-    log:
-        "feature_count_gene_level/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.log" 
-    benchmark:
-       "feature_count_gene_level/log/counts.s{strand}.{mode}.txt.summary.multiqc_report.html.benchmark"
-    shell:
-        """
-        multiqc {input} -f -n {output} > {log} 2>&1;
-        """
 
 
 
@@ -777,6 +697,7 @@ rule Strand_Detection:
         "meta/log/strandness.detected.txt.log"
     script:
         "script/strandness_detection.py"
+
 
 
 rule Strand_Detection_GeneLevel:
@@ -871,7 +792,7 @@ rule Merge_TE_and_GE:
     shell:
         """
         python workflow/script/merge_featureCount_and_SalmonTE.py \
-        {input.gene} {input.te} {output} > {log} 2>&1;
+        {input.gene} {input.te} {output} &> {log}
         """
 
 rule DESeq2:
@@ -920,7 +841,7 @@ rule DESeq2:
             blackSamples=\'{params.blackSamples}\' \
             ), \
         output_file={params.o})" > {log} 2>&1 ;'
-        'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
+        'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};'
 
 
 
@@ -932,7 +853,7 @@ rule GSEA:
     rnk file must be named xxx.rnk.txt when feeded to GSEA
     """
     input: 
-        deseq2= "Workflow_DAG.all.pdf" # dummy assume existing
+        deseq2= "Workflow_DAG.all.svg" # dummy assume existing
             if config["START"] == "RNK"
             else "DESeq2/DESeq2.html" , # DESEq2, then GSEA
         rnk=lambda wildcards: input_rnk_fname1(wildcards, config),
@@ -942,7 +863,7 @@ rule GSEA:
     conda:
         "envs/java11.yaml"  # test
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4100,
+        mem_mb=lambda wildcards, attempt: attempt * 24000,
     params:
         svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
@@ -950,25 +871,25 @@ rule GSEA:
         rnk_flat_file= lambda wildcards: input_rnk_fname2(wildcards, config),
         gmt_fmted= lambda wildcards: "gsea/gene_sets/" + wildcards['fname'] + "." + wildcards['db'] 
     threads:
-        2
+        1
     log:
         "gsea/log/{fname}/{db}.log"
     benchmark:
         "gsea/log/{fname}/{db}.benchmark"
     shell:
         """
-        echo rnkfile: {input.rnk} > {log}
-        echo rnkfile.cleaned: {params.rnk_flat_file} >> {log}
+        echo fname1: {input.rnk} > {log}
+        echo fname2: {params.rnk_flat_file} >> {log}
         echo label_db: {params.label_db} >> {log}
-        echo fname: {wildcards.fname} >> {log}
-        echo dbname: {wildcards.db} >> {log}
+        echo wildcards.fname: {wildcards.fname} >> {log}
+        echo wildcards.db: {wildcards.db} >> {log}
 
-        mkdir -p gsea gsea/gene_sets gsea/{wildcards.fname} >> {log} 2>&1
+        mkdir -p gsea gsea/gene_sets gsea/{wildcards.fname} &>> {log}
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/  # avoid confusion
         rm -rf gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  # avoid dir structure mistake
         rm -rf gsea/{wildcards.fname}/error_{wildcards.db}*GseaPreranked*/  # avoid confusion of temp files in multiple run attempts
 
-        python workflow/script/rnk_to_upper.py {input.rnk} >> {log} 2>&1;  # fix gene symbol error; standardize file format (xlsx, rnk, etc)
+        python workflow/script/rnk_to_upper.py {input.rnk} &>> {log}  # fix gene symbol error; standardize file format (xlsx, rnk, etc)
         python workflow/script/gmt_to_upper.py -f {input.db} 1> {params.gmt_fmted} 2> {log}  # gene symbols to upper
         
         if workflow/envs/GSEA_4.3.2/gsea-cli.sh GSEAPreranked \
@@ -976,35 +897,27 @@ rule GSEA:
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
         -set_max 15000 -set_min 15 \
-        -plot_top_x {params.nplot} -out ./gsea/{wildcards.fname} >> {log} 2>&1;
+        -plot_top_x {params.nplot} -out ./gsea/{wildcards.fname} &>> {log}
         then
             mv gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked.*/ \
-            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  >> {log} 2>&1;
+            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log} 
         else
             mv gsea/{wildcards.fname}/*{wildcards.db}.GseaPreranked*/ \
-            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  >> {log} 2>&1;
+            gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  &>> {log}
         fi
     
-        cp workflow/envs/GSEA_ReadMe.html gsea/ >> {log} 2>&1;
+        cp workflow/envs/GSEA_ReadMe.html gsea/ &>> {log}
 
-        # # compress
-        # cd gsea/{wildcards.fname}/
-        # rm -f {wildcards.db}.GseaPreranked.zip
-        # zip -rq {wildcards.db}.GseaPreranked.zip {wildcards.db}.GseaPreranked/ >> {log} 2>&1
+    # clean
+    rm -f {params.gmt_fmted} &>> {log}
+
+        # compress
+        echo compress
+        D=gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked
+        rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
         """
 
-rule GSEA_compression:
-    input:
-        GSEA_OUTPUT(config)
-    output:
-        "gsea/{contrast}.tar.gz"
-    resources:
-        mem_mb=1000
-    threads:
-        4
-    shell:
-        "tar cf - gsea/{wildcards.contrast} | pigz -p {threads} > {output} "
-
+# todo: if gsea/contrast/err_{db}, touch gsea/contrast/db.finished
 
 rule Read_Length_Detection:
     input:
@@ -1050,16 +963,7 @@ rule rMATS:
         length_file="meta/read_length.txt" , 
         strand_file="meta/strandness.detected.txt",
     output:
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/SE.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/MXE.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/A3SS.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/A5SS.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/SE.MATS.JCEC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/MXE.MATS.JCEC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A3SS.MATS.JCEC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A5SS.MATS.JCEC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/RI.MATS.JCEC.txt",
+        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt"
     conda:
        "envs/rmats.yaml"
     resources:
@@ -1097,61 +1001,21 @@ rule rMATS:
         --nthread {threads} \
         --tstat {threads} \
         --cstat 0.2 \
-        --allow-clipping \
-        --novelSS --mil 20 --mel 2000 \
         --od rMATS.{wildcards.ascn}/output/ \
-        --tmp rMATS.{wildcards.ascn}/tmp/  > {log} 2>&1
+        --tmp rMATS.{wildcards.ascn}/tmp/  &> {log}
 
-        cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  >>{log} 2>&1;
-        rm -rf rMATS.{wildcards.ascn}/tmp/   >> {log} 2>&1;
-        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ >> {log} 2>&1;
-        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/  >> {log} 2>&1;
-        mkdir -p rMATS.{wildcards.ascn}/output/fromGTF/ >> {log} 2>&1;
+        cp workflow/envs/rMATS_ReadMe.html rMATS.{wildcards.ascn}/output/  &>>{log}
+        rm -rf rMATS.{wildcards.ascn}/tmp/   &>> {log}
+        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
+        mkdir -p rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/  &>> {log}
+        mkdir -p rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
         mv rMATS.{wildcards.ascn}/output/*JCEC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsAndExonCountsBased/ &>> {log}
         mv rMATS.{wildcards.ascn}/output/*JC.txt rMATS.{wildcards.ascn}/output/Results_JunctionCountsBased/ &>> {log}
         mv rMATS.{wildcards.ascn}/output/fromGTF*txt  rMATS.{wildcards.ascn}/output/fromGTF/ &>> {log}
         rm -f rMATS.{wildcards.ascn}/output/*raw.input* &>> {log}
+        D=rMATS.{wildcards.ascn};
+        rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ &>> {log};
         """
-
-rule rMATS_FLT:
-    input:
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/SE.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/MXE.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/A3SS.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/A5SS.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/SE.MATS.JCEC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/MXE.MATS.JCEC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A3SS.MATS.JCEC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A5SS.MATS.JCEC.txt",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/RI.MATS.JCEC.txt",
-    output:
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/SE.MATS.JC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/MXE.MATS.JC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/A3SS.MATS.JC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/A5SS.MATS.JC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/SE.MATS.JCEC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/MXE.MATS.JCEC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A3SS.MATS.JCEC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A5SS.MATS.JCEC.sig.tsv",
-        "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/RI.MATS.JCEC.sig.tsv",
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
-    threads:
-        1
-    run:
-        for f in input:
-            df = pd.read_table(f)
-            out = df[df['PValue'] < 1]
-            outname = re.sub(".txt$", ".sig.tsv", f)
-            out.to_csv(outname, sep="\t")
-        import shutil
-        shutil.make_archive('rMATS.'+str(wildcards.ascn), 'zip', \
-                root_dir="./", base_dir='rMATS.'+str(wildcards.ascn))
-        shutil.move('rMATS.'+str(wildcards.ascn)+'.zip', 'rMATS.'+str(wildcards.ascn))
-        
-    
 
 
 DEXSeq_GFF = config['GTF']+".dexseq.gff"
@@ -1346,7 +1210,8 @@ rule HISAT2:
     conda:
         "envs/hisat2.yaml" 
     params:
-        strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt"),  # todo: SE?
+#        strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt"),  # todo: SE?
+        strand=" ", # all set to unstranded for now(test)
         pe= "-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
                 if PAIR_END else \
             "-U trimmed/{sample}.fastq.gz"
@@ -1421,14 +1286,12 @@ rule Create_DAG:
     threads:
         1
     output:
-        "Workflow_DAG.all.pdf",
-        "rulegraph.pdf"
+        "Workflow_DAG.all.svg"
     log:
-        "Workflow_DAG.all.pdf.log"
+        "Workflow_DAG.all.svg.log"
     shell:
         "snakemake --dag targets > dag 2> {log};"
-        "cat dag|dot -Tpdf > Workflow_DAG.all.pdf 2>> {log};"
-        "snakemake  --rulegraph targets > rulegraph; cat rulegraph| dot -Tpdf > rulegraph.pdf 2>> {log}"
+        "cat dag|dot -Tsvg > {output} 2>> {log}"
 
 
 rule reset:
@@ -1440,8 +1303,8 @@ rule reset:
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \
         feature_count_gene_level hisat2 stringtie \
-        lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.pdf \
-        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt Workflow_DAG.all.pdf.log
+        lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.svg \
+        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt Workflow_DAG.all.svg.log
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """

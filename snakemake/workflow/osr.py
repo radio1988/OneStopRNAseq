@@ -5,6 +5,14 @@ import os
 import math
 import shutil
 
+def read_table(fname='meta/contrast.de.xlsx'):
+    if fname.endswith(".txt"):
+        df = pd.read_table(fname)
+    elif fname.endswith(".xlsx"):
+        df = pd.read_excel(fname, engine='openpyxl')
+    else:
+        sys.exit("fname not xlsx nor txt")
+    return (df)
 
 def gunzip(fname):
     import gzip
@@ -21,7 +29,7 @@ def gunzip(fname):
 ### get CONTRASTS from meta/contrast.xlsx  ###
 def get_contrast_fnames (fname):
     '''Get contrast name for DESeq2'''
-    df=pd.read_excel(fname, engine='openpyxl')
+    df=read_table(fname)
     CONTRASTS = []
     for j in range(df.shape[1]):
         c1 = df.iloc[0,j]
@@ -41,7 +49,7 @@ def get_contrast_fnames (fname):
     return (CONTRASTS)
 
 def get_contrast_groups (fname):
-    df2=pd.read_excel(fname, engine='openpyxl')
+    df2=read_table(fname)
     C1S = []; C2S = []
     for j in range(df2.shape[1]):
         c1 = df2.iloc[0, j].strip()
@@ -57,7 +65,7 @@ def get_contrast_groups (fname):
     return ([C1S, C2S])
 
 def get_dict_from_meta (fname):
-    df = pd.read_excel(fname, engine='openpyxl')
+    df = read_table(fname)
     d = {}
     for i in range(df.shape[0]):
         sample = df.iloc[i, 0]
@@ -265,3 +273,39 @@ def strand_detection_input(config):
     mode=config["MODE"]
     return ([folder + 'counts.s' + str(s) + '.'  + config['MODE'] + '.txt.summary' \
              for s in config['STRAND']])
+
+
+def mapped_bam_inputs(config, SAMPLES):
+    if config['ALIGNER'] == 'STAR':
+        return( ["mapped_reads/{}.bam".format(s) for s in SAMPLES])
+    elif  config['ALIGNER'] == 'HISAT2':
+        return( ["hisat2/{}.bam".format(s) for s in SAMPLES])
+    else:
+        sys.exit("config['ALIGNER'] not recognized")
+
+def mapped_bam_single_input(config):
+    if config['ALIGNER'] == 'STAR':
+        return "mapped_reads/{sample}.bam"
+    elif  config['ALIGNER'] == 'HISAT2':
+        return "hisat2/{sample}.bam"
+    else:
+        sys.exit("config['ALIGNER'] not recognized")
+
+
+def check_contrast_file(fname="meta/contrast.de.txt"):
+    df = read_table(fname)
+    if df.transpose().duplicated().any():
+        raise ValueError(fname + " has duplicated contrasts, please fix and re-run")
+
+def check_meta_file(fname="meta/meta.txt"):
+    df =  read_table(fname)
+    if df.duplicated().any():
+        raise ValueError(fname + " has duplicated rows, please fix and re-run")
+        
+def check_meta_data(config):
+    if config['CONTRAST_DE']:
+        check_contrast_file(config['CONTRAST_DE'])
+    if config['CONTRAST_AS']:
+        check_contrast_file(config['CONTRAST_AS'])
+    if config['META']:
+        check_meta_file(config['META'])

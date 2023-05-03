@@ -1,0 +1,28 @@
+alimentary_system_development_variant		htz-1	set-2	pha-4	fbl-1	hpl-1	
+alimentary_system_morphology_variant		htz-1	set-2	pha-4	fbl-1	hpl-1	
+alimentary_system_physiology_variant		htz-1	set-2	ref-1	pha-4	fbl-1	hpl-1	
+cell_component_localization_variant		htz-1	hcp-3	pdr-1	knl-2	sol-1	ketn-1	lin-53	glr-1	
+cell_component_morphology_variant		htz-1	set-2	epi-1	sep-1	cpar-1	hpl-1	htas-1	cpx-1	uev-3	hcp-3	knl-2	knl-1	sad-1	lin-53	unc-52	
+cell_cycle_variant		his-71	his-72	hcp-3	zyg-11	cdc-14	sep-1	cpar-1	knl-2	knl-1	lin-53	mdf-1	top-2	
+cell_differentiation_variant		his-71	htz-1	his-72	mys-1	set-2	hpl-1	ceh-22	
+cell_division_variant		his-71	his-72	zyg-11	sep-1	cpar-1	htas-1	uev-3	top-2	hcp-3	knl-2	knl-1	lin-53	mdf-1	
+cell_growth_variant		htz-1	set-2	cdc-14	fbl-1	hpl-1	rom-1	top-2	
+cell_membrane_physiology_variant		epi-1	del-10	fbl-1	uev-1	rom-1	sad-1	sol-1	uev-3	sol-2	unc-52	glr-1	
+cell_position_defective		acl-9	acl-8	bus-18	spon-1	ipla-1	
+cell_secretion_variant		htz-1	ptb-1	fox-1	daf-2	sep-1	cpar-1	unc-13	htas-1	ceh-22	top-2	mys-1	hcp-3	asd-1	knl-2	mec-8	lin-53	exc-7	
+cell_size_decreased		sams-1	vang-1	atg-9	rab-10	sar-1	pmt-1	unc-104	arl-8	C30F12.4	spin-1	top-2	
+cell_type_morphology_variant		htz-1	set-2	sep-1	cpar-1	hpl-1	htas-1	ceh-22	cpx-1	uev-3	mys-1	hcp-3	cdc-14	spk-1	knl-2	sad-1	lin-53	
+developmental_morphology_variant		htz-1	set-2	hpl-2	hpl-1	htas-1	ceh-22	rom-1	mys-1	cdc-14	pha-4	lin-13	fbl-1	sad-1	
+embryonic_cell_physiology_variant		his-71	his-72	hcp-3	set-2	polh-1	hpl-1	htas-1	knl-2	knl-1	lin-53	
+embryonic_development_variant		his-71	htz-1	his-72	set-2	zyg-11	hpl-2	exo-3	hpl-1	htas-1	ceh-22	rom-1	mys-1	hcp-3	polh-1	pha-4	lin-13	knl-2	knl-1	sad-1	lin-53	
+epithelial_cell_physiology_variant		del-10	sol-2	glr-1	dop-4	dop-3	
+genetic_pathway_variant		hpl-2	lin-13	rom-1	uev-3	sys-1	
+germ_cell_physiology_variant		his-71	his-72	set-2	polh-1	sep-1	cpar-1	hpl-1	htas-1	sol-1	sol-2	mdf-1	glr-1	
+nervous_system_morphology_variant		epi-1	cpx-1	sad-1	uev-3	unc-52	
+nervous_system_physiology_variant		fox-1	del-10	unc-13	Y59C2A.2	mps-1	cpx-1	asd-1	mec-8	sol-1	sol-2	glr-1	exc-7	
+neuron_physiology_variant		ptb-1	epi-1	daf-2	unc-13	mps-1	uev-1	sad-1	uev-3	sol-2	unc-52	glr-1	
+nuclear_division_variant		hcp-3	sep-1	cpar-1	apn-1	knl-2	knl-1	lin-53	mdf-1	top-2	
+oocyte_physiology_variant		set-2	sep-1	del-10	cpar-1	hpl-1	htas-1	sol-1	sol-2	glr-1	
+reproductive_system_development_variant		his-71	htz-1	his-72	set-2	epi-1	hpl-2	hpl-1	htas-1	ceh-22	rom-1	mys-1	polh-1	cdc-14	lin-13	fbl-1	unc-52	
+reproductive_system_morphology_variant		htz-1	set-2	epi-1	sep-1	cpar-1	hpl-2	hpl-1	htas-1	ceh-22	rom-1	mys-1	polh-1	cdc-14	lin-13	fbl-1	unc-52	
+reproductive_system_physiology_variant		his-71	htz-1	his-72	set-2	epi-1	sep-1	cpar-1	hpl-2	hpl-1	htas-1	ceh-22	rom-1	glr-1	mys-1	polh-1	cdc-14	lin-13	fbl-1	sol-1	sol-2	unc-52	

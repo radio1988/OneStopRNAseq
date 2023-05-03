@@ -1,0 +1,211 @@
+3'-5'_DNA_helicase_activity_(GO:0043138)		cku-70	wrn-1	slx-1	gmn-1	somi-1	rpa-1	him-6	
+3'-5'_RNA_helicase_activity_(GO:0034458)		wrn-1	drh-3	dcr-1	elli-1	laf-1	drh-1	mel-46	
+3'-5'_exonuclease_activity_(GO:0008408)		rde-2	mut-7	fbf-1	exo-3	mrt-1	xrn-2	ccf-1	apn-1	crn-5	bpnt-1	wrn-1	dcs-1	eri-1	gld-1	gld-2	paxt-1	
+5'-3'_DNA_helicase_activity_(GO:0043139)		cku-70	wrn-1	slx-1	gmn-1	somi-1	rpa-1	him-6	
+5'-3'_RNA_polymerase_activity_(GO:0034062)		fkh-9	ssup-72	let-7	rde-8	dapk-1	vit-2	cdk-8	let-502	cdk-9	elli-1	ida-1	skn-1	cki-1	daf-16	daf-2	pinn-4	sydn-1	pinn-1	rsr-2	rhgf-2	snpc-4	csr-1	daf-12	sumv-1	psr-1	rft-2	elt-2	mys-2	pha-4	lin-4	rft-1	dao-5	gld-3	gld-2	mab-3	
+5'-3'_exonuclease_activity_(GO:0008409)		rde-2	mut-7	fbf-1	exo-3	mrt-1	xrn-2	ccf-1	apn-1	crn-5	bpnt-1	wrn-1	dcs-1	eri-1	gld-1	gld-2	paxt-1	
+ATP_binding_(GO:0005524)		dpy-27	dpy-28	jnk-1	acox-1.1	dpy-26	let-7	unc-104	acox-1.2	arl-8	pgp-12	ced-7	nrf-5	laf-1	smcl-1	haf-4	eff-1	let-418	mei-1	eri-1	dop-3	haf-9	
+ATPase_activity_(GO:0016887)		unc-23	pch-2	dpy-27	dpy-28	dpy-26	pmr-1	cls-1	ubxn-3	pmk-3	dma-1	clp-1	cdc-37	dhc-1	ran-1	eff-1	bmk-1	catp-6	hsp-60	spd-1	daf-16	unc-116	mrck-1	dnc-1	drh-3	dnpp-1	puf-8	figl-1	dnj-13	dlc-1	smcl-1	lsy-2	rab-10	wrn-1	cdc-42	ppfr-1	mei-2	tat-1	mei-1	par-1	him-6	mec-12	
+ATPase_binding_(GO:0051117)		pch-2	gei-17	air-2	tcc-1	dma-1	clp-1	cyk-4	cdc-37	ndc-80	wapl-1	klp-19	scc-3	let-99	unc-75	spd-1	unc-32	com-1	capg-1	unc-116	mrck-1	dnc-1	figl-1	smcl-1	plk-1	rab-10	rfs-1	cdc-48.1	spr-5	cdc-42	let-418	lin-5	nduf-7	him-6	hsp-90	mec-12	helq-1	htz-1	unc-23	dpy-27	chc-1	dpy-28	dpy-26	slx-1	cls-1	gpr-1	gpr-2	zen-4	dlg-1	dhc-1	rab-28	ran-1	chin-1	jmjd-5	bmk-1	rde-12	unc-16	ceh-22	drh-3	puf-8	dnj-13	dlc-1	mys-1	rtel-1	lgl-1	mei-2	mei-1	par-2	rad-51	mus-81	
+ATPase_regulator_activity_(GO:0060590)		catp-1	pch-2	dpy-27	cgef-1	daf-16	dpy-28	unc-116	dpy-26	mrck-1	air-2	erm-1	dyrb-1	puf-8	ubxn-3	num-1	dlc-1	wve-1	smcl-1	mig-15	mbk-2	cdc-42	chin-1	tat-1	catp-6	
+DNA-dependent_ATPase_activity_(GO:0008094)		unc-44	pch-2	unc-89	air-2	ubxn-3	num-1	pmk-3	dma-1	clp-1	cdc-37	rpa-1	nmy-2	unc-33	spd-1	daf-16	unc-116	mrck-1	atx-3	dnc-1	ani-2	figl-1	smcl-1	lsy-2	rab-10	wrn-1	cdc-48.1	cdc-42	somi-1	tat-1	mel-26	him-6	mec-12	unc-23	dpy-27	dpy-28	dpy-26	pmr-1	slx-1	cls-1	dhc-1	dhc-3	ran-1	eff-1	cyb-3	bmk-1	catp-6	hsp-60	erm-1	drh-3	puf-8	dnj-13	dlc-1	wve-1	mig-15	ppfr-1	mei-2	mei-1	par-1	par-4	
+DNA_binding_(GO:0003677)		fcd-2	hsf-1	capg-1	spr-5	wapl-1	ska-1	max-1	scc-3	fncm-1	
+DNA_helicase_activity_(GO:0003678)		cku-70	wrn-1	slx-1	gmn-1	somi-1	rpa-1	him-6	
+DNA_polymerase_activity_(GO:0034061)		fkh-9	daf-16	rsr-2	snpc-4	daf-12	sumv-1	psr-1	rft-2	elt-2	mys-2	lin-4	vit-2	rft-1	cdk-8	dao-5	mab-3	skn-1	
+DNA_polymerase_binding_(GO:0070182)		fkh-9	rde-12	daf-16	pab-1	lin-39	pot-1	pot-2	rsr-2	snpc-4	sax-3	sumv-1	psr-1	elt-2	mys-2	pha-4	vit-2	dao-5	elt-6	lin-26	mab-3	pept-1	skn-1	
+DNA_secondary_structure_binding_(GO:0000217)		tni-3	ceh-37	prmt-5	peb-1	nfi-1	crn-4	plk-1	sop-2	psr-1	sor-3	cep-1	pqn-41	sys-1	dop-3	skn-1	
+G-protein_coupled_amine_receptor_activity_(GO:0008227)		grk-2	gar-2	dop-2	nca-2	dop-1	ser-7	dop-3	
+G-protein_coupled_peptide_receptor_activity_(GO:0008528)		seb-3	kin-1	npr-9	npr-6	glr-1	
+G-protein_coupled_receptor_activity_(GO:0004930)		grk-2	srx-44	gsp-2	srx-43	nca-2	glr-1	npr-1	npr-2	unc-7	npr-9	dop-2	gcy-35	dop-1	dop-4	dop-3	mel-28	
+G-protein_coupled_receptor_binding_(GO:0001664)		npr-1	gbb-1	dat-1	grk-2	npr-2	prmt-5	amx-2	eri-1	nca-2	dop-1	glb-33	dop-3	
+GABA_receptor_activity_(GO:0016917)		dnj-17	abts-1	lgc-35	vav-1	gbb-1	gar-2	kin-1	madd-4	cup-4	kcc-2	
+GTP_binding_(GO:0005525)		ctbp-1	gpa-3	ced-10	rpm-1	rho-1	arl-13	dma-1	lrk-1	cyk-4	noah-2	gop-1	ndc-80	unc-5	ani-1	unc-6	let-502	sid-3	lin-45	amx-2	nphp-2	aex-3	nlp-12	let-99	spd-1	unc-119	unc-116	sar-1	mrck-1	mom-5	tbc-2	ced-7	nrf-5	rei-1	nca-2	mig-39	mttu-1	rab-11.1	gbb-1	ccm-3	rab-10	gdi-1	spv-1	vab-1	cdc-42	unc-40	lat-1	sec-10	vps-33.1	mut-16	unc-108	vps-33.2	grk-2	unc-104	cls-1	mtcu-2	mtcu-1	act-1	atg-9	rab-28	ksr-1	ral-1	ran-1	sorf-2	eri-1	bmk-1	unc-73	sorf-1	amph-1	madd-3	ngp-1	ina-1	arl-8	rhgf-2	rab-3	csr-1	arl-3	chdp-1	rab-5	vps-34	par-6	snt-1	crml-1	mig-2	par-3	dop-3	pat-2	
+GTPase_activator_activity_(GO:0005096)		ksr-1	mrck-1	cdc-42	let-502	lin-45	rhgf-2	rho-1	
+GTPase_activity_(GO:0003924)		sand-1	ain-1	pvf-1	unc-43	ced-10	ced-12	grp-1	rho-1	mpz-1	dma-1	clp-1	cyk-4	ani-1	let-502	lin-45	daf-18	spd-1	unc-116	ced-2	sar-1	mrck-1	egl-30	tbc-2	ced-5	rei-1	nca-2	tbc-8	ced-9	rab-11.1	rab-10	gdi-1	spv-1	vab-1	cdc-42	mib-1	unc-40	eat-17	memo-1	let-23	grk-2	lin-18	cls-1	cnt-1	cnt-2	ksr-1	dhc-3	drn-1	ran-1	rab-6.2	sorf-2	bmk-1	let-60	unc-73	sorf-1	mtm-1	rab-7	rhgf-1	rhgf-2	rab-3	rin-1	rab-5	vps-34	par-6	bli-3	lst-4	snt-1	mma-1	crml-1	sphk-1	ndx-2	ccz-1	mig-2	par-3	dop-3	
+GTPase_binding_(GO:0051020)		ctbp-1	gpa-3	ced-10	rpm-1	rho-1	arl-13	dma-1	lrk-1	cyk-4	noah-2	gop-1	ndc-80	unc-5	ani-1	unc-6	let-502	sid-3	lin-45	amx-2	nphp-2	aex-3	nlp-12	let-99	spd-1	unc-119	unc-116	sar-1	mrck-1	mom-5	tbc-2	ced-7	nrf-5	rei-1	nca-2	mig-39	mttu-1	rab-11.1	gbb-1	ccm-3	rab-10	dat-1	gdi-1	spv-1	vab-1	cdc-42	nduf-7	unc-40	lat-1	sec-10	cccp-1	vps-33.1	mut-16	unc-108	vps-33.2	grk-2	unc-104	cls-1	cnt-1	mtcu-2	mtcu-1	act-1	atg-9	rab-28	ksr-1	ral-1	ran-1	sorf-2	eri-1	bmk-1	unc-73	sorf-1	amph-1	madd-3	ngp-1	ina-1	arl-8	rhgf-2	rab-3	csr-1	arl-3	chdp-1	rab-5	vps-34	par-6	haf-4	snt-1	crml-1	mig-2	par-3	dop-3	haf-9	pat-2	
+GTPase_regulator_activity_(GO:0030695)		cgef-1	gpa-16	ced-12	rho-1	dyrb-1	cnt-2	gpr-1	gpr-2	cyk-4	egl-10	chin-1	unc-73	mtm-1	ric-8	goa-1	mrck-1	rab-7	tbc-2	rme-6	ced-5	rab-5	gdi-1	spv-1	cdc-42	crml-1	eat-16	
+Hsp90_protein_binding_(GO:0051879)		unc-45	sti-1	tomm-70	sgt-1	hlh-1	cdc-37	par-6	pph-5	rpap-3	gmeb-1	hsp-12.2	yap-1	hsp-90	ttc-1	
+JUN_kinase_binding_(GO:0008432)		unc-22	xbp-1	clk-1	unc-89	pac-1	ced-10	max-2	air-2	mps-1	lin-18	pmk-1	gck-3	taf-4	clp-1	ksr-1	dlk-1	rack-1	lin-45	aha-1	kgb-1	daf-16	nrde-2	jnk-1	goa-1	tpk-1	cul-4	rsr-2	tbc-2	ahr-1	scpl-1	csn-5	sax-3	daf-12	rab-5	vps-34	par-6	cam-1	isp-1	shc-1	pha-4	mak-1	mig-10	glh-1	dcr-1	mek-1	mig-2	
+MAP_kinase_activity_(GO:0004707)		ssup-72	gar-3	let-7	rpm-1	aak-1	pmk-1	pmk-3	ptp-3	ksr-1	dlk-1	lin-45	kgb-1	skn-1	daf-18	hsp-60	hif-1	daf-16	trx-1	vig-1	brap-2	elt-3	elt-2	bli-3	wrm-1	lit-1	sqrd-1	gld-1	cpb-3	par-4	memo-1	
+MAP_kinase_kinase_kinase_activity_(GO:0004709)		xbp-1	pek-1	ssup-72	gar-3	ndk-1	rpm-1	pmk-1	pmk-3	ksr-1	dlk-1	fsn-1	lin-45	skn-1	hsp-60	hif-1	daf-16	ire-1	vig-1	elt-2	bli-3	wrm-1	lit-1	sqrd-1	gld-1	cpb-3	memo-1	
+N-methyltransferase_activity_(GO:0008170)		mes-2	met-1	set-1	set-2	ash-2	pmt-1	dpy-21	dpy-30	mes-4	
+Notch_binding_(GO:0005112)		hlh-6	ced-13	lin-39	tsp-14	sup-17	tsp-12	pos-1	lag-1	kin-10	daz-1	ubr-5	fog-3	egl-13	hlh-16	sygl-1	fos-1	end-1	prp-17	tbx-2	ubc-9	end-3	ref-1	fbf-2	fbf-1	sao-1	puf-5	puf-6	puf-7	puf-8	dlc-1	sel-12	sel-10	glp-1	tra-1	egl-1	spr-4	spr-3	cep-1	osm-11	lip-1	adm-4	lst-1	lin-12	mom-2	gld-1	spn-4	
+P-P-bond-hydrolysis-driven_transmembrane_transporter_activity_(GO:0015405)		inx-6	unc-116	mps-1	lin-18	apl-1	cup-4	hrg-1	nac-3	dma-1	exc-4	pkd-2	rab-10	dat-1	tmc-1	mib-1	nhx-2	mec-4	slo-1	
+RNA_binding_(GO:0003723)		fox-1	capg-1	let-7	pgp-12	ced-7	tsn-1	puf-8	lin-15B	act-1	nos-2	wapl-1	cdc-42	sid-3	eff-1	nos-1	lst-1	sygl-1	asd-1	mec-8	scc-3	gld-1	cpb-3	exc-7	
+RNA_cap_binding_(GO:0000339)		ain-1	emb-4	cgh-1	ced-3	ced-4	tcer-1	puf-8	wdr-46	cep-1	dcap-1	car-1	dcs-1	ife-4	ifg-1	ife-3	skn-1	
+RNA_helicase_activity_(GO:0003724)		wrn-1	drh-3	dcr-1	elli-1	laf-1	drh-1	mel-46	
+RNA_methyltransferase_activity_(GO:0008173)		pgl-3	set-1	pgl-1	daf-16	set-2	pcm-1	sepa-1	pmt-1	morc-1	prmt-5	hpl-1	prmt-7	prmt-9	dpy-21	hen-1	
+RNA_polymerase_II_activity_(GO:0001055)		feh-1	set-1	ssup-72	nrde-2	sydn-1	pinn-1	rsr-2	dapk-1	csr-1	cel-1	psr-1	pha-4	pie-1	cdk-8	cdk-9	skn-1	
+RNA_polymerase_II_transcription_factor_binding_(GO:0001085)		eaf-1	ssup-72	nrde-2	pha-4	tlf-1	mdt-15	lin-53	taf-1	skn-1	
+RNA_polymerase_core_enzyme_binding_(GO:0043175)		smu-2	rsr-2	smu-1	gld-3	csr-1	gld-2	
+Rab_GTPase_binding_(GO:0017137)		sand-1	ctbp-1	bar-1	ced-10	M57.2	rpm-1	dyrb-1	rbf-1	ifta-2	dma-1	lrk-1	sid-5	gop-1	wsp-1	aex-6	tub-1	aex-3	unc-116	sep-1	ced-1	mir-1	tbc-2	apl-1	rme-6	rei-1	glo-4	tbc-8	rab-11.1	rab-10	rsf-1	gdi-1	vab-1	cdc-42	cav-1	mef-2	eat-17	sec-10	cccp-1	let-23	vps-33.1	unc-108	vps-33.2	mrp-4	dyn-1	rbg-3	cnt-1	vps-45	atg-9	rab-28	ric-19	rep-1	rack-1	rab-6.1	rab-6.2	sorf-2	unc-73	sorf-1	amph-1	mtm-1	madd-3	unc-10	unc-57	rab-7	rab-8	arl-8	rab-3	rab-5	vps-34	par-5	rab-39	lst-4	haf-4	ehbp-1	rab-35	exoc-7	exoc-8	ccz-1	R07B1.8	haf-9	
+Rac_GTPase_binding_(GO:0048365)		unc-89	pvf-1	vav-1	ced-10	max-2	ced-12	rpm-1	pak-1	rho-1	vab-8	cyk-4	wsp-1	unc-5	ani-1	unc-6	pdr-1	smp-1	unc-34	mom-5	ced-1	unc-115	tbc-2	ced-7	nrf-5	ced-5	rac-2	apr-1	mig-39	psr-1	rab-11.1	cdc-42	cacn-1	unc-40	hlh-2	git-1	rack-1	unc-73	mtm-1	plx-1	ina-1	gsk-3	rhgf-1	chdp-1	rin-1	wve-1	rab-5	par-5	sli-1	mig-10	crml-1	pix-1	mig-2	srgp-1	pat-2	
+Ras_GTPase_binding_(GO:0017016)		let-23	gpc-1	ced-10	eor-1	eor-2	rap-1	ksr-1	ral-1	unc-5	drn-1	lin-45	let-60	unc-51	larp-1	goa-1	sar-1	unc-14	rheb-1	rab-7	egl-30	puf-8	rme-6	rin-1	rab-5	eps-8	rab-39	cdc-48.1	rsf-1	lin-1	
+Rho_GTPase_binding_(GO:0017048)		unc-89	pac-1	vav-1	ced-10	ced-12	rpm-1	rho-1	mpz-1	gpa-12	cyk-4	wsp-1	ani-1	let-502	sid-3	lin-45	smp-1	egl-30	tbc-2	ced-5	rac-2	nca-2	rab-11.1	cdc-48.1	gdi-1	spv-1	vab-1	cdc-42	unc-40	cgef-1	grk-2	unc-103	dapk-1	crp-1	zen-4	act-1	ksr-1	chin-1	unc-73	plx-1	rga-6	ina-1	rga-2	erm-1	rhgf-1	rhgf-2	egl-8	rin-1	rab-5	par-5	par-6	kin-18	crml-1	sphk-1	mig-2	par-3	dop-3	srgp-1	pat-2	
+Rho_guanyl-nucleotide_exchange_factor_activity_(GO:0005089)		cgef-1	vav-1	rhgf-1	rhgf-2	rho-1	mpz-1	cyk-4	cdc-42	let-502	chin-1	sphk-1	unc-40	unc-73	
+SH3_domain_binding_(GO:0017124)		dlg-1	let-413	unc-89	rga-6	soc-1	unc-103	unc-57	lim-9	scpl-1	nlg-1	ajm-1	
+acetylcholine_receptor_activity_(GO:0015464)		lgc-35	vav-1	gtl-2	gar-3	ubc-18	grk-2	gar-2	bath-42	acr-16	acr-15	acr-2	acr-5	unc-7	wwp-1	rsbp-1	unc-73	madd-4	catp-1	eat-2	nlp-12	lgc-46	rig-3	daf-2	ric-3	vig-1	mir-1	nca-2	cup-4	acr-12	dnj-17	gbb-1	crh-1	sphk-1	dop-2	eat-16	mef-2	dop-1	unc-63	dop-3	
+acetyltransferase_activity_(GO:0016407)		elpc-3	daf-16	elpc-1	natc-1	prmt-5	daf-31	sumv-1	acl-9	acl-8	mir-786	mys-2	bus-18	sir-2.4	ipla-1	fat-1	mec-17	cysl-3	cysl-1	cysl-2	mec-12	
+actin_binding_(GO:0003779)		aqp-8	pat-10	unc-87	ced-10	lin-39	tcc-1	grp-1	rpm-1	cyk-4	atn-1	wsp-1	ani-1	unc-6	let-502	gon-1	sid-3	pdr-1	unc-33	sax-3	rab-11.1	msi-1	ccm-3	rsf-1	gdi-1	cdc-42	mab-5	lit-1	asd-2	unc-40	daf-6	let-23	hlh-2	gck-1	dapk-1	act-1	hsf-1	eff-1	fos-1	unc-73	hmp-1	hmp-2	ina-1	aipl-1	nurf-1	sem-5	erm-1	rhgf-2	vab-10	abl-1	chdp-1	rin-1	wve-1	cpna-1	par-5	rbr-2	mig-13	sli-1	mig-10	cas-1	crml-1	cas-2	fln-1	hmr-1	arx-7	sup-12	mig-2	pat-2	
+actin_filament_binding_(GO:0051015)		unc-45	aqp-8	pat-10	unc-87	ced-10	lin-39	rpm-1	atn-1	wsp-1	ani-1	nmy-2	unc-33	unc-78	pfn-1	unc-34	gsnl-1	unc-115	ttn-1	abi-1	msi-1	tth-1	ccm-3	rsf-1	cdc-42	fli-1	mab-5	unc-112	lit-1	daf-6	crp-1	hsf-1	act-2	rack-1	eff-1	hmp-1	unc-53	unc-98	unc-15	ina-1	aipl-1	sem-5	erm-1	vab-10	abl-1	arp-6	chdp-1	rin-1	wve-1	cpna-1	pat-3	mig-13	sli-1	uig-1	mig-10	cas-1	cas-2	fln-1	arx-7	mig-2	unc-60	
+activating_transcription_factor_binding_(GO:0033613)		pal-1	dsh-2	pop-1	hlh-1	unc-3	pmk-1	gcn-2	crtc-1	pmk-3	atf-7	atf-2	atfs-1	sys-1	tub-1	skn-1	unc-55	daf-19	hif-1	daf-16	hcf-1	fbf-1	snpc-4	elt-3	glp-1	elt-2	bli-3	nhr-25	crh-1	lin-3	wrm-1	haf-1	ces-2	lit-1	hel-1	mom-2	unc-62	
+acyl-CoA_desaturase_activity_(GO:0016215)		nhr-64	sur-7	klf-3	cytb-5.1	cytb-5.2	
+adenylyltransferase_activity_(GO:0070566)		rnp-8	fbf-1	ccf-1	pps-1	cye-1	gld-3	gld-4	cdk-2	gld-1	gld-2	
+amino_acid_binding_(GO:0016597)		hmp-1	hmp-2	sod-1	let-7	dnc-1	crm-1	acn-1	wdr-23	top-2	grl-21	dhc-1	calu-1	nhr-25	ptr-24	cas-2	cblc-1	
+amino_acid_transmembrane_transporter_activity_(GO:0015171)		exc-4	pkd-2	dat-1	mps-1	cup-4	hrg-1	
+anion:anion_antiporter_activity_(GO:0015301)		exc-4	clh-3	abts-1	clh-1	kcc-2	
+anion_channel_activity_(GO:0005253)		exc-4	clh-3	aqp-8	lgc-46	erm-1	mek-2	clc-1	gck-3	mpk-1	
+cGMP_binding_(GO:0030553)		tax-4	fbf-1	cng-3	lite-1	mrp-1	gcy-35	egl-4	
+calcium_channel_activity_(GO:0005262)		gtl-1	grk-2	pmr-1	erl-1	kin-1	apx-1	nca-2	clp-1	pkc-2	unc-8	acs-1	mir-786	crh-1	gon-2	stim-1	shn-1	egl-19	slo-2	slo-1	dop-3	
+calcium_channel_regulator_activity_(GO:0005246)		daf-19	egl-46	crh-1	erl-1	ocr-2	shn-1	egl-19	slo-2	
+calcium_ion_binding_(GO:0005509)		mec-2	hmg-1.2	gtl-1	grk-2	del-10	ocr-2	mcu-1	nca-2	crn-4	crh-1	gon-2	shn-1	hsp-16.1	egl-19	slo-2	dop-3	
+calmodulin-dependent_protein_kinase_activity_(GO:0004683)		cmk-1	unc-43	osm-9	ocr-2	egl-30	glr-1	
+carboxy-lyase_activity_(GO:0016831)		dnj-17	pck-1	umps-1	pyk-1	fat-1	fahd-1	
+cation_channel_activity_(GO:0005261)		acd-1	clh-3	gtl-2	gtl-1	grk-2	osm-9	gck-3	pkc-2	unc-8	acr-2	pkd-2	gon-2	tmc-1	hgrs-1	egl-19	stam-1	mpk-1	unc-77	mec-2	trp-4	ocr-2	nca-2	ocr-4	lov-1	crh-1	unc-80	mek-2	deg-1	shn-1	dop-3	daf-6	
+channel_activity_(GO:0015267)		inx-6	lgc-46	grk-2	kin-1	twk-7	nca-2	ocr-4	pkc-2	unc-8	crh-1	unc-7	clc-1	shn-1	dop-2	egl-19	slo-2	dop-3	
+chloride_channel_activity_(GO:0005254)		clh-3	aqp-8	lgc-46	abts-1	lgc-35	ser-5	ser-1	erm-1	gck-3	exc-4	mod-1	wnk-1	unc-7	tmc-1	mek-2	clc-1	dop-2	madd-4	kcc-2	mpk-1	
+cholesterol_binding_(GO:0015485)		mec-2	daf-16	daf-2	epn-1	sbp-1	tbc-2	lrp-1	strm-1	sur-7	nap-1	nduf-7	mec-6	mec-10	mec-4	cblc-1	
+copper_ion_binding_(GO:0005507)		sod-1	sod-5	apl-1	mtl-1	mtl-2	
+cyclic_nucleotide_binding_(GO:0030551)		che-1	tax-4	atgl-1	gpa-3	svh-2	mps-1	cng-3	prmt-5	lid-1	srbc-66	srbc-64	pde-4	egl-4	ets-4	kvs-1	dlk-1	lite-1	glb-5	npr-6	gcy-35	lat-1	cebp-1	dop-3	
+cyclin-dependent_protein_kinase_activity_(GO:0097472)		bar-1	cyb-2.2	cdk-2	cyb-2.1	cdk-1	cdk-5	cdt-1	ddb-1	cdk-8	dpl-1	cdk-9	cye-1	cyb-3	sur-2	cki-2	cki-1	daf-16	spd-2	gsk-3	fbf-1	cul-4	glr-1	par-6	lin-1	lin-35	lin-12	
+damaged_DNA_binding_(GO:0003684)		pgl-3	pgl-1	daf-16	C18H2.2	xpa-1	exo-3	msh-4	rad-51	zhp-3	skn-1	
+deoxyribonuclease_activity_(GO:0004536)		nth-1	slx-1	exo-3	mrt-1	lem-3	apn-1	cps-6	dcr-1	nuc-1	pmk-1	crn-4	
+double-stranded_DNA_binding_(GO:0003690)		fcd-2	hsf-1	capg-1	spr-5	wapl-1	ska-1	max-1	scc-3	fncm-1	
+double-stranded_RNA_binding_(GO:0003725)		rde-2	tomm-70	drsh-1	htp-3	mps-1	M57.2	tsn-1	acn-1	rde-4	sid-5	mrg-1	ins-33	riok-1	tdp-1	rpap-3	sid-1	rnf-1	stau-1	smu-2	smu-1	him-19	eri-1	ife-2	scc-3	nrde-3	nrde-4	rde-11	rde-12	nrde-1	pash-1	nrde-2	mut-7	lin-28	unc-13	drh-3	drh-1	kvs-1	adr-1	adr-2	dcr-1	lin-14	msh-5	ttc-1	
+endodeoxyribonuclease_activity_(GO:0004520)		nth-1	slx-1	exo-3	lem-3	apn-1	cps-6	nuc-1	pmk-1	crn-4	
+endonuclease_activity_(GO:0004519)		ain-1	ain-2	rde-1	slx-1	let-7	nhl-2	rde-8	cps-6	crn-4	sid-1	alg-1	rack-1	nth-1	pash-1	mir-35	trx-1	exo-3	xrn-2	apn-1	alg-2	C01G10.10	cep-1	dcap-1	dcap-2	prg-1	dcs-1	lem-3	nuc-1	hen-1	
+endopeptidase_activity_(GO:0004175)		daf-16	elt-2	daf-2	sep-1	imp-2	puf-8	cpr-4	wdr-23	skn-1	
+endoribonuclease_activity_(GO:0004521)		ain-1	pash-1	ain-2	rde-1	lin-28	mir-35	let-7	nhl-2	rde-8	xrn-2	alg-2	drh-1	pup-2	dcap-1	sid-1	alg-1	rack-1	dcap-2	prg-1	dcs-1	lit-1	dcr-1	hen-1	
+enhancer_binding_(GO:0035326)		fkh-9	lin-39	nipi-3	rpm-1	pop-1	max-1	vps-41	vgln-1	blmp-1	bed-3	vit-2	fsn-1	cebp-2	lin-26	cebp-1	aex-3	daf-19	hif-1	tni-3	svh-2	daf-16	apl-1	rab-3	ets-4	elt-2	elt-6	cas-1	mab-3	
+ephrin_receptor_binding_(GO:0046875)		rnt-1	par-6	ceh-18	unc-43	vab-1	cdc-42	wve-1	par-3	
+exonuclease_activity_(GO:0004527)		rde-2	mut-7	fbf-1	exo-3	mrt-1	xrn-2	ccf-1	apn-1	crn-5	bpnt-1	wrn-1	dcs-1	eri-1	gld-1	gld-2	paxt-1	
+frizzled_binding_(GO:0005109)		tcl-2	ced-10	lin-17	unc-5	gsk-3	mom-5	lin-18	dsh-2	pop-1	apr-1	sys-1	
+fucosyltransferase_activity_(GO:0008417)		gly-12	gly-13	gly-14	fut-6	F08A8.5	fut-1	
+glutamate_receptor_activity_(GO:0008066)		cmk-1	uaf-1	uev-1	cand-1	glr-1	glr-2	dnj-17	cdk-5	usp-46	unc-7	swip-10	npr-9	rab-6.2	dop-2	magi-1	
+glutamate_receptor_binding_(GO:0035254)		unc-108	unc-43	mgl-2	cand-1	glr-1	glr-2	kel-8	rab-10	crh-1	ehbp-1	cul-3	vab-1	nmr-1	rab-6.2	sol-1	glc-1	
+glutathione_transferase_activity_(GO:0004364)		hmp-1	C18H2.2	hmp-2	gsto-1	air-2	exo-3	apn-1	cul-4	pop-1	brap-2	wdr-23	cel-1	elt-3	exc-4	ddb-1	hmr-1	cblc-1	skn-1	
+growth_factor_receptor_binding_(GO:0070851)		let-23	aip-1	mut-16	lin-39	hlh-2	eif-2A	srh-234	blmp-1	ubr-5	unc-5	unc-6	mdl-1	fat-1	sorf-2	eri-1	fos-1	sorf-1	cebp-1	aex-3	svh-2	daf-16	daf-2	svh-1	ina-1	erm-1	dre-1	rab-3	csr-1	ets-4	glp-1	lin-3	mig-10	lin-12	asd-1	eif-2beta	hel-1	unc-40	sup-12	dop-3	
+helicase_activity_(GO:0004386)		slx-1	drh-3	laf-1	drh-1	cku-70	let-765	wrn-1	lin-3	gmn-1	somi-1	dcr-1	rpa-1	him-6	
+heme_binding_(GO:0020037)		glb-26	tdo-2	bli-3	glb-13	mrp-5	gcy-35	glb-33	cyc-2.2	cyc-2.1	
+histone-lysine_N-methyltransferase_activity_(GO:0018024)		mes-2	met-1	set-1	set-2	ash-2	dpy-21	dpy-30	mes-4	
+histone_acetyltransferase_activity_(GO:0004402)		elpc-3	daf-16	elpc-1	mys-2	sir-2.4	prmt-5	src-1	sumv-1	
+histone_deacetylase_activity_(GO:0004407)		spr-1	ctbp-1	daf-16	sir-2.4	mdt-15	sir-2.1	lin-35	acn-1	aak-2	utx-1	daf-12	egl-4	
+histone_deacetylase_binding_(GO:0042826)		hda-1	hmg-1.2	ctbp-1	daf-16	aak-2	arl-3	arl-13	egl-4	par-5	eaf-1	lin-61	kin-29	tam-1	xnp-1	pha-4	spr-5	sir-2.1	ftt-2	hsp-16.1	let-418	fos-1	lin-53	nphp-2	
+histone_demethylase_activity_(H3-K27_specific)_(GO:0071558)		spr-1	rbr-2	wsp-1	spr-5	nurf-1	dpy-21	lin-35	utx-1	jmjd-1.2	
+histone_methyltransferase_activity_(GO:0042054)		set-1	set-2	morc-1	prmt-5	hpl-1	prmt-7	prmt-9	mes-4	mes-2	met-1	ash-2	dpy-21	dpy-30	
+histone_methyltransferase_activity_(H3-K4_specific)_(GO:0042800)		set-1	set-2	morc-1	prmt-5	hpl-1	prmt-7	prmt-9	mes-4	mes-2	met-1	ash-2	dpy-21	dpy-30	
+histone_methyltransferase_activity_(H3-K79_specific)_(GO:0031151)		set-1	set-2	morc-1	prmt-5	hpl-1	prmt-7	prmt-9	mes-4	mes-2	met-1	ash-2	dpy-21	dpy-30	
+hydro-lyase_activity_(GO:0016836)		cah-4	bre-1	aco-1	fat-1	clc-1	ger-1	gmd-2	
+ion_antiporter_activity_(GO:0099516)		sar-1	osm-9	clh-1	mcu-1	aqp-4	slo-2	slo-1	aqp-2	
+ion_channel_activity_(GO:0005216)		lgc-46	cmk-1	lgc-35	grk-2	kin-1	apx-1	rho-1	twk-7	nca-2	glr-1	ocr-4	unc-8	dnj-17	crh-1	clc-1	npr-9	shn-1	egl-19	slo-2	dop-4	dop-3	
+ion_transmembrane_transporter_activity_(GO:0015075)		exc-4	mps-1	tmc-1	cup-4	nhx-2	mec-4	
+kinase_activity_(GO:0016301)		ksr-1	gsk-3	dpl-1	lin-45	gld-1	csr-1	cpb-3	
+kinase_binding_(GO:0019900)		daf-16	grk-2	pig-1	nca-2	act-1	ksr-1	cdc-42	ces-1	sid-3	lin-45	gld-1	cpb-3	par-3	dop-3	mpk-1	skn-1	
+kinesin_binding_(GO:0019894)		unc-44	gpa-3	ced-10	paa-1	gei-17	tcc-1	unc-104	cls-1	cho-1	ptl-1	rho-1	vab-8	arl-13	dma-1	zen-4	syd-2	cyk-4	dhc-1	rab-28	ran-1	klp-19	bicd-1	bmk-1	osm-3	klp-15	unc-33	klp-6	spd-1	unc-116	unc-16	unc-14	dnc-1	arl-8	tba-5	tbb-4	apl-1	rac-2	arl-3	rab-10	lin-2	car-1	rsa-2	let-92	rsa-1	
+leak_channel_activity_(GO:0022840)		unc-77	grk-2	unc-80	twk-7	nca-2	dop-3	
+lipase_activity_(GO:0016298)		ctbp-1	unc-43	nhr-62	lipl-4	aak-2	pdhk-2	
+mRNA_3'-UTR_binding_(GO:0003730)		ain-1	pab-2	ain-2	pab-1	let-7	pal-1	pos-1	oma-1	mex-3	fib-1	mir-84	sop-2	hbl-1	mbk-2	nos-2	mir-124	stau-1	atf-6	cye-1	lin-41	cebp-1	fem-3	lin-28	fbf-2	fbf-1	ncl-1	puf-5	puf-6	puf-7	puf-8	puf-9	egl-5	neg-1	glp-1	tra-1	zif-1	cep-1	adr-1	nhr-25	lin-4	lip-1	nhr-23	lin-14	gld-1	hen-1	spn-4	
+mRNA_binding_(GO:0003729)		ain-1	emb-4	ain-2	fox-1	let-7	oma-2	oma-1	smg-8	alg-1	eff-1	sygl-1	lin-41	cebp-1	exc-7	smg-9	mir-35	ced-7	alg-5	glp-1	clec-41	adr-2	sfa-1	lst-1	asd-1	mec-8	mom-2	cpb-3	
+metal_ion_binding_(GO:0046872)		hmg-1.2	crh-1	ttm-1	shn-1	hsp-16.1	apl-1	mcu-1	egl-19	slo-2	glb-33	
+methyltransferase_activity_(GO:0008168)		pgl-3	set-1	pgl-1	daf-16	set-2	pcm-1	sepa-1	pmt-1	morc-1	prmt-5	hpl-1	prmt-7	strm-1	prmt-9	mes-4	mes-2	met-1	ash-2	dpy-21	dpy-30	hen-1	
+microtubule-severing_ATPase_activity_(GO:0008568)		unc-89	mbk-2	cul-3	ppfr-1	cul-2	spas-1	tba-5	mei-2	mei-1	mel-26	
+microtubule_binding_(GO:0008017)		unc-44	ced-10	paa-1	gpa-1	air-1	let-7	tcc-1	rpm-1	ska-1	dyrb-1	arl-13	dma-1	cyk-4	ndc-80	ubr-4	efa-6	bicd-1	lin-41	nphp-2	nmy-2	unc-33	let-99	spd-1	goa-1	unc-116	zyg-1	dnc-1	ced-7	tba-5	rac-2	lgg-1	plk-1	ced-9	lgg-2	rab-11.1	rab-10	ptrn-1	let-92	lin-5	zyg-9	zyg-8	spdl-1	mec-12	sec-10	chc-1	unc-104	spas-1	cls-1	tac-1	cls-3	ptl-1	dapk-1	cls-2	gpr-1	gpr-2	zen-4	dlg-1	pkc-3	dhc-1	dhc-3	ran-1	msp-51	rack-1	eff-1	bmk-1	osm-3	mbd-2	skn-1	elpc-3	mec-2	vps-39	elpc-1	unc-53	unc-16	rab-8	arl-8	tbb-4	vab-10	sas-5	elp-1	sas-6	par-5	mig-10	rsa-2	dys-1	knl-2	mei-2	knl-1	mei-1	arx-7	rsa-1	
+microtubule_motor_activity_(GO:0003777)		klp-11	nud-1	klp-20	dnc-1	src-1	zen-4	dhc-1	ptrn-1	msp-51	cwn-1	osm-3	unc-40	par-1	klp-15	spdl-1	unc-83	
+microtubule_plus-end_binding_(GO:0051010)		dhc-1	unc-116	unc-16	cls-1	cls-3	bicd-1	cls-2	
+mitogen-activated_protein_kinase_binding_(GO:0051019)		hda-1	rnt-1	max-2	let-7	nipi-3	eor-1	pmk-1	pmk-3	eor-2	cdc-37	atf-7	fem-3	daf-19	larp-1	daf-16	jnk-1	goa-1	gst-1	brap-2	daf-12	ced-9	ets-4	tra-1	ptrn-1	cpb-3	hsp-90	unc-22	xbp-1	dapk-1	dlk-1	pqn-41	fos-1	kgb-1	cebp-1	mpk-1	skn-1	madd-3	svh-2	ire-1	trx-1	unc-16	puf-8	elt-3	elt-2	bli-3	mak-1	lin-35	glh-1	dcr-1	gld-1	mig-2	
+mitogen-activated_protein_kinase_kinase_binding_(GO:0031434)		hda-1	rnt-1	max-2	let-7	nipi-3	pmk-1	pmk-3	cdc-37	atf-7	ddb-1	fem-3	daf-19	larp-1	daf-16	jnk-1	goa-1	cul-4	daf-12	wdr-23	ced-9	ets-4	tra-1	ptrn-1	cpb-3	hsp-90	unc-22	xbp-1	dapk-1	dlk-1	pqn-41	fos-1	kgb-1	cebp-1	mpk-1	skn-1	madd-3	svh-2	ire-1	puf-8	csn-5	bli-3	shc-1	mak-1	lin-35	glh-1	dcr-1	mek-1	gld-1	mig-2	tpa-1	
+mitogen-activated_protein_kinase_kinase_kinase_binding_(GO:0031435)		hda-1	rnt-1	max-2	let-7	nipi-3	pmk-1	pmk-3	cdc-37	atf-7	ddb-1	fem-3	daf-19	larp-1	daf-16	jnk-1	goa-1	cul-4	daf-12	wdr-23	ced-9	ets-4	tra-1	ptrn-1	cpb-3	hsp-90	unc-22	xbp-1	dapk-1	dlk-1	pqn-41	fos-1	kgb-1	cebp-1	mpk-1	skn-1	madd-3	svh-2	ire-1	puf-8	csn-5	bli-3	shc-1	mak-1	lin-35	glh-1	dcr-1	mek-1	gld-1	mig-2	tpa-1	
+myosin_binding_(GO:0017022)		unc-45	unc-89	chc-1	cgef-1	pgl-1	unc-87	ced-10	rnf-5	gck-1	rho-1	dapk-1	ketn-1	cyk-4	cdc-37	ani-1	let-502	chin-1	mlc-4	mel-11	nmy-1	unc-73	unc-96	nmy-2	let-99	goa-1	unc-98	unc-119	ina-1	mrck-1	rga-2	arx-1	arx-2	ttn-1	rhgf-2	csn-5	cpna-1	glp-1	par-6	ccm-3	lgl-1	cdc-42	glh-1	crml-1	par-2	mig-2	
+neuropeptide_binding_(GO:0042923)		ceh-19	unc-108	tom-1	unc-43	osm-9	crm-1	pmk-1	srh-234	glb-33	ric-19	unc-73	skn-1	nlp-12	unc-75	unc-31	unc-32	rheb-1	ocr-2	lon-2	hid-1	rab-5	tbc-8	egl-3	npr-1	dkf-1	rab-10	npr-2	glb-5	dop-1	
+neuropeptide_receptor_binding_(GO:0071855)		nlp-12	unc-31	osm-9	ocr-2	fshr-1	srh-234	glb-33	npr-1	npr-2	npr-3	glb-5	npr-6	unc-73	dop-1	
+nuclear_localization_sequence_binding_(GO:0008139)		dpy-27	dpy-28	dpy-26	hpl-2	eor-1	his-24	hpl-1	peb-1	dhs-13	kel-8	eor-2	sop-2	pqm-1	sor-1	cul-3	baf-1	dhrs-4	dpy-30	exc-7	daf-16	snpc-4	figl-1	smcl-1	glr-1	daf-12	ham-1	txdc-9	lmn-1	ifet-1	lin-13	mec-8	yap-1	
+nuclease_activity_(GO:0004518)		ire-1	rfs-1	mrt-1	lem-3	drh-3	cps-6	dcr-1	tsn-1	rip-1	crn-4	crn-5	rad-51	
+nucleotide_kinase_activity_(GO:0019201)		cgef-1	vav-1	kin-1	rpm-1	laf-1	clp-1	cyk-4	cdc-37	sea-2	dlk-1	cdk-8	unc-6	let-502	chin-1	scd-2	tax-4	hif-1	ire-1	sar-1	drh-3	rhgf-2	drh-1	mcp-1	cdc-42	dpy-21	gcy-28	gld-4	sphk-1	ndx-2	unc-40	gld-2	tax-2	
+nucleotidyltransferase_activity_(GO:0016779)		rnp-8	mrt-1	nhl-2	rde-8	laf-1	cdk-2	cdk-9	cye-1	elli-1	set-1	nrde-2	lin-28	fbf-1	ccf-1	drh-3	rsr-2	drh-1	snpc-4	csr-1	pup-2	mcp-1	pha-4	dao-5	dcr-1	gld-3	gld-4	mel-46	gld-1	gld-2	
+olfactory_receptor_activity_(GO:0004984)		osm-9	ocr-2	odr-4	gcy-28	scd-2	dbl-1	
+peptidase_activator_activity_(GO:0016504)		uaf-1	usp-46	mdt-15	ced-3	sir-2.1	try-5	csp-2	glr-1	daf-12	hsp-90	
+phosphatase_activity_(GO:0016791)		ssup-72	vpr-1	aak-1	dapk-1	bpnt-1	smn-1	unc-8	ptp-3	let-502	pbo-1	lin-23	paxt-1	daf-18	dep-1	sydn-1	pinn-1	gsp-1	xrn-2	gsp-2	rhgf-2	pat-3	pph-5	gmeb-1	cdc-25.2	memi-1	cdc-25.3	nhx-2	hsp-90	par-4	mel-28	
+phosphatase_binding_(GO:0019902)		rnt-1	air-1	air-2	vrk-1	ced-12	rpm-1	mex-5	pmk-1	crtc-1	mpz-1	lab-1	cdc-37	let-502	pbo-1	unc-51	paxt-1	fem-1	fem-2	wip-1	aex-3	fem-3	daf-16	xrn-2	gsp-2	ced-5	memi-1	let-92	hsp-90	ssup-72	mtm-9	ceh-34	bpnt-1	dlk-1	mtm-6	mlc-4	mtm-1	mpk-1	skn-1	rhgf-2	rab-3	pph-5	mig-14	crh-1	gmeb-1	ces-1	eya-1	lem-4	ndx-2	nhx-2	
+phosphatidylinositol-3-phosphate_binding_(GO:0032266)		unc-108	mig-14	ced-1	mtm-9	mtm-6	tbc-2	sorf-2	sorf-1	mtm-3	rab-5	mtm-1	vps-34	
+phosphatidylinositol-4,5-bisphosphate_binding_(GO:0005546)		pfn-1	gtl-1	rab-10	gon-2	gsnl-1	unc-104	cnt-1	
+phosphatidylinositol_binding_(GO:0035091)		soc-1	unc-108	gtl-1	age-1	unc-104	mtm-9	cnt-1	rde-4	egl-15	gon-2	ipla-1	mtm-6	nex-1	sorf-2	sorf-1	mtm-3	mtm-1	zfp-1	pfn-1	daf-16	daf-2	gsnl-1	ced-1	rab-7	tbc-2	lon-2	rab-5	vps-34	mig-14	rab-10	shc-1	
+phosphatidylinositol_bisphosphate_binding_(GO:1902936)		pfn-1	gtl-1	rab-10	gon-2	gsnl-1	cnt-1	mtm-3	
+phosphatidylinositol_kinase_activity_(GO:0052742)		daf-18	age-1	csnk-1	tbc-2	cnt-1	acn-1	rab-5	vps-34	egl-15	ppk-1	sorf-2	par-1	sorf-1	mtm-3	mtm-1	
+phosphatidylinositol_phosphate_binding_(GO:1901981)		unc-108	gtl-1	ced-1	unc-104	mtm-9	tbc-2	cnt-1	rab-5	vps-34	mig-14	rab-10	gon-2	mtm-6	sorf-2	sorf-1	mtm-3	mtm-1	
+phospholipase_activity_(GO:0004620)		gtl-1	bar-1	gar-3	vig-1	rho-1	pdhk-2	nca-2	cup-4	gspd-1	acl-9	acl-8	bus-18	ksr-1	gon-2	ipla-1	eff-1	lin-45	
+phospholipid_scramblase_activity_(GO:0017128)		tat-1	dnpp-1	wah-1	tat-2	num-1	
+phospholipid_transporter_activity_(GO:0005548)		gtl-1	ced-1	ced-7	cnt-1	dnpp-1	cup-4	num-1	acs-1	gon-2	sorf-2	tat-1	wah-1	sorf-1	ttr-52	
+phosphoprotein_phosphatase_activity_(GO:0004721)		unc-89	ssup-72	crtc-1	zen-4	cdc-37	cdc-14	let-502	pph-4.1	cul-2	pbo-1	lin-23	mel-11	nmy-1	fem-1	fem-2	nmy-2	fem-3	tax-6	gsp-1	gsp-2	scpl-1	tra-1	pph-5	crh-1	cdc-25.1	gmeb-1	cdc-25.2	ces-1	ppfr-1	cdc-25.3	mei-1	nhx-2	hsp-90	
+poly(A)_binding_(GO:0008143)		pabp-2	ain-1	unc-75	pab-2	pab-1	rnp-8	fbf-2	oma-2	pos-1	oma-1	neg-1	gld-3	gld-4	gld-2	lin-41	fem-3	
+poly(U)_RNA_binding_(GO:0008266)		pabp-2	ain-1	unc-75	pab-2	pab-1	rnp-8	atx-2	fbf-2	fbf-1	oma-2	ccf-1	pos-1	oma-1	dog-1	neg-1	daz-1	gld-3	gld-4	gld-1	gld-2	cpb-3	lin-41	fem-3	
+polynucleotide_adenylyltransferase_activity_(GO:0004652)		rnp-8	fbf-1	ccf-1	cye-1	gld-3	gld-4	cdk-2	gld-1	gld-2	
+potassium_channel_activity_(GO:0005267)		abts-1	gtl-2	gtl-1	kin-1	mps-1	unc-36	unc-1	twk-7	sup-9	gon-2	egl-19	unc-63	slo-2	kcc-2	slo-1	
+potassium_ion_antiporter_activity_(GO:0022821)		lgc-55	abts-1	unc-24	unc-1	slo-2	kcc-2	slo-1	
+potassium_ion_symporter_activity_(GO:0022820)		lgc-55	abts-1	unc-24	unc-1	slo-2	kcc-2	slo-1	
+pre-mRNA_binding_(GO:0036002)		ssup-72	emb-4	fox-1	rbd-1	lin-39	hrp-2	let-7	mex-3	tsn-1	hnd-1	nfyb-1	nfyc-1	alg-1	smu-2	smu-1	lin-26	prp-17	exc-7	tbx-2	ubc-9	skn-1	nrde-3	unc-75	nrde-1	unc-32	nrde-2	lin-28	fbf-2	fbf-1	alg-2	drh-1	csr-1	adr-1	adr-2	sfa-1	cdc-42	elt-6	asd-1	mec-8	asd-2	mog-2	sup-12	
+protease_binding_(GO:0002020)		pgl-3	pch-2	pgl-1	daf-16	daf-2	svh-1	lin-28	tsp-14	sep-1	sup-17	ced-3	tsp-12	ced-4	cnt-1	ced-9	egl-1	fcho-1	gon-1	ubr-1	ddi-1	skn-1	
+proteasome_binding_(GO:0070628)		rnt-1	aip-1	lin-18	mat-3	smn-1	efl-1	ddb-1	cul-3	ubr-1	cul-2	rle-1	pdr-1	ddi-1	kgb-1	sys-1	rpn-10	skn-1	daf-16	C18H2.2	lin-28	ced-3	cul-4	ned-8	puf-8	csn-5	wdr-23	tra-1	dkf-1	elt-2	cdc-48.1	lin-35	glh-1	mib-1	mei-1	mel-26	dcn-1	
+protein-arginine_N-methyltransferase_activity_(GO:0016274)		pgl-3	pgl-1	sepa-1	prmt-5	prmt-7	prmt-9	
+protein_deacetylase_activity_(GO:0033558)		spr-1	ctbp-1	daf-16	lin-35	sox-2	aak-2	utx-1	egl-4	
+protein_kinase_C_binding_(GO:0005080)		goa-1	gpr-1	gpr-2	gpa-12	cdc-37	par-6	pkc-3	dkf-1	ral-1	lgl-1	cdc-42	lin-5	arx-7	par-2	par-3	tpa-1	
+protein_kinase_activator_activity_(GO:0030295)		xbp-1	pek-1	pop-1	rho-1	pmk-1	mev-1	cdk-1	cdc-37	atf-7	ksr-1	let-502	fat-1	lin-45	end-1	kgb-1	sys-1	tlk-1	ire-1	mrck-1	plp-1	rhgf-2	cdc-42	wrm-1	lin-35	lit-1	
+protein_kinase_activity_(GO:0004672)		hsf-1	ksr-1	gsk-3	dpl-1	hpk-1	lin-45	gld-1	cpb-3	
+protein_kinase_binding_(GO:0019901)		grk-2	oma-2	oma-1	pig-1	aak-2	act-1	smg-8	ndc-80	ksr-1	sid-3	lin-45	lin-41	mpk-1	skn-1	smg-9	daf-16	rig-3	ceh-23	tbc-2	nca-2	brap-2	rab-5	vps-34	elt-3	cep-1	cdc-42	ces-1	gld-1	cpb-3	par-3	dop-3	
+protein_kinase_inhibitor_activity_(GO:0004860)		hif-1	efk-1	bli-3	ksr-1	lin-45	plk-1	memo-1	
+protein_kinase_regulator_activity_(GO:0019887)		strd-1	air-2	vrk-1	rpm-1	aqp-1	oma-1	dsh-2	pig-1	mbk-2	mbk-1	sel-2	fem-3	daf-18	cki-2	cki-1	larp-1	daf-16	rig-3	daf-2	unc-116	mrck-1	brap-2	src-1	plk-2	ets-4	cep-1	lip-1	cdc-42	lin-12	let-23	cgef-1	chk-2	aak-2	kin-10	ptp-3	dlk-1	csk-1	smg-1	chin-1	mtm-1	skn-1	catp-1	hif-1	tlk-1	ire-1	rsks-1	eak-7	gsk-3	erm-1	wve-1	elt-3	dkf-1	mig-15	lgl-1	par-4	
+protein_methyltransferase_activity_(GO:0008276)		pgl-3	set-1	pgl-1	daf-16	set-2	pcm-1	sepa-1	pmt-1	morc-1	prmt-5	hpl-1	prmt-7	strm-1	prmt-9	mes-4	mes-2	met-1	ash-2	dpy-21	dpy-30	hen-1	
+protein_phosphatase_2A_binding_(GO:0051721)		paa-1	vrk-1	rsa-2	mex-5	let-92	lem-4	unc-51	rsa-1	
+protein_phosphatase_binding_(GO:0019903)		rnt-1	unc-89	air-1	air-2	vrk-1	ced-12	rpm-1	mex-5	pag-3	pmk-1	crtc-1	mpz-1	lab-1	cdc-37	let-502	pbo-1	unc-51	fem-1	fem-2	ida-1	wip-1	fem-3	daf-16	tax-6	gsp-2	ced-5	cdc-25.1	memi-1	let-92	hsp-90	ssup-72	mtm-9	cnp-3	hlh-11	dlk-1	mtm-6	mlc-4	mtm-3	mtm-1	mpk-1	skn-1	rhgf-2	scpl-1	pph-5	mig-14	crh-1	gmeb-1	ces-1	lim-9	lem-4	nhx-2	
+protein_phosphatase_regulator_activity_(GO:0019888)		daf-18	ptp-3	cdc-14	lip-1	dlk-1	ced-12	pph-4.1	rpm-1	ced-5	mtm-3	mtm-1	
+protein_serine/threonine_kinase_activity_(GO:0004674)		akt-1	eak-7	age-1	mps-1	unc-14	ani-2	vab-8	gck-3	mbk-2	wnk-1	sad-1	unc-51	pptr-1	unc-82	par-4	
+protein_serine/threonine_phosphatase_activity_(GO:0004722)		akt-1	pph-4.1	unc-14	unc-51	vab-8	fem-1	pptr-1	fem-2	fem-3	
+protein_transmembrane_transporter_activity_(GO:0008320)		inx-6	unc-116	mps-1	lin-18	apl-1	cup-4	hrg-1	nac-3	dma-1	exc-4	pkd-2	rab-10	dat-1	tmc-1	mib-1	nhx-2	mec-4	slo-1	
+protein_transporter_activity_(GO:0008565)		inx-6	tom-1	grk-2	kin-1	cho-1	rho-1	twk-7	sid-1	eff-1	egl-19	skn-1	lgc-46	daf-16	unc-13	apx-1	gsp-2	vab-10	unc-18	nca-2	ocr-4	crh-1	clc-1	shn-1	dop-4	dop-3	mel-28	
+protein_tyrosine_kinase_activity_(GO:0004713)		vav-1	acn-1	cpr-4	pmk-3	hsf-1	ptp-3	cdk-8	mbk-1	mtm-3	ida-1	sur-2	hsp-60	daf-16	dep-1	daf-2	sar-1	mom-5	sem-5	abl-1	frk-1	pat-3	par-6	cam-1	vab-1	cdc-42	lin-1	lin-12	sqrd-1	par-3	nhr-6	
+protein_tyrosine_kinase_binding_(GO:1990782)		clk-1	let-23	aip-1	lin-18	pqm-1	act-1	sid-3	aha-1	cebp-1	skn-1	svh-2	daf-16	rig-3	daf-2	sar-1	sem-5	erm-1	ahr-1	abl-1	ets-4	par-6	cam-1	pha-4	vab-1	cdc-42	nhr-49	hel-1	par-3	
+protein_tyrosine_phosphatase_activity_(GO:0004725)		sdf-9	ced-12	mtm-9	ceh-34	vpr-1	pag-3	cdk-1	egl-15	smn-1	arf-6	ptp-3	mbk-2	mtm-6	ilcr-2	mtm-3	mtm-1	ida-1	daf-16	dep-1	pdk-1	daf-2	apl-1	ced-5	cel-1	pat-3	egg-5	egg-4	cdc-25.1	lip-1	egg-3	ces-1	cdc-25.3	eya-1	
+rRNA_binding_(GO:0019843)		rbd-1	cep-1	let-7	ncl-1	dao-5	fib-1	wdr-46	skn-1	
+receptor_tyrosine_kinase_binding_(GO:0030971)		rnt-1	let-23	aip-1	ztf-16	lin-18	pqm-1	aha-1	cebp-1	skn-1	daf-19	svh-2	daf-16	rig-3	goa-1	daf-2	sar-1	erm-1	rab-7	ahr-1	ins-18	wve-1	ets-4	par-6	cam-1	pha-4	sli-1	vab-1	cdc-42	mib-1	lin-7	nhr-49	hel-1	par-3	
+regulatory_region_DNA_binding_(GO:0000975)		fkh-9	hmg-1.2	uaf-1	rpl-2	hlh-1	vit-2	hsp-16.1	aha-1	hsp-12.2	skn-1	tni-3	daf-16	ced-3	ahr-1	ced-4	nlg-1	wdr-46	ced-9	egl-1	cam-1	elt-2	cep-1	sfa-1	dao-5	somi-1	mab-3	hsp-90	
+repressing_transcription_factor_binding_(GO:0070491)		ceh-16	mls-1	lin-18	pal-1	pop-1	pig-1	wdr-5.1	unc-3	efl-1	dpl-1	xol-1	fem-3	unc-55	larp-1	unc-37	sem-4	fbf-1	puf-8	sel-12	egl-5	tra-1	spr-4	spr-3	cep-1	ces-1	lin-35	icd-1	gld-1	unc-62	mab-3	mec-3	
+ribonuclease_activity_(GO:0004540)		ain-1	rde-2	ain-2	rde-1	let-7	nhl-2	rde-8	tsn-1	crn-5	bpnt-1	sid-1	alg-1	rack-1	eri-1	paxt-1	pash-1	mut-7	lin-28	mir-35	fbf-1	xrn-2	ccf-1	alg-2	drh-1	pup-2	dcap-1	dcap-2	prg-1	dcs-1	lit-1	dcr-1	gld-1	gld-2	hen-1	
+ribosome_binding_(GO:0043022)		rbd-1	ced-3	let-7	ncl-1	pal-1	ced-4	eif-6	fib-1	wdr-46	ced-9	cep-1	dao-5	rack-1	lin-35	ife-4	ifg-1	ife-3	gld-1	lin-41	skn-1	abce-1	
+sequence-specific_DNA_binding_(GO:0043565)		grh-1	ins-33	ceh-37	lin-1	lin-14	
+sequence-specific_double-stranded_DNA_binding_(GO:1990837)		grh-1	ins-33	ceh-37	lin-1	lin-14	
+serotonin_receptor_activity_(GO:0099589)		daf-16	ser-5	osm-9	lin-18	ser-1	ocr-2	aak-2	ser-7	hsf-1	mod-1	deg-1	kcc-2	mec-4	daf-6	
+signal_sequence_binding_(GO:0005048)		kin-3	pch-2	ced-10	let-7	crm-1	mex-3	pop-1	atf-6	cki-1	let-99	daf-16	goa-1	sar-1	ced-3	prmt-5	ced-4	snpc-4	lsm-3	rei-1	sax-3	figl-1	plk-1	wdr-23	lsm-1	ced-9	psr-1	rab-11.1	dat-1	kvs-4	lit-1	let-418	let-23	sod-1	grk-2	hpl-2	acn-1	kin-10	atm-1	gars-1	mir-124	dlk-1	unc-101	sys-1	ire-1	cgh-1	sao-1	rab-7	rin-1	sel-10	nhr-25	fcho-1	wrm-1	clc-1	hel-1	hen-1	yap-1	dop-3	
+single-stranded_DNA_binding_(GO:0003697)		clk-2	ceh-37	pot-1	pot-2	mrt-1	pgp-12	dcp-66	stau-1	alg-1	hlh-17	osm-3	rpa-1	pdi-2	rnf-113	pdi-1	goa-1	pdi-3	egl-30	rip-1	dkf-1	wrn-1	rfs-1	cosa-1	rad-51	mus-81	helq-1	
+single-stranded_RNA_binding_(GO:0003727)		clk-2	drh-3	gld-3	tsn-1	laf-1	gld-1	gld-2	dna-2	
+small_GTPase_binding_(GO:0031267)		sand-1	unc-89	ced-10	max-2	M57.2	rho-1	vab-8	arl-13	mpz-1	dma-1	sid-5	cyk-4	gop-1	unc-5	let-502	pdr-1	lin-45	tub-1	eat-3	goa-1	unc-119	unc-116	sar-1	mom-5	ced-1	egl-30	tbc-2	ced-7	nrf-5	apl-1	rme-6	rei-1	nca-2	pde-4	rab-11.1	ccm-3	rab-10	cdc-48.1	spv-1	cdc-42	mib-1	nduf-7	eat-17	cccp-1	unc-108	grk-2	unc-104	lin-18	rbg-3	dapk-1	vps-45	apg-1	rap-1	atg-9	rab-28	ksr-1	ral-1	dhc-3	ric-19	eri-1	amph-1	rga-2	rab-7	rab-8	arl-8	rhgf-2	srbc-66	arl-3	chdp-1	srbc-64	rin-1	rab-5	haf-4	sli-1	rab-35	exoc-7	exoc-8	dop-2	mig-2	dop-3	haf-9	pat-2	
+small_protein_activating_enzyme_activity_(GO:0008641)		hsf-1	unc-108	gop-1	rga-4	wnk-1	rga-3	ced-4	gck-3	
+snRNA_binding_(GO:0017069)		htz-1	adbp-1	emb-4	rbd-1	nud-1	let-7	eif-6	odr-1	mir-84	daz-1	alg-1	mir-241	ife-4	sart-3	tbx-2	ubc-9	skn-1	nrde-3	rde-10	rde-11	rde-12	nrde-1	nrde-2	hrde-1	lin-28	usip-1	ceh-22	snpc-4	csr-1	daf-12	wdr-46	mys-1	txdc-9	cep-1	nhr-40	glh-1	dcr-1	mog-2	ima-2	imb-1	gld-1	
+snoRNA_binding_(GO:0030515)		pabp-2	rbd-1	cep-1	alg-1	wdr-46	skn-1	
+sterol_binding_(GO:0032934)		xbp-1	mec-2	scp-1	daf-16	ire-1	daf-2	mdt-15	sbp-1	tbc-2	strm-1	nhr-64	sur-7	nap-1	skn-1	
+symporter_activity_(GO:0015293)		svh-2	sar-1	clh-1	apx-1	unc-2	mcu-1	ets-4	aipr-1	calu-1	egl-19	slo-2	cebp-1	slo-1	
+syntaxin_binding_(GO:0019905)		daf-19	unc-75	unc-64	unc-31	unc-108	tom-1	gar-3	unc-13	egl-30	cpx-1	unc-18	rab-3	dat-1	snap-1	ral-1	syx-3	spe-39	exc-7	aex-3	
+tRNA_(guanine)_methyltransferase_activity_(GO:0016423)		gars-1	mttu-1	prmt-1	prmt-5	hlh-30	mtcu-2	sup-7	mtcu-1	rtcb-1	
+tRNA_binding_(GO:0000049)		clk-1	gars-1	mttu-1	clk-2	qars-1	let-7	gro-1	eftu-2	snpc-4	mtcu-2	mtcu-1	
+telomeric_DNA_binding_(GO:0042162)		trt-1	ceh-37	pot-1	pot-2	plp-1	
+transcription_coactivator_activity_(GO:0003713)		wrm-1	lit-1	pop-1	sys-1	src-1	
+transcription_coactivator_binding_(GO:0001223)		ced-13	tlf-1	osm-9	ocr-2	ceh-23	pop-1	aak-2	taf-1	egl-1	cep-1	nhr-25	wrm-1	lit-1	sys-1	
+transcription_regulatory_region_DNA_binding_(GO:0044212)		fkh-9	uaf-1	rpl-2	pop-1	hlh-1	hbl-1	vit-2	xol-1	aha-1	hsp-12.2	skn-1	tni-3	daf-16	ahr-1	apl-1	nlg-1	wdr-46	tra-1	cam-1	elt-2	cep-1	sfa-1	dao-5	somi-1	mab-3	hsp-90	
+transforming_growth_factor_beta_receptor_binding_(GO:0005160)		daf-4	mut-16	lon-2	crm-1	sma-4	sma-3	csr-1	sma-2	daf-12	fsn-1	daf-9	dop-2	dop-3	
+transition_metal_ion_binding_(GO:0046914)		clh-3	sod-1	sod-5	ttm-1	apl-1	mcu-1	crn-4	glb-33	mtl-1	mtl-2	
+translation_factor_activity,_RNA_binding_(GO:0008135)		lin-15B	daf-16	rab-11.1	nos-2	nos-1	eftu-2	iff-1	rei-1	gld-2	tbx-2	skn-1	
+translation_initiation_factor_activity_(GO:0003743)		pek-1	eif-3.K	rsks-1	ced-3	let-7	cif-1	eif-2A	sqrd-1	eif-2beta	iff-1	mel-26	
+transmembrane_receptor_protein_kinase_activity_(GO:0019199)		cam-1	ire-1	plr-1	mom-5	lin-18	mib-1	apl-1	
+transmembrane_receptor_protein_tyrosine_kinase_activity_(GO:0004714)		ddl-2	let-23	vav-1	lin-18	acn-1	aak-2	cpr-4	hsf-1	ptp-3	cdk-8	mbk-1	mtm-3	ida-1	sur-2	ddl-1	daf-18	daf-16	dep-1	rsks-1	daf-2	plr-1	sar-1	mom-5	erm-1	rab-7	apl-1	pat-3	par-6	cam-1	vab-1	cdc-42	lin-1	lin-12	lin-7	par-3	nhr-6	
+tropomyosin_binding_(GO:0005523)		unc-87	unc-98	unc-15	arp-6	csn-5	elt-2	atn-1	pha-4	let-502	mlc-4	unc-96	unc-60	lev-11	
+tubulin_binding_(GO:0015631)		elpc-3	let-99	elpc-1	zyg-1	unc-104	spas-1	dnc-1	rpm-1	ska-1	tba-5	tbb-4	ptl-1	arl-13	zen-4	txdc-9	dhc-1	ndc-80	ptrn-1	tbcb-1	zyg-9	nphp-2	mec-12	
+ubiquitin-like_protein_ligase_activity_(GO:0061659)		cif-1	ned-8	mel-26	cand-1	dcn-1	
+ubiquitin-like_protein_ligase_binding_(GO:0044389)		xbp-1	crt-1	sun-1	pot-1	ned-8	arl-13	cand-1	dcn-1	
+ubiquitin-protein_transferase_activity_(GO:0004842)		let-23	cam-1	plr-1	cdt-2	dlk-1	mom-5	lin-18	rpm-1	mib-1	gld-1	cpb-3	
+ubiquitin_binding_(GO:0043130)		sun-1	gei-17	pot-1	rpm-1	arl-13	blmp-1	smn-1	xrep-4	ubr-5	ubr-4	ubr-1	fsn-1	pdr-1	klp-19	tbx-2	fem-3	cki-1	larp-1	zyg-11	ced-3	dre-1	figl-1	lgg-1	cand-1	wdr-23	tra-1	lgg-2	cdc-48.1	memi-1	mib-1	lin-12	cpb-3	xbp-1	crt-1	unc-104	lin-18	lrp-1	dlk-1	cebp-1	mpk-1	skn-1	mec-2	rnf-113	vps-39	lin-28	epn-1	sao-1	sel-10	glp-1	elt-2	sli-1	otub-1	gld-1	hmt-1	
+ubiquitin_conjugating_enzyme_activity_(GO:0061631)		ubc-18	wwp-1	uev-1	let-70	glr-1	tbx-2	ubc-9	
+ubiquitin_conjugating_enzyme_binding_(GO:0031624)		xbp-1	crt-1	ubc-18	arl-13	zif-1	mep-1	rnf-1	otub-1	lin-1	cul-2	wwp-1	tbx-2	ubc-9	
+ubiquitin_protein_ligase_activity_(GO:0061630)		unc-89	rpm-1	rfp-1	uev-1	bath-42	mrg-1	ubr-5	cdt-1	ddb-1	cdt-2	unc-6	fsn-1	wwp-1	fem-1	tbx-2	fem-3	cki-1	larp-1	mom-5	ric-3	cif-1	uba-1	cul-4	cand-1	wdr-23	tra-1	cep-1	cdc-48.1	cdc-25.2	memi-1	mib-1	lin-12	zeel-1	unc-40	cpb-3	mel-26	let-23	ubc-18	lin-18	hecd-1	dlk-1	nos-3	cul-2	lin-23	madd-2	skn-1	plr-1	sao-1	glr-1	sel-10	glp-1	par-6	cam-1	lin-35	mei-1	gld-1	
+ubiquitin_protein_ligase_binding_(GO:0031625)		pgl-3	pgl-1	sun-1	gei-17	pot-1	rpm-1	bath-42	arl-13	blmp-1	smn-1	xrep-4	ubr-5	ubr-4	ddb-1	ubr-1	fsn-1	wwp-1	pdr-1	klp-19	tbx-2	fem-3	cki-1	larp-1	daf-16	zyg-11	ced-3	ric-3	cul-4	dre-1	cand-1	wdr-23	tra-1	cdc-48.1	memi-1	mib-1	lin-12	cpb-3	xbp-1	crt-1	ubc-18	lin-18	dlk-1	cul-2	cebp-1	mpk-1	skn-1	mec-2	rnf-113	lin-28	sao-1	sel-10	glp-1	ftn-1	sli-1	otub-1	gld-1	
+voltage-gated_calcium_channel_activity_(GO:0005245)		unc-77	unc-8	gar-3	grk-2	kin-1	unc-36	unc-80	unc-2	egl-19	nca-2	slo-2	dop-3	
+voltage-gated_cation_channel_activity_(GO:0022843)		unc-77	unc-8	grk-2	unc-80	nca-2	dop-3	
+voltage-gated_potassium_channel_activity_(GO:0005249)		egl-2	mps-1	unc-36	egl-19	slo-2	
+zinc_ion_binding_(GO:0008270)		che-1	clh-3	ttm-1	crn-4	mtl-1	mtl-2	

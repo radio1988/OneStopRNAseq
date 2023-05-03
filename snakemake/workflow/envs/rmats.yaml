@@ -1,12 +1,13 @@
 name: rmats4
-# not working on zhuapp yet
 
 channels:
         - bioconda
         - rmg
         - conda-forge
+        - anaconda
 
 dependencies:
         - bioconda::rmats=4.1.2
+        - anaconda::zip
           #- rmg::glibc=2.19
           #        - conda-forge::libblas=3.9.0

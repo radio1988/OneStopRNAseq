@@ -1,0 +1,176 @@
+3'5'-cyclic nucleotide phosphodiesterase, catalytic domain		pde-6	pde-5	pde-2	pde-1	pde-4	pde-3	
+AAA+ ATPase domain		rpt-3	rpt-2	snrp-200	pch-2	ruvb-1	rpt-1	ruvb-2	lex-1	rfc-4	pgp-3	rpt-5	pgp-1	nsf-1	rpt-4	spas-1	nubp-1	atad-3	lonp-2	lonp-1	dhc-1	ymel-1	ced-7	atp-2	figl-1	mspn-1	mcm-4	cdc-48.1	wht-3	cdc-48.3	cdc-48.2	spg-7	mei-1	wht-1	mac-1	
+ABC transporter-like		pgp-3	wht-3	pgp-1	ced-7	wht-1	
+AGC-kinase, C-terminal		rsks-1	grk-1	akt-1	grk-2	mrck-1	akt-2	rskn-2	rskn-1	sax-1	egl-4	pkc-2	pkc-3	let-502	pkc-1	wts-1	sgk-1	tpa-1	
+ATPase, AAA-type, core		rpt-3	rpt-2	pch-2	rpt-1	lex-1	rfc-4	rpt-5	nsf-1	rpt-4	spas-1	figl-1	atad-3	mspn-1	lonp-2	lonp-1	cdc-48.1	cdc-48.3	ymel-1	cdc-48.2	spg-7	mei-1	mac-1	
+Adenylyl cyclase class-3/4/guanylyl cyclase		gcy-31	gcy-33	gcy-11	gcy-32	odr-1	gcy-17	gcy-19	gcy-18	gcy-35	gcy-13	gcy-12	gcy-34	gcy-15	gcy-37	gcy-36	gcy-14	gcy-20	gcy-22	gcy-21	daf-11	gcy-9	gcy-3	gcy-28	gcy-4	gcy-27	gcy-1	gcy-29	gcy-2	gcy-7	gcy-8	gcy-23	gcy-5	gcy-6	gcy-25	
+Alpha crystallin/Hsp20 domain		hsp-16.48	hsp-16.49	hsp-16.11	hsp-16.2	sip-1	hsp-16.1	hsp-12.2	hsp-16.41	
+Alpha/beta hydrolase fold-1		abhd-5.1	abhd-3.2	ceeh-1	ceeh-2	lid-1	abhd-5.2	
+Amidohydrolase-related		unc-33	dhp-2	acsd-1	dhp-1	pyr-1	
+Aminoacyl-tRNA synthetase, class II		dars-1	gars-1	nars-1	kars-1	hars-1	sars-1	tars-1	
+Ankyrin repeat-containing domain		mask-1	cnt-1	dapk-1	cnt-2	daf-25	brd-1	trp-1	lrk-1	glp-1	tank-1	pat-4	ape-1	glna-2	hecd-1	glna-3	lem-3	lin-12	shn-1	lem-4	fem-1	nfki-1	trpa-1	
+Astacin-like metallopeptidase domain		toh-1	nas-30	nas-31	nas-10	nas-32	nas-11	nas-33	nas-12	nas-13	nas-36	nas-14	nas-37	nas-9	nas-15	nas-38	nas-8	nas-7	nas-17	nas-6	nas-1	dpy-31	nas-5	nas-4	nas-21	nas-23	nas-25	nas-27	nas-28	nas-29	hch-1	
+BRCT domain		fcp-1	brc-1	brd-1	hsr-9	lpd-7	
+BTB/POZ domain		bath-45	bath-34	bath-43	bath-39	bath-38	bath-15	bath-36	bath-47	bath-42	bath-41	bath-40	kel-10	kel-8	egl-36	cyk-7	btb-14	mel-26	
+Band 7 domain		mec-2	phb-2	phb-1	sto-2	unc-1	sto-3	sto-1	sto-4	
+Basic-leucine zipper domain		zip-8	ces-2	jun-1	atfs-1	fos-1	skn-1	
+Bromodomain		bet-1	lex-1	cbp-1	nurf-1	lin-49	taf-1	
+C-type lectin-like		clec-162	clec-161	clec-160	clec-88	clec-87	clec-180	irg-7	lat-2	clec-91	
+C2 domain		piki-1	unc-10	gap-2	nra-1	unc-13	egl-8	syd-1	rbf-1	pkc-2	plc-3	rgs-7	aex-1	snt-1	snt-2	plc-1	pkc-1	fer-1	cla-1	tra-3	
+CBS domain		cnnm-5	clh-3	cnnm-4	cnnm-1	cnnm-3	
+CENP-T/Histone H4, histone fold		his-60	his-50	his-46	his-14	his-26	his-37	his-38	his-64	his-31	his-10	his-67	his-56	his-5	his-28	his-18	his-1	
+CNNM, transmembrane domain		cnnm-5	cnnm-4	cnnm-1	cnnm-3	cnnm-2	
+CRIB domain		ark-1	max-2	mrck-1	pak-2	pak-1	
+CUB domain		toh-1	tag-53	nas-30	nas-31	nas-33	nas-23	nas-36	nas-37	nas-38	nas-27	nas-39	nas-28	nas-29	mig-13	hch-1	sol-1	dpy-31	
+Calcineurin-like phosphoesterase domain, ApaH type		tax-6	gsp-1	gsp-3	gsp-2	gsp-4	asm-3	pef-1	pph-6	pph-5	asm-1	asm-2	pph-4.2	pph-4.1	dbr-1	mre-11	let-92	
+Calponin homology domain		grdn-1	zyg-12	unc-53	vav-1	anc-1	pat-6	ptrn-1	dys-1	
+Chromo domain		cec-3	cec-4	cec-1	chd-3	let-418	
+Chromo/chromo shadow domain		mys-1	cec-3	cec-4	cec-1	chd-3	let-418	
+Cullin homology domain		apc-2	cul-1	cul-3	cul-2	cul-5	cul-4	cul-6	
+Cullin protein, neddylation domain		cul-1	cul-3	cul-2	cul-5	cul-4	cul-6	
+Cullin, N-terminal		apc-2	cul-1	cul-3	cul-2	cul-5	cul-4	cul-6	
+Cyclic nucleotide-binding domain		kin-2	tax-4	epac-1	pxf-1	unc-103	egl-4	
+Cyclin, N-terminal		cyb-1	cic-1	cya-1	cit-1.2	cye-1	cit-1.1	cyb-3	cyd-1	cyy-1	
+Cyclin-like		cyb-1	cic-1	cya-1	cit-1.2	cye-1	cit-1.1	cyb-3	cyd-1	cyy-1	ttb-1	
+Cyclophilin-type peptidyl-prolyl cis-trans isomerase domain		cyn-1	cyn-5	cyn-4	cyn-3	cyn-2	cyn-9	cyn-10	cyn-8	cyn-7	cyn-6	sig-7	cyn-11	
+Cytosolic fatty-acid binding		lbp-4	lbp-5	lbp-6	lbp-7	lbp-9	lbp-1	lbp-2	lbp-3	
+DEAD/DEAH box helicase domain		snrp-200	rde-12	cgh-1	ddx-15	mtr-4	polq-1	laf-1	ddx-35	wrn-1	glh-3	glh-4	rha-2	glh-1	glh-2	rha-1	mog-1	hel-1	him-6	inf-1	
+Dbl homology (DH) domain		unc-89	vav-1	sos-1	osg-1	tag-52	
+Diacylglycerol/phorbol-ester binding		pkc-2	dkf-2	pkc-3	unc-13	pkc-1	tpa-1	
+DnaJ domain		dnj-2	dnj-5	dnj-1	dnj-21	dnj-10	dnj-20	
+Domain of unknown function DUF1605		ddx-15	mog-4	rha-2	rha-1	mog-1	ddx-35	mog-5	
+Double-stranded RNA-binding domain		adr-1	adr-2	drsh-1	rha-1	dcr-1	
+Dual specificity phosphatase, catalytic domain		cdc-14	lip-1	pir-1	vhp-1	cel-1	
+EF-hand domain		miro-1	micu-1	rsef-1	pef-1	rom-2	cal-1	cyk-3	bli-3	mlc-1	cex-2	mlc-4	mlc-5	mlc-2	mlc-3	tnc-2	cmd-1	cex-1	cnb-1	dgk-3	ncs-1	ncs-2	
+EGF-like calcium-binding domain		mua-3	dex-1	lrp-1	cdh-4	glp-1	nas-39	eat-20	dig-1	mup-4	fbl-1	lin-12	slt-1	spe-9	unc-52	
+EGF-like domain		lam-2	mua-3	lag-2	lrp-1	nas-33	cdh-4	nas-37	nas-39	eat-20	irg-7	unc-52	epi-1	ced-1	apx-1	tag-53	dex-1	glp-1	ten-1	lin-3	dig-1	mup-4	hch-1	fbl-1	lin-12	slt-1	mab-7	spe-9	lat-2	hmr-1	
+F-box domain		sdz-15	fsn-1	fbxa-224	mec-15	lin-23	dre-1	sel-10	
+FAD/NAD(P)-binding domain		gsr-1	trxr-1	trxr-2	dld-1	dpyd-1	
+FATC domain		atm-1	atl-1	smg-1	trr-1	let-363	
+FCP1 homology domain		cnep-1	scpl-3	scpl-4	fcp-1	scpl-1	
+Fatty acid desaturase domain		fat-4	fat-3	fat-2	fat-1	ttm-5	
+Fibronectin type III		unc-22	unc-89	rig-4	dep-1	daf-2	igdb-2	syg-2	ttn-1	clr-1	jac-1	sax-3	rol-3	rig-6	ptp-3	ptp-4	vab-1	dig-1	igdb-1	
+GPCR, family 2-like		pdfr-1	mom-5	seb-2	cfz-2	lat-2	lat-1	
+GPCR, rhodopsin-like, 7TM		gar-1	gar-3	gar-2	srx-43	tkr-1	npr-22	srx-45	npr-18	npr-15	srd-33	srab-14	frpr-1	aex-2	ser-2	srd-1	daf-38	srd-3	tyra-2	ntr-1	daf-37	npr-11	npr-29	srv-1	ntr-2	npr-8	npr-9	dop-4	dop-3	
+Glutathione S-transferase, C-terminal		gsto-1	gsto-2	gst-36	gst-1	eef-1G	gst-3	gst-2	gst-10	gst-5	gst-42	gst-4	gst-7	gst-6	gst-9	gst-8	
+Glutathione S-transferase, C-terminal-like		mtx-1	gsto-1	gsto-2	gst-36	gst-1	eef-1G	gst-3	gst-2	gst-10	gst-5	gst-42	gst-4	gst-7	gst-6	gst-9	gst-8	
+Glutathione S-transferase, N-terminal		gsto-1	gsto-2	gst-36	gst-1	gst-3	gst-2	gst-10	gst-5	gst-42	gst-4	gst-7	gst-6	gst-9	gst-8	
+Glycosyltransferase 2-like		gly-8	bre-3	gly-9	gly-6	gly-7	gly-11	gly-4	gly-5	gly-3	gly-10	
+HD/PDEase domain		pde-6	pde-5	pde-2	pde-1	pde-4	pde-3	
+Haem NO binding associated		gcy-20	gcy-31	gcy-22	gcy-33	gcy-32	gcy-17	gcy-1	gcy-2	gcy-35	gcy-7	gcy-13	gcy-34	gcy-37	gcy-36	gcy-14	gcy-6	
+Hedgehog protein, Hint domain		wrt-8	wrt-6	wrt-4	wrt-1	qua-1	
+Helicase superfamily 1/2, ATP-binding domain		snrp-200	ssl-1	mtr-4	chd-3	laf-1	rha-2	rha-1	inf-1	rde-12	cgh-1	ddx-15	polq-1	ddx-35	isw-1	xnp-1	wrn-1	glh-3	glh-4	mog-4	glh-1	glh-2	dcr-1	let-418	mog-1	hel-1	smrc-1	him-6	mog-5	
+Helicase, C-terminal		snrp-200	ssl-1	mtr-4	chd-3	laf-1	rha-2	rha-1	inf-1	rde-12	cgh-1	ddx-15	polq-1	ddx-35	isw-1	xnp-1	wrn-1	glh-3	glh-4	mog-4	glh-1	glh-2	dcr-1	let-418	mog-1	hel-1	smrc-1	him-6	mog-5	
+Helicase-associated domain		ddx-15	mog-4	rha-2	rha-1	mog-1	ddx-35	mog-5	
+Heme NO-binding		gcy-31	gcy-33	gcy-32	gcy-35	gcy-34	gcy-37	gcy-36	
+High mobility group box domain		hmg-1.2	egl-13	hmg-4	sox-2	pop-1	sem-2	hmg-3	
+Hint domain C-terminal		wrt-8	wrt-6	wrt-4	wrt-1	qua-1	
+Hint domain N-terminal		wrt-8	wrt-6	wrt-4	wrt-1	qua-1	
+Histidine kinase/HSP90-like ATPase		enpl-1	morc-1	daf-21	pdhk-2	top-2	
+Histone H2A, C-terminal domain		htz-1	his-61	his-51	his-30	his-68	his-57	his-47	his-16	his-53	his-21	his-65	his-43	his-33	his-12	his-7	his-19	his-3	
+Histone H2A/H2B/H3		his-61	his-62	his-63	his-68	his-69	his-25	his-27	his-20	his-21	his-65	his-66	his-22	his-17	his-19	his-51	his-52	his-13	his-57	his-58	his-59	his-15	his-16	his-53	his-54	his-11	his-55	his-12	his-6	his-7	hcp-3	his-4	his-8	his-9	his-2	his-3	htz-1	his-41	his-47	his-48	his-49	his-42	his-43	his-44	his-45	his-71	his-72	his-74	his-30	cpar-1	his-70	his-32	his-33	his-34	his-29	
+Homeobox domain		ceh-19	ceh-18	unc-86	lin-39	ceh-16	ceh-14	zag-1	ceh-13	ceh-12	ceh-10	vab-7	irx-1	unc-4	ttx-3	ceh-2	ceh-44	unc-39	ceh-43	ceh-1	ceh-6	ceh-40	ceh-7	ceh-5	ceh-8	ceh-9	mab-5	lin-11	dsc-1	ceh-39	ceh-38	ceh-37	ceh-36	ceh-34	pal-1	ceh-33	ceh-32	ceh-31	ceh-30	unc-30	vab-15	ceh-24	ceh-23	ceh-22	ceh-21	ceh-20	ceh-62	egl-5	unc-62	mec-3	
+Homeobox domain, metazoa		ceh-19	lin-39	ceh-16	vab-15	ceh-13	ceh-24	ceh-12	ceh-2	ceh-22	ceh-43	ceh-31	ceh-1	ceh-30	egl-5	ceh-5	ceh-9	mab-5	
+Immunoglobulin I-set		unc-22	unc-89	rig-4	igdb-2	syg-2	ttn-1	syg-1	zig-8	pxn-1	sax-3	sma-10	rig-6	egl-15	ptp-3	cam-1	zig-2	zig-3	zig-4	zig-5	dim-1	madd-4	unc-52	oig-1	
+Immunoglobulin subtype		unc-22	unc-89	ver-3	ver-4	syg-2	ver-1	zig-6	syg-1	clr-1	zig-8	pxn-1	egl-15	ptp-3	unc-5	igdb-1	madd-4	unc-52	oig-4	rig-4	rig-3	mig-6	igdb-2	ttn-1	sax-3	sma-10	rig-6	cam-1	zig-1	zig-2	zig-3	zig-4	dig-1	zig-5	dim-1	
+Immunoglobulin subtype 2		unc-22	unc-89	ver-3	ver-4	syg-2	ver-1	zig-6	syg-1	zig-7	zig-8	pxn-1	egl-15	ptp-3	unc-5	igdb-1	madd-4	unc-52	oig-1	oig-4	rig-4	mig-6	igdb-2	ttn-1	sax-3	sma-10	rig-6	cam-1	zig-1	zig-2	zig-3	zig-4	dig-1	zig-5	dim-1	
+Immunoglobulin-like domain		unc-22	unc-89	ver-3	ver-4	syg-2	ver-1	zig-6	syg-1	clr-1	zig-7	zig-8	pxn-1	egl-15	ptp-3	ptp-4	unc-5	igdb-1	madd-4	unc-52	oig-1	oig-4	rig-4	rig-3	mig-6	iglr-2	igdb-2	ttn-1	sax-3	sma-10	rig-6	cam-1	zig-1	zig-2	zig-3	zig-4	dig-1	zig-5	dim-1	
+Intermediate filament, rod domain		ifa-1	ifp-1	lmn-1	mua-6	ifd-2	ifa-4	ifc-2	ifd-1	ifb-2	ifc-1	ifa-3	ifb-1	
+Ion transport domain		tax-4	egl-36	itr-1	kvs-4	gon-2	unc-103	shk-1	trp-1	slo-1	trpa-1	
+JAB1/MPN/MOV34 metalloenzyme domain		eif-3.H	prp-8	rpn-11	eif-3.F	csn-5	csn-6	
+JmjC domain		jhdm-1	rbr-2	psr-1	jmjd-2	jmjc-1	jmjd-3.1	jmjd-1.2	
+K Homology domain		mask-1	mxt-1	pno-1	asd-2	akap-1	gld-1	
+K Homology domain, type 1		mask-1	mxt-1	asd-2	akap-1	gld-1	
+KOW		gkow-1	rpl-26	mrpl-24	rpl-27	spt-5	
+Kinesin motor domain		klp-3	unc-116	klp-20	unc-104	osm-3	vab-8	
+LSM domain, eukaryotic/archaea-type		snr-1	snr-2	snr-3	snr-4	snr-5	snr-6	snr-7	lsm-4	
+Lamin tail domain		ifa-1	ifp-1	lmn-1	mua-6	ifa-4	ifc-2	ifd-1	ifb-2	ifa-3	ifb-1	
+Laminin EGF domain		epi-1	lam-2	unc-6	ced-1	tag-53	unc-52	
+Laminin G domain		epi-1	slt-1	hmr-1	unc-52	cdh-3	cdh-4	
+Linker histone H1/H5, domain H15		hil-1	hil-2	his-24	hil-5	hil-6	hil-3	hil-4	
+Lipid transport protein, N-terminal		vit-1	vit-2	vit-3	vit-4	vit-5	vit-6	
+MATH/TRAF domain		bath-45	bath-34	bath-43	bath-39	bath-38	bath-15	bath-36	bath-47	bath-42	bath-41	bath-40	math-33	mel-26	
+MPN domain		npl-4.1	eif-3.H	prp-8	npl-4.2	rpn-11	eif-3.F	csn-5	csn-6	
+Major facilitator superfamily domain		eat-4	slc-17.3	vglu-3	svop-1	oct-1	folt-1	unc-17	fgt-1	pept-3	unc-93	pept-1	
+Major sperm protein (MSP) domain		msp-64	msp-65	msp-45	msp-142	msp-49	ssp-9	msp-50	msp-51	ssp-34	ssp-11	ssp-10	ssp-32	ssp-31	ssp-19	msp-19	ssp-16	msp-53	msp-31	msp-10	msp-32	msp-76	msp-77	msp-33	msp-55	msp-113	msp-78	msp-56	msp-57	msp-79	msp-36	msp-152	msp-59	msp-38	msp-81	msp-40	msp-63	msp-3	
+Myc-type, basic helix-loop-helix (bHLH) domain		hlh-6	hif-1	hlh-8	hlh-3	hlh-4	ahr-1	hlh-1	hlh-34	hlh-11	hlh-13	hlh-26	cnd-1	aha-1	mml-1	lin-32	
+Myosin head, motor domain		myo-3	unc-54	hum-6	myo-1	myo-2	
+Myosin tail		myo-3	unc-54	unc-15	myo-1	myo-2	
+Myotubularin-like phosphatase domain		mtm-9	mtm-6	mtm-5	mtm-3	mtm-1	
+NUDIX hydrolase domain		ndx-9	ndx-8	ndx-4	ndx-7	dcap-2	ndx-6	ndx-1	ndx-3	ndx-2	
+Nematode cuticle collagen, N-terminal		dpy-5	dpy-7	dpy-2	col-19	col-39	sqt-1	col-34	col-12	sqt-3	col-36	col-14	col-13	col-79	col-10	col-75	dpy-10	col-91	col-155	col-90	rol-8	col-2	dpy-13	rol-6	col-8	col-7	col-40	bli-1	lon-3	col-80	col-145	
+Neurotransmitter-gated ion-channel ligand-binding domain		acc-2	lev-1	acc-1	acc-4	acc-3	unc-29	acr-16	ggr-1	acr-3	acr-23	acr-2	gab-1	acr-5	pbo-5	acr-7	pbo-6	eat-2	lgc-46	unc-38	des-2	exp-1	lgc-4	cup-4	lgc-50	deg-3	glc-2	unc-63	glc-1	
+Neurotransmitter-gated ion-channel transmembrane domain		acc-2	lev-1	acc-1	acc-4	acc-3	unc-29	acr-16	ggr-1	acr-3	acr-23	acr-2	gab-1	acr-5	pbo-5	acr-7	pbo-6	eat-2	lgc-46	unc-38	des-2	exp-1	lgc-4	lgc-50	deg-3	glc-2	unc-63	glc-1	
+Nuclear hormone receptor, ligand-binding domain		nhr-5	nhr-106	nhr-4	nhr-3	nhr-108	hizr-1	nhr-1	nhr-90	nhr-91	nhr-10	nhr-54	nhr-98	nhr-53	nhr-97	nhr-96	nhr-52	nhr-51	nhr-14	nhr-13	nhr-57	nhr-12	nhr-150	nhr-55	nhr-11	nhr-153	nhr-18	nhr-197	nhr-111	nhr-16	nhr-199	nhr-154	nhr-59	nhr-115	nhr-19	sex-1	daf-12	nhr-86	nhr-42	nhr-85	nhr-41	nhr-40	nhr-47	nhr-89	nhr-44	nhr-164	nhr-49	nhr-121	nhr-124	nhr-167	nhr-169	nhr-125	nhr-127	nhr-71	nhr-31	nhr-75	nhr-79	nhr-35	nhr-34	nhr-77	nhr-174	nhr-130	nhr-133	nhr-134	nhr-213	nhr-136	unc-55	nhr-218	nhr-217	nhr-61	nhr-60	nhr-65	nhr-20	nhr-64	nhr-62	nhr-25	nhr-69	nhr-23	nhr-22	nhr-28	nhr-100	nhr-9	nhr-8	nhr-7	nhr-6	nhr-268	nhr-103	
+PAS domain		hlh-34	hif-1	ahr-1	aha-1	lin-42	
+PAZ domain		nrde-3	ergo-1	dcr-1	tag-76	wago-1	
+PDZ domain		unc-10	mig-5	pxf-1	cnk-1	syd-1	ptp-1	dlg-1	let-413	par-6	lin-2	mics-1	shn-1	stn-1	par-3	cla-1	lin-10	
+PPM-type phosphatase domain		tap-1	phlp-2	fem-2	ppm-1.A	ppm-2	
+PTB/PI domain		feh-1	shc-1	ced-6	dyc-1	num-1	lin-10	
+PTP type protein phosphatase		daf-18	dep-1	sdf-9	clr-1	eak-6	ptp-1	ptp-2	ptp-3	ptp-4	egg-5	egg-4	egg-3	ida-1	
+Peptidase C1A, papain C-terminal		cpr-6	cpr-5	cpr-4	cpr-3	cpr-1	
+Peptidase M12A		toh-1	nas-30	nas-31	nas-10	nas-32	nas-11	nas-33	nas-12	nas-13	nas-36	nas-14	nas-37	nas-9	nas-15	nas-38	nas-16	nas-8	nas-39	nas-7	nas-17	nas-6	nas-18	nas-19	nas-1	dpy-31	nas-5	nas-4	nas-3	nas-2	nas-20	nas-21	nas-22	nas-23	nas-24	nas-25	nas-27	nas-28	nas-29	hch-1	
+Peptidase M12B, ADAM/reprolysin		mig-17	adt-1	adt-2	sup-17	adm-4	gon-1	unc-71	
+Peptidase S8/S53 domain		egl-3	bli-4	kpc-1	aex-5	tpp-2	
+Peptidase, metallopeptidase		toh-1	zmp-3	nas-30	zmp-1	nas-31	zmp-2	nas-10	nas-32	nas-11	nas-33	nas-12	nas-13	nas-36	nas-14	nas-37	nas-9	nas-15	nas-38	nas-16	nas-8	nas-39	nas-7	nas-17	nas-6	nas-18	nas-19	nas-1	dpy-31	nas-5	nas-4	nas-3	nas-2	nas-20	nas-21	nas-22	nas-23	nas-24	nas-25	nas-27	nas-28	nas-29	hch-1	
+Phosphatidylinositol 3-/4-kinase, catalytic domain		atm-1	atl-1	piki-1	age-1	smg-1	trr-1	let-363	vps-34	
+Pleckstrin homology domain		gap-1	unc-89	pac-1	soc-1	vav-1	gap-2	akt-1	grk-2	dyn-1	cnk-1	ced-12	unc-104	akt-2	grp-1	cnt-1	cnt-2	sos-1	ani-1	efa-6	mtm-5	unc-31	pdk-1	mrck-1	ani-2	ani-3	dkf-2	plc-3	dkf-1	mig-10	tag-52	unc-112	stn-1	tag-325	
+Potassium channel domain		sup-9	twk-12	kcnl-3	unc-58	twk-9	twk-18	twk-7	
+Proteasome alpha-subunit, N-terminal domain		pas-4	pas-5	pas-6	pas-7	pas-1	pas-2	pas-3	
+Proteasome component (PCI) domain		rpn-7	cif-1	eif-3.C	csn-1	csn-3	eif-3.E	csn-2	csn-4	rpn-3	eif-3.K	eif-3.L	rpn-6.1	rpn-6.2	egl-45	rpn-12	
+Protein kinase C-like, phorbol ester/diacylglycerol-binding domain		vav-1	mrck-1	unc-13	pkc-2	dkf-2	pkc-3	dkf-1	ksr-1	let-502	ksr-2	pkc-1	lin-45	mtm-5	dgk-3	dgk-5	tpa-1	
+Protein kinase domain		pek-1	unc-89	max-2	ver-3	air-2	ver-4	nipi-3	ver-1	ver-2	kin-32	nipi-4	pmk-1	pmk-3	pmk-2	lrk-1	ark-1	kin-29	lin-45	sgk-1	mnk-1	mkk-4	src-2	zyg-1	sel-5	mom-4	mrck-1	rskn-2	rskn-1	daf-11	src-1	lin-2	pct-1	zyg-8	dyf-5	let-23	grk-1	akt-1	grk-2	lin-18	akt-2	chk-2	chk-1	nsy-1	ksr-1	dlk-1	csk-1	ksr-2	drl-1	sek-1	scd-2	wee-1.3	mlk-1	wee-1.1	madd-3	gcy-20	svh-4	cdk-12	cmk-1	svh-2	gcy-22	tlk-1	gcy-21	old-1	cdkl-1	nekl-4	nekl-2	nekl-3	cst-1	dkf-2	dkf-1	cam-1	prk-2	gcy-9	mak-2	mak-1	spk-1	gcy-3	gcy-28	gcy-4	gcy-27	gcy-1	gcy-29	gcy-2	par-1	gcy-7	gcy-8	gcy-23	gcy-5	par-4	tpa-1	gcy-6	gcy-25	kin-3	gcy-11	strd-1	unc-43	ddr-1	vrk-1	kin-1	hpk-1	pak-2	pak-1	jkk-1	pig-1	odr-1	gcn-2	pik-1	mbk-2	let-502	sid-3	mbk-1	gcy-17	gcy-19	sad-1	gcy-18	unc-51	gcy-13	gcy-12	gcy-15	gcy-14	daf-4	daf-1	pdk-1	pink-1	ckk-1	jnk-1	daf-2	ttn-1	plk-3	mapk-15	plk-1	rol-3	plk-2	sax-1	vab-1	lit-1	wts-1	unc-22	csnk-1	sma-6	gck-1	sma-5	aak-1	aak-2	dapk-1	cdk-2	gck-3	cdk-1	pkc-2	egl-15	cdk-7	pkc-3	cdk-4	cdk-5	ttbk-6	cdk-8	cdk-9	pkc-1	kgb-1	mpk-1	flr-4	ire-1	rsks-1	gsk-3	bub-1	kin-20	abl-1	cdk-11.1	egl-4	kin-15	frk-1	kin-16	pat-4	mes-1	mig-15	kin-18	kin-19	wnk-1	spe-6	mek-2	mek-1	spe-8	ikke-1	
+Protein kinase, C-terminal		pkc-3	rsks-1	akt-1	akt-2	pkc-1	rskn-2	rskn-1	sax-1	tpa-1	
+Protein-tyrosine phosphatase, catalytic		daf-18	dep-1	sdf-9	pir-1	clr-1	eak-6	ptp-1	ptp-2	ptp-3	ptp-4	egg-5	egg-4	egg-3	mtm-6	mtm-3	mtm-1	ida-1	
+Pumilio homology domain		puf-12	fbf-2	fbf-1	puf-5	puf-6	puf-7	
+RGS domain		grk-1	grk-2	pry-1	rgs-10	rgs-11	rgs-6	rgs-7	rgs-5	rgs-2	rgs-3	rgs-1	axl-1	egl-10	rgs-9	
+RNA helicase, DEAD-box type, Q motif		rde-12	cgh-1	glh-3	glh-4	glh-1	glh-2	hel-1	laf-1	inf-1	
+RNA recognition motif domain		set-2	fox-1	uaf-1	rsp-7	hrp-1	sym-2	sap-49	rsp-3	rsp-4	rsp-5	rsp-6	tofu-6	rnp-1	rsp-1	rsp-2	daz-1	ncbp-2	tdp-1	eif-3.G	cpb-3	cpb-2	din-1	sig-7	cpb-1	
+RecF/RecN/SMC, N-terminal		dpy-27	him-1	smc-6	smc-5	smc-4	smc-3	smcl-1	mix-1	
+Receptor, ligand binding region		gcy-17	gcy-19	gcy-18	gcy-13	gcy-12	gcy-15	gcy-14	gcy-20	gcy-22	mgl-1	daf-11	glr-1	glr-2	gbb-2	gcy-9	gbb-1	gcy-3	gcy-28	gcy-4	gcy-1	gcy-29	gcy-2	gcy-7	gcy-8	gcy-23	gcy-5	gcy-6	gcy-25	
+Rhodanese-like domain		cdc-25.1	moc-3	cdc-25.2	cdc-25.3	mpst-1	mpst-4	vhp-1	
+Ricin B, lectin domain		gly-9	gly-6	gly-7	gly-11	gly-4	gly-5	gly-3	gly-10	
+SANT domain		saeg-1	egl-27	spr-1	isw-1	gei-8	
+SANT/Myb domain		saeg-1	egl-27	spr-1	snpc-4	isw-1	gei-8	
+SET domain		set-1	set-2	set-3	set-9	set-23	set-25	set-4	mes-4	set-26	met-2	blmp-1	mes-2	lin-59	
+SH2 domain		src-2	vav-1	emb-5	ced-2	sem-5	sta-1	abl-1	sta-2	src-1	soem-1	ptp-2	frk-1	plc-3	shc-1	csk-1	spe-8	
+SH3 domain		unc-89	vav-1	dlg-1	ark-1	ape-1	csk-1	sid-3	fut-8	stam-1	mlk-1	rrc-1	toca-1	src-2	toca-2	prx-13	ced-2	sem-5	unc-57	abl-1	nph-1	src-1	plc-3	lst-4	lin-2	hum-6	
+SMCs flexible hinge		dpy-27	him-1	smc-4	smc-3	mix-1	
+SNF2-related, N-terminal domain		xnp-1	ssl-1	chd-3	let-418	smrc-1	isw-1	
+Serine-threonine/tyrosine-protein kinase, catalytic domain		gcy-11	ddr-1	ver-3	ver-4	ver-1	ver-2	kin-32	nipi-4	ark-1	sid-3	gcy-17	lin-45	gcy-18	gcy-13	gcy-12	gcy-15	gcy-14	src-2	daf-1	daf-2	mom-4	daf-11	src-1	rol-3	vab-1	let-23	lin-18	egl-15	ksr-1	dlk-1	csk-1	ksr-2	scd-2	mlk-1	gcy-20	svh-4	svh-2	gcy-22	gcy-21	old-1	abl-1	kin-15	frk-1	kin-16	pat-4	mes-1	cam-1	gcy-9	gcy-3	gcy-28	gcy-4	gcy-27	spe-8	gcy-1	gcy-29	gcy-2	gcy-8	gcy-23	gcy-5	gcy-6	gcy-25	
+Serine/threonine-specific protein phosphatase/bis(5-nucleosyl)-tetraphosphatase		pph-5	tax-6	pph-4.2	gsp-1	pph-4.1	gsp-3	gsp-2	let-92	gsp-4	pef-1	pph-6	
+ShKT domain		suro-1	tyr-3	nas-31	tyr-1	nas-10	nas-32	mlt-7	nas-11	nas-12	nas-13	skpo-1	nas-14	nas-9	nas-15	nas-8	nas-7	nas-6	mab-7	
+Small GTP-binding protein domain		ced-10	evl-20	nog-1	rho-1	rab-18	rap-1	arl-1	rab-28	drn-1	ran-1	rab-6.1	arc-1	rab-6.2	let-60	kbrl-1	rheb-1	rsef-1	gfm-1	arf-1.2	rac-2	rab-3	arl-3	arf-1.1	arl-5	arl-6	rab-11.1	rab-10	eef-2	rab-33	cdc-42	
+Sterile alpha motif domain		tir-1	cnk-1	stim-1	shn-1	syd-2	
+Sterol-sensing domain		ptc-1	ptc-3	ptr-9	ncr-1	ncr-2	
+THIF-type NAD/FAD binding fold		aos-1	moc-3	uba-5	uba-2	rfl-1	ula-1	
+TOG domain		cls-1	che-12	cls-3	cls-2	zyg-9	
+Target SNARE coiled-coil homology domain		unc-64	syx-5	snap-29	syx-4	syx-6	syx-3	syx-2	aex-4	
+Tetratricopeptide repeat-containing domain		sti-1	dyf-13	ctr-9	rpy-1	mat-3	bbs-4	dyf-1	fic-1	mat-1	bbs-8	ttc-36	klc-2	pph-5	emb-27	ogt-1	ift-139	trd-1	
+Thioredoxin domain		pdi-2	png-1	pdi-1	txdc-9	erp-44.2	pdi-6	trx-1	trx-2	prdx-3	
+Tim10-like		ddp-1	tin-9.1	tin-13	tin-9.2	tin-10	
+Transcription factor, GTP-binding domain		eef-2	nst-1	eft-4	eft-3	gfm-1	cgp-1	
+Translation elongation factor EFTu-like, domain 2		eef-2	eft-4	eft-3	gfm-1	cgp-1	
+Tubulin/FtsZ, 2-layer sandwich domain		tba-2	tbb-2	tbb-4	mec-7	tbg-1	tba-8	mec-12	
+Tubulin/FtsZ, GTPase domain		tba-2	tbb-2	tbb-4	mec-7	tbg-1	tba-8	mec-12	
+Tyrosine specific protein phosphatases domain		dep-1	pir-1	clr-1	eak-6	vhp-1	ptp-1	cel-1	ptp-2	ptp-3	ptp-4	egg-5	cdc-14	egg-4	lip-1	ida-1	
+Tyrosine-protein kinase, catalytic domain		let-23	ver-3	ver-4	ver-2	kin-32	egl-15	ark-1	csk-1	sid-3	ksr-2	scd-2	svh-4	src-2	svh-2	daf-2	old-1	abl-1	src-1	kin-15	frk-1	kin-16	mes-1	cam-1	lin-2	spe-8	
+UBX domain		ubxn-1	ubxn-2	ubxn-3	ubxn-4	ubxn-5	ubxn-6	
+UDP-glycosyltransferase family, conserved site		ugt-50	ugt-60	ugt-48	ugt-58	ugt-46	ugt-56	ugt-55	
+Ubiquitin domain		usp-14	tbcb-1	ubq-2	ubl-5	ubq-1	bag-1	ned-8	art-1	ubql-1	ubl-1	smo-1	
+Ubiquitin-conjugating enzyme E2		ubc-25	ubc-13	ubc-7	ubc-17	ubc-1	uev-1	let-70	uev-3	ubc-21	ubc-12	ubc-9	
+Vitellinogen, open beta-sheet		vit-1	vit-2	vit-3	vit-4	vit-5	vit-6	
+WD40-repeat-containing domain		rba-1	gpb-2	gpb-1	hira-1	wdr-5.1	mes-6	dyf-2	wdr-12	npp-20	gad-1	wdr-5.3	wdr-5.2	eif-3.I	rack-1	npp-18	ufd-3	atg-16.2	lin-23	smu-1	atg-16.1	sorf-2	sel-2	rbbp-5	prp-19	unc-78	copb-2	wdr-20	unc-37	wdfy-2	daf-10	rae-1	wdr-48	wdr-23	elp-1	cor-1	pro-1	bub-3	sel-10	wdr-4	mec-15	lis-1	lin-53	eipr-1	fzy-1	
+WW domain		feh-1	hecw-1	dys-1	tag-325	yap-1	
+Zinc finger C2H2-type		che-1	ubxn-1	ztf-1	mnm-2	ztf-17	zag-1	blmp-1	hbl-1	arc-1	unc-98	vms-1	zfp-2	saeg-1	dpff-1	tra-1	spr-4	spr-3	mep-1	sdc-1	lin-13	dys-1	odd-2	lir-3	odd-1	lin-36	ztf-30	mcd-1	
+Zinc finger, CCCH-type		rnf-113	mbl-1	pie-1	mex-6	oma-2	mex-5	oma-1	moe-3	rege-1	sut-2	
+Zinc finger, CCHC-type		lin-28	glh-3	glh-4	glh-1	glh-2	
+Zinc finger, FYVE-related		unc-10	lst-2	wdfy-2	rbf-1	mtm-3	
+Zinc finger, GATA-type		egl-27	spr-1	elt-1	elt-2	elt-7	
+Zinc finger, LIM-type		pin-2	unc-97	zyx-1	ttx-3	pxl-1	ceh-14	unc-95	lin-11	mec-3	
+Zinc finger, PHD-finger		dpff-1	rbr-2	nurf-1	lin-49	chd-3	set-9	let-418	lin-59	set-26	
+Zinc finger, PHD-type		dpff-1	rbr-2	slx-1	nurf-1	rpy-1	lin-49	chd-3	set-9	let-418	lin-59	set-26	jmjd-1.2	
+Zinc finger, RING-type		rnf-121	rpy-1	apc-11	chd-3	rnf-5	rpm-1	rfp-1	vps-41	nhl-1	brc-1	brd-1	rle-1	arc-1	rnf-113	rde-11	plr-1	vps-11	prx-10	prx-12	sel-11	brap-2	siah-1	hrdl-1	nfx-1	rbx-1	
+Zinc finger, nuclear hormone receptor-type		nhr-5	nhr-106	nhr-4	nhr-3	nhr-108	nhr-2	hizr-1	nhr-1	nhr-90	odr-7	nhr-91	nhr-10	nhr-54	nhr-98	nhr-53	nhr-97	nhr-96	nhr-52	nhr-51	nhr-14	nhr-13	nhr-57	nhr-12	nhr-150	nhr-55	nhr-11	nhr-153	nhr-18	nhr-197	nhr-111	nhr-16	nhr-199	nhr-154	nhr-59	nhr-115	nhr-19	sex-1	daf-12	nhr-86	nhr-42	nhr-85	nhr-41	nhr-40	nhr-47	nhr-89	nhr-44	nhr-164	nhr-49	nhr-48	nhr-121	nhr-124	nhr-167	nhr-169	nhr-125	nhr-127	nhr-71	nhr-31	nhr-75	nhr-79	nhr-35	nhr-34	nhr-77	nhr-174	nhr-130	nhr-133	nhr-134	nhr-213	nhr-136	unc-55	nhr-218	nhr-217	nhr-61	nhr-60	nhr-65	nhr-20	nhr-64	nhr-62	nhr-25	nhr-69	nhr-23	nhr-67	nhr-22	nhr-28	nhr-100	nhr-9	nhr-8	nhr-7	nhr-6	nhr-268	nhr-103	
+von Willebrand factor, type A		nra-1	clec-160	unc-36	dig-1	mup-4	mua-3	cpna-2	irg-7	rpn-10	cpna-1	
+von Willebrand factor, type D domain		vit-1	vit-2	vit-3	vit-4	vit-5	vit-6	

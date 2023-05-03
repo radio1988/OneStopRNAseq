@@ -1,0 +1,40 @@
+aging_variant		glp-1	prx-5	daf-16	spr-3	daf-2	sod-3	pot-2	sip-1	mtl-1	
+alimentary_system_development_variant		htz-1	pho-1	mys-1	pha-4	ssl-1	hpl-2	hpl-1	
+alimentary_system_morphology_variant		htz-1	pho-1	mys-1	pha-4	ssl-1	hpl-2	hpl-1	
+alimentary_system_physiology_variant		htz-1	pho-1	mys-1	pha-4	ssl-1	hpl-2	hpl-1	
+cell_component_localization_variant		htz-1	hcp-3	cah-6	lig-4	C56E6.2	pdr-1	sol-1	cah-1	glr-1	aex-3	
+cell_component_morphology_variant		unc-44	htz-1	rabx-5	hpl-2	dpy-23	rpm-1	hpl-1	htas-1	F46C5.9	pmk-3	usp-46	C56E6.2	unc-52	aex-3	ubh-1	unc-33	epi-1	sep-1	cpar-1	rme-6	him-10	hcp-3	mak-2	knl-1	mec-7	mec-12	
+cell_cycle_variant		his-71	clh-3	htz-1	his-72	hcp-3	cdc-25.1	sep-1	cpar-1	knl-2	knl-1	him-10	
+cell_death_variant		kvs-1	ced-3	spk-1	wah-1	mec-10	mec-4	aex-3	
+cell_differentiation_variant		his-71	set-1	htz-1	his-72	hpl-2	hpl-1	ceh-22	mys-1	mys-2	cdc-25.1	sfa-1	utx-1	gld-1	
+cell_division_variant		his-71	htz-1	his-72	hcp-3	cdc-25.1	sep-1	cpar-1	mak-2	rpm-1	htas-1	knl-1	him-10	
+cell_growth_variant		egl-15	unc-33	htz-1	T25C12.3	sfa-1	hpl-2	unc-115	igdb-2	hpl-1	snx-3	sup-12	
+cell_homeostasis_metabolism_variant		clh-3	htz-1	mys-1	mys-2	ceh-22	utx-1	
+cell_membrane_physiology_variant		epi-1	C42C1.9	unc-115	igdb-2	rpm-1	snx-3	sel-12	glr-1	K05C4.11	C56E6.2	mak-2	sol-1	mec-10	unc-52	mec-4	aex-3	
+cell_position_defective		gpa-16	vab-7	gpr-1	F46C5.9	acl-9	acl-8	bus-18	cyn-4	ipla-1	aph-2	pod-1	pod-2	lin-22	fem-3	acs-7	let-99	spd-1	ser-5	goa-1	spon-1	F52C9.7	spe-4	spe-42	mog-4	mog-2	mec-7	spe-9	mog-1	mec-12	mog-5	
+cell_secretion_variant		htz-1	rabx-5	fox-1	dpy-23	pot-2	htas-1	E02H1.2	F46C5.9	pmk-3	sir-2.4	C56E6.2	utx-1	wah-1	exc-7	aex-3	str-217	F18A1.6	daf-16	daf-2	sep-1	cpar-1	ceh-22	rme-6	mys-1	hcp-3	mys-2	mec-8	
+cell_size_decreased		C08H9.3	vang-1	gas-1	pmt-1	C30F12.4	mev-1	dhs-28	C13C4.5	rrf-1	pkg-1	pod-2	lin-23	hsp-16.1	gcy-12	unc-52	unc-97	daf-16	rsks-1	daf-2	ced-3	iars-1	spd-5	ncl-1	fat-7	ced-4	fat-6	ced-9	sams-1	cgt-1	C48A7.2	egl-1	cep-1	cgt-3	lmp-1	oxi-1	cgt-2	pld-1	hus-1	gld-1	daf-7	
+cell_type_morphology_variant		htz-1	rabx-5	hpl-2	dpy-23	rpm-1	hpl-1	htas-1	F46C5.9	pmk-3	C56E6.2	utx-1	aex-3	str-217	sep-1	ced-3	cpar-1	ceh-22	rme-6	kvs-1	mys-1	hcp-3	mys-2	cdc-25.1	mak-2	spk-1	lin-12	
+clear		daf-3	daf-28	akt-1	ins-1	ins-18	ins-17	daf-14	ins-7	ins-6	ins-4	ist-1	daf-8	daf-5	
+developmental_morphology_variant		htz-1	ssl-1	hpl-2	hpl-1	htas-1	ceh-22	sel-12	mys-1	mys-2	C56E6.2	pha-4	lin-13	utx-1	aex-3	
+embryonic_cell_physiology_variant		his-71	kvs-1	htz-1	his-72	hcp-3	cdc-25.1	hpl-2	hpl-1	htas-1	knl-1	sel-12	him-10	
+embryonic_development_variant		ubc-14	unc-44	htz-1	ssl-1	hpl-2	hpl-1	htas-1	ape-1	usp-46	utx-1	his-71	ubh-1	unc-33	his-72	pho-1	exo-3	ceh-22	apn-1	ned-8	ubc-20	sel-12	him-10	mys-1	hcp-3	mys-2	pha-4	cdc-25.1	lin-13	let-70	knl-1	
+epithelial_cell_physiology_variant		K05C4.11	sfa-1	deg-1	sol-1	gld-1	mec-10	mec-4	glr-1	dop-4	dop-3	
+genetic_pathway_variant		daf-18	daf-16	daf-2	lig-4	bar-1	age-1	hpl-2	mak-2	akt-2	lin-13	rpm-1	lin-12	
+germ_cell_physiology_variant		his-71	set-1	clh-3	htz-1	his-72	sep-1	cpar-1	hpl-2	hpl-1	htas-1	glr-1	K05C4.11	hcp-3	sol-1	
+larval_physiology_variant		ubc-14	T25C12.3	ned-8	let-70	ubc-20	
+lethal		atg-11	ced-13	ptc-1	gpa-3	ptc-2	lev-8	unc-47	ctl-3	C53H9.2	xol-1	pdr-1	vars-2	Y71G12B.6	hlh-30	mtl-1	unc-50	mtl-2	daf-16	eat-4	vha-19	lgg-1	gst-4	gst-7	algn-7	stt-3	dat-1	B0261.1	W09C3.4	gpa-7	str-2	Y47G6A.19	Y47G6A.18	idhg-1	che-3	hsp-16.2	sod-5	unc-29	F46C5.9	hsf-1	act-2	nmr-1	sek-1	skn-1	eak-7	ins-18	rab-5	let-363	dkf-1	egl-1	ribo-1	unc-63	dop-3	
+life_span_variant		glp-1	daf-18	daf-16	spr-3	daf-2	sir-2.4	sod-3	age-1	pot-2	akt-2	sip-1	mtl-1	
+lineage_variant		htz-1	pho-1	mys-1	mys-2	cdc-25.1	igdb-2	ceh-22	utx-1	
+lumpy		plc-3	ram-5	itr-1	cyn-4	egl-8	ajm-1	
+nervous_system_development_variant		unc-44	unc-33	epi-1	C56E6.2	mak-2	unc-115	nmr-1	rpm-1	unc-52	aex-3	
+nervous_system_morphology_variant		ubh-1	kvs-1	unc-44	unc-33	str-217	epi-1	usp-46	C56E6.2	mak-2	rpm-1	unc-52	aex-3	
+nervous_system_physiology_variant		unc-33	fox-1	T25C12.3	glr-1	kvs-1	K05C4.11	C56E6.2	nmr-1	mec-8	mec-7	sol-1	mec-10	mec-4	exc-7	mec-12	aex-3	
+neuron_development_variant		unc-44	unc-33	epi-1	C56E6.2	mak-2	unc-115	nmr-1	rpm-1	sel-12	unc-52	aex-3	
+neuron_physiology_variant		unc-44	T25C12.3	rpm-1	usp-46	C56E6.2	nmr-1	sol-1	unc-52	aex-3	ubh-1	unc-33	str-217	epi-1	daf-2	unc-115	sel-12	cah-1	glr-1	vab-3	kvs-1	K05C4.11	cah-6	mak-2	deg-1	T15H9.2	mec-7	mec-10	mec-4	mec-12	
+nuclear_division_variant		hcp-3	sep-1	cpar-1	exo-3	apn-1	knl-1	him-10	
+oocyte_physiology_variant		clh-3	htz-1	pho-1	sep-1	cpar-1	hpl-2	hpl-1	htas-1	glr-1	K05C4.11	hcp-3	sqv-3	sol-1	mec-10	mec-4	
+pale		act-1	pkg-1	lbp-8	Y47G6A.23	nrf-6	nrf-5	ndg-4	nhr-80	
+reproductive_system_development_variant		his-71	clh-3	htz-1	his-72	epi-1	hpl-2	hpl-1	htas-1	ceh-22	mys-1	mys-2	lin-13	utx-1	unc-52	
+reproductive_system_morphology_variant		htz-1	epi-1	sep-1	cpar-1	hpl-2	hpl-1	htas-1	ceh-22	mys-1	hcp-3	mys-2	lin-13	utx-1	unc-52	
+reproductive_system_physiology_variant		his-71	clh-3	htz-1	his-72	epi-1	sep-1	cpar-1	hpl-2	hpl-1	htas-1	ceh-22	glr-1	K05C4.11	mys-1	hcp-3	mys-2	lin-13	utx-1	sol-1	unc-52	

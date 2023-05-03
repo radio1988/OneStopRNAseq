@@ -48,6 +48,8 @@ with open(filename) as f:
                 ruleDict[ruleName] = [jobNum, [], []]
 
 # exit()
+# print(ruleDict)
+
 # For each rule, parse out submitted job IDs:
 fileList = [line for line in open(filename)]
 with open(filename) as f:
@@ -73,7 +75,6 @@ with open(filename) as f:
 
 # for key in ruleDict:
 #     print(key, ruleDict[key])
-
 for key in ruleDict:
     jt = ruleDict[key][0] # total job number
     js = len(ruleDict[key][1]) # submitted job number
