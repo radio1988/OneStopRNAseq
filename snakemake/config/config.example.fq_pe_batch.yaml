@@ -43,7 +43,7 @@ RNKS:
 # Optinoal Analysis
 
 # Alternative Splicing analysis (rMATS)
-DEXSEQ_ANALYSIS: True
+DEXSEQ_ANALYSIS: False
 RMATS_ANALYSIS: True
 CONTRAST_AS: meta/contrast.as.xlsx.txt
 RMATS_STRANDNESS:
