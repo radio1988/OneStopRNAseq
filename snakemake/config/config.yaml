@@ -1,20 +1,25 @@
 # Analysis Params
+
+# DATA #
 START: FASTQ # FASTQ, BAM, COUNT, RNK
-PAIR_END: True  # True/False
-ALIGNER: STAR # HISAT2, STAR
-ADAPTORS: workflow/resources/adapters/merged.fa
-STRAND: [0, 1, 2]  
+
+# FASTQ START, ALIGNMENT
+PAIR_END: True  # True/False, only relavent when START is FASTQ
+ALIGNER: STAR # HISAT2, STAR, only relavent when START is FASTQ
+ADAPTORS: workflow/resources/adapters/merged.fa # only relavent when START is FASTQ
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/mm10.ucsc.fa
+
+# FASTQ or BAM START, featureCount
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/gencode.vM25.primary_assembly.annotation.gtf
+STRAND: [0, 1, 2] # only relavent when START is FASTQ or BAM 
         # [0, 1, 2]: auto detect
         # [0]: unstranded
         # [1]: stranded, forward
         # [2]: stranded, reverse
-
-GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/mm10.ucsc.fa
-GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/gencode.vM25.primary_assembly.annotation.gtf
-ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt
-
 MODE: strict # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
 INTRON: False  # will also perform gene level featureCount as well as exon level, and max(gene-count, exon-count) will be taken as gene-count
+
+ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt
 
 # DESeq2
 DESEQ2_ANALYSIS: True
