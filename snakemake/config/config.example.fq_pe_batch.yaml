@@ -66,5 +66,5 @@ TE_REFERENCE: mm # mm, hs, dm, dr
 ASE_ANALYSIS: False
 VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
 
-ASSEMBLY_ANALYSIS: False
+ASSEMBLY_ANALYSIS: True
 # todo: DE analysis with new ASSEMBLY GTF
