@@ -303,9 +303,9 @@ def check_meta_file(fname="meta/meta.txt"):
         raise ValueError(fname + " has duplicated rows, please fix and re-run")
         
 def check_meta_data(config):
-    if config['CONTRAST_DE']:
+    if 'CONTRAST_DE' in config:
         check_contrast_file(config['CONTRAST_DE'])
-    if config['CONTRAST_AS']:
+    if 'CONTRAST_AS' in config:
         check_contrast_file(config['CONTRAST_AS'])
-    if config['META']:
+    if 'META' in config:
         check_meta_file(config['META'])
