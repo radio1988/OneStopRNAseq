@@ -441,6 +441,7 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     zscore.df <- zscore(resdata.sig[, (n1-n2+1):n1])
     rownames(zscore.df) <- resdata.sig[,1]
     colnames(zscore.df) <- gsub (":TPM", "", colnames(zscore.df))
+    colnames(zscore.df) <- gsub (":DESeq2NormalizedCount", "", colnames(zscore.df))
     Heatmap(zscore.df, nclass = 2,
             fname = paste(name, "heatmap", sep="."),
             main = paste(name, "LFC >", min_lfc, "FDR <", max_fdr ))
