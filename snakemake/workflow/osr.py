@@ -255,7 +255,7 @@ def get_strandness_for_stringtie (strandFile="meta/strandness.detected.txt"):
         sys.stderr.write("meta/strandness.detected.txt will be found in real run, not in dry run\n")
         return ("Strand File not found")
 
-def read_length(lengthFile="meta/read_length.txt"):
+def get_read_length(lengthFile="meta/read_length.txt"):
     try:
         with open(lengthFile, 'r') as file:
             txt = file.readline()

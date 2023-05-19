@@ -1,7 +1,7 @@
 import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
-from osr import gunzip, read_length, read_table
+from osr import gunzip, get_read_length, read_table
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, \
 Merge_TE_and_Gene_input, strand_detection_input
@@ -548,11 +548,13 @@ rule QoRTs:
     input:
         bam="sorted_reads/{sample}.bam",
         gtf=config['GTF']
+        length="meta/read_length.txt"
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
         pe = ' ' if PAIR_END else '--singleEnded',
-        aligner = "--minMAPQ 60" if config['ALIGNER'] == 'HISAT2' else "" # only support STAR and HISAT2
+        aligner = "--minMAPQ 60" if config['ALIGNER'] == 'HISAT2' else "", # only support STAR and HISAT2
+        length = get_read_length("meta/read_length.txt")
     conda:
         "envs/java11.yaml"
     resources:
@@ -568,7 +570,7 @@ rule QoRTs:
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
         {params.aligner} \
         {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
-        # --maxReadLength 50 \
+        --maxReadLength {params.length} \
         """
 
 
@@ -1021,10 +1023,9 @@ rule Read_Length_Detection:
         "meta/log/read_length.log"
     run:
         import re
-        import statistics
         lengths = []
         for f in input:
-            p = re.compile("average length:\s*(\d*)")
+            p = re.compile("maximum length:\s*(\d*)")
             for i, line in enumerate(open(f, "r")):
                 for match in re.finditer(p, line):
                     lengths.append(match.group(1))
@@ -1035,10 +1036,9 @@ rule Read_Length_Detection:
         if(len(set(lengths)) > 1):
             print("Not all fastq files have the same length, will give rMATS the median length")
         
-        median_length = int(statistics.median(lengths))
         print(output[0])
         with open(output[0], "w") as out:
-            out.write(str(median_length))
+            out.write(str(max(lengths)))
 
 if config['RMATS_ANALYSIS']:
     rule rMATS:
@@ -1071,7 +1071,7 @@ if config['RMATS_ANALYSIS']:
             b2=lambda wildcards: B2[int(wildcards['ascn'])-1], 
             type="paired" if config['PAIR_END'] else "single", 
             analysis="P" if config['PAIR_END'] else "U", 
-            length=read_length("meta/read_length.txt"), 
+            length=get_read_length("meta/read_length.txt"), 
             strandness=get_strandness("meta/strandness.detected.txt", config),
             MAX_FDR=MAX_FDR
         log:
