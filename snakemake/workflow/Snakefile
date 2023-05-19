@@ -1042,7 +1042,7 @@ rule Read_Length_Detection:
         if(len(set(max_lens)) < 1):
             sys.exit("read lengths detection from BAM failed")
         with open(output[0], "w") as out:
-            out.write(str(statistics.median(median_lens)))
+            out.write(str(int(statistics.median(median_lens))))
         with open(output[1], "w") as out:
             out.write(str(max(max_lens)))
 
