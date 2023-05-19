@@ -547,14 +547,14 @@ rule SAMtools_QC_MultiQc:
 rule QoRTs:
     input:
         bam="sorted_reads/{sample}.bam",
-        gtf=config['GTF']
-        length="meta/read_length.txt"
+        gtf=config['GTF'],
+        length="meta/read_length.max.txt"
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
         pe = ' ' if PAIR_END else '--singleEnded',
         aligner = "--minMAPQ 60" if config['ALIGNER'] == 'HISAT2' else "", # only support STAR and HISAT2
-        length = get_read_length("meta/read_length.txt")
+        length = get_read_length("meta/read_length.max.txt")
     conda:
         "envs/java11.yaml"
     resources:
@@ -1014,7 +1014,8 @@ rule Read_Length_Detection:
             if config['START'] in ["FASTQ", "BAM"]
             else "BAM file not provided. AND can't be generated from FASTQ, because FASTQ not provided"
     output:
-        "meta/read_length.txt"
+        "meta/read_length.median.txt",
+        "meta/read_length.max.txt"
     resources:
         mem_mb=1000,
     threads:
@@ -1023,22 +1024,27 @@ rule Read_Length_Detection:
         "meta/log/read_length.log"
     run:
         import re
-        lengths = []
+        import statistics
+        median_lens = []
+        max_lens = []
         for f in input:
-            p = re.compile("maximum length:\s*(\d*)")
+            p1 = re.compile("average length:\s*(\d*)")
+            p2 = re.compile("maximum length:\s*(\d*)")
             for i, line in enumerate(open(f, "r")):
-                for match in re.finditer(p, line):
-                    lengths.append(match.group(1))
-        lengths = list(map(int, lengths))
-        print("read lengths detected from BAM:", lengths,"\n")
-        if(len(set(lengths)) < 1):
+                for match1 in re.finditer(p1, line):
+                    median_lens.append(match1.group(1))
+                for match2 in re.finditer(p2, line):
+                    max_lens.append(match2.group(1))
+        median_lens = list(map(int, median_lens))
+        max_lens = list(map(int, max_lens))
+        print("average lengths detected from BAM:", median_lens,"\n")
+        print("max lengths detected from BAM:", max_lens,"\n")
+        if(len(set(max_lens)) < 1):
             sys.exit("read lengths detection from BAM failed")
-        if(len(set(lengths)) > 1):
-            print("Not all fastq files have the same length, will give rMATS the median length")
-        
-        print(output[0])
         with open(output[0], "w") as out:
-            out.write(str(max(lengths)))
+            out.write(str(statistics.median(median_lens)))
+        with open(output[1], "w") as out:
+            out.write(str(max(max_lens)))
 
 if config['RMATS_ANALYSIS']:
     rule rMATS:
@@ -1047,7 +1053,7 @@ if config['RMATS_ANALYSIS']:
             b1=lambda wildcards: B1S[int(wildcards['ascn'])-1],
             b2=lambda wildcards: B2S[int(wildcards['ascn'])-1],
             gtf=GTF, 
-            length_file="meta/read_length.txt" , 
+            length_file="meta/read_length.median.txt" , 
             strand_file="meta/strandness.detected.txt",
         output:
             "rMATS.{ascn}/output/Results_JunctionCountsBased/SE.MATS.JC.txt",
@@ -1071,7 +1077,7 @@ if config['RMATS_ANALYSIS']:
             b2=lambda wildcards: B2[int(wildcards['ascn'])-1], 
             type="paired" if config['PAIR_END'] else "single", 
             analysis="P" if config['PAIR_END'] else "U", 
-            length=get_read_length("meta/read_length.txt"), 
+            length=get_read_length("meta/read_length.median.txt"), 
             strandness=get_strandness("meta/strandness.detected.txt", config),
             MAX_FDR=MAX_FDR
         log:
@@ -1441,7 +1447,8 @@ rule reset:
         _STARgenome _STARtmp \
         feature_count_gene_level hisat2 stringtie \
         lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.pdf \
-        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.txt Workflow_DAG.all.pdf.log
+        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.median.txt \
+        meta/read_length.max.txt Workflow_DAG.all.pdf.log
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
