@@ -569,8 +569,8 @@ rule QoRTs:
         """
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
         {params.aligner} \
-        {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
         --maxReadLength {params.length} \
+        {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
         """
 
 

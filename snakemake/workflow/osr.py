@@ -259,8 +259,8 @@ def get_read_length(lengthFile="meta/read_length.txt"):
     try:
         with open(lengthFile, 'r') as file:
             txt = file.readline()
-            print('Length:', txt)
-        return (int(float(txt)))
+            length = int(float(txt))
+        return (length)
     except FileNotFoundError:
         sys.stderr.write(lengthFile + "not found in dry run, will be found in real run\n")
         return (None)
