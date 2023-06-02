@@ -199,7 +199,7 @@ if PAIR_END:
         params:
             trimmer=["ILLUMINACLIP:" + config['ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1500
+            mem_mb=lambda wildcards, attempt: attempt * 1000
         threads:
             4
         log:
@@ -217,7 +217,7 @@ else:
         params:
             trimmer=["ILLUMINACLIP:" + config['ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1500
+            mem_mb=lambda wildcards, attempt: attempt * 1000
         threads:
             4
         log:
@@ -374,9 +374,9 @@ if config['ALIGNER'] == 'STAR':
         conda:
             "envs/star.yaml"
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 3000 
+            mem_mb=lambda wildcards, attempt: attempt * 7680 
         threads:
-            12
+            5
         log:
             "mapped_reads/log/{sample}.bash.log"
         benchmark:
@@ -480,7 +480,7 @@ rule SAMtools_sort:
         "samtools sort -@ {threads} -m 3G {input} -o {output} &> {log}"
 
 
-rule SAMtools_Index:
+rule SAMtools_index:
     input:
         "sorted_reads/{sample}.bam"
     output:
@@ -488,7 +488,7 @@ rule SAMtools_Index:
     conda:
         "envs/samtools.yaml"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000
+        mem_mb=lambda wildcards, attempt: attempt * 500
     threads:
         1
     log:
@@ -628,7 +628,7 @@ rule bamCoverage:
     threads:
         4
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000,
+        mem_mb=lambda wildcards, attempt: attempt * 4000, # 16 GB for tricky cases
     log:
         "bigWig/log/{sample}.{mode}.cpm.bw.log"
     benchmark:
