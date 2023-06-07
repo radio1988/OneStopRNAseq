@@ -13,9 +13,9 @@ params:
   indfilter: FALSE
   cookscutoff: TRUE
   countFile: '../feature_count/counts.s0.strict.txt'
-  annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt'
-  metaFile: "../meta/meta.xlsx.txt"
-  contrastFile:  "../meta/contrast.de.xlsx.txt"
+  annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/hg38.gencode.v34.te_included.anno.txt'
+  metaFile: "../meta/meta.txt"
+  contrastFile:  "../meta/contrast.de.csv"
   blackSamples: 'NA_AAAAXXskjk, NA_BBBXXXYjkdmf'
 ---
 
@@ -89,10 +89,12 @@ fix_hyphen <- function(x){
   return(gsub("-", ".", x))
 }
 
-readExcel <- function(fname){
+readTable <- function(fname){
   if (str_ends(fname, '.txt')){
       df <-  read_delim(fname, delim ="\t", comment = '#') 
-   } else if (str_ends(fname, '.xlsx')){
+   } else if (str_ends(fname, '.csv')){
+     df <-  read_delim(fname, delim =",", comment = '#') 
+   }else if (str_ends(fname, '.xlsx')){
       df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
       df <- data.frame(df)  #important
       #df <- data.frame(lapply(df, fix_hyphen))
@@ -450,10 +452,10 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
 
 ## Importing data
 ```{r read_meta_data}
-meta.df <- readExcel(metaFile)
+meta.df <- readTable(metaFile)
 meta.df <- meta.df[!(meta.df[, 1] %in% blackSamples), ]
 
-contrast.df <- readExcel(contrastFile)
+contrast.df <- readTable(contrastFile)
 print(contrast.df)
 ```
 
@@ -464,7 +466,7 @@ if (grepl("txt$", countFile)){
   df <- read_delim(countFile, delim ="\t", comment = '#') 
   df <- column_to_rownames(df, 'Geneid')
 } else if (grepl("xlsx$", countFile)){
-  df <- readExcel(countFile)  
+  df <- readTable(countFile)  
 } else {
   stop("input count file not xlsx, nor txt format, abort!!!")
 }
@@ -510,16 +512,16 @@ df <- df[, !(colnames(df) %in% blackSamples)]
 cts <- cts[, !(colnames(cts) %in% blackSamples)]
 
 # check sample names
-if (all(meta.df$SAMPLE_LABEL %in% colnames(cts)) ){
+if (all(meta.df[[1]] %in% colnames(cts)) ){
   cat("all samples in meta.df included in count table")
 } else {
   warning("count-table: ", colnames(cts), "\n")
-  warning("meta-data: ", meta.df$SAMPLE_LABEL, "\n")
+  warning("meta-data: ",meta.df[[1]], "\n")
   stop("some samples in meta not included in count table")
 }
 
 # match order
-cts_idx <- match(meta.df$SAMPLE_LABEL, colnames(cts))
+cts_idx <- match(meta.df[[1]], colnames(cts))
 cts <- cts[,cts_idx]
 
 # Report Summary
@@ -584,8 +586,8 @@ sample_filter <- colSums(cts) >= min_colsum
 
 if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
   kept_samples <-  names(sample_filter)[sample_filter]
-  meta.df <- filter(meta.df, SAMPLE_LABEL %in% kept_samples)
-  group_count <- plyr::count(meta.df, 'GROUP_LABEL')
+  meta.df <- meta.df[meta.df[[1]] %in% kept_samples,]
+  group_count <- plyr::count(meta.df[[2]])
   cts <- cts[expression_filter, sample_filter]
   if (featureCountsFormat) {
     df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
@@ -596,7 +598,7 @@ if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
   }    
   
   # match order
-  meta.df <- meta.df[match(colnames(cts), meta.df$SAMPLE_LABEL), ]
+  meta.df <- meta.df[match(colnames(cts), meta.df[[1]]), ]
   cat(paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples", "\n"))
   cat(paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes", "\n"))
   cat(paste("Data dim after filtering:"))
@@ -673,15 +675,15 @@ if (featureCountsFormat ){
 
 ## Design matrix extracted from meta-data
 ```{r coldata}
-meta_idx <- match(colnames(cts), meta.df$SAMPLE_LABEL)
+meta_idx <- match(colnames(cts), meta.df[[1]])
 meta_idx <- meta_idx[!is.na(meta_idx)]
 meta.df <- meta.df[meta_idx, ]
-cts <- cts[, colnames(cts) %in% meta.df$SAMPLE_LABEL]
+cts <- cts[, colnames(cts) %in% meta.df[[1]]]
 
 
-sample <- factor(meta.df$SAMPLE_LABEL)
-batch <- factor(meta.df$BATCH)
-group <- factor(meta.df$GROUP_LABEL)
+sample <- factor(meta.df[[1]])
+batch <- factor(meta.df[[3]])
+group <- factor(meta.df[[2]])
 
 coldata <- data.frame(row.names=colnames(cts), 
                       sample,
@@ -824,7 +826,7 @@ plotQC_PCA_no_label <- function(dds, fname='pca.pdf') {
 
 plotQC_PCA_no_label(dds, "sample_PCA.pdf")
 
-if (max(unlist(lapply(meta.df$SAMPLE_LABEL, nchar))) <= 36){
+if (max(unlist(lapply(meta.df[[1]], nchar))) <= 36){
   plotQC_PCA(dds, "sample_PCA.labeled.pdf")
 }
 ```
@@ -871,19 +873,17 @@ for (i in 1:dim(contrast.df)[2]){
   # check group_count for all groups in each contrast
   groups <- unique(c(name1$names, name2$names))
   
-  with_sample <- groups %in% group_count$GROUP_LABEL  # count >= 1
+  with_sample <- groups %in% group_count[[1]]  # count >= 1
   if (!all(with_sample)){
     print(paste('some groups in', name, 'has no filtered samples, skipped !!!'))
     print(group_count)
     next
     }
 
-  group_with_reps <- group_count %>%
-     filter(freq >= 2) %>% 
-     dplyr::select(GROUP_LABEL)
+  group_with_reps <-  group_count[[1]][group_count$freq >= 2]
   
-  with_reps1 <- any(name1$names %in% group_with_reps$GROUP_LABEL)
-  with_reps2 <- any(name2$names %in% group_with_reps$GROUP_LABEL)
+  with_reps1 <- any(name1$names %in% group_with_reps)
+  with_reps2 <- any(name2$names %in% group_with_reps)
   
   if (!any(with_reps1, with_reps2)) {
     print(paste('no groups in', name, 'has reps, skipped !!!'))
