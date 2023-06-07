@@ -8,6 +8,8 @@ import shutil
 def read_table(fname='meta/contrast.de.xlsx'):
     if fname.endswith(".txt"):
         df = pd.read_table(fname)
+    elif fname.endswith(".csv"):
+        df = pd.read_csv(fname)
     elif fname.endswith(".xlsx"):
         df = pd.read_excel(fname, engine='openpyxl')
     else:
