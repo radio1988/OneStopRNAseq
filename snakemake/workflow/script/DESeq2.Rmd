@@ -11,7 +11,7 @@ params:
   min_rowsum: 10
   min_colsum: 20000
   indfilter: FALSE
-  cookscutoff: TRUE
+  cookscutoff: FALSE
   countFile: '../feature_count/counts.s0.strict.txt'
   annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/hg38.gencode.v34.te_included.anno.txt'
   metaFile: "../meta/meta.txt"
@@ -579,22 +579,22 @@ if (!TEST){
 ## Filtering
 ```{r filtering}
 min_rowsum <- params$min_rowsum
-expression_filter <- rowSums(cts) >= min_rowsum  # default 10
+gene_filter <- rowSums(cts) >= min_rowsum  # default 10
 
 min_colsum <- params$min_colsum
 sample_filter <- colSums(cts) >= min_colsum
 
-if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
+if (sum(gene_filter) > 2 & sum(sample_filter) >= 4){
   kept_samples <-  names(sample_filter)[sample_filter]
   meta.df <- meta.df[meta.df[[1]] %in% kept_samples,]
   group_count <- plyr::count(meta.df[[2]])
-  cts <- cts[expression_filter, sample_filter]
+  cts <- cts[gene_filter, sample_filter]
   if (featureCountsFormat) {
-    df <- df[expression_filter, c(rep(TRUE,5), sample_filter )]
+    df <- df[gene_filter, c(rep(TRUE,5), sample_filter )]
   }else if (cleanCountFormat) {
-    df <- df[expression_filter, sample_filter]
+    df <- df[gene_filter, sample_filter]
   } else if (osrCountFormat) {
-    df <- df[expression_filter, c(rep(TRUE,3), sample_filter )]
+    df <- df[gene_filter, c(rep(TRUE,3), sample_filter )]
   }    
   
   # match order
@@ -613,6 +613,34 @@ if (sum(expression_filter) > 2 & sum(sample_filter) >= 4){
 }else{
   print("Library size too small: too few genes/samples would be left after filtering, so skipped filtering.")
   print("Please interpret results with caution")
+  file.create('WARNING.LowCountSamples.Caution')
+  sample_filter[1:length(sample_filter)] <- rep(TRUE, length(sample_filter))
+  gene_filter[1:length(gene_filter)] <- rep(TRUE, length(gene_filter))
+  kept_samples <-  names(sample_filter)[sample_filter]
+  meta.df <- meta.df[meta.df[[1]] %in% kept_samples,]
+  group_count <- plyr::count(meta.df[[2]])
+  cts <- cts[gene_filter, sample_filter]
+  if (featureCountsFormat) {
+    df <- df[gene_filter, c(rep(TRUE,5), sample_filter )]
+  }else if (cleanCountFormat) {
+    df <- df[gene_filter, sample_filter]
+  } else if (osrCountFormat) {
+    df <- df[gene_filter, c(rep(TRUE,3), sample_filter )]
+  }    
+  
+  # match order
+  meta.df <- meta.df[match(colnames(cts), meta.df[[1]]), ]
+  cat(paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples", "\n"))
+  cat(paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes", "\n"))
+  cat(paste("Data dim after filtering:"))
+  dim(cts)
+  print(group_count)
+  boxplot(
+            log10(cts+1), 
+            las=2, 
+            main = "Raw Gene Count Distribution After Filtering",
+            ylab = 'log10(count+1)'
+        )
 }
 ```
 
