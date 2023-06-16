@@ -1345,7 +1345,7 @@ rule HISAT2:
         reads=  ["trimmed/{sample}.R1.fastq.gz","trimmed/{sample}.R2.fastq.gz"] \
                     if PAIR_END else \
                 "trimmed/{sample}.fastq.gz",
-        #strandness="meta/strandness.detected.txt"
+        strandness="meta/strandness.detected.txt"
     output:
         bam="hisat2/{sample}.bam",
         bai="hisat2/{sample}.bam.bai"
