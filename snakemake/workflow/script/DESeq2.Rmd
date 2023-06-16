@@ -611,8 +611,8 @@ if (sum(gene_filter) > 2 & sum(sample_filter) >= 4){
             ylab = 'log10(count+1)'
         )
 }else{
-  print("Library size too small: too few genes/samples would be left after filtering, so skipped filtering.")
-  print("Please interpret results with caution")
+  print("WARNING!!!: Library size too small, too few genes/samples would be left after filtering, so skipped filtering.")
+  print("PLEASE interpret results with caution!!!")
   file.create('WARNING.LowCountSamples.Caution')
   sample_filter[1:length(sample_filter)] <- rep(TRUE, length(sample_filter))
   gene_filter[1:length(gene_filter)] <- rep(TRUE, length(gene_filter))
