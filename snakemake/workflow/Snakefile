@@ -346,7 +346,7 @@ if config['ALIGNER'] == 'STAR':
         threads:
             6
         log:
-            "log/star_idx/star_idx.log"
+            INDEX+"/SAindex.log"
         benchmark:
             "log/star_idx/star_idx.benchmark"
         shell:
