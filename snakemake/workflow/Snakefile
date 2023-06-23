@@ -1304,13 +1304,14 @@ rule GATK_ASEReadCounter:
 rule HISAT2_BUILD:
     """
     guided by GTF
-    large RAM needed? More threads more RAM?
+
     with only genome.fa, only takes ~6GB RAM, 20min
     $ hisat2-build -p 16 genome.fa genome
 
-    with transcripts, takes 160GB RAM, 1h
-    $ hisat2-build -p 16 --exon genome.exon --ss genome.ss genome.fa genome_tran
+    with transcripts, takes 160GB RAM, 1h (human t2t, 2023)
+    $ hisat2-build -p 8 --exon genome.exon --ss genome.ss genome.fa genome_tran
     http://daehwankimlab.github.io/hisat2/howto/
+
     """
     input:
         genome=config['GENOME'],
@@ -1323,9 +1324,9 @@ rule HISAT2_BUILD:
     conda:
         "envs/hisat2.yaml" 
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 24000
+        mem_mb=lambda wildcards, attempt: attempt * 42000
     threads:
-        8
+        4
     log:
         config['GENOME'] + '.hisat2_build.log'
     benchmark:
