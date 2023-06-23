@@ -33,11 +33,23 @@ genes_num.sort_index(axis=1, inplace=True)
 te = pd.read_csv(sys.argv[2])
 te_anno = te.iloc[:, 0:1]
 te_num = te.iloc[:, 1:]
+
+# remove TE duplicates
+te_set = set(te.TE)
+gene_set = set(genes.Geneid)
+duplicates = te_set.intersection(gene_set) # example:  {'CR1L'}
+idx = [x not in duplicates for x in te.TE.to_list()]
+
+te = te[idx]
+te_anno = te_anno[idx]
+te_num = te_num[idx]
 te_num.sort_index(axis=1, inplace=True)
 
+# Prep
 empty = pd.DataFrame(index=range(0, te_num.shape[0]), columns=["Chr", "Start", "End", "Strand", "Length"])
 sf_file = find_sf(os.path.dirname(sys.argv[2]))
 sf = pd.read_csv(sf_file, sep="\t")
+sf = sf[idx]
 empty.loc[:, "Length"] = sf.loc[:, "Length"]
 te = pd.concat([te_anno, empty, te_num], axis=1)
 print("SalmonTE: ", te.columns)
@@ -46,6 +58,7 @@ te.columns = genes.columns
 
 # Merge and Output
 merged = genes.append(te, ignore_index=True)
+merged = merged[~merged.Geneid.isna()]
 print("merged.shape", merged.shape)
 # print(merged.head())
 merged.to_csv(sys.argv[3], index=False, sep="\t", na_rep="NA")
