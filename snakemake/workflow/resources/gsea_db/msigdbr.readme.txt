@@ -1,0 +1,4 @@
+for species other than human and mouse, gmt files are hosted at:  https://mccb.umassmed.edu/msigdbr/
+which is created by msigdbr package
+
+for human and mouse, gmt files are downloaded from: https://www.gsea-msigdb.org/gsea/msigdb
