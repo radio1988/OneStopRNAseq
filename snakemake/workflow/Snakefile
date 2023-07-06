@@ -506,6 +506,7 @@ rule SAMtools_QC:
     output:
         stats="bam_qc/stats/{sample}.stats.txt",
         idxstats="bam_qc/idxstats/{sample}.idxstats.txt",
+        flagstat="bam_qc/flagstat/{sample}.flagstat.txt"
     conda:
         "envs/samtools.yaml"
     resources:
@@ -514,21 +515,25 @@ rule SAMtools_QC:
         2
     log:
         idxstats="bam_qc/stats/log/{sample}.stats.log",
-        stats="bam_qc/idxstats/log/{sample}.idxstats.log"
+        stats="bam_qc/idxstats/log/{sample}.idxstats.log",
+        flagstat="bam_qc/flagstat/log/{sample}.flagstat.log"
     shell:
         """
         samtools idxstats {input.bam} > {output.idxstats} 2> {log.idxstats} &
         samtools stats {input.bam} > {output.stats} 2> {log.stats} &
+        samtools flagstat {input.bam} > {output.flagstat} 2> {log.flagstat} &
         wait
         """
 
 rule SAMtools_QC_MultiQc:
     input:
         stats=expand("bam_qc/stats/{sample}.stats.txt", sample=SAMPLES),
-        idxstats=expand("bam_qc/idxstats/{sample}.idxstats.txt", sample=SAMPLES)
+        idxstats=expand("bam_qc/idxstats/{sample}.idxstats.txt", sample=SAMPLES),
+        flagstat=expand("bam_qc/flagstat/{sample}.flagstat.txt", sample=SAMPLES)
     output:
         stats="bam_qc/samtools_stats_multiqc_report.html",    
         idxstats="bam_qc/samtools_idxstats_multiqc_report.html",   
+        flagstat="bam_qc/samtools_flagstat_multiqc_report.html",   
     conda:
         "envs/fastqc.yaml"
     resources:
@@ -541,6 +546,7 @@ rule SAMtools_QC_MultiQc:
         """
         multiqc {input.stats} -f -n {output.stats} &> {log}
         multiqc {input.idxstats} -f -n {output.idxstats} &>> {log}
+        multiqc {input.flagstat} -f -n {output.flagstat} &>> {log}
         """
 
 
@@ -602,7 +608,8 @@ rule zip_bam_qc:
         "bam_qc/QoRTs_MultiPlot/plot-basic.pdf",
         "bam_qc/STAR_Align_summary_multiqc_report.html" if config['ALIGNER'] == 'STAR' else "bam_qc/samtools_stats_multiqc_report.html", # todo hisat2
         "bam_qc/samtools_stats_multiqc_report.html",    
-        "bam_qc/samtools_idxstats_multiqc_report.html"
+        "bam_qc/samtools_idxstats_multiqc_report.html",
+        "bam_qc/samtools_flagstat_multiqc_report.html"
     output:
         "bam_qc/bam_qc.zip"
     resources:
