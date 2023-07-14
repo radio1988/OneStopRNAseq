@@ -3,7 +3,7 @@ import pandas as pd
 import re
 
 print("function: make all lower case letters in txt file upper case, remove all spaces/quotes in gene symbols, then save to txt file for GSEA")
-print("usage: fix_gsea_input.py file.xlsx/file.txt/file.rnk")
+print("usage: rnk_to_upper.py file.xlsx/file.txt/file.rnk")
 print("path/file.txt or path/file.xlsx will be converted to path/file.rnk.txt")
 
 
@@ -29,8 +29,12 @@ else:
 print("input:\n", fname, "\n", df.head())
 
 def containslower(string):
-    if any(char.islower() for char in string):
-        return (True)
+    if string:
+        string = str(string)
+        if any(char.islower() for char in string):
+            return (True)
+        else:
+            return(False)
     else:
         return(False)
 
