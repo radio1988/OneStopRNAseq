@@ -660,9 +660,10 @@ rule featureCounts_EXON:
         gtf=GTF
     output:
         COUNT="feature_count/counts.s{strand}.{mode}.txt",
+        read_assignment="feature_count/*.featureCounts",
         summary="feature_count/counts.s{strand}.{mode}.txt.summary"
     params:
-        pe = '-p' if PAIR_END else ' ', 
+        pe = '-p -R CORE' if PAIR_END else '-R CORE', 
         mode = '-Q 20 --minOverlap 1 --fracOverlap 0 -B -C' \
                 if MODE == 'strict' else \
                 '-M -Q 0 --primary --minOverlap 1 --fracOverlap 0'
@@ -719,9 +720,10 @@ rule featureCounts_GENE:
         gtf=GTF
     output:
         ct = 'feature_count_gene_level/counts.s{strand}.{mode}.txt',
+        read_assignment = 'feature_count_gene_level/*.featureCounts',
         summary = 'feature_count_gene_level/counts.s{strand}.{mode}.txt.summary'
     params:
-        pe = '-p -B -C ' if PAIR_END else ' ',
+        pe = '-p -B -C -R CORE' if PAIR_END else '-R CORE',
         mode = '-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
     conda:
         "envs/subread.yaml" 
