@@ -660,7 +660,7 @@ rule featureCounts_EXON:
         gtf=GTF
     output:
         COUNT="feature_count/counts.s{strand}.{mode}.txt",
-        read_assignment="feature_count/*.featureCounts",
+        # read_assignment="feature_count/*.featureCounts",
         summary="feature_count/counts.s{strand}.{mode}.txt.summary"
     params:
         pe = '-p -R CORE' if PAIR_END else '-R CORE', 
@@ -720,7 +720,7 @@ rule featureCounts_GENE:
         gtf=GTF
     output:
         ct = 'feature_count_gene_level/counts.s{strand}.{mode}.txt',
-        read_assignment = 'feature_count_gene_level/*.featureCounts',
+        # read_assignment = 'feature_count_gene_level/*.featureCounts',
         summary = 'feature_count_gene_level/counts.s{strand}.{mode}.txt.summary'
     params:
         pe = '-p -B -C -R CORE' if PAIR_END else '-R CORE',
