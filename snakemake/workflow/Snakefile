@@ -18,7 +18,8 @@ configfile: "config.yaml"
 containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
 
-check_meta_data(config)
+if config["START"] != 'RNK':
+    check_meta_data(config)
 
 def GSEA_OUTPUT(config):
     L = []
