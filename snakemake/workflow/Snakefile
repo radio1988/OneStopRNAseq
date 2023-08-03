@@ -478,7 +478,10 @@ rule SAMtools_sort:
     benchmark:
         "sorted_reads/log/{sample}.bam.benchmark"
     shell:
-        "samtools sort -@ {threads} -m 3G {input} -o {output} &> {log}"
+        """
+        rm -f {output}.tmp.*.bam;
+        samtools sort -@ {threads} -m 3G {input} -o {output} &> {log}
+        """
 
 
 rule SAMtools_index:
