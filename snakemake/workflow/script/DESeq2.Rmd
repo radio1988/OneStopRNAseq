@@ -5,6 +5,7 @@ output:
     toc: yes
     code_folding: hide
     toc_float: yes
+    css: DESeq2.css
 params: 
   max_fdr: 0.05
   min_lfc: 0.585
@@ -19,16 +20,20 @@ params:
   blackSamples: 'NA_AAAAXXskjk, NA_BBBXXXYjkdmf'
 ---
 
-## Notes:
-- Please search for “Warning” in this report for possible problems before proceeding
+## User ReadME:
+- Please search for **“Warning”** in this report for possible problems before proceeding
 -	Normalized expression values, differentially expressed genes, and various types of plots such as heatmap and volcano plots are in the DESeq2 folder. For example, TPM.xlsx contains normalized expression values.
 - Please use LFC_shrunken for Log2FoldChange, LFC_raw is not recommended
 - Please use FDR (padj) instead of raw p-values for identifying significantly differentially expressed genes.
+
+## Developer Log:
 - blackSamples added in params
 - manual dispersion estimation when DESeq() fails
 
-
 ```{r setup, include=F}
+# Include custom CSS for styling
+htmltools::includeCSS("DESeq2.css")
+
 # Bioconductor
 library(BiocManager)
 library(DESeq2)
@@ -85,6 +90,8 @@ cat('blackSamples to remove:', blackSamples)
 
 ## Functions
 ```{r functions}
+htmltools::includeCSS("DESeq2.css")
+
 fix_hyphen <- function(x){
   return(gsub("-", ".", x))
 }
@@ -460,6 +467,7 @@ print(contrast.df)
 ```
 
 ```{r read_count_data}
+htmltools::includeCSS("DESeq2.css")
 # read
 paste('countFile:', countFile)
 if (grepl("txt$", countFile)){
@@ -490,7 +498,10 @@ if (colnames(df)[1] == "Chr" & colnames(df)[2] == "Start" & colnames(df)[3] == "
 } else if (dim(df)[2] == dim(meta.df)[1] + 1){
   cat("clean format table detected\n")
   cleanCountFormat<- T
-  row.names(df) <- df[, 1]
+  if (sum(duplicated(df[,1])) > 0) {
+    warning("count table gene_id not unique, has made it unique to run, but duplicated gene_id not valid for further analysis, please manually check duplicated gene_id")
+    row.names(df) <- make.unique(df[, 1])
+  }
   df[, 2:ncol(df)] <- sapply(df[, 2:ncol(df)], as.integer)
   cts <- as.matrix(df[, 2:ncol(df)])
 } else if (colnames(df)[1] == "Gene" & colnames(df)[2] == "Name" & colnames(df)[3] == "Type") {
@@ -533,6 +544,8 @@ print(dim(cts))
 
 ## Importing annotation
 ```{r import_annotation}
+htmltools::includeCSS("DESeq2.css")
+
 # from GitHub (must be raw, not zipped)
 getAnnotation <- function(urlpath) {
   tmp <- tempfile()
