@@ -919,7 +919,6 @@ if config['DESEQ2_ANALYSIS']:
         shell:
             #Rscript -e rmarkdown::render({params.rmd})
             'cp workflow/script/DESeq2.Rmd DESeq2; '
-            'cp workflow/script/DESeq2.css DESeq2; '
             'Rscript -e "rmarkdown::render( \
             {params.rmd}, \
             params=list( \

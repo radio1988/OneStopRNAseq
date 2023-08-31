@@ -5,7 +5,6 @@ output:
     toc: yes
     code_folding: hide
     toc_float: yes
-    css: DESeq2.css
 params: 
   max_fdr: 0.05
   min_lfc: 0.585
@@ -31,9 +30,6 @@ params:
 - manual dispersion estimation when DESeq() fails
 
 ```{r setup, include=F}
-# Include custom CSS for styling
-htmltools::includeCSS("DESeq2.css")
-
 # Bioconductor
 library(BiocManager)
 library(DESeq2)
@@ -90,7 +86,6 @@ cat('blackSamples to remove:', blackSamples)
 
 ## Functions
 ```{r functions}
-htmltools::includeCSS("DESeq2.css")
 
 fix_hyphen <- function(x){
   return(gsub("-", ".", x))
@@ -467,7 +462,6 @@ print(contrast.df)
 ```
 
 ```{r read_count_data}
-htmltools::includeCSS("DESeq2.css")
 # read
 paste('countFile:', countFile)
 if (grepl("txt$", countFile)){
@@ -544,8 +538,6 @@ print(dim(cts))
 
 ## Importing annotation
 ```{r import_annotation}
-htmltools::includeCSS("DESeq2.css")
-
 # from GitHub (must be raw, not zipped)
 getAnnotation <- function(urlpath) {
   tmp <- tempfile()
