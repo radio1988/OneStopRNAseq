@@ -6,14 +6,18 @@ import math
 import shutil
 
 def read_table(fname='meta/contrast.de.xlsx'):
-    if fname.endswith(".txt"):
-        df = pd.read_table(fname)
-    elif fname.endswith(".csv"):
-        df = pd.read_csv(fname)
-    elif fname.endswith(".xlsx"):
-        df = pd.read_excel(fname, engine='openpyxl')
-    else:
-        sys.exit("fname not xlsx nor txt")
+    try:
+        if fname.endswith(".txt"):
+            df = pd.read_table(fname)
+        elif fname.endswith(".csv"):
+            df = pd.read_csv(fname)
+        elif fname.endswith(".xlsx"):
+            df = pd.read_excel(fname, engine='openpyxl')
+        else:
+            sys.exit("fname not xlsx nor txt")
+    except:
+        sys.exit(">>> Fatal Error: " + fname + " format error, it can't be read correctly." +
+                "\nPlease check if you saved txt file as xlsx or vice versa\n\n")
     return (df)
 
 def gunzip(fname):
@@ -299,16 +303,26 @@ def check_contrast_file(fname="meta/contrast.de.txt"):
     df = read_table(fname)
     if df.transpose().duplicated().any():
         raise ValueError(fname + " has duplicated contrasts, please fix and re-run")
+    if df.shape[0] != 2:
+        raise ValueError(
+                fname + 
+                " does not have three rows:\n" + 
+                "1. contrast-name, e.g. KO_D8_vs_WT\n" + 
+                "2. A group names, e.g. KO_D8 \n" + 
+                "3. B group names, e.g. WT_D0; WT_D2; WT_D8\n" + 
+                "group names can be separated by `;` to combine GROUP_LABELS\n\n")
 
 def check_meta_file(fname="meta/meta.txt"):
     df =  read_table(fname)
     if df.duplicated().any():
         raise ValueError(fname + " has duplicated rows, please fix and re-run")
+    if df.shape[1] != 3:
+        raise ValueError(fname + " does not have three columns: SAMPLE_LABEL\tGROUP_LABEL\tBATCH\n\n")
         
 def check_meta_data(config):
-    if 'CONTRAST_DE' in config:
+    if config['DESEQ2_ANALYSIS']:
         check_contrast_file(config['CONTRAST_DE'])
-    if 'CONTRAST_AS' in config:
+    if config['RMATS_ANALYSIS'] or config['DEXSEQ_ANALYSIS']:
         check_contrast_file(config['CONTRAST_AS'])
-    if 'META' in config:
+    if config['DESEQ2_ANALYSIS'] or config['RMATS_ANALYSIS'] or config['DEXSEQ_ANALYSIS']:
         check_meta_file(config['META'])
