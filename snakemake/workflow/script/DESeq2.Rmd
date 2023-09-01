@@ -12,21 +12,22 @@ params:
   min_colsum: 20000
   indfilter: FALSE
   cookscutoff: FALSE
-  countFile: '../feature_count/counts.s0.strict.txt'
-  annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/hg38.gencode.v34.te_included.anno.txt'
-  metaFile: "../meta/meta.txt"
-  contrastFile:  "../meta/contrast.de.csv"
+  countFile: '../meta/example_featureCounts.mm10.txt'
+  annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt'
+  metaFile: "../meta/meta.csv"
+  contrastFile:  "../meta/contrast.csv"
   blackSamples: 'NA_AAAAXXskjk, NA_BBBXXXYjkdmf'
 ---
 
-## Notes:
-- Please search for “Warning” in this report for possible problems before proceeding
+## User ReadME:
+- Please search for **“Warning”** in this report for possible problems before proceeding
 -	Normalized expression values, differentially expressed genes, and various types of plots such as heatmap and volcano plots are in the DESeq2 folder. For example, TPM.xlsx contains normalized expression values.
 - Please use LFC_shrunken for Log2FoldChange, LFC_raw is not recommended
 - Please use FDR (padj) instead of raw p-values for identifying significantly differentially expressed genes.
+
+## Developer Log:
 - blackSamples added in params
 - manual dispersion estimation when DESeq() fails
-
 
 ```{r setup, include=F}
 # Bioconductor
@@ -85,6 +86,7 @@ cat('blackSamples to remove:', blackSamples)
 
 ## Functions
 ```{r functions}
+
 fix_hyphen <- function(x){
   return(gsub("-", ".", x))
 }
@@ -96,11 +98,11 @@ readTable <- function(fname){
      df <-  read_delim(fname, delim =",", comment = '#') 
    }else if (str_ends(fname, '.xlsx')){
       df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
-      df <- data.frame(df)  #important
       #df <- data.frame(lapply(df, fix_hyphen))
   } else{
       stop("file format not supported")
   }
+  df <- data.frame(df)  #important
   return (df)
 }
 
@@ -462,14 +464,16 @@ print(contrast.df)
 ```{r read_count_data}
 # read
 paste('countFile:', countFile)
-if (grepl("txt$", countFile)){
-  df <- read_delim(countFile, delim ="\t", comment = '#') 
-  df <- column_to_rownames(df, 'Geneid')
-} else if (grepl("xlsx$", countFile)){
-  df <- readTable(countFile)  
-} else {
-  stop("input count file not xlsx, nor txt format, abort!!!")
+df <- readTable(countFile)  
+
+if (sum(duplicated(df[,1])) > 0) {
+  warning("count table gene_id not unique, has made it unique to run, but duplicated gene_id not valid for further analysis, please manually check duplicated gene_id")
+  df[,1] <- make.unique(df[, 1])
 }
+
+row.names(df) = df[,1]
+df = df[2:ncol(df)]
+
 
 # auto-detect content format
 featureCountsFormat <- F
@@ -479,30 +483,22 @@ osrCountFormat <- F
 if (colnames(df)[1] == "Chr" & colnames(df)[2] == "Start" & colnames(df)[3] == "End"){
   cat("featureCounts format table detected\n")
   featureCountsFormat <- T
-  # clean names
   colnames(df) <- gsub("\\.bam$", "", colnames(df))
   colnames(df) <- gsub("sorted_reads.", "", colnames(df))
   colnames(df) <- gsub("mapped_reads.", "", colnames(df))
-  # convert to int
   df[, 6:ncol(df)] <- sapply(df[, 6:ncol(df)], as.integer)
-  # get cts
   cts <- as.matrix(df[, 6:ncol(df)])
-} else if (dim(df)[2] == dim(meta.df)[1] + 1){
+} else if (ncol(df) == dim(meta.df)[1]){
   cat("clean format table detected\n")
   cleanCountFormat<- T
-  row.names(df) <- df[, 1]
-  df[, 2:ncol(df)] <- sapply(df[, 2:ncol(df)], as.integer)
-  cts <- as.matrix(df[, 2:ncol(df)])
-} else if (colnames(df)[1] == "Gene" & colnames(df)[2] == "Name" & colnames(df)[3] == "Type") {
+  df[, 1:ncol(df)] <- sapply(df[, 1:ncol(df)], as.integer)
+  cts <- as.matrix(df[, 1:ncol(df)])
+} else if (colnames(df)[1] == "Name" & colnames(df)[2] == "Type" ) {
   cat("OSR COUNT.xlsx format detected\n")
   osrCountFormat <- T
-  # clean names
   colnames(df) <- gsub(".COUNT", "", colnames(df))
-  # convert to int
-  df[, 4:ncol(df)] <- sapply(df[, 4:ncol(df)], as.integer)
-  row.names(df) <- df$Gene
-  # get cts
-  cts <- as.matrix(df[, 4:ncol(df)])
+  df[, 3:ncol(df)] <- sapply(df[, 3:ncol(df)], as.integer)
+  cts <- as.matrix(df[, 3:ncol(df)])
 } else {
   stop("COUNT file not in featureCounts output format, nor cleanCountFormat format, nor osrCount format. \nMay have different number of samples in meta-data and count-table if cleanCountFormat is provided\n")
 }
@@ -594,7 +590,7 @@ if (sum(gene_filter) > 2 & sum(sample_filter) >= 4){
   }else if (cleanCountFormat) {
     df <- df[gene_filter, sample_filter]
   } else if (osrCountFormat) {
-    df <- df[gene_filter, c(rep(TRUE,3), sample_filter )]
+    df <- df[gene_filter, c(rep(TRUE,2), sample_filter )]
   }    
   
   # match order
