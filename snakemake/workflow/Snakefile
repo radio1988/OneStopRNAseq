@@ -193,10 +193,10 @@ if PAIR_END:
             r1="fastq/{sample}.R1.fastq.gz",
             r2="fastq/{sample}.R2.fastq.gz"
         output:
-            r1="trimmed/{sample}.R1.fastq.gz", 
-            r2="trimmed/{sample}.R2.fastq.gz",
-            r1_unpaired="trimmed/unpaired/{sample}.R1.fastq.gz",
-            r2_unpaired="trimmed/unpaired/{sample}.R2.fastq.gz",
+            r1=temp("trimmed/{sample}.R1.fastq.gz"), 
+            r2=temp("trimmed/{sample}.R2.fastq.gz"),
+            r1_unpaired=temp("trimmed/unpaired/{sample}.R1.fastq.gz"),
+            r2_unpaired=temp("trimmed/unpaired/{sample}.R2.fastq.gz"),
         params:
             trimmer=["ILLUMINACLIP:" + config['ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
         resources:
@@ -214,7 +214,7 @@ else:
         input:
             "fastq/{sample}.fastq.gz",
         output:
-            "trimmed/{sample}.fastq.gz"
+            temp("trimmed/{sample}.fastq.gz")
         params:
             trimmer=["ILLUMINACLIP:" + config['ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
         resources:
@@ -240,6 +240,8 @@ rule FastQC1:
         "fastqc/details_raw/{sample}_fastqc.zip"
     conda:
         "envs/fastqc.yaml"
+    priority:
+        100
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
@@ -262,6 +264,8 @@ rule FastQC_MultiQC1:
         "fastqc/raw_reads_multiqc_report.html"
     conda:
         "envs/fastqc.yaml"
+    priority:
+        100
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
@@ -284,6 +288,8 @@ rule FastQC2:
         "fastqc/details_trimmed/{sample}_fastqc.zip"
     conda:
         "envs/fastqc.yaml"
+    priority:
+        90
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
@@ -306,6 +312,8 @@ rule FastQC_MultiQC2:
         "fastqc/trimmed_reads_multiqc_report.html"
     conda:
         "envs/fastqc.yaml"
+    priority:
+        90
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
@@ -416,6 +424,8 @@ if config['ALIGNER'] == 'STAR':
             report="bam_qc/STAR_Align_summary_multiqc_report.html",    
         conda:
             "envs/fastqc.yaml"
+        priority:
+            80
         resources:
             mem_mb=2000
         threads:
@@ -437,7 +447,7 @@ elif config['ALIGNER'] == 'HISAT2':
                         if PAIR_END else \
                     "trimmed/{sample}.fastq.gz",
         output:
-            bam="mapped_reads/{sample}.bam"
+            bam=temp("mapped_reads/{sample}.bam")
         conda:
             "envs/hisat2.yaml" 
         params:
@@ -672,6 +682,8 @@ rule featureCounts_EXON:
                 '-M -Q 0 --primary --minOverlap 1 --fracOverlap 0'
     conda:
         "envs/subread.yaml" 
+    priority:
+        80
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     threads:
@@ -817,6 +829,8 @@ if config['PAIR_END']:
         output:
             r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
             r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
+        priority:
+            90
         log:
             "fastq_salmon/SalmonTE_prep.log"
         resources:
@@ -838,6 +852,8 @@ rule SalmonTE:
         "SalmonTE_output/EXPR.csv"
     conda:
         "envs/salmonte.yaml"  # test
+    priority:
+        90
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     params:
