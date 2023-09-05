@@ -839,7 +839,7 @@ if config['PAIR_END']:
             1
         run:
             for i,f in enumerate(input):
-                os.system("ln -s "+"../"+input[i] + " " + output[i])
+                os.system("ln  "+"../"+input[i] + " " + output[i])
 
 
 rule SalmonTE:
