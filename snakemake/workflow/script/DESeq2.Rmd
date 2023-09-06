@@ -86,11 +86,6 @@ cat('blackSamples to remove:', blackSamples)
 
 ## Functions
 ```{r functions}
-
-fix_hyphen <- function(x){
-  return(gsub("-", ".", x))
-}
-
 readTable <- function(fname){
   if (str_ends(fname, '.txt')){
       df <-  read_delim(fname, delim ="\t", comment = '#') 
@@ -98,11 +93,9 @@ readTable <- function(fname){
      df <-  read_delim(fname, delim =",", comment = '#') 
    }else if (str_ends(fname, '.xlsx')){
       df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
-      #df <- data.frame(lapply(df, fix_hyphen))
   } else{
       stop("file format not supported")
   }
-  df <- data.frame(df)  #important
   return (df)
 }
 
@@ -471,7 +464,8 @@ if (sum(duplicated(df[,1])) > 0) {
   df[,1] <- make.unique(df[, 1])
 }
 
-row.names(df) = df[,1]
+row.names(df) <- as.list(df[, 1])[[1]]
+
 df = df[2:ncol(df)]
 
 
