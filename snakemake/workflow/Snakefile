@@ -839,7 +839,7 @@ if config['PAIR_END']:
             1
         run:
             for i,f in enumerate(input):
-                os.system("ln  "+"../"+input[i] + " " + output[i])
+                os.system("ln -s "+"../"+input[i] + " " + output[i])
 
 
 rule SalmonTE:
@@ -848,6 +848,8 @@ rule SalmonTE:
         reads=  expand("fastq_salmon/{sample}_{n}.fastq.gz", n = [1,2], sample=SAMPLES) \
                 if PAIR_END else \
                 expand("trimmed/{sample}.fastq.gz", sample=SAMPLES),
+        raw_reads = expand("trimmed/{sample}.R1.fastq.gz", sample=SAMPLES),
+        raw_reads2 = expand("trimmed/{sample}.R2.fastq.gz", sample=SAMPLES)
     output:
         "SalmonTE_output/EXPR.csv"
     conda:
