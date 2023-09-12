@@ -464,10 +464,7 @@ if (sum(duplicated(df[,1])) > 0) {
   df[,1] <- make.unique(df[, 1])
 }
 
-row.names(df) <- as.list(df[, 1])[[1]]
-
-df = df[2:ncol(df)]
-
+df = column_to_rownames(df, var =  colnames(df)[1]) 
 
 # auto-detect content format
 featureCountsFormat <- F
