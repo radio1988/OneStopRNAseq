@@ -228,10 +228,9 @@ for srr in srrList:
         subprocess.call("rm " + filename, shell=True)
     except:
         continue
-    # in case some .sra are under SRR folder:
-    subprocess.call("cd " + fastq_folder + " && mv ./**/*.sra ./ || true", shell = True)
     subprocess.call(cmd, shell=True)
-    
+    # print(cmd)
+
     dump_check = 0
     sleep     = 0
     while (dump_check == 0):
