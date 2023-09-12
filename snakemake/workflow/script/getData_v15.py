@@ -66,7 +66,7 @@ while (efetchSuccess == 0):
     timer = timer + 10
     time.sleep(10)
     if timer > 10000:
-        print("ERROR: " + srr + " efetch bsub failed!")
+        print("ERROR: efetch bsub failed!")
         exit()
 
 srrList = [line.strip() for line in open(efetchResFile)]
@@ -175,6 +175,9 @@ for srr in srrList:
             f.close()
             exit()
 
+    # in case some .sra are under SRR folder:
+    subprocess.call("cd " + fastq_folder + " && mv ./**/*.sra ./ || true", shell = True)
+    
     # Check md5 with vdb-validate command:
     cmd = "cd " + fastq_folder + " && bsub -q short -n 1 -W 4:00 -R rusage[mem=1000] -o " + fastq_folder + "/" + srr + ".md5.log.txt" + " vdb-validate " + srr + ".sra"
     filename = fastq_folder + "/" + srr + ".md5.log.txt"
@@ -228,8 +231,7 @@ for srr in srrList:
         subprocess.call("rm " + filename, shell=True)
     except:
         continue
-    # in case some .sra are under SRR folder:
-    subprocess.call("cd " + fastq_folder + " && mv ./**/*.sra ./ || true", shell = True)
+    
     subprocess.call(cmd, shell=True)
     
     dump_check = 0
