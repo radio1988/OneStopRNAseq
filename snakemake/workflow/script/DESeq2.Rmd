@@ -922,13 +922,9 @@ for (i in 1:dim(contrast.df)[2]){
   res <- lfcShrink(dds, contrast = contrast, type = 'ashr')
   res2 <- results(dds, contrast = contrast, 
                   independentFilter=indfilter, cooksCutoff=cookscutoff)
-  if (featureCountsFormat){
-    process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = tpm)
-  } else if (cleanCountFormat | osrCountFormat){
-      process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = normalized_counts)
-  } else {
-    stop("COUNT table format was wrong")
-  }
+
+  process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = normalized_counts)
+
 } 
 ```
 
