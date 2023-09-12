@@ -143,6 +143,7 @@ for srr in srrList:
 
     # cmd = "cd " + fastq_folder + " && bsub -q short -n 1 -W 4:00 -R rusage[mem=1000] prefetch -O ./ " + srr
     fileName = fastq_folder + "/" + srr + ".sra"
+    fileName2 = fastq_folder + "/" + srr + "/" + srr + ".sra"
 
     if not os.path.isfile(fileName):
         sleep    = 0
@@ -165,6 +166,11 @@ for srr in srrList:
         if os.path.isfile(fileName):
             download = 1
             print(srr + " downloaded!")
+        elif os.path.isfile(fileName2):
+            download = 1
+            print(srr + " downloaded!")
+            # move the .sra out of the containing folder
+            os.rename(fileName2, fileName)
         else:
             time.sleep(10)
             sleep = sleep + 10
@@ -176,7 +182,7 @@ for srr in srrList:
             exit()
 
     # in case some .sra are under SRR folder:
-    subprocess.call("cd " + fastq_folder + " && mv ./**/*.sra ./ || true", shell = True)
+    # subprocess.call("cd " + fastq_folder + " && mv ./**/*.sra ./ || true", shell = True)
     
     # Check md5 with vdb-validate command:
     cmd = "cd " + fastq_folder + " && bsub -q short -n 1 -W 4:00 -R rusage[mem=1000] -o " + fastq_folder + "/" + srr + ".md5.log.txt" + " vdb-validate " + srr + ".sra"
