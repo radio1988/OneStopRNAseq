@@ -1,0 +1,14 @@
+# Goal:
+A memo for developers of OSR only
+
+# Branches and collaboration workflow:
+dev: planned updates
+master: ready to use
+
+workflow:
+only push after tests passed
+
+
+# SCI shared/ folder
+'master': actural folder being used by frontend 
+'dev': for major update tests
