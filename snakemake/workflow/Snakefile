@@ -827,8 +827,8 @@ if config['PAIR_END']:
             r1=expand("trimmed/{sample}.R1.fastq.gz", sample=SAMPLES),
             r2=expand("trimmed/{sample}.R2.fastq.gz", sample=SAMPLES)    
         output:
-            r1=expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES),
-            r2=expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES)
+            r1=temp(expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES)),
+            r2=temp(expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES))
         priority:
             90
         log:
