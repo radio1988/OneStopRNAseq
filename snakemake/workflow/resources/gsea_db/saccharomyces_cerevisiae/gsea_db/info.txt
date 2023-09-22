@@ -1,0 +1,13 @@
+msigdbr:
+C1.gmt              C2-CP-KEGG.gmt          C3-MIR-MIRDB.gmt       C4-CGN.gmt    C5-GO-MF.gmt  C8.gmt
+C2-CGP.gmt          C2-CP-PID.gmt           C3-MIR-MIR_Legacy.gmt  C4-CM.gmt     C5-HPO.gmt    H.gmt
+C2-CP-BIOCARTA.gmt  C2-CP-REACTOME.gmt      C3-TFT-GTRD.gmt        C5-GO-BP.gmt  C6.gmt        link.txt
+C2-CP.gmt           C2-CP-WIKIPATHWAYS.gmt  C3-TFT-TFT_Legacy.gmt  C5-GO-CC.gmt  C7.gmt
+
+yeastenrichr:
+https://maayanlab.cloud/YeastEnrichr/#stats
+Cellular_Component_AutoRIF.gmt          InterPro_Domains_2019.gmt  PPI_Hubs_BioGRID_2018.gmt
+Gene_Interaction_Hubs_BioGRID_2018.gmt  KEGG_2019.gmt              TF2DNA_2018.gmt
+GO_Biological_Process_2018.gmt                             WikiPathways_2018.gmt
+GO_Cellular_Component_2018.gmt          Pfam_Domains_2019.gmt
+GO_Molecular_Function_2018.gmt          Phenotype_AutoRIF.gmt
