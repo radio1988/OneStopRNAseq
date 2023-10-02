@@ -5,6 +5,29 @@ import os
 import math
 import shutil
 
+def check_fastq_size(config,SAMPLES):
+    '''
+    check size of all fastq files
+    MAX_FILE_SIZE specified in config.yaml, unit GB
+    if larger than MAX_FILE_SIZE, stop the workflow(mainly designed for website maintenance)
+    '''
+    if config['PAIR_END']:
+        r1s = ["fastq/"+ s +".R1.fastq.gz" for s in SAMPLES]
+        r2s = ["fastq/"+ s +".R2.fastq.gz" for s in SAMPLES]
+        fastq_files = r1s + r2s
+    else:
+        fastq_files = ["fastq/'+ s +'.fastq.gz" for s in SAMPLES]
+
+    size = 0
+    for f in fastq_files:
+        size += os.path.getsize(f) # will get true size even for softlinks
+
+    if size/1e9 > config['MAX_FASTQ_SIZE']:
+        print('too large:', size/1e9,'G detected')
+        print('only',config['MAX_FASTQ_SIZE'],'G allowed')
+        print(fastq_files)
+        sys.exit('files too large')
+    
 def read_table(fname='meta/contrast.de.xlsx'):
     try:
         if fname.endswith(".txt"):

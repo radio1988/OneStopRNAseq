@@ -1,7 +1,7 @@
 import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
-from osr import gunzip, get_read_length, read_table
+from osr import gunzip, get_read_length, read_table,check_fastq_size
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, \
 Merge_TE_and_Gene_input, strand_detection_input
@@ -84,6 +84,9 @@ if config['START'] != 'RNK':
     SAMPLES=read_table(config['META']).iloc[:,0].tolist()
 else:
     SAMPLES=['placeholder']
+
+if config['START'] == 'FASTQ':
+    check_fastq_size(config,SAMPLES)
 
 # for DESeq2
 if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:

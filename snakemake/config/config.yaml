@@ -75,3 +75,7 @@ ASE_ANALYSIS: False
 VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
 
 ASSEMBLY_ANALYSIS: False
+
+
+# WEBSITE maintenance parameters
+MAX_FASTQ_SIZE: 2000 # Unit GB. The size of all fastq files summed must be smaller than this
