@@ -16,7 +16,7 @@ def check_fastq_size(config,SAMPLES):
         r2s = ["fastq/"+ s +".R2.fastq.gz" for s in SAMPLES]
         fastq_files = r1s + r2s
     else:
-        fastq_files = ["fastq/'+ s +'.fastq.gz" for s in SAMPLES]
+        fastq_files = ["fastq/"+ s +".fastq.gz" for s in SAMPLES]
 
     size = 0
     for f in fastq_files:
