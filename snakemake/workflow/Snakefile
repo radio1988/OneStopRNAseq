@@ -85,7 +85,7 @@ if config['START'] != 'RNK':
 else:
     SAMPLES=['placeholder']
 
-if config['START'] == 'FASTQ':
+if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config: # skip check if config ignored this
     check_fastq_size(config,SAMPLES)
 
 # for DESeq2
