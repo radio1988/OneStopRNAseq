@@ -47,7 +47,7 @@ timer = 0
 gap_efetch = 3000
 gap_prefetch = 9000
 gap_md5check = 1000
-gap_fastq_dump = 10000
+gap_fastq_dump = 50000
 gap_cat_fastq = 1000
 gap_rename = 3000
 
@@ -427,7 +427,7 @@ for srr in srrList:
             timer = timer + 30
         time.sleep(30)
 
-        if (timer // gap_fastq_dump) and not resubmit: # resubmit the job every 10000 seconds in case of the ssh jobs queue error.
+        if (timer // gap_fastq_dump) and not resubmit: # resubmit the job every 50000 seconds in case of the ssh jobs queue error.
             gap_fastq_dump = gap_fastq_dump + gap_fastq_dump
             with open(logFile, "a") as f:
                 now = datetime.now()
@@ -436,7 +436,7 @@ for srr in srrList:
                 os.remove(dumpLogFile)
                 subprocess.call(cmd, shell=True)
 
-        if timer > 20000:
+        if timer > gap_fastq_dump * 2:
             with open(logFile, "a") as f:
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
