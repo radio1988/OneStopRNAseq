@@ -22,3 +22,38 @@ GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/rattus_norvegicus/others/ensembl/
 ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/Rattus_norvegicus.mRatBN7.2.109.anno.txt
 GSEA_DB_PATH: workflow/resources/gsea_db/rattus_norvegicus/gsea_db/
 
+# yeast
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.90.gtf
+ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/Saccharomyces_cerevisiae.R64-1-1.90.anno.txt
+GSEA_DB_PATH: workflow/resources/gsea_db/saccharomyces_cerevisiae/gsea_db/
+
+# worm
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235.dna.toplevel.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235.90.gtf
+ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Caenorhabditis_elegans.WBcel235.90.anno.txt
+GSEA_DB_PATH: workflow/resources/gsea_db/caenorhabditis_elegans/wormEnrichr/
+
+# fruit fly
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/d_melanogaster/Drosophila_melanogaster.BDGP6.dna.primary.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/d_melanogaster/Drosophila_melanogaster.BDGP6.22.96.gtf
+ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Drosophila_melanogaster.BDGP6.22.96.anno.txt
+GSEA_DB_PATH: workflow/resources/gsea_db/drosophila_melanogaster/gsea_db/
+
+# zebra fish
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/danio_rerio/danRer11.primary.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/danio_rerio/dr.v4.3.2.gtf
+ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/dr.v4.3.2.anno.txt
+GSEA_DB_PATH: workflow/resources/gsea_db/danio_rerio/gsea_db/
+
+# soybean
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/glycine_max/Glycine_max.Glycine_max_v2.1.dna_sm.toplevel.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/glycine_max/Glycine_max_v2.1.55.gtf
+ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/envs/anno_tables/Glycine_max_v2.1.55.anno.txt
+GSEA_DB_PATH: None
+
+# tomato
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/solanum_lycopersicum/Solanum_lycopersicum.SL3.0.dna_sm.toplevel.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/solanum_lycopersicum/Solanum_lycopersicum.SL3.0.57.gtf
+ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/Solanum_lycopersicum.SL3.0.57.anno.txt
+GSEA_DB_PATH: None
