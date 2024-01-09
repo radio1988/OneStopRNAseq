@@ -40,15 +40,21 @@ def GSEA_OUTPUT(config):
 def GSEACOMPRESS_OUTPUT(config):
     L = []
     if config["GSEA_ANALYSIS"]:
-        gsea_dbs = []
-        for f in os.listdir(config['GSEA_DB_PATH']):
-            if f.endswith('.gmt'):
-                gsea_dbs.append(f)
-        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
             L = expand("gsea/{contrast}.tar.gz", contrast=CONTRASTS_DE)
         else:
             L = expand("gsea/{contrast}.tar.gz", contrast=config["RNKS"])
+    else:
+        L = ["Workflow_DAG.all.pdf"]
+    return (L)
+
+def GSEA_SINGLEBUBBLE_OUTPUT(config):
+    L = []
+    if config["GSEA_ANALYSIS"]:
+        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done", contrast=CONTRASTS_DE)
+        else:
+            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done", contrast=config["RNKS"])
     else:
         L = ["Workflow_DAG.all.pdf"]
     return (L)
@@ -179,6 +185,7 @@ def target_input(config, ASCN):
     if config['GSEA_ANALYSIS']:
         l.extend(GSEA_OUTPUT(config))
         l.extend(GSEACOMPRESS_OUTPUT(config))
+        l.extend(GSEA_SINGLEBUBBLE_OUTPUT(config))
 
     return (l)
 
@@ -1039,6 +1046,24 @@ rule GSEA_compression:
     shell:
         "tar cf - gsea/{wildcards.contrast} | pigz -p {threads} > {output} "
 
+rule GSEA_SingleBubblePlot:
+    input:
+        "gsea/{contrast}.tar.gz"
+    output:
+        touch('gsea_bubble/log/{contrast}.SingleBubblePlot.done')
+    conda:
+        "envs/deseq2.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    log:
+        'gsea_bubble/log/{contrast}.SingleBubblePlot.log'
+    threads:
+        1
+    benchmark:
+        'gsea_bubble/log/{contrast}.SingleBubblePlot.benchmark'
+    shell:
+        "Rscript workflow/script/gsea_bubble.R {input}"
+
 
 rule Read_Length_Detection:
     input:
@@ -1486,4 +1511,3 @@ rule reset:
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
-
