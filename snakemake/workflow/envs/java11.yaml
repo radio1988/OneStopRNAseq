@@ -6,7 +6,7 @@ channels:
 
 dependencies:
   # conda forge
-  - openjdk=11.0.1 # java for GSEA
+  - openjdk# =11.0.1 # java for GSEA
   # anaconda
   - python=3.8
   - pandas
