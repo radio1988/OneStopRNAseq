@@ -38,19 +38,15 @@ library(EnhancedVolcano)
 # CRAN
 library(tidyverse)
 library(ggplot2)
+library(openxlsx)
+
 library(ggpubr) # ggmaplot
 library(ggrepel)
 library(ashr)
-library(MASS)
-library(WriteXLS)
-library(plyr)
-library(gdata)
-library(dplyr)
-library(RColorBrewer)
+library(MASS) # get_density
+library(RColorBrewer) #pheatmap
 library(pheatmap)
 library(PoiClaClu)  
-library(gridExtra)  
-library(grid)
 if(!require(berryFunctions)){
     install.packages("berryFunctions", repos = "http://cran.us.r-project.org")
     library(berryFunctions)
@@ -92,7 +88,7 @@ readTable <- function(fname){
    } else if (str_ends(fname, '.csv')){
      df <-  read_delim(fname, delim =",", comment = '#') 
    }else if (str_ends(fname, '.xlsx')){
-      df <- readxl::read_xlsx( fname, na='NA', sheet=1)  # na term important
+      df <- read.xlsx( fname, na.strings = 'NA', sheet=1)  # na term important
   } else{
       stop("file format not supported")
   }
@@ -229,8 +225,9 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
     classification$gene_classes <- rename_num_vector_by_order(classification$gene_classes)
     # save excel
     if (!TEST){
-      WriteXLS(classification, row.names = F,
-               paste(fname,"gene_class.xlsx", sep = "."))}
+      write.xlsx(classification, paste(fname,"gene_class.xlsx", sep = "."), 
+                 keepNA = T, na.string = 'NA')
+    }
 
     # get class label
     annotation_row = data.frame(
@@ -376,14 +373,11 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
 
     ## Write results
     if (!TEST){
-      WriteXLS(x = resdata,
-               ExcelFileName = paste(name, 'deseq2.xlsx', sep = '.'),
-               row.names = F, SheetNames = 'sheet1', na = 'NA')  # for user
-      
-      WriteXLS(x = resdata.sig,
-               ExcelFileName = paste(name, 'deseq2.sig.FDR', max_fdr, 
-                                     'LFC', min_lfc, 'xlsx', sep = '.'),
-               row.names = F, SheetNames = 'sheet1', na = 'NA')  # for user
+      write.xlsx(resdata, paste(name, 'deseq2.xlsx', sep = '.'), 
+                 keepNA = T, na.string = 'NA')
+      write.xlsx(resdata.sig, 
+                 paste(name, 'deseq2.sig.FDR', max_fdr, 'LFC', min_lfc, 'xlsx', sep = '.'), 
+                 keepNA = T, na.string = 'NA')
     }
 
     ## For GSEA
@@ -559,7 +553,7 @@ colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
 count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
 head(count_out)
 if (!TEST){
-  WriteXLS(x = count_out, ExcelFileName = 'COUNT.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+  write.xlsx(count_out, 'COUNT.xlsx', keepNA = T, na.string = 'NA')
   print("saved in COUNT.xlsx")}
 ```
 
@@ -653,10 +647,8 @@ if (featureCountsFormat ){
   tpm <- data.frame(tpm)
   colnames(tpm) <- paste(colnames(tpm),"TPM",  sep = ":")
   tpm_out <- merge(anno, tpm, by.x=1, by.y=0, all.y=T, sort=F)
-  # head(tpm_out)
-  # tail(tpm_out)
-  WriteXLS(x = tpm_out, 
-           ExcelFileName = 'TPM.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+  write.xlsx(tpm_out, 'TPM.xlsx', keepNA = T, na.string = 'NA')
+
   print("saved in TPM.xlsx")
 } else {
   cat ("TPM not calculated if COUNT-table is not featureCount format\n")
@@ -679,8 +671,7 @@ if (featureCountsFormat ){
   # head(fpkm_out)
   # tail(fpkm_out)
   if (!TEST){
-    WriteXLS(x = fpkm_out, 
-             ExcelFileName = 'FPKM.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+    write.xlsx(fpkm_out, 'FPKM.xlsx', keepNA = T, na.string = 'NA')
     print("saved in FPKM.xlsx")
     print("Recommend to use TPM, rather than FPKM")}
 } else {
@@ -750,8 +741,7 @@ boxplot(
 colnames(normalized_counts) <- paste(colnames(normalized_counts),"DESeq2NormalizedCount",  sep = ":")
 normalized_counts_out <- merge(anno, normalized_counts, by.x=1, by.y=0, all.y=T, sort=F)
 if (!TEST){
-  WriteXLS(x = normalized_counts_out, 
-           ExcelFileName = 'DESeq2NormalizedCounts.xlsx', row.names = F, SheetNames = 'sheet1', na = 'NA')
+  write.xlsx(normalized_counts_out, 'DESeq2NormalizedCounts.xlsx', keepNA = T, na.string = 'NA')
   print("saved in DESeq2NormalizedCounts.xlsx")
 }
 ```
@@ -848,23 +838,29 @@ if (max(unlist(lapply(meta.df[[1]], nchar))) <= 36){
 
 ### Sample heatmap (Poisson Distance Based)
 ```{r poisson_heatmap}
-colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
-poisd <- PoissonDistance(t(counts(dds)))
-samplePoisDistMatrix <- as.matrix( poisd$dd ) 
-rownames(samplePoisDistMatrix) <- coldata$sample
-colnames(samplePoisDistMatrix) <- NULL 
-colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+PoissonDistanceHeatmap <-  function(){
+  # dist matrix
+  poisd <- PoissonDistance(t(counts(dds)))
+  samplePoisDistMatrix <- as.matrix( poisd$dd ) 
+  rownames(samplePoisDistMatrix) <- coldata$sample
+  colnames(samplePoisDistMatrix) <- NULL
 
-my_sample_col <- data.frame(group = coldata[,'group'])
-row.names(my_sample_col) <- coldata[,'sample']
-pheatmap(samplePoisDistMatrix,
-         annotation_row = my_sample_col,
-         clustering_distance_rows=poisd$dd,
-         clustering_distance_cols=poisd$dd,
-         col=colors, 
-         clustering_method='complete', 
-         legend = T, 
-         filename = "sample_poisson_distance.pdf")
+  # sample_col
+  my_sample_col <- data.frame(group = coldata[,'group'])
+  row.names(my_sample_col) <- coldata[,'sample']
+  
+  pheatmap(samplePoisDistMatrix,
+           annotation_row = my_sample_col,
+           
+           clustering_distance_rows=poisd$dd,
+           clustering_distance_cols=poisd$dd,
+           clustering_method='complete', 
+           legend = T, 
+           col=colorRampPalette( rev(brewer.pal(9, "Blues")) )(255), 
+           
+           filename = "sample_poisson_distance.pdf")
+}
+PoissonDistanceHeatmap()
 ```
 
 ## DE analysis
