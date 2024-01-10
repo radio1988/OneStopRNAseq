@@ -16,12 +16,12 @@ dependencies:
   - r-ggpubr
 
   # bioconda 
-  - bioconductor-deseq2
+  - bioconda::bioconductor-deseq2
   - bioconductor-enhancedvolcano
   - r-ggrepel
   - r-pheatmap 
-  - bioconda::r-openxlsx # faster, up-to-date
-  - perl-compress-raw-zlib
+  - r-openxlsx # faster, up-to-date
+ # - perl-compress-raw-zlib
 
   # r
   - r-tidyverse
