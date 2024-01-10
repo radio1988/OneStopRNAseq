@@ -10,10 +10,6 @@ dependencies:
   # conda-forge
   - r-base=4.0.2
   - r-devtools
-  - r-readxl
-  - r-writexls
-  - r-dplyr
-  - r-plyr 
   - r-ashr 
   - r-poiclaclu
   - r-biocmanager 
