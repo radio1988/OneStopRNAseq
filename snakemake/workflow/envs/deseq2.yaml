@@ -26,7 +26,5 @@ dependencies:
   # r
   - r-tidyverse
   - r-rmarkdown
-  - r-gdata 
-  - r-gridextra 
 
   - anaconda::zip
