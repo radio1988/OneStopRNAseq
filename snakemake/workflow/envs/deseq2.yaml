@@ -24,6 +24,7 @@ dependencies:
   - bioconductor-enhancedvolcano
   - r-ggrepel
   - r-pheatmap 
+  - bioconda::r-openxlsx # faster, up-to-date
   - perl-compress-raw-zlib
 
   # r
