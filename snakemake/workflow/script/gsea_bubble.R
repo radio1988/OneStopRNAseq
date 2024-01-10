@@ -1,6 +1,7 @@
 library(readr)
 library(ggplot2)
 library(tidyverse)
+library(openxlsx)
 
 setClass('gsea_edb', slots=list(gsea_db='character',  # m1.all.v2022
                                 edb_path = 'character', # "gsea/TN_AKT2KO_vs_TN_WT/m1.all.v2022.1.Mm.symbols.gmt.GseaPreranked/edb/results.edb"
@@ -99,7 +100,8 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
     print(paste0('edb_path: ', edb_path))
     
     df <- ReadGseaEdb(rnk_file, edb_path) # sorted by FDR
-    write.csv(df, paste0(dataTables.path, '/', j, '.', basename(rnk_file),'.', name, '.csv'), row.names = F)
+    #write.csv(df, paste0(dataTables.path, '/', j, '.', basename(rnk_file),'.', name, '.csv'), row.names = F)
+    openxlsx::write.xlsx(df, paste0(dataTables.path, '/', j, '.', basename(rnk_file),'.', name, '.xlsx'))
     
     df.sig <- df[df$FDR < max.q, ]
     
@@ -142,7 +144,8 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
   df.merged <- df.merged[order(df.merged$MAX_ABS_NES, decreasing = T),]
   df.union <- dplyr::filter(df.merged, GENESET %in% genesets.anysig)
   df.union[, grep('ABS_NES', colnames(df.union))]
-  write.csv(df.union, paste0(mergedTables.path,'/union.', name, '.csv'), row.names = F)
+  #write.csv(df.union, paste0(mergedTables.path,'/union.', name, '.csv'), row.names = F)
+  openxlsx::write.xlsx(df.union, paste0(mergedTables.path,'/union.', name, '.xlsx'))
   
   print(paste("There are", dim(df.merged)[1], 'genesets sig in ≥1 GSEA'))
   print(paste("There are", dim(df.union)[1], 'such genesets has data in all GSEA'))
