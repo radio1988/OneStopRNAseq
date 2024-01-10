@@ -186,6 +186,7 @@ def target_input(config, ASCN):
         l.extend(GSEA_OUTPUT(config))
         l.extend(GSEACOMPRESS_OUTPUT(config))
         l.extend(GSEA_SINGLEBUBBLE_OUTPUT(config))
+        l.append('gsea_bubble/log/MultiBubblePlot.done')
 
     return (l)
 
@@ -1064,6 +1065,29 @@ rule GSEA_SingleBubblePlot:
     shell:
         "Rscript workflow/script/gsea_bubble.R {input} {wildcards.contrast} &> {log}"
 
+if config["GSEA_ANALYSIS"]:
+    if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+        GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz", contrast=CONTRASTS_DE)
+    else:
+        GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz", contrast=config["RNKS"])
+
+rule GSEA_MultiBubblePlot:
+    input:
+        GSEA_compression_OUTPUT
+    output:
+        touch('gsea_bubble/log/MultiBubblePlot.done')
+    conda:
+        "envs/deseq2.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    log:
+        'gsea_bubble/log/MultiBubblePlot.log'
+    threads:
+        1
+    benchmark:
+        'gsea_bubble/log/MultiBubblePlot.benchmark'
+    shell:
+        "Rscript workflow/script/gsea_bubble.R {input} MultiBubblePlot &> {log}"
 
 rule Read_Length_Detection:
     input:
