@@ -1062,7 +1062,7 @@ rule GSEA_SingleBubblePlot:
     benchmark:
         'gsea_bubble/log/{contrast}.SingleBubblePlot.benchmark'
     shell:
-        "Rscript workflow/script/gsea_bubble.R {input}"
+        "Rscript workflow/script/gsea_bubble.R {input} {wildcards.contrast} &> {log}"
 
 
 rule Read_Length_Detection:

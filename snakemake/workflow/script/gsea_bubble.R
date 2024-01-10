@@ -50,8 +50,10 @@ args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) > 0) {
   print("Options provided:")
-  print(args)
-  data_files <- args # a list of '../top10.rnk.txt.tar.gz'..
+  print(args[1:length(args)-1])
+  outname <- args[length(args)]
+  print(outname)
+  data_files <- args[1:length(args)-1] # a list of '../top10.rnk.txt.tar.gz'..
 }else {
   stop("No gsea.tar.gz files were provided.")
 }
@@ -61,10 +63,15 @@ e <- 0.001
 max.n <- 100 # max num of gene sets in plots, if 0, skips filtering
 
 # PREP
-dir.create('multiBubble', showWarnings = FALSE)
-dir.create('fdr_nes', showWarnings = FALSE)
-dir.create('dataTables', showWarnings = FALSE)
-dir.create('mergedTables', showWarnings = FALSE)
+dir.create('gsea_bubble', showWarnings = FALSE)
+multiBubble.path <- file.path('gsea_bubble',outname,'multiBubble')
+fdr_nes.path <- file.path('gsea_bubble',outname,'fdr_nes')
+dataTables.path <- file.path('gsea_bubble',outname,'dataTables')
+mergedTables.path <- file.path('gsea_bubble',outname,'mergedTables')
+dir.create(multiBubble.path, showWarnings = FALSE, recursive = TRUE)
+dir.create(fdr_nes.path, showWarnings = FALSE, recursive = TRUE)
+dir.create(dataTables.path, showWarnings = FALSE, recursive = TRUE)
+dir.create(mergedTables.path, showWarnings = FALSE, recursive = TRUE)
 n <- length(data_files)
 
 edbpaths1 <- grep("edb/results.edb$", untar(data_files[1], list = T), value = TRUE)
@@ -86,12 +93,13 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
     name <- basename(paste0(unlist(strsplit(x = edb_path, split = '\\.'))[1:3], collapse = '.'))
     # "m1.all.v2022"
     
+    print(">>>")
     print(paste0('gsea_db', i, ': ', name))
     print(paste0('rnk_file', j, ": ", rnk_file))
     print(paste0('edb_path: ', edb_path))
     
     df <- ReadGseaEdb(rnk_file, edb_path) # sorted by FDR
-    write.csv(df, paste0('dataTables/', j, '.', basename(rnk_file),'.', name, '.csv'), row.names = F)
+    write.csv(df, paste0(dataTables.path, '/', j, '.', basename(rnk_file),'.', name, '.csv'), row.names = F)
     
     df.sig <- df[df$FDR < max.q, ]
     
@@ -134,7 +142,7 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
   df.merged <- df.merged[order(df.merged$MAX_ABS_NES, decreasing = T),]
   df.union <- dplyr::filter(df.merged, GENESET %in% genesets.anysig)
   df.union[, grep('ABS_NES', colnames(df.union))]
-  write.csv(df.union, paste0('mergedTables/union.', name, '.csv'), row.names = F)
+  write.csv(df.union, paste0(mergedTables.path,'/union.', name, '.csv'), row.names = F)
   
   print(paste("There are", dim(df.merged)[1], 'genesets sig in ≥1 GSEA'))
   print(paste("There are", dim(df.union)[1], 'such genesets has data in all GSEA'))
@@ -168,7 +176,7 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
          color = "Comparison") +
     theme_minimal() 
   
-  ggsave(paste0('multiBubble/', name, '.MultiBubblePlot.pdf'), 
+  ggsave(paste0(multiBubble.path,'/', name, '.MultiBubblePlot.pdf'), 
          mplot,    
          width = max(nchar(data$GeneSet))/10 + 5,
          height = nrow(data)/22 + 1, 
@@ -177,7 +185,7 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
   stat.p <- ggplot(data, aes(x=EnrichmentScore, y=Sig)) + 
     geom_point() + geom_hline(yintercept=1.3, linetype="dashed", 
                               color = "red", size=2)
-  ggsave(paste0('fdr_nes/', name, '.FDR_NES.pdf'), stat.p, width = 5, height = 5)
+  ggsave(paste0(fdr_nes.path,'/', name, '.FDR_NES.pdf'), stat.p, width = 5, height = 5)
 }
 
 
