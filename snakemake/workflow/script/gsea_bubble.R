@@ -48,13 +48,15 @@ ReadGseaEdb <- function(tar_file, edb_path){
 
 # PARAMS
 args <- commandArgs(trailingOnly = TRUE)
+n_gsea <- length(args) - 1
 
-if (length(args) > 0) {
-  print("Options provided:")
-  print(args[1:length(args)-1])
+if (length(n_gsea) > 0) {
+  print("Input GSEA data provided:")
+  print(args[1:n_gsea])
   outname <- args[length(args)]
+  print('Outname:')
   print(outname)
-  data_files <- args[1:length(args)-1] # a list of '../top10.rnk.txt.tar.gz'..
+  data_files <- args[1:n_gsea] # a list of '../top10.rnk.txt.tar.gz'..
 }else {
   stop("No gsea.tar.gz files were provided.")
 }
@@ -81,6 +83,7 @@ edbpaths1 <- grep("edb/results.edb$", untar(data_files[1], list = T), value = TR
 for (i in 1:length(edbpaths1)){ # 19 msigdbs
   EDBS <- list()
   EDBS.sig <- list()
+  print(">>> NEW GENESET")
   
   for (j in 1:length(data_files)){ # 3 tar.gz files
     rnk_file <- data_files[j]
@@ -90,17 +93,14 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
     edbpaths <- sort(edbpaths) # keep order for different tar.gz
     edb_path <-  edbpaths[i]
     # "gsea/WT_HFD_vs_WT_MCD/m1.all.v2022.1.Mm.symbols.gmt.GseaPreranked/edb/results.edb"
-    
-    name <- basename(paste0(unlist(strsplit(x = edb_path, split = '\\.'))[1:3], collapse = '.'))
+    name <- paste(unlist(strsplit(basename(gsub("/edb/results.edb","", edb_path)), split = '\\.'))[1:3], collapse = '.')
     # "m1.all.v2022"
     
-    print(">>>")
-    print(paste0('gsea_db', i, ': ', name))
+    if(j == 1) {print(paste0('gsea_db', i, ': ', name))}
     print(paste0('rnk_file', j, ": ", rnk_file))
     print(paste0('edb_path: ', edb_path))
     
     df <- ReadGseaEdb(rnk_file, edb_path) # sorted by FDR
-    #write.csv(df, paste0(dataTables.path, '/', j, '.', basename(rnk_file),'.', name, '.csv'), row.names = F)
     openxlsx::write.xlsx(df, paste0(dataTables.path, '/', j, '.', basename(rnk_file),'.', name, '.xlsx'))
     
     df.sig <- df[df$FDR < max.q, ]
@@ -144,16 +144,15 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
   df.merged <- df.merged[order(df.merged$MAX_ABS_NES, decreasing = T),]
   df.union <- dplyr::filter(df.merged, GENESET %in% genesets.anysig)
   df.union[, grep('ABS_NES', colnames(df.union))]
-  #write.csv(df.union, paste0(mergedTables.path,'/union.', name, '.csv'), row.names = F)
   openxlsx::write.xlsx(df.union, paste0(mergedTables.path,'/union.', name, '.xlsx'))
   
-  print(paste("There are", dim(df.merged)[1], 'genesets sig in ≥1 GSEA'))
-  print(paste("There are", dim(df.union)[1], 'such genesets has data in all GSEA'))
+  print(paste("There are", dim(df.merged)[1], 'genesets with some results'))
+  print(paste("There are", dim(df.union)[1], 'genesets with at least one significance'))
   
   if (max.n > 0 & dim(df.union)[1] > max.n){
     df.union <- df.union[1:max.n, ]
   }
-  print(paste("There are", dim(df.union)[1], 'genesets plotted'))
+  print(paste("There are", dim(df.union)[1], 'genesets being plotted'))
   
   # Multiple Bubble Plot Prep
   FDR <-  unname(unlist(df.union[, grep("FDR", colnames(df.union))[-(n+1)]]))
@@ -182,7 +181,7 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
   ggsave(paste0(multiBubble.path,'/', name, '.MultiBubblePlot.pdf'), 
          mplot,    
          width = max(nchar(data$GeneSet))/10 + 5,
-         height = nrow(data)/22 + 1, 
+         height = nrow(data)/n_gsea/9 + 1, 
          limitsize = FALSE)
   
   stat.p <- ggplot(data, aes(x=EnrichmentScore, y=Sig)) + 
