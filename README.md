@@ -25,6 +25,7 @@ Citation: Li R, Hu K, Liu H, Green MR, Zhu LJ. OneStopRNAseq: A Web Application 
 5. update User's Guide;
 6. update workflow image;
 7. fix "go back" button.
+
 </details>
 
 
