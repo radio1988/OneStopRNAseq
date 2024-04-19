@@ -191,29 +191,46 @@ rename_num_vector_by_order <- function(l){
 
 
 Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
-  if (dim(df)[1] > nclass){
-    # Heatmap Pre-plot to get hclust
-    my_sample_col <- data.frame(group = coldata[,'group'])
-    row.names(my_sample_col) <- coldata[,'sample']
-    p <- pheatmap(df, 
-                  annotation_col = my_sample_col,
-                  main = main,
-                  cluster_cols = F, 
-                  border_color = NA,
-                  cutree_rows = nclass, 
-                  breaks = seq(-3, 3, length.out = 100), 
-                  show_rownames = F)
-    p <- pheatmap(df, 
-                  annotation_col = my_sample_col,
-                  main = main,
-                  cluster_cols = T, 
-                  border_color = NA,
-                  cutree_rows = nclass, 
-                  breaks = seq(-3, 3, length.out = 100),                   
-                  show_rownames = F)
-    
-    ## Print out gene classification (https://www.biostars.org/p/287512/)
-    # cutree manually
+  num_sig <- dim(df)[1] 
+  
+  if (num_sig < 20){CELL_HEIGHT = 20}else{CELL_HEIGHT = NA} # for plotting
+  
+  # prep group label
+  my_sample_col <- data.frame(group = coldata[,'group'])
+  row.names(my_sample_col) <- coldata[,'sample']
+  
+  if (num_sig < 1){
+    print(paste("No sig DEG to create Heatmap for:", main) )
+    return (0)
+  }
+  
+  if (num_sig <= nclass){
+    print(paste("Num-DEG less than num-class, there is no cut-tree for:", main))
+    plot1 <- pheatmap(df,
+                      annotation_col = my_sample_col,
+                      main = main,
+                      cluster_cols = F,
+                      cluster_rows = F,
+                      border_color = NA,
+                      show_rownames = F,
+                      breaks = seq(-3, 3, length.out = 100),
+                      cellheight = CELL_HEIGHT,
+                      filename = paste(fname, "pdf", sep = "."))
+    plot2 <- pheatmap(df,
+                      annotation_col = my_sample_col,
+                      main = main,
+                      cluster_cols = T,
+                      cluster_rows = F,
+                      border_color = NA,
+                      show_rownames = F,
+                      breaks = seq(-3, 3, length.out = 100),
+                      cellheight = CELL_HEIGHT,
+                      filename = paste(fname, "v2.pdf", sep = "."))
+  }
+  
+  if (num_sig > nclass){
+    p <- pheatmap(df, cluster_cols = F, cutree_rows = nclass) # Pre-plot to get hclust for cut-tree
+    # cutree manually, print out gene classification (https://www.biostars.org/p/287512/)
     gene_classes <- sort(cutree(p$tree_row, k=nclass))
     gene_classes <- data.frame(gene_classes) 
     classification <- merge(gene_classes, df, by = 0)
@@ -223,109 +240,37 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
     classification <- classification[idx,] 
     # rename gene classes
     classification$gene_classes <- rename_num_vector_by_order(classification$gene_classes)
-    # save excel
-    if (!TEST){
-      write.xlsx(classification, paste(fname,"gene_class.xlsx", sep = "."), 
-                 keepNA = T, na.string = 'NA')
-    }
-
+    write.xlsx(classification, paste(fname,"gene_class.xlsx", sep = "."), 
+               keepNA = T, na.string = 'NA')
     # get class label
-    annotation_row = data.frame(
-      class = classification$gene_classes
-    )
+    annotation_row = data.frame(class = classification$gene_classes)
     row.names(annotation_row) <- row.names(classification)
     annotation_row$class <- as.character(annotation_row$class)
     # output final plot
-    if (dim(df)[1] < 20){ # manage row height
-      p2 <- pheatmap(df,
-                     annotation_col = my_sample_col,
-                     main = main,
-                     border_color = NA,
-                     cluster_cols = F,
-                     cutree_rows = nclass,
-                     breaks = seq(-3, 3, length.out = 100),
-                     show_rownames = F,
-                     annotation_row = annotation_row,
-                     cellheight = 20,
-                     filename = paste(fname, "pdf", sep = "."))
-      p3 <- pheatmap(df,  # sample clustering
-                     annotation_col = my_sample_col,
-                     main = main,
-                     border_color = NA,
-                     cluster_cols = T,
-                     cutree_rows = nclass,
-                     breaks = seq(-3, 3, length.out = 100),
-                     show_rownames = F,
-                     annotation_row = annotation_row,
-                     cellheight = 20,
-                     filename = paste(fname, "v2.pdf", sep = "."))
-    }else{
-      p2 <- pheatmap(df,
-                     annotation_col = my_sample_col,
-                     main = main,
-                     border_color = NA,
-                     cluster_cols = F,
-                     cutree_rows = nclass,
-                     show_rownames = F,
-                     breaks = seq(-3, 3, length.out = 100),
-                     annotation_row = annotation_row,
-                     filename = paste(fname, "pdf", sep = "."))
-      p3 <- pheatmap(df, # sample clustering
-                     annotation_col = my_sample_col,
-                     main = main,
-                     border_color = NA,
-                     cluster_cols = T,
-                     cutree_rows = nclass,
-                     show_rownames = F,
-                     breaks = seq(-3, 3, length.out = 100),
-                     annotation_row = annotation_row,
-                     filename = paste(fname, "v2.pdf", sep = "."))
-    }
-
-  }else if (dim(df)[1] > 0){
-    # output final plot
-    if (dim(df)[1] < 20){ # manage row height
-      p2 <- pheatmap(df,
-                     annotation_col = my_sample_col,
-                     main = main,
-                     cluster_cols = F,
-                     cluster_rows = F,
-                     border_color = NA,
-                     show_rownames = F,
-                     breaks = seq(-3, 3, length.out = 100),
-                     cellheight = 20,
-                     filename = paste(fname, "pdf", sep = "."))
-      p3 <- pheatmap(df,
-                     annotation_col = my_sample_col,
-                     main = main,
-                     cluster_cols = T,
-                     cluster_rows = F,
-                     border_color = NA,
-                     show_rownames = F,
-                     breaks = seq(-3, 3, length.out = 100),
-                     cellheight = 20,
-                     filename = paste(fname, "v2.pdf", sep = "."))
-    }else{
-      p2 <- pheatmap(df,
-                     annotation_col = my_sample_col,
-                     main = main,
-                     cluster_cols = F,
-                     cluster_rows = F,
-                     border_color = NA,
-                     breaks = seq(-3, 3, length.out = 100),
-                     show_rownames = F,
-                     filename = paste(fname, "pdf", sep = "."))
-      p3 <- pheatmap(df,
-                     annotation_col = my_sample_col,
-                     main = main,
-                     cluster_cols = T,
-                     cluster_rows = F,
-                     border_color = NA,
-                     breaks = seq(-3, 3, length.out = 100),
-                     show_rownames = F,
-                     filename = paste(fname, "v2.pdf", sep = "."))
-    }
-  }else{ print("no sig DEG for heatmap")}
+    plot1 <- pheatmap(df,
+                      annotation_col = my_sample_col,
+                      main = main,
+                      border_color = NA,
+                      cluster_cols = F,
+                      cutree_rows = nclass,
+                      breaks = seq(-3, 3, length.out = 100),
+                      show_rownames = F,
+                      annotation_row = annotation_row,
+                      cellheight = CELL_HEIGHT,
+                      filename = paste(fname, "pdf", sep = "."))
+    
+    plot2 <- pheatmap(df,  # sample clustering
+                      annotation_col = my_sample_col,
+                      main = main,
+                      border_color = NA,
+                      cluster_cols = T,
+                      cutree_rows = nclass,
+                      breaks = seq(-3, 3, length.out = 100),
+                      show_rownames = F,
+                      annotation_row = annotation_row,
+                      cellheight = CELL_HEIGHT,
+                      filename = paste(fname, "v2.pdf", sep = "."))
+  }
 }
 
 
