@@ -1056,7 +1056,7 @@ rule GSEA_SingleBubblePlot:
     output:
         touch('gsea_bubble/log/{contrast}.SingleBubblePlot.done')
     conda:
-        "envs/deseq2.yaml"
+        "envs/gsea_bubble.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
@@ -1080,7 +1080,7 @@ if config["GSEA_ANALYSIS"]:
         output:
             touch('gsea_bubble/log/MultiBubblePlot.done')
         conda:
-            "envs/deseq2.yaml"
+            "envs/gsea_bubble.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000
         log:
