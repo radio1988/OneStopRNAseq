@@ -8,7 +8,7 @@ channels:
 
 dependencies:
   # conda-forge
-  - r-base=4.3.2
+  - r-base=4.0.2
   - r-devtools
   - r-ashr 
   - r-poiclaclu
@@ -27,4 +27,4 @@ dependencies:
   - r-tidyverse
   - r-rmarkdown
 
-  - zip
+  - anaconda::zip
