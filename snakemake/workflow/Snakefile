@@ -256,7 +256,7 @@ rule FastQC1:
     priority:
         100
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 1000   
+        mem_mb=lambda wildcards, attempt: attempt * 2000   
     threads:
         1
     log:
@@ -280,7 +280,7 @@ rule FastQC_MultiQC1:
     priority:
         100
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 1000   
+        mem_mb=lambda wildcards, attempt: attempt * 2000   
     threads:
         1
     log:
@@ -304,7 +304,7 @@ rule FastQC2:
     priority:
         90
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 1000   
+        mem_mb=lambda wildcards, attempt: attempt * 2000   
     threads:
         1
     log:
