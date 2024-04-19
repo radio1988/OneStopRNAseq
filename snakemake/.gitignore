@@ -2,6 +2,7 @@ todo*
 *.DS_Store
 ._*
 .snake*
+*__pycache__*
 script/.ipynb_checkpoints/
 
 # large files
@@ -33,4 +34,3 @@ meta/decoder.txt
 meta/meta.xlsx.txt
 meta/read_length.txt
 meta/strandness.detected.txt
-workflow/__pycache__/

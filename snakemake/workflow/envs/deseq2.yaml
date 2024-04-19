@@ -10,26 +10,21 @@ dependencies:
   # conda-forge
   - r-base=4.0.2
   - r-devtools
-  - r-readxl
-  - r-writexls
-  - r-dplyr
-  - r-plyr 
   - r-ashr 
   - r-poiclaclu
   - r-biocmanager 
   - r-ggpubr
 
   # bioconda 
-  - bioconductor-deseq2
+  - bioconda::bioconductor-deseq2
   - bioconductor-enhancedvolcano
   - r-ggrepel
   - r-pheatmap 
-  - perl-compress-raw-zlib
+  - r-openxlsx # faster, up-to-date
+ # - perl-compress-raw-zlib
 
   # r
   - r-tidyverse
   - r-rmarkdown
-  - r-gdata 
-  - r-gridextra 
 
   - anaconda::zip

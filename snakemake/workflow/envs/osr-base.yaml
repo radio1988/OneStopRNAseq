@@ -14,5 +14,5 @@ dependencies:
   - anaconda::graphviz # for dot
   - anaconda::zip
   - bioconda::snakemake-wrapper-utils # bioconda
-  - bioconda::snakemake # bioconda
+  - bioconda::snakemake=7.21 # bioconda
   - conda-forge::mamba # conda-forge

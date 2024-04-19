@@ -17,6 +17,7 @@ min_version("7.2")  # check snakemake version
 configfile: "config.yaml"
 containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
+localrules: targets
 
 if config["START"] != 'RNK':
     check_meta_data(config)
@@ -40,15 +41,21 @@ def GSEA_OUTPUT(config):
 def GSEACOMPRESS_OUTPUT(config):
     L = []
     if config["GSEA_ANALYSIS"]:
-        gsea_dbs = []
-        for f in os.listdir(config['GSEA_DB_PATH']):
-            if f.endswith('.gmt'):
-                gsea_dbs.append(f)
-        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
             L = expand("gsea/{contrast}.tar.gz", contrast=CONTRASTS_DE)
         else:
             L = expand("gsea/{contrast}.tar.gz", contrast=config["RNKS"])
+    else:
+        L = ["Workflow_DAG.all.pdf"]
+    return (L)
+
+def GSEA_SINGLEBUBBLE_OUTPUT(config):
+    L = []
+    if config["GSEA_ANALYSIS"]:
+        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done", contrast=CONTRASTS_DE)
+        else:
+            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done", contrast=config["RNKS"])
     else:
         L = ["Workflow_DAG.all.pdf"]
     return (L)
@@ -177,8 +184,10 @@ def target_input(config, ASCN):
             l.append("DESeq2/DESeq2.html")
 
     if config['GSEA_ANALYSIS']:
-        l.extend(GSEA_OUTPUT(config))
+        #l.extend(GSEA_OUTPUT(config))
         l.extend(GSEACOMPRESS_OUTPUT(config))
+        l.extend(GSEA_SINGLEBUBBLE_OUTPUT(config))
+        l.append('gsea_bubble/log/MultiBubblePlot.done')
 
     return (l)
 
@@ -186,6 +195,8 @@ def target_input(config, ASCN):
 rule targets:
     input:
         target_input(config, ASCN)
+    threads:
+        1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
 
@@ -1039,6 +1050,47 @@ rule GSEA_compression:
     shell:
         "tar cf - gsea/{wildcards.contrast} | pigz -p {threads} > {output} "
 
+rule GSEA_SingleBubblePlot:
+    input:
+        "gsea/{contrast}.tar.gz"
+    output:
+        touch('gsea_bubble/log/{contrast}.SingleBubblePlot.done')
+    conda:
+        "envs/deseq2.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    log:
+        'gsea_bubble/log/{contrast}.SingleBubblePlot.log'
+    threads:
+        1
+    benchmark:
+        'gsea_bubble/log/{contrast}.SingleBubblePlot.benchmark'
+    shell:
+        "Rscript workflow/script/gsea_bubble.R {input} {wildcards.contrast} &> {log}"
+
+if config["GSEA_ANALYSIS"]:
+    if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+        GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz", contrast=CONTRASTS_DE)
+    else:
+        GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz", contrast=config["RNKS"])
+
+    rule GSEA_MultiBubblePlot:
+        input:
+            GSEA_compression_OUTPUT
+        output:
+            touch('gsea_bubble/log/MultiBubblePlot.done')
+        conda:
+            "envs/deseq2.yaml"
+        resources:
+            mem_mb=lambda wildcards, attempt: attempt * 4000
+        log:
+            'gsea_bubble/log/MultiBubblePlot.log'
+        threads:
+            1
+        benchmark:
+            'gsea_bubble/log/MultiBubblePlot.benchmark'
+        shell:
+            "Rscript workflow/script/gsea_bubble.R {input} MultiBubblePlot &> {log}"
 
 rule Read_Length_Detection:
     input:
@@ -1486,4 +1538,3 @@ rule reset:
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
-
