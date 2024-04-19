@@ -12,6 +12,7 @@ params:
   min_colsum: 20000
   indfilter: FALSE
   cookscutoff: FALSE
+  
   countFile: "../example_data/counts/example_osrCount.mm10.xlsx" # "../example_data/counts/example_cleanCount.mm10.xlsx" # "../example_data/counts/example_featureCounts.mm10.txt"
   annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt'
   metaFile: "../meta/meta.csv"
@@ -401,11 +402,9 @@ names(df)[1] <- "GENE_ID"
 df <- df %>%
   mutate(GENE_ID = gsub("\\.[^.]*$", "", GENE_ID))
 
-
-
-if (sum(duplicated(df[,1])) > 0) {
+if (sum(duplicated(df$GENE_ID)) > 0) {
   warning("count table gene_id not unique, has made it unique to run, but duplicated gene_id not valid for further analysis, please manually check duplicated gene_id")
-  df[,1] <- make.unique(df[, 1])
+  df$GENE_ID <- make.unique(df$GENE_ID)
 }
 
 df = column_to_rownames(df, var =  colnames(df)[1]) 
