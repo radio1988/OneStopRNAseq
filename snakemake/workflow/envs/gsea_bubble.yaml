@@ -3,7 +3,10 @@ name: gsea_bubble
 channels:
   - r
   - conda-forge
+  - bioconda
 
 dependencies:
-  - conda-forge::r-base=4.3.3
+#  - conda-forge::r-base=4.3.3
   - r::r-tidyverse
+  - r::rtools
+  - bioconda::r-openxlsx

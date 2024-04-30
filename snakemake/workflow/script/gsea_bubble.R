@@ -2,6 +2,8 @@ library(readr)
 library(ggplot2)
 library(tidyverse)
 library(openxlsx)
+library(methods)
+
 
 setClass('gsea_edb', slots=list(gsea_db='character',  # m1.all.v2022
                                 edb_path = 'character', # "gsea/TN_AKT2KO_vs_TN_WT/m1.all.v2022.1.Mm.symbols.gmt.GseaPreranked/edb/results.edb"
@@ -14,7 +16,7 @@ ReadGseaEdb <- function(tar_file, edb_path){
   # return gsea_data (df) # sorted by decreasing ABS_NES 
   
   # decompress
-  untar(tarfile = tar_file, files = edb_path, exdir = tempdir())
+  utils::untar(tarfile = tar_file, files = edb_path, exdir = tempdir())
   edb_file_path <- file.path(tempdir(), edb_path)
   
   # read
