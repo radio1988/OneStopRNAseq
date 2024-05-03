@@ -155,7 +155,9 @@ for (i in 1:length(edbpaths1)){ # 19 msigdbs
     df.union <- df.union[1:max.n, ]
   }
   print(paste("There are", dim(df.union)[1], 'genesets being plotted'))
-  
+
+  if (dim(df.union)[1] < 1 ) next # skip gene set
+    
   # Multiple Bubble Plot Prep
   FDR <-  unname(unlist(df.union[, grep("FDR", colnames(df.union))[-(n+1)]]))
   logFDR <- unlist(lapply(unname(unlist(df.union[, grep("FDR", colnames(df.union))[-(n+1)]])), function(x) -log10(x+e)))
