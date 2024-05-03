@@ -1,4 +1,4 @@
-mkdir -p chr19 mkdir fastq
+mkdir -p chr19 fastq
 
 #conda activate bio # samtools, bioconda::bedtools
 # workdir: where bam are located
@@ -8,6 +8,6 @@ mkdir -p chr19 mkdir fastq
 
 for f in *bam
 do 
-samtools view -h -@ 4 $f 19 | samtools sort -n -@ 4 -o chr19/$f 
+samtools view -h -@ 4 $f chr19 | samtools sort -n -@ 4 -o chr19/$f 
 bamToFastq -i chr19/$f -fq fastq/${f/bam/R1.fastq.gz} -fq2 fastq/${f/bam/R2.fastq.gz}
 done
