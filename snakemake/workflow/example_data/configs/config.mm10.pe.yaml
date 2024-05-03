@@ -8,7 +8,7 @@ STRAND: [0, 1, 2]  # can input [0, 1, 2] to get all possible results, then workf
 # BAM_START
 ALIGNER: STAR  # HISAT2, STAR
 
-GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10_ensembl/mm10.ucsc.fa
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10_ensembl/Mus_musculus.GRCm39.dna_sm.primary_assembly.fa
 GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10_ensembl/Mus_musculus.GRCm39.111.gtf
 ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/mm10.ensembl.GRCm39.111.anno.txt
 
