@@ -253,8 +253,6 @@ rule FastQC1:
         "fastqc/details_raw/{sample}_fastqc.zip"
     conda:
         "envs/fastqc.yaml"
-    priority:
-        100
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000   
     threads:
@@ -277,8 +275,6 @@ rule FastQC_MultiQC1:
         "fastqc/raw_reads_multiqc_report.html"
     conda:
         "envs/fastqc.yaml"
-    priority:
-        100
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000   
     threads:
@@ -301,8 +297,6 @@ rule FastQC2:
         "fastqc/details_trimmed/{sample}_fastqc.zip"
     conda:
         "envs/fastqc.yaml"
-    priority:
-        90
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000   
     threads:
@@ -325,8 +319,6 @@ rule FastQC_MultiQC2:
         "fastqc/trimmed_reads_multiqc_report.html"
     conda:
         "envs/fastqc.yaml"
-    priority:
-        90
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000   
     threads:
@@ -437,8 +429,6 @@ if config['ALIGNER'] == 'STAR':
             report="bam_qc/STAR_Align_summary_multiqc_report.html",    
         conda:
             "envs/fastqc.yaml"
-        priority:
-            80
         resources:
             mem_mb=2000
         threads:
@@ -696,7 +686,7 @@ rule featureCounts_EXON:
     conda:
         "envs/subread.yaml" 
     priority:
-        80
+        100
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     threads:
@@ -842,8 +832,6 @@ if config['PAIR_END']:
         output:
             r1=temp(expand("fastq_salmon/{sample}_1.fastq.gz", sample=SAMPLES)),
             r2=temp(expand("fastq_salmon/{sample}_2.fastq.gz", sample=SAMPLES))
-        priority:
-            90
         log:
             "fastq_salmon/SalmonTE_prep.log"
         resources:
@@ -870,8 +858,6 @@ rule SalmonTE:
         "SalmonTE_output/EXPR.csv"
     conda:
         "envs/salmonte.yaml"  # test
-    priority:
-        90
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     params:
@@ -1056,7 +1042,7 @@ rule GSEA_SingleBubblePlot:
     output:
         touch('gsea_bubble/log/{contrast}.SingleBubblePlot.done')
     conda:
-        "envs/gsea_bubble.yaml"
+        "envs/deseq2.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
@@ -1080,7 +1066,7 @@ if config["GSEA_ANALYSIS"]:
         output:
             touch('gsea_bubble/log/MultiBubblePlot.done')
         conda:
-            "envs/gsea_bubble.yaml"
+            "envs/deseq2.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000
         log:
