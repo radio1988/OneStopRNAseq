@@ -16,8 +16,8 @@ INTRON: False  # will also perform gene level featureCount as well as exon level
 DESEQ2_ANALYSIS: True
 MAX_FDR: 0.05
 MIN_LFC: 0.585 
-META: meta/meta.xlsx.txt
-CONTRAST_DE: meta/contrast.de.xlsx.txt
+META: meta/meta.csv
+CONTRAST_DE: meta/contrast.csv
 cooksCutoff: 'FALSE'
 independentFilter: 'FALSE'
 blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlier, e.g. KO_D0_1_S2, excluded in DESeq2 analysis only, optional
@@ -45,7 +45,7 @@ RNKS:
 # Alternative Splicing analysis (rMATS)
 DEXSEQ_ANALYSIS: True
 RMATS_ANALYSIS: True
-CONTRAST_AS: meta/contrast.as.xlsx
+CONTRAST_AS: meta/contrast.csv
 RMATS_STRANDNESS:
   {0 : fr-unstranded,
   1 : fr-firststrand, 
