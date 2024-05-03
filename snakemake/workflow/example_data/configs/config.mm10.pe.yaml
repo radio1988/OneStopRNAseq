@@ -39,35 +39,32 @@ RNKS:
   - /home/rui.li-umw/osr/config/config.mm10.fastq.pe.yaml
   - name2.rnk.txt  # under ./meta/name2.rnk.txt
 
-# Optinoal Analysis
 
-# Alternative Splicing analysis (rMATS)
-DEXSEQ_ANALYSIS: True
+## Optinoal Analyses ## 
+
+# rMATs
 RMATS_ANALYSIS: True
-CONTRAST_AS: meta/contrast.csv
 RMATS_STRANDNESS:
   {0 : fr-unstranded,
   1 : fr-firststrand, 
   2 : fr-secondstrand}
 
 # DEXSeq analysis
+DEXSEQ_ANALYSIS: True
 MIN_GENE_COUNT: 100  # genes with less reads per sample will be removed from DEXSeq analysis, default 100, test with 10
+
+CONTRAST_AS: meta/contrast.csv
 
 # TE analysis (SalmonTE)
 TE_ANALYSIS: True # True, include TE analysis in DESeq2 results (only if FASTQ provided); False, skip
-TE_REFERENCE: mm # mm, hs, dm, dr
-# hs : Homo Sapiens
-# mm : Mus musculus
-# dm : Drosophila melanogaster
-# dr : Danio rerio
+TE_REFERENCE: mm # mm, hs, dm, dr (mouse, human, fruitfly,zebra-fish)
 
 # For ASE
 ASE_ANALYSIS: False
 VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
 
+# CUFFLINKS
 ASSEMBLY_ANALYSIS: True
-# todo: DE analysis with new ASSEMBLY GTF
-
 
 # WEBSITE maintenance parameters
 #MAX_FASTQ_SIZE: 1000 # Unit GB. The size of all fastq files summed must be smaller than this
