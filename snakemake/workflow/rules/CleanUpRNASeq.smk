@@ -50,7 +50,7 @@ rule salmon_index:
         decoys=DECOYS
     output:
         index=directory(GENTROME + ".salmon_idx/"),
-        multiext(
+        others=multiext(
             GENTROME + ".salmon_idx/",
             "complete_ref_lens.bin",
             "ctable.bin",
