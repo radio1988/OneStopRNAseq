@@ -72,8 +72,8 @@ rule salmon_index:
         GENTROME + ".salmon_idx/log",
     benchmark:
         GENTROME + ".salmon_idx/benchmark",
-        #hg38-ensembl s       h:m:s   max_rss max_vms max_uss max_pss io_in   io_out  mean_load       cpu_time
-        #1378.6924       0:22:58 19463.66        42060.36        19451.28        19452.22        9.68    18896.98        446.52  6156.25
+        # hg38-ensembl s       h:m:s   max_rss max_vms max_uss max_pss io_in   io_out  mean_load       cpu_time
+        # 1378.6924       0:22:58 19463.66        42060.36        19451.28        19452.22        9.68    18896.98        446.52  6156.25
     threads: 6
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
@@ -104,31 +104,32 @@ if config["PAIR_END"]:
         threads:
             4
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 4000
+            mem_mb=lambda wildcards, attempt: attempt * 8000
         wrapper:
             "v3.10.2/bio/salmon/quant"
 else:
     rule salmon_quant_se:
-            input:
-                r="trimmed/{sample}.fastq.gz",
-                index=GENTROME + ".salmon_idx/complete_ref_lens.bin",
-            output:
-                quant="salmon/{sample}/quant.sf",
-                lib="salmon/{sample}/lib_format_counts.json",
-            log:
-                "salmon/{sample}/log.txt",
-            benchmark:
-                "salmon/{sample}/benchmark",
-            params:
-                # optional parameters
-                libtype="A",
-                extra="",
-            threads:
-                4
-            resources:
-                mem_mb=lambda wildcards, attempt: attempt * 4000
-            wrapper:
-                "v3.10.2/bio/salmon/quant"
+        input:
+            r="trimmed/{sample}.fastq.gz",
+            index=GENTROME + ".salmon_idx",
+            flag=GENTROME + ".salmon_idx/complete_ref_lens.bin",
+        output:
+            quant="salmon/{sample}/quant.sf",  # salmon/SRR24754651/quant.sf
+            lib="salmon/{sample}/lib_format_counts.json",
+        log:
+            "salmon/{sample}/log.txt",
+        benchmark:
+            "salmon/{sample}/benchmark.txt",
+        params:
+            # optional parameters
+            libtype="A",
+            extra="",
+        threads:
+            4
+        resources:
+            mem_mb=lambda wildcards, attempt: attempt * 4000
+        wrapper:
+            "v3.10.2/bio/salmon/quant"
 
 
 rule make_ensdb:
