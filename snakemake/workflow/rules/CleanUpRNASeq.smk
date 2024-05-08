@@ -1,14 +1,13 @@
 GTF=config['GTF']
 GENOME=config['GENOME']
-META=config['META']
-ENSDB=GTF+'.ensdb.sqlite'
-
-GTF=config['GTF']
-GENOME=config['GENOME']
-
+# SALMON
 TRANSCRIPTS=GTF+'.fa'
 GENTROME=GTF+'.gentrome.fa'
 DECOYS=GENTROME+'.decoys.txt'
+# CleanUpRNASeq
+META=config['META']
+ENSDB=GTF+'.ensdb.sqlite'
+
 
 rule gff_read:
     input:
@@ -26,6 +25,7 @@ rule gff_read:
     wrapper:
         "v3.10.2/bio/gffread"
 
+
 rule salmon_decoy:
     input:
         transcriptome=TRANSCRIPTS,
@@ -42,6 +42,7 @@ rule salmon_decoy:
         DECOYS+'.benchmark'
     wrapper:
         "v3.10.2/bio/salmon/decoys"
+
 
 rule salmon_index:
     input:

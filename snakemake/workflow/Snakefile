@@ -1530,6 +1530,5 @@ rule reset:
 
 
 # subworkflow
-inlcude: 'rules/salmon.smk'
 include: 'rules/CleanUpRNASeq.smk'
 
