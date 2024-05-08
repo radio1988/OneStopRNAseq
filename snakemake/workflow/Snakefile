@@ -19,9 +19,7 @@ containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
 localrules: targets
 
-# subworkflow
-inlcude: 'rules/salmon.smk'
-include: 'rules/CleanUpRNASeq.smk'
+
 
 if config["START"] != 'RNK':
     check_meta_data(config)
@@ -141,6 +139,9 @@ else:
     B2S = B1S
     ASCN = 0
 
+# subworkflow
+inlcude: 'rules/salmon.smk'
+include: 'rules/CleanUpRNASeq.smk'
 
 def target_input(config, ASCN):
     '''
