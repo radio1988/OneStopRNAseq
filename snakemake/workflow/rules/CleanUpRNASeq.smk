@@ -1,7 +1,7 @@
 GTF=config['GTF']
 GENOME=config['GENOME']
 META=config['META']
-ENSDB=GTF+".ensdb.sqlite'
+ENSDB=GTF+'.ensdb.sqlite'
 
 rule make_ensdb:
     input:
