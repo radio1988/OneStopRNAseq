@@ -43,7 +43,7 @@ rule salmon_decoy:
 
 rule salmon_index:
     input:
-        sequences="salmon/decoy/gentrome.fasta.gz",
+        sequences="salmon/decoy/gentrome.fasta",
         decoys="salmon/decoy/decoys.txt"
     output:
         touch("salmon/transcriptome_index/done")
