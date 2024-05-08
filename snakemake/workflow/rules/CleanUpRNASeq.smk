@@ -12,6 +12,8 @@ rule gff_read:
     output:
         records=TRANSCRIPTS,
     threads: 1
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
         GTF+'.fa.log',
     params:
@@ -26,7 +28,7 @@ rule salmon_decoy:
     output:
         gentrome=GENTROME,
         decoys=DECOYS,
-    threads: 2
+    threads: 1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
@@ -63,14 +65,15 @@ rule salmon_index:
         GENTROME + ".salmon_idx/log",
     benchmark:
         GENTROME + ".salmon_idx/benchmark",
-    threads: 2
+    threads: 8
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 8000
+        mem_mb=lambda wildcards, attempt: attempt * 2000
     params:
         # optional parameters
         extra="",
     wrapper:
         "v3.10.2/bio/salmon/index"
+
 
 if config["PAIR_END"]:
     rule salmon_quant_pe:
