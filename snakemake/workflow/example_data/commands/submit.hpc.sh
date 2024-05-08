@@ -4,6 +4,7 @@
 rm -f lsf.log
 source /home/rui.li-umw/anaconda3/etc/profile.d/conda.sh
 conda activate osr-base > workflow.log  2>&1
+mkdir -p log/lsf/
 
 snakemake -p -k --jobs 99 \
 --use-conda --conda-prefix ~/anaconda3/envs/osr_envs \

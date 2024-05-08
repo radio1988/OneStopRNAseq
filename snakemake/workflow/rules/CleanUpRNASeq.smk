@@ -1,6 +1,6 @@
 rule test_salmon_decoy:
     input:
-        transcriptome="/home/rui.li-umw/genome/hg38_ensembl/Homo_sapiens.GRCh38.cdna.ncrna.fa.gz",
+        transcriptome="/home/rui.li-umw/genome/hg38_ensembl/Homo_sapiens.GRCh38.cdna.ncrna.fa",
         genome=config['GENOME'],
     output:
         gentrome="salmon/decoy/gentrome.fasta.gz",
@@ -23,9 +23,11 @@ rule salmon_index:
         "salmon/transcriptome_index"
     log:
         "salmon/transcriptome_index.log",
+    benchmark:
+        "salmon/{sample}/benchmark.txt",
     threads: 2
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
+        mem_mb=lambda wildcards, attempt: attempt * 8000
     params:
         # optional parameters
         extra="",
