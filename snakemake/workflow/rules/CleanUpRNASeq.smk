@@ -7,7 +7,7 @@ DECOYS=GENTROME+'.decoys.txt'
 
 rule gff_read:
     input:
-        GENOME,
+        fasta=GENOME,
         annotation=GTF,
     output:
         records=TRANSCRIPTS,
