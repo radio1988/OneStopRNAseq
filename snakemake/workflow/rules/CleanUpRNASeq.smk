@@ -9,7 +9,6 @@ rule compress_genome:
     shell:
         "gzip -k {input}"
 
-
 rule salmon_decoy:
     input:
         transcriptome="/home/rui.li-umw/genome/hg38_ensembl/Homo_sapiens.GRCh38.cdna.ncrna.fa.gz",
@@ -46,29 +45,50 @@ rule salmon_index:
     wrapper:
         "v3.10.2/bio/salmon/index"
 
-rule salmon_quant_reads_pe:
-    input:
-        r1="trimmed/{sample}.R1.fastq.gz",
-        r2="trimmed/{sample}.R2.fastq.gz",
-        index="salmon/transcriptome_index",
-        flag="salmon/transcriptome_index/done",
-    output:
-        quant="salmon/{sample}/quant.sf",
-        lib="salmon/{sample}/lib_format_counts.json",
-    log:
-        "salmon/{sample}/log.txt",
-    benchmark:
-        "salmon/{sample}/benchmark.txt",
-    params:
-        # optional parameters
-        libtype="A",
-        extra="",
-    threads:
-        4
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
-    wrapper:
-        "v3.10.2/bio/salmon/quant"
-
-#todo: SE
-
+if config["PAIR_END"]:
+    rule salmon_quant_pe:
+        input:
+            r1="trimmed/{sample}.R1.fastq.gz",
+            r2="trimmed/{sample}.R2.fastq.gz",
+            index="salmon/transcriptome_index",
+            flag="salmon/transcriptome_index/done",
+        output:
+            quant="salmon/{sample}/quant.sf",
+            lib="salmon/{sample}/lib_format_counts.json",
+        log:
+            "salmon/{sample}/log.txt",
+        benchmark:
+            "salmon/{sample}/benchmark.txt",
+        params:
+            # optional parameters
+            libtype="A",
+            extra="",
+        threads:
+            4
+        resources:
+            mem_mb=lambda wildcards, attempt: attempt * 4000
+        wrapper:
+            "v3.10.2/bio/salmon/quant"
+else:
+    rule salmon_quant_se:
+            input:
+                r="trimmed/{sample}.fastq.gz",
+                index="salmon/transcriptome_index",
+                flag="salmon/transcriptome_index/done",
+            output:
+                quant="salmon/{sample}/quant.sf",
+                lib="salmon/{sample}/lib_format_counts.json",
+            log:
+                "salmon/{sample}/log.txt",
+            benchmark:
+                "salmon/{sample}/benchmark.txt",
+            params:
+                # optional parameters
+                libtype="A",
+                extra="",
+            threads:
+                4
+            resources:
+                mem_mb=lambda wildcards, attempt: attempt * 4000
+            wrapper:
+                "v3.10.2/bio/salmon/quant"
