@@ -19,6 +19,10 @@ containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
 localrules: targets
 
+# subworkflow
+inlcude: 'rules/salmon.smk'
+include: 'rules/CleanUpRNASeq.smk'
+
 if config["START"] != 'RNK':
     check_meta_data(config)
 
@@ -1525,9 +1529,7 @@ rule reset:
         snakemake -j 1 --unlock
         """
 
-# subworkflow
-inlcude: 'rules/salmon.smk'
-include: 'rules/CleanUpRNASeq.smk'
+
 
 
 
