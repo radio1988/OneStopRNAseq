@@ -1,1 +1,1 @@
-config/submit.hpc.sh
+./workflow/example_data/commands/submit.hpc.sh
