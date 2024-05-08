@@ -51,8 +51,8 @@ rule salmon_index:
 
 rule salmon_quant_reads_pe:
     input:
-        r1="fastq_salmon/{sample}_1.fq.gz",
-        r2="fastq_salmon/{sample}_2.fq.gz",
+        r1="trimmed/{sample}.R1.fastq.gz"",
+        r2="trimmed/{sample}.R2.fastq.gz",
         index="salmon/transcriptome_index",
     output:
         quant="salmon/{sample}/quant.sf",
