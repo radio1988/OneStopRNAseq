@@ -1,122 +1,33 @@
 GTF=config['GTF']
 GENOME=config['GENOME']
+META=config['META']
+ENSDB=GTF+".ensdb.sqlite'
 
-TRANSCRIPTS=GTF+'.fa'
-GENTROME=GTF+'.gentrome.fa'
-DECOYS=GENTROME+'.decoys.txt'
-
-rule gff_read:
+rule make_ensdb:
     input:
-        fasta=GENOME,
-        annotation=GTF,
+        gtf=GTF,
     output:
-        records=TRANSCRIPTS,
-    threads: 1
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
-    log:
-        GTF+'.fa.log',
-    params:
-        extra="",
-    wrapper:
-        "v3.10.2/bio/gffread"
+        ensdb=ENSDB
+    script:
+        "workflow/script/make_ensdb.R"
 
-rule salmon_decoy:
+rule CleanUpMakeMeta:
     input:
-        transcriptome=TRANSCRIPTS,
+        META
+    output:
+        "CleanUpRNASeqQC/meta.txt"
+    script:
+        "script/cleanupmakemeta.R"
+
+rule CleanUpRNASeq:
+    input:
+        meta="CleanUpRNASeqQC/meta.txt", # todo
+        bam=expand("mapped_reads/{sample}.bam", sample=SAMPLE),
+        salmon=expand("salmon/{sample}/quant.sf", sample=SAMPLE),
         genome=GENOME,
+        gtf=GTF,
+        ensdb=ENSDB,
     output:
-        gentrome=GENTROME,
-        decoys=DECOYS,
-    threads: 1
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
-    log:
-        DECOYS+'.log'
-    benchmark:
-        DECOYS+'.benchmark'
-    wrapper:
-        "v3.10.2/bio/salmon/decoys"
-
-rule salmon_index:
-    input:
-        sequences=GENTROME,
-        decoys=DECOYS
-    output:
-        multiext(
-            GENTROME + ".salmon_idx/",
-            "complete_ref_lens.bin",
-            "ctable.bin",
-            "ctg_offsets.bin",
-            "duplicate_clusters.tsv",
-            "info.json",
-            "mphf.bin",
-            "pos.bin",
-            "pre_indexing.log",
-            "rank.bin",
-            "refAccumLengths.bin",
-            "ref_indexing.log",
-            "reflengths.bin",
-            "refseq.bin",
-            "seq.bin",
-            "versionInfo.json",
-        ),
-    log:
-        GENTROME + ".salmon_idx/log",
-    benchmark:
-        GENTROME + ".salmon_idx/benchmark",
-    threads: 8
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
-    params:
-        # optional parameters
-        extra="",
-    wrapper:
-        "v3.10.2/bio/salmon/index"
-
-
-if config["PAIR_END"]:
-    rule salmon_quant_pe:
-        input:
-            r1="trimmed/{sample}.R1.fastq.gz",
-            r2="trimmed/{sample}.R2.fastq.gz",
-            index=GENTROME + ".salmon_idx/complete_ref_lens.bin",
-        output:
-            quant="salmon/{sample}/quant.sf",
-            lib="salmon/{sample}/lib_format_counts.json",
-        log:
-            "salmon/{sample}/log.txt",
-        benchmark:
-            "salmon/{sample}/benchmark.txt",
-        params:
-            # optional parameters
-            libtype="A",
-            extra="",
-        threads:
-            4
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 4000
-        wrapper:
-            "v3.10.2/bio/salmon/quant"
-else:
-    rule salmon_quant_se:
-            input:
-                r="trimmed/{sample}.fastq.gz",
-                index=GENTROME + ".salmon_idx/complete_ref_lens.bin",
-            output:
-                quant="salmon/{sample}/quant.sf",
-                lib="salmon/{sample}/lib_format_counts.json",
-            log:
-                "salmon/{sample}/log.txt",
-            benchmark:
-                "salmon/{sample}/benchmark",
-            params:
-                # optional parameters
-                libtype="A",
-                extra="",
-            threads:
-                4
-            resources:
-                mem_mb=lambda wildcards, attempt: attempt * 4000
-            wrapper:
-                "v3.10.2/bio/salmon/quant"
+        "CleanUpRNASeqQC"
+    script:
+        "workflow/script/cleanuprnaseq.R"
