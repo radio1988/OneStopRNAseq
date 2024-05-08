@@ -1,7 +1,7 @@
 rule test_salmon_decoy:
     input:
-        transcriptome="/home/rui.li-umw/genome/hg38_ensembl/Homo_sapiens.GRCh38.cdna.ncrna.fa",
-        genome=config['GENOME'],
+        transcriptome="/home/rui.li-umw/genome/hg38_ensembl/Homo_sapiens.GRCh38.cdna.ncrna.fa.gz",
+        genome=config['GENOME']+'.gz',
     output:
         gentrome="salmon/decoy/gentrome.fasta.gz",
         decoys="salmon/decoy/decoys.txt",
