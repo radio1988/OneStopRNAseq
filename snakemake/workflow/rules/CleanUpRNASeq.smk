@@ -1,24 +1,19 @@
-rule compress_genome:
-    input:
-        config['GENOME']
-    output:
-        config['GENOME'] + '.gz'
-    threads:1
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
-    shell:
-        "gzip -k {input}"
+GTF=config['GTF']
+GENOME=config['GENOME']
 
+TRANSCRIPTS=GTF+'.fa'
+GENTROME=GTF+'.gentrome.fa'
+DECOYS=GENTROME+'.decoys.txt'
 
 rule gff_read:
     input:
-        config['GENOME'],
-        annotation=config['GTF'],
+        GENOME,
+        annotation=GTF,
     output:
-        records=config['GTF']+'.fa',
+        records=TRANSCRIPTS,
     threads: 1
     log:
-        config['GTF']+'.fa.log',
+        GTF+'.fa.log',
     params:
         extra="",
     wrapper:
@@ -26,31 +21,48 @@ rule gff_read:
 
 rule salmon_decoy:
     input:
-        transcriptome=config['GTF']+'.fa',
-        genome=config['GENOME'],
+        transcriptome=TRANSCRIPTS,
+        genome=GENOME,
     output:
-        gentrome="salmon/decoy/gentrome.fasta",
-        decoys="salmon/decoy/decoys.txt",
+        gentrome=GENTROME,
+        decoys=DECOYS,
     threads: 2
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
-        "salmon/log/decoys.log"
+        DECOYS+'.log'
     benchmark:
-        "salmon/log/decoys.benchmark"
+        DECOYS+'.benchmark'
     wrapper:
         "v3.10.2/bio/salmon/decoys"
 
 rule salmon_index:
     input:
-        sequences="salmon/decoy/gentrome.fasta",
-        decoys="salmon/decoy/decoys.txt"
+        sequences=GENTROME,
+        decoys=DECOYS
     output:
-        touch("salmon/transcriptome_index/done")
+        multiext(
+            GENTROME + ".salmon_idx/",
+            "complete_ref_lens.bin",
+            "ctable.bin",
+            "ctg_offsets.bin",
+            "duplicate_clusters.tsv",
+            "info.json",
+            "mphf.bin",
+            "pos.bin",
+            "pre_indexing.log",
+            "rank.bin",
+            "refAccumLengths.bin",
+            "ref_indexing.log",
+            "reflengths.bin",
+            "refseq.bin",
+            "seq.bin",
+            "versionInfo.json",
+        ),
     log:
-        "salmon/transcriptome_index.log",
+        GENTROME + ".salmon_idx/log",
     benchmark:
-        "salmon/transcriptome_index.benchmark.txt",
+        GENTROME + ".salmon_idx/benchmark",
     threads: 2
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 8000
@@ -65,8 +77,7 @@ if config["PAIR_END"]:
         input:
             r1="trimmed/{sample}.R1.fastq.gz",
             r2="trimmed/{sample}.R2.fastq.gz",
-            index="salmon/transcriptome_index",
-            flag="salmon/transcriptome_index/done",
+            index=GENTROME + ".salmon_idx/complete_ref_lens.bin",
         output:
             quant="salmon/{sample}/quant.sf",
             lib="salmon/{sample}/lib_format_counts.json",
@@ -88,15 +99,14 @@ else:
     rule salmon_quant_se:
             input:
                 r="trimmed/{sample}.fastq.gz",
-                index="salmon/transcriptome_index",
-                flag="salmon/transcriptome_index/done",
+                index=GENTROME + ".salmon_idx/complete_ref_lens.bin",
             output:
                 quant="salmon/{sample}/quant.sf",
                 lib="salmon/{sample}/lib_format_counts.json",
             log:
                 "salmon/{sample}/log.txt",
             benchmark:
-                "salmon/{sample}/benchmark.txt",
+                "salmon/{sample}/benchmark",
             params:
                 # optional parameters
                 libtype="A",
