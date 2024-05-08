@@ -10,6 +10,12 @@ GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens/gencode.v34.primary_
 ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/hg38.gencode.v34.te_included.anno.txt
 GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
 
+# human hg38 ensembl
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/hg38_ensembl/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/hg38_ensembl/Homo_sapiens.GRCh38.111.gtf
+ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Homo_sapiens.GRCh38.111.anno.txt
+GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
+
 # mouse mm10 (Gencode, archive)
 GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/mm10.ucsc.fa
 GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/gencode.vM25.primary_assembly.annotation.gtf
