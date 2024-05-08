@@ -49,6 +49,7 @@ rule salmon_index:
         sequences=GENTROME,
         decoys=DECOYS
     output:
+        index=directory(GENTROME + ".salmon_idx/"),
         multiext(
             GENTROME + ".salmon_idx/",
             "complete_ref_lens.bin",
@@ -87,7 +88,8 @@ if config["PAIR_END"]:
         input:
             r1="trimmed/{sample}.R1.fastq.gz",
             r2="trimmed/{sample}.R2.fastq.gz",
-            index=GENTROME + ".salmon_idx/complete_ref_lens.bin",
+            index=GENTROME + ".salmon_idx",
+            flag=GENTROME + ".salmon_idx/complete_ref_lens.bin",
         output:
             quant="salmon/{sample}/quant.sf",  # salmon/SRR24754651/quant.sf
             lib="salmon/{sample}/lib_format_counts.json",
