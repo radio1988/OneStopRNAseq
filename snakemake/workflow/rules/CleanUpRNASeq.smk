@@ -20,26 +20,9 @@ rule salmon_index:
         sequences="salmon/decoy/gentrome.fasta.gz",
         decoys="salmon/decoy/decoys.txt"
     output:
-        multiext(
-            "salmon/transcriptome_index/",
-            "complete_ref_lens.bin",
-            "ctable.bin",
-            "ctg_offsets.bin",
-            "duplicate_clusters.tsv",
-            "info.json",
-            "mphf.bin",
-            "pos.bin",
-            "pre_indexing.log",
-            "rank.bin",
-            "refAccumLengths.bin",
-            "ref_indexing.log",
-            "reflengths.bin",
-            "refseq.bin",
-            "seq.bin",
-            "versionInfo.json",
-        ),
+        "salmon/transcriptome_index"
     log:
-        "log/salmon/transcriptome_index.log",
+        "salmon/transcriptome_index.log",
     threads: 2
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
@@ -58,9 +41,9 @@ rule salmon_quant_reads_pe:
         quant="salmon/{sample}/quant.sf",
         lib="salmon/{sample}/lib_format_counts.json",
     log:
-        "log/salmon/{sample}.log",
+        "salmon/{sample}/log.txt",
     benchmark:
-        "log/salmon/{sample}.benchmark",
+        "salmon/{sample}/benchmark.txt",
     params:
         # optional parameters
         libtype="A",
