@@ -19,7 +19,13 @@ containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
 localrules: targets
 
-
+if config['START'] != 'RNK':
+    SAMPLES=read_table(config['META']).iloc[:,0].tolist()
+else:
+    SAMPLES=['placeholder']
+# subworkflow
+inlcude: 'rules/salmon.smk'
+include: 'rules/CleanUpRNASeq.smk'
 
 if config["START"] != 'RNK':
     check_meta_data(config)
@@ -89,11 +95,6 @@ MIN_LFC=config["MIN_LFC"]
 MIN_GENE_COUNT= config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
 CONTRAST_AS = config['CONTRAST_AS']
 
-if config['START'] != 'RNK':
-    SAMPLES=read_table(config['META']).iloc[:,0].tolist()
-else:
-    SAMPLES=['placeholder']
-
 if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config: # skip check if config ignored this
     check_fastq_size(config,SAMPLES)
 
@@ -139,9 +140,6 @@ else:
     B2S = B1S
     ASCN = 0
 
-# subworkflow
-inlcude: 'rules/salmon.smk'
-include: 'rules/CleanUpRNASeq.smk'
 
 def target_input(config, ASCN):
     '''
