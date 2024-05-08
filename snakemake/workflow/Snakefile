@@ -192,11 +192,6 @@ def target_input(config, ASCN):
 
     return (l)
 
-# subworkflow
-if config['START'] == 'FASTQ':
-    inlcude: 'rules/salmon.smk'
-    include: 'rules/CleanUpRNASeq.smk'
-
 rule targets:
     input:
         target_input(config, ASCN)
@@ -1530,7 +1525,9 @@ rule reset:
         snakemake -j 1 --unlock
         """
 
-
+# subworkflow
+inlcude: 'rules/salmon.smk'
+include: 'rules/CleanUpRNASeq.smk'
 
 
 
