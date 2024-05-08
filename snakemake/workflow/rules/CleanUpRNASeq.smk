@@ -3,11 +3,6 @@ GENOME=config['GENOME']
 META=config['META']
 ENSDB=GTF+'.ensdb.sqlite'
 
-if config['START'] != 'RNK':
-    SAMPLES=read_table(config['META']).iloc[:,0].tolist()
-else:
-    SAMPLES=['placeholder']
-
 rule make_ensdb:
     input:
         gtf=GTF,
@@ -27,8 +22,8 @@ rule CleanUpMakeMeta:
 rule CleanUpRNASeq:
     input:
         meta="CleanUpRNASeqQC/meta.txt", # todo
-        bam=expand("mapped_reads/{sample}.bam", sample=SAMPLE),
-        salmon=expand("salmon/{sample}/quant.sf", sample=SAMPLE),
+        bam=expand("mapped_reads/{sample}.bam", sample=SAMPLES),
+        salmon=expand("salmon/{sample}/quant.sf", sample=SAMPLES),
         genome=GENOME,
         gtf=GTF,
         ensdb=ENSDB,
