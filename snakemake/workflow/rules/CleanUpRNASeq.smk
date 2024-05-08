@@ -9,12 +9,27 @@ rule compress_genome:
     shell:
         "gzip -k {input}"
 
+
+rule gff_read:
+    input:
+        config['GENOME'],
+        annotation=config['GTF'],
+    output:
+        records=config['GTF']+'.fa',
+    threads: 1
+    log:
+        config['GTF']+'.fa.log',
+    params:
+        extra="",
+    wrapper:
+        "v3.10.2/bio/gffread"
+
 rule salmon_decoy:
     input:
-        transcriptome="/home/rui.li-umw/genome/hg38_ensembl/Homo_sapiens.GRCh38.cdna.ncrna.fa.gz",
-        genome=config['GENOME']+'.gz',
+        transcriptome=config['GTF']+'.fa',
+        genome=config['GENOME'],
     output:
-        gentrome="salmon/decoy/gentrome.fasta.gz",
+        gentrome="salmon/decoy/gentrome.fasta",
         decoys="salmon/decoy/decoys.txt",
     threads: 2
     resources:
