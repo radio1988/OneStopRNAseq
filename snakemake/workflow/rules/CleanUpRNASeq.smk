@@ -67,7 +67,7 @@ rule salmon_index:
         GENTROME + ".salmon_idx/benchmark",
     threads: 8
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000
+        mem_mb=lambda wildcards, attempt: attempt * 4000
     params:
         # optional parameters
         extra="",
