@@ -147,6 +147,7 @@ def target_input(config, ASCN):
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
+        l.extend(['salmon/{sample}/quant.sf'.format(sample) for sample in SAMPLES])
 
         if config["ASSEMBLY_ANALYSIS"]:
             if config['START'] not in ['FASTQ']:
