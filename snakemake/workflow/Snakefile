@@ -1524,3 +1524,6 @@ rule reset:
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
+
+
+include: 'rules/CleanUpRNASeq.smk'
