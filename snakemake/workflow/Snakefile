@@ -192,6 +192,10 @@ def target_input(config, ASCN):
 
     return (l)
 
+# subworkflow
+if config['START'] == 'FASTQ':
+    inlcude: 'rules/salmon.smk'
+    include: 'rules/CleanUpRNASeq.smk'
 
 rule targets:
     input:
@@ -1528,5 +1532,5 @@ rule reset:
 
 
 
-include: 'rules/CleanUpRNASeq.smk'
-inlcude: 'rules/salmon.smk'
+
+

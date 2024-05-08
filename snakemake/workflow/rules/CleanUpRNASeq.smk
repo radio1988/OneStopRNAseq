@@ -3,6 +3,11 @@ GENOME=config['GENOME']
 META=config['META']
 ENSDB=GTF+'.ensdb.sqlite'
 
+if config['START'] != 'RNK':
+    SAMPLES=read_table(config['META']).iloc[:,0].tolist()
+else:
+    SAMPLES=['placeholder']
+
 rule make_ensdb:
     input:
         gtf=GTF,
