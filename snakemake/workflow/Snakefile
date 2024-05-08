@@ -973,7 +973,7 @@ rule GSEA:
     conda:
         "envs/java11.yaml"  # test
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4100,
+        mem_mb=lambda wildcards, attempt: attempt * 8100
     params:
         svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
@@ -981,7 +981,7 @@ rule GSEA:
         rnk_flat_file= lambda wildcards: input_rnk_fname2(wildcards, config),
         gmt_fmted= lambda wildcards: "gsea/gene_sets/" + wildcards['fname'] + "." + wildcards['db'] 
     threads:
-        2
+        1
     log:
         "gsea/log/{fname}/{db}.log"
     benchmark:
