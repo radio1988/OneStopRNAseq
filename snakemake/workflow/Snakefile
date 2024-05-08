@@ -23,9 +23,8 @@ if config['START'] != 'RNK':
     SAMPLES=read_table(config['META']).iloc[:,0].tolist()
 else:
     SAMPLES=['placeholder']
-# subworkflow
-inlcude: 'rules/salmon.smk'
-include: 'rules/CleanUpRNASeq.smk'
+
+
 
 if config["START"] != 'RNK':
     check_meta_data(config)
@@ -1530,5 +1529,7 @@ rule reset:
 
 
 
-
+# subworkflow
+inlcude: 'rules/salmon.smk'
+include: 'rules/CleanUpRNASeq.smk'
 
