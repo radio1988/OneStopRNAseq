@@ -1,4 +1,16 @@
-rule test_salmon_decoy:
+rule compress_genome:
+    input:
+        config['GENOME']
+    output:
+        config['GENOME'] + '.gz'
+    threads:1
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    shell:
+        "gzip -k {input}"
+
+
+rule salmon_decoy:
     input:
         transcriptome="/home/rui.li-umw/genome/hg38_ensembl/Homo_sapiens.GRCh38.cdna.ncrna.fa.gz",
         genome=config['GENOME']+'.gz',
@@ -20,7 +32,7 @@ rule salmon_index:
         sequences="salmon/decoy/gentrome.fasta.gz",
         decoys="salmon/decoy/decoys.txt"
     output:
-        "salmon/transcriptome_index"
+        touch("salmon/transcriptome_index/done")
     log:
         "salmon/transcriptome_index.log",
     benchmark:
@@ -39,6 +51,7 @@ rule salmon_quant_reads_pe:
         r1="trimmed/{sample}.R1.fastq.gz",
         r2="trimmed/{sample}.R2.fastq.gz",
         index="salmon/transcriptome_index",
+        flag="salmon/transcriptome_index/done",
     output:
         quant="salmon/{sample}/quant.sf",
         lib="salmon/{sample}/lib_format_counts.json",
