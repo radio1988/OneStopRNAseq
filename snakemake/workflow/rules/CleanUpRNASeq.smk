@@ -24,7 +24,7 @@ rule salmon_index:
     log:
         "salmon/transcriptome_index.log",
     benchmark:
-        "salmon/{sample}/benchmark.txt",
+        "salmon/transcriptome_index.benchmark.txt",
     threads: 2
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 8000
