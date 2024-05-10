@@ -149,7 +149,10 @@ def target_input(config, ASCN):
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
+        # CleanUpRNASeq
         l.extend(['salmon/{}/quant.sf'.format(sample) for sample in SAMPLES])
+        l.extend(GTF+'.ensdb.sqlite')
+
 
         if config["ASSEMBLY_ANALYSIS"]:
             if config['START'] not in ['FASTQ']:

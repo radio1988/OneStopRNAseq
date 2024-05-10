@@ -137,6 +137,8 @@ rule make_ensdb:
         gtf=GTF,
     output:
         ensdb=ENSDB
+    conda:
+        "envs/deseq2.yaml"
     script:
         "workflow/script/make_ensdb.R"
 
@@ -145,6 +147,8 @@ rule CleanUpMakeMeta:
         META
     output:
         "CleanUpRNASeqQC/meta.txt"
+    conda:
+        "envs/deseq2.yaml"
     script:
         "script/cleanupmakemeta.R"
 
@@ -157,6 +161,8 @@ rule CleanUpRNASeq:
         gtf=GTF,
         ensdb=ENSDB,
     output:
-        "CleanUpRNASeqQC"
+        directory("CleanUpRNASeqQC")
+    conda:
+        "envs/deseq2.yaml"
     script:
         "workflow/script/cleanuprnaseq.R"
