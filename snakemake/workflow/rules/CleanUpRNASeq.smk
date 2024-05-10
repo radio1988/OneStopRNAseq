@@ -142,7 +142,7 @@ rule make_ensdb:
     conda:
         "../envs/deseq2.yaml"
     script:
-        "workflow/script/make_ensdb.R"
+        "../script/make_ensdb.R"
 
 rule CleanUpMakeMeta:
     input:
@@ -152,7 +152,7 @@ rule CleanUpMakeMeta:
     conda:
         "../envs/deseq2.yaml"
     script:
-        "script/cleanupmakemeta.R"
+        "../script/cleanupmakemeta.R"
 
 rule CleanUpRNASeq:
     input:
@@ -167,4 +167,4 @@ rule CleanUpRNASeq:
     conda:
         "../envs/deseq2.yaml"
     script:
-        "workflow/script/cleanuprnaseq.R"
+        "../script/cleanuprnaseq.R"
