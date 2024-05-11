@@ -149,8 +149,6 @@ rule CleanUpMakeMeta:
         META
     output:
         "CleanUpRNASeqQC/meta.cleanuprnaseq.csv"
-    conda:
-        "../envs/cleanuprnaseq.yaml"
     script:
         "../script/cleanupmakemeta.py"
 
