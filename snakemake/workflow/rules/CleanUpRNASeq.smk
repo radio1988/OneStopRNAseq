@@ -141,6 +141,10 @@ rule MakeEnsdb:
         ENSDB + ".log"
     conda:
         "../envs/cleanuprnaseq.yaml"
+    threads:
+        1
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 16000
     script:
         "../script/make_ensdb.R"
 
@@ -152,7 +156,7 @@ rule MakeCleanUpMeta:
     log:
         "CleanUpRNASeqQC/meta.cleanuprnaseq.csv.log"
     script:
-        "../script/cleanupmakemeta.py"
+        "../script/cleanupmakemeta.py"  # pandas
 
 rule CleanUpRNASeq:
     input:
