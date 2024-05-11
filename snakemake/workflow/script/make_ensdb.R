@@ -1,3 +1,13 @@
+if (!requireNamespace("pehatmap", quietly = TRUE)) {
+  install.packages("pehatmap", repos='http://cran.us.r-project.org')
+}
+
+working_dir <- getwd()
+print(working_dir)
+
+message("Working Directory:", getwd())
+
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 
