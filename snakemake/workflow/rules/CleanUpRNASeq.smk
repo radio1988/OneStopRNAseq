@@ -148,15 +148,15 @@ rule CleanUpMakeMeta:
     input:
         META
     output:
-        "CleanUpRNASeqQC/meta.csv"
+        "CleanUpRNASeqQC/meta.cleanuprnaseq.csv"
     conda:
         "../envs/cleanuprnaseq.yaml"
     script:
-        "../script/cleanupmakemeta.R"
+        "../script/cleanupmakemeta.py"
 
 rule CleanUpRNASeq:
     input:
-        meta="CleanUpRNASeqQC/meta.csv", # todo
+        meta="CleanUpRNASeqQC/meta.cleanuprnaseq.csv"
         bam=expand("mapped_reads/{sample}.bam", sample=SAMPLES),
         salmon=expand("salmon/{sample}/quant.sf", sample=SAMPLES),
         genome=GENOME,
