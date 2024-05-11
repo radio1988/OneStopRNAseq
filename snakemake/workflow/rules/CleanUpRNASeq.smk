@@ -136,7 +136,7 @@ rule make_ensdb:
     input:
         gtf=GTF,
     output:
-        ensdb=ENSDB
+        ensdb=ENSDB  # ENSDB=GTF+'.ensdb.sqlite'
     log:
         ENSDB + ".log"
     conda:
