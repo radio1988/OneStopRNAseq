@@ -1,4 +1,4 @@
-message("Working Directory:", getwd())
+message("Working Directory:", getwd())  # main workdir
 
 if (!requireNamespace("pheatmap", quietly = TRUE)) {
   install.packages("pheatmap", repos='http://cran.us.r-project.org')
@@ -15,7 +15,7 @@ library(CleanUpRNAseq)
 
 make_ensdb(
   gtf=snakemake@input[['gtf']],
-  outfile = snakemake@output[['ensdb']]
+  outfile = snakemake@output[['ensdb']],
   organism_latin_name = "NA",
   genome_version = "NA",
   Ensembl_release_version = "NA"
