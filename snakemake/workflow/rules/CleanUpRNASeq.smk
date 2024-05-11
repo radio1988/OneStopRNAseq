@@ -140,7 +140,7 @@ rule make_ensdb:
     log:
         ENSDB + ".log"
     conda:
-        "../envs/cleanuprnaseq.yaml.yaml"
+        "../envs/cleanuprnaseq.yaml"
     script:
         "../script/make_ensdb.R"
 
@@ -150,7 +150,7 @@ rule CleanUpMakeMeta:
     output:
         "CleanUpRNASeqQC/meta.txt"
     conda:
-        "../envs/cleanuprnaseq.yaml.yaml"
+        "../envs/cleanuprnaseq.yaml"
     script:
         "../script/cleanupmakemeta.R"
 
@@ -165,6 +165,6 @@ rule CleanUpRNASeq:
     output:
         directory("CleanUpRNASeqQC")
     conda:
-        "../envs/cleanuprnaseq.yaml.yaml"
+        "../envs/cleanuprnaseq.yaml"
     script:
         "../script/cleanuprnaseq.R"
