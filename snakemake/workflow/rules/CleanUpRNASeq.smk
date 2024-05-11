@@ -132,7 +132,7 @@ else:
             "v3.10.2/bio/salmon/quant"
 
 
-rule make_ensdb:
+rule MakeEnsdb:
     input:
         gtf=GTF,
     output:
@@ -144,7 +144,7 @@ rule make_ensdb:
     script:
         "../script/make_ensdb.R"
 
-rule CleanUpMakeMeta:
+rule MakeCleanUpMeta:
     input:
         META
     output:

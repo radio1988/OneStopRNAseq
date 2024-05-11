@@ -9,9 +9,8 @@ install.packages('./CleanUpRNAseq/', repos = NULL, type="source")  # works
 }
 
 library(CleanUpRNAseq)
-library(readr)
 
-meta <- read_table("./meta.txt")
+meta <- read.csv(snakemake@input[[1]])
 print(meta)
 
 create_diagnostic_plot(
