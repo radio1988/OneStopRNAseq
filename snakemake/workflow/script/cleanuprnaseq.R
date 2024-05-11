@@ -1,5 +1,16 @@
-install.packages(‘pheatmap’)  # 76 repo
+if (!requireNamespace("pehatmap", quietly = TRUE)) {
+  install.packages("pehatmap", repos='http://cran.us.r-project.org')
+}
+
+working_dir <- getwd()
+print(working_dir)
+
+message("Working Directory:", getwd())
+
+
+if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
 install.packages('./CleanUpRNAseq/', repos = NULL, type="source")  # works
+}
 
 
 
