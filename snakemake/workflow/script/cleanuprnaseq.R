@@ -5,7 +5,7 @@ if (!requireNamespace("pheatmap", quietly = TRUE)) {
 }
 
 if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
-install.packages('./CleanUpRNAseq/', repos = NULL, type="source")  # works
+install.packages('./workflow/envs/CleanUpRNAseq/', repos = NULL, type="source")  # works
 }
 
 library(CleanUpRNAseq)
