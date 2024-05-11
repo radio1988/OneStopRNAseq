@@ -166,6 +166,10 @@ rule CleanUpRNASeq:
         directory("CleanUpRNASeqQC/plots")
     log:
         "CleanUpRNASeqQC/plots.log"
+    threads:
+        8
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 6000
     conda:
         "../envs/cleanuprnaseq.yaml"
     script:
