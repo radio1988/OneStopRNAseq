@@ -7,7 +7,7 @@ channels:
     #- anaconda
 
 dependencies:
-    - conda-forge::r-base
+    - conda-forge::r-base=4.2
     - conda-forge::r-ggplot2
     - conda-forge::r-ggrepel
     - conda-forge::r-reshape2
