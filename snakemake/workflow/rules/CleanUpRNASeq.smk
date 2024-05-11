@@ -149,6 +149,8 @@ rule MakeCleanUpMeta:
         META
     output:
         "CleanUpRNASeqQC/meta.cleanuprnaseq.csv"
+    log:
+        "CleanUpRNASeqQC/meta.cleanuprnaseq.csv.log"
     script:
         "../script/cleanupmakemeta.py"
 
@@ -162,6 +164,8 @@ rule CleanUpRNASeq:
         ensdb=ENSDB,
     output:
         directory("CleanUpRNASeqQC/plots")
+    log:
+        "CleanUpRNASeqQC/plots.log"
     conda:
         "../envs/cleanuprnaseq.yaml"
     script:
