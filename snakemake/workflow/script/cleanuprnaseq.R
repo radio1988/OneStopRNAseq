@@ -10,12 +10,12 @@ install.packages('./CleanUpRNAseq/', repos = NULL, type="source")  # works
 
 library(CleanUpRNAseq)
 
-meta <- read.csv(snakemake@input[[1]])
+meta <- read.csv(snakemake@input[['meta']])
 print(meta)
 
 create_diagnostic_plot(
   gtf=snakemake@input[['gtf']],
-  metadata = snakemake@input[['meta']],,
+  metadata = meta,
   out_dir='CleanUpRNASeqQC/plots',
   ensdb_sqlite = snakemake@input[['sqlite']],
   threads = snakemake@threads,
