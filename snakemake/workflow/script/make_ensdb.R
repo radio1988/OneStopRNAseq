@@ -1,12 +1,12 @@
-if (!requireNamespace("pehatmap", quietly = TRUE)) {
-  install.packages("pehatmap", repos='http://cran.us.r-project.org')
-}
-
-working_dir <- getwd()
-print(working_dir)
-
 message("Working Directory:", getwd())
 
+if (!requireNamespace("pheatmap", quietly = TRUE)) {
+  install.packages("pheatmap", repos='http://cran.us.r-project.org')
+}
+
+if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
+install.packages('./CleanUpRNAseq/', repos = NULL, type="source")  # works
+}
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
