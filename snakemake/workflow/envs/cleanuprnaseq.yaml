@@ -1,0 +1,32 @@
+name: cleanuprnaseq
+
+channels:
+    - conda-forge
+    - bioconda
+    #- r
+    #- anaconda
+
+dependencies:
+    - conda-forge::r-base
+    - conda-forge::r-ggplot2
+    - conda-forge::r-ggrepel
+    - conda-forge::r-reshape2
+    - conda-forge::r-devtools
+    - conda-forge::r-patchwork
+    - bioconda::bioconductor-plyranges
+    - bioconda::bioconductor-deseq2
+    - bioconda::bioconductor-rsamtools
+    - bioconda::bioconductor-rsubread
+#    - bioconda::r-pheatmap
+    - bioconda::bioconductor-genomicranges
+    - bioconda::bioconductor-edger
+    - bioconda::bioconductor-ensembldb
+    - bioconda::bioconductor-tximport
+    - bioconda::bioconductor-biostrings
+    - bioconda::bioconductor-summarizedexperiment
+    - bioconda::bioconductor-bsgenome
+    - bioconda::bioconductor-qsmooth
+    - bioconda::bioconductor-annotationfilter
+    - bioconda::bioconductor-genomeinfodb
+    - bioconda::bioconductor-biocgenerics
+    - bioconda::bioconductor-limma
