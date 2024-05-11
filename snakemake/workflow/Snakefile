@@ -1517,7 +1517,7 @@ rule reset:
         """
         echo 'deleting files..'
         rm -rf lsf.log  meta/log/ gsea_bubble/ log/ workflow.log fastqc/ bam_qc/ trimmed/ mapped_reads/ sorted_reads/ bam_qc/ bigWig/ \
-        feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ gsea/ gsea_compressed/ \
+        feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ salmon/ gsea/ gsea_compressed/ \
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ \
         _STARgenome _STARtmp \
         feature_count_gene_level hisat2 stringtie \
