@@ -17,7 +17,7 @@ create_diagnostic_plot(
   gtf=snakemake@input[['gtf']],
   metadata = meta,
   out_dir='CleanUpRNASeqQC/plots',
-  ensdb_sqlite = snakemake@input[['sqlite']],
+  ensdb_sqlite = snakemake@input[['ensdb']],
   threads = snakemake@threads,
   verbose = F
 )
