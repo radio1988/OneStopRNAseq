@@ -4,7 +4,7 @@ GENOME=config['GENOME']
 TRANSCRIPTS=GTF+'.fa'
 GENTROME=GTF+'.gentrome.fa'
 DECOYS=GENTROME+'.decoys.txt'
-# CleanUpRNASeq
+# CleanUpRNAseq
 META=config['META']
 ENSDB=GTF+'.ensdb.sqlite'
 
@@ -152,24 +152,24 @@ rule MakeCleanUpMeta:
     input:
         META
     output:
-        "CleanUpRNASeqQC/meta.cleanuprnaseq.csv"
+        "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"
     log:
-        "CleanUpRNASeqQC/meta.cleanuprnaseq.csv.log"
+        "CleanUpRNAseqQC/meta.cleanuprnaseq.csv.log"
     script:
         "../script/cleanupmakemeta.py"  # pandas
 
-rule CleanUpRNASeq:
+rule CleanUpRNAseq:
     input:
-        meta="CleanUpRNASeqQC/meta.cleanuprnaseq.csv",
+        meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam", sample=SAMPLES),
         salmon=expand("salmon/{sample}/quant.sf", sample=SAMPLES),
         genome=GENOME,
         gtf=GTF,
         ensdb=ENSDB,
     output:
-        directory("CleanUpRNASeqQC/plots")
+        directory("CleanUpRNAseqQC/plots")
     log:
-        "CleanUpRNASeqQC/plots.log"
+        "CleanUpRNAseqQC/plots.log"
     threads:
         8
     resources:
