@@ -13,7 +13,7 @@ library(CleanUpRNAseq)
 meta <- read.csv(snakemake@input[['meta']])
 print(meta)
 
-create_diagnostic_plot(
+x <- create_diagnostic_plot(
   gtf=snakemake@input[['gtf']],
   metadata = meta,
   out_dir='CleanUpRNASeqQC/plots',
