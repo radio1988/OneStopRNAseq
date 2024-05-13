@@ -122,7 +122,7 @@ else:
             "salmon/{sample}/benchmark.txt",
         params:
             # optional parameters
-            libtype="A",
+            libtype="U",
             extra="",
         threads:
             4
