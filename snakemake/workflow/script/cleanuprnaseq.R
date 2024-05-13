@@ -1,10 +1,9 @@
-log <- file(snakemake@log[[1]], open="wt")
-sinkall(log)
-
-message("Working Directory:", getwd())
-
 if (!requireNamespace("pheatmap", quietly = TRUE)) {
   install.packages("pheatmap", repos='http://cran.us.r-project.org')
+}
+
+if (!requireNamespace("readJDX", quietly = TRUE)) {
+  install.packages("readJDX", repos='http://cran.us.r-project.org')
 }
 
 if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
@@ -12,6 +11,11 @@ install.packages('./workflow/envs/CleanUpRNAseq/', repos = NULL, type="source") 
 }
 
 library(CleanUpRNAseq)
+library(readJDX)
+
+log <- file(snakemake@log[[1]], open="wt")
+sinkall(log)
+message("Working Directory:", getwd())
 
 meta <- read.csv(snakemake@input[['meta']])
 print(meta)
