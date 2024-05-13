@@ -167,7 +167,7 @@ rule CleanUpRNAseq:
         gtf=GTF,
         ensdb=ENSDB,
     output:
-        directory("CleanUpRNAseqQC/plots")
+        "CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf"
     log:
         "CleanUpRNAseqQC/plots.log"
     threads:
