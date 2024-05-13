@@ -1,3 +1,6 @@
+log <- file(snakemake@log[[1]], open="wt")
+sink(log)
+
 message("Working Directory:", getwd())  # main workdir
 
 if (!requireNamespace("pheatmap", quietly = TRUE)) {
@@ -8,8 +11,7 @@ if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
 install.packages('./workflow/envs/CleanUpRNAseq/', repos = NULL, type="source")  # works
 }
 
-log <- file(snakemake@log[[1]], open="wt")
-sink(log)
+
 
 library(CleanUpRNAseq)
 
