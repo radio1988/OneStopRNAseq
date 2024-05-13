@@ -1,5 +1,5 @@
 log <- file(snakemake@log[[1]], open="wt")
-sink(log)
+sinkall(log)
 
 message("Working Directory:", getwd())
 
