@@ -1,3 +1,6 @@
+log <- file(snakemake@log[[1]], open="wt")
+sink(log)
+
 message("Working Directory:", getwd())
 
 if (!requireNamespace("pheatmap", quietly = TRUE)) {
@@ -21,3 +24,5 @@ x <- create_diagnostic_plot(
   threads = snakemake@threads,
   verbose = F
 )
+
+sink()
