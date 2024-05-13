@@ -30,3 +30,4 @@ dependencies:
     - bioconda::bioconductor-genomeinfodb
     - bioconda::bioconductor-biocgenerics
     - bioconda::bioconductor-limma
+    - conda-forge::r-readr
