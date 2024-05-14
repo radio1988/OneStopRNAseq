@@ -3,17 +3,17 @@ if (!requireNamespace("pheatmap", quietly = TRUE)) {
 }
 
 if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
-  # install.packages('./workflow/envs/CleanUpRNAseq/',
-  #                  repos = NULL,
-  #                  type = "source")  # works
-  BiocManager::install(
-    "CleanUpRNAseq",
-    update = TRUE,
-    ask = T,
-    checkBuilt = FALSE,
-    force = FALSE,
-    version = BiocManager::version()
-  )
+  install.packages('./workflow/envs/CleanUpRNAseq/',
+                   repos = NULL,
+                   type = "source")  # works
+  # BiocManager::install(
+  #   "CleanUpRNAseq",
+  #   update = TRUE,
+  #   ask = T,
+  #   checkBuilt = FALSE,
+  #   force = FALSE,
+  #   version = BiocManager::version()
+  # )
 }
 
 library(CleanUpRNAseq)
