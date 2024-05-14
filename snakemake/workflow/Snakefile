@@ -256,9 +256,9 @@ rule FastQC1:
     conda:
         "envs/fastqc.yaml"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000   
+        mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
-        1
+        4
     log:
         "fastqc/details_raw/log/{sample}.log"
     benchmark:
@@ -300,9 +300,9 @@ rule FastQC2:
     conda:
         "envs/fastqc.yaml"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000   
+        mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
-        1
+        4
     log:
         "fastqc/details_trimmed/log/{sample}.log"
     benchmark:
