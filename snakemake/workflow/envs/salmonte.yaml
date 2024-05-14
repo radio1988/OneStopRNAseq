@@ -1,4 +1,4 @@
-name: salmonte 
+name: SalmonTE 
 
 channels:
   - anaconda
@@ -8,7 +8,7 @@ channels:
 
 dependencies:
   - anaconda::docopt
-  - bioconda::snakemake 
+  - bioconda::snakemake=7.24
   - conda-forge::pandas
 
   - r-base=4.0.2
