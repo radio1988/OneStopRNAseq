@@ -1,27 +1,27 @@
-GTF=config['GTF']
-GENOME=config['GENOME']
+GTF = config['GTF']
+GENOME = config['GENOME']
 # SALMON
-TRANSCRIPTS=GTF+'.fa'
-GENTROME=GTF+'.gentrome.fa'
-DECOYS=GENTROME+'.decoys.txt'
+TRANSCRIPTS = GTF + '.fa'
+GENTROME = GTF + '.gentrome.fa'
+DECOYS = GENTROME + '.decoys.txt'
 # CleanUpRNAseq
-META=config['META']
-ENSDB=GTF+'.ensdb.sqlite'
+META = config['META']
+ENSDB = GTF + '.ensdb.sqlite'
 
 
 rule gff_read:
     input:
         fasta=GENOME,
-        annotation=GTF,
+        annotation=GTF
     output:
         records=TRANSCRIPTS,
     threads: 1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
-        GTF+'.fa.log',
+        GTF + '.fa.log'
     params:
-        extra="",
+        extra=""
     wrapper:
         "v3.10.2/bio/gffread"
 
@@ -29,17 +29,17 @@ rule gff_read:
 rule salmon_decoy:
     input:
         transcriptome=TRANSCRIPTS,
-        genome=GENOME,
+        genome=GENOME
     output:
         gentrome=GENTROME,
-        decoys=DECOYS,
+        decoys=DECOYS
     threads: 1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
-        DECOYS+'.log'
+        DECOYS + '.log'
     benchmark:
-        DECOYS+'.benchmark'
+        DECOYS + '.benchmark'
     wrapper:
         "v3.10.2/bio/salmon/decoys"
 
@@ -66,19 +66,19 @@ rule salmon_index:
             "reflengths.bin",
             "refseq.bin",
             "seq.bin",
-            "versionInfo.json",
+            "versionInfo.json"
         ),
     log:
         GENTROME + ".salmon_idx/log",
     benchmark:
         GENTROME + ".salmon_idx/benchmark",
-        # hg38-ensembl s       h:m:s   max_rss max_vms max_uss max_pss io_in   io_out  mean_load       cpu_time
-        # 1378.6924       0:22:58 19463.66        42060.36        19451.28        19452.22        9.68    18896.98        446.52  6156.25
+    # hg38-ensembl s       h:m:s   max_rss max_vms max_uss max_pss io_in   io_out  mean_load       cpu_time
+    # 1378.6924       0:22:58 19463.66        42060.36        19451.28        19452.22        9.68    18896.98        446.52  6156.25
     threads: 6
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     params:
-        extra="",
+        extra=""
     wrapper:
         "v3.10.2/bio/salmon/index"
 
@@ -89,10 +89,10 @@ if config["PAIR_END"]:
             r1="trimmed/{sample}.R1.fastq.gz",
             r2="trimmed/{sample}.R2.fastq.gz",
             index=GENTROME + ".salmon_idx",
-            flag=GENTROME + ".salmon_idx/complete_ref_lens.bin",
+            flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
         output:
-            quant="salmon/{sample}/quant.sf",  # salmon/SRR24754651/quant.sf
-            lib="salmon/{sample}/lib_format_counts.json",
+            quant="salmon/{sample}/quant.sf",
+            lib="salmon/{sample}/lib_format_counts.json"
         log:
             "salmon/{sample}/log.txt",
         benchmark:
@@ -112,18 +112,18 @@ else:
         input:
             r="trimmed/{sample}.fastq.gz",
             index=GENTROME + ".salmon_idx",
-            flag=GENTROME + ".salmon_idx/complete_ref_lens.bin",
+            flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
         output:
-            quant="salmon/{sample}/quant.sf",  # salmon/SRR24754651/quant.sf
-            lib="salmon/{sample}/lib_format_counts.json",
+            quant="salmon/{sample}/quant.sf",# salmon/SRR24754651/quant.sf
+            lib="salmon/{sample}/lib_format_counts.json"
         log:
-            "salmon/{sample}/log.txt",
+            "salmon/{sample}/log.txt"
         benchmark:
-            "salmon/{sample}/benchmark.txt",
+            "salmon/{sample}/benchmark.txt"
         params:
             # optional parameters
             libtype="U",
-            extra="",
+            extra=""
         threads:
             4
         resources:
@@ -161,11 +161,11 @@ rule MakeCleanUpMeta:
 rule CleanUpRNAseq:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
-        bam=expand("mapped_reads/{sample}.bam", sample=SAMPLES),
-        salmon=expand("salmon/{sample}/quant.sf", sample=SAMPLES),
+        bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
+        salmon=expand("salmon/{sample}/quant.sf",sample=SAMPLES),
         genome=GENOME,
         gtf=GTF,
-        ensdb=ENSDB,
+        ensdb=ENSDB
     output:
         "CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf"
     log:
