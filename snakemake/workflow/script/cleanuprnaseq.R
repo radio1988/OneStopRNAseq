@@ -29,16 +29,8 @@ print(meta)
 print("PAIR_END:")
 print(snakemake@config[["PAIR_END"]])
 
-if (snakemake@config[["PAIR_END"]] == "True") {
-  PE <- TRUE
-} else if (snakemake@config[["PAIR_END"]] == "False") {
-  PE <- FALSE
-} else {
-  stop ("Invalid config for PAIR_END")
-}
-
 x <- create_diagnostic_plot(
-  isPairedEnd = PE,
+  isPairedEnd = snakemake@config[["PAIR_END"]],
   gtf = snakemake@input[['gtf']],
   metadata = meta,
   out_dir = 'CleanUpRNAseqQC/',
