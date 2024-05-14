@@ -127,7 +127,7 @@ else:
         threads:
             4
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 4000
+            mem_mb=lambda wildcards, attempt: attempt * 8000
         wrapper:
             "v3.10.2/bio/salmon/quant"
 
