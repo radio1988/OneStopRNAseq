@@ -5,7 +5,7 @@ channels:
   - conda-forge
 
 dependencies:
-  - fastqc=0.11.8
+  - fastqc=0.12.1
   - multiqc=1.6
   - dataclasses
 
