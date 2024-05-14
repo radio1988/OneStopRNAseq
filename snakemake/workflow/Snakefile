@@ -1520,7 +1520,7 @@ rule reset:
         _STARgenome _STARtmp \
         feature_count_gene_level hisat2 stringtie \
         lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.pdf \
-        rulegraph  rulegraph.pdf \
+        rulegraph  rulegraph.pdf report.log workflow.log log/ \
         meta/strandness.detected.txt  meta/decoder.txt meta/read_length.median.txt \
         meta/read_length.max.txt Workflow_DAG.all.pdf.log
         echo 'unlocking dir..'
