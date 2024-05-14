@@ -16,6 +16,8 @@ message("Working Directory:", getwd())
 meta <- read.csv(snakemake@input[['meta']])
 print(meta)
 
+
+
 x <- create_diagnostic_plot(
   gtf=snakemake@input[['gtf']],
   metadata = meta,

@@ -260,9 +260,9 @@ rule FastQC1:
     threads:
         1
     log:
-        "fastqc/log/{sample}.log"
+        "fastqc/details_raw/log/{sample}.log"
     benchmark:
-        "fastqc/log/{sample}.benchmark"
+        "fastqc/details_raw/log/{sample}.benchmark"
     shell:
         "fastqc -t {threads} {input} -o fastqc/details_raw &> {log};"
 
@@ -282,9 +282,9 @@ rule FastQC_MultiQC1:
     threads:
         1
     log:
-        "fastqc/log/multiqc.log"
+        "fastqc/raw_reads_multiqc_report.log"
     benchmark:
-        "fastqc/log/multiqc.benchmark"
+        "fastqc/raw_reads_multiqc_report.benchmark"
     shell:
         "multiqc {input} -f -n {output} &> {log};"
 
@@ -326,9 +326,9 @@ rule FastQC_MultiQC2:
     threads:
         1
     log:
-        "fastqc/log/trimmed_reads_multiqc_report.html.log"
+        "fastqc/trimmed_reads_multiqc_report.log"
     benchmark:
-        "fastqc/log/trimmed_reads_multiqc_report.html.benchmark"
+        "fastqc/trimmed_reads_multiqc_report.benchmark"
     shell:
         """
         multiqc {input} -f -n {output} &> {log};
