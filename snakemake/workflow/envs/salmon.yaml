@@ -1,7 +1,0 @@
-name: salmon
-
-channels:
-  - bioconda
-
-dependencies:
-  - salmon=0.14.1
