@@ -104,7 +104,7 @@ if config["PAIR_END"]:
         threads:
             4
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 8000
+            mem_mb=lambda wildcards, attempt: attempt * 6000  # 18G for human
         wrapper:
             "v3.10.2/bio/salmon/quant"
 else:
@@ -127,7 +127,7 @@ else:
         threads:
             4
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 8000
+            mem_mb=lambda wildcards, attempt: attempt * 6000
         wrapper:
             "v3.10.2/bio/salmon/quant"
 
