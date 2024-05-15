@@ -1,0 +1,77 @@
+# Analysis Params
+# human 
+
+START: FASTQ # FASTQ, BAM, COUNT, RNK
+
+# FASTQ START, ALIGNMENT
+PAIR_END: True  # True/False, only relavent when START is FASTQ
+ALIGNER: STAR # HISAT2, STAR, only relavent when START is FASTQ
+ADAPTORS: workflow/resources/adapters/merged.fa # only relavent when START is FASTQ
+# Species
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens_t2t/ensembl_rapid/Homo_sapiens-GCA_009914755.4-softmasked.fa
+GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens_t2t/ensembl_rapid/Homo_sapiens-GCA_009914755.4-2022_07-genes.gtf
+ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/t2t.ensembl_rapid.GCA_009914755.4-2022_07-gene.anno.txt
+GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
+
+
+# FASTQ or BAM START, featureCount
+STRAND: [0, 1, 2] # only relavent when START is FASTQ or BAM 
+MODE: strict # liberal: Multi-Mapping, No fragment size reqirement; strict: opposite
+INTRON: False  # will also perform gene level featureCount as well as exon level, and max(gene-count, exon-count) will be taken as gene-count
+
+# DESeq2
+DESEQ2_ANALYSIS: True
+MAX_FDR: 0.05
+MIN_LFC: 0.585 
+META: meta/meta.csv
+CONTRAST_DE: meta/contrast.csv
+cooksCutoff: 'FALSE'
+independentFilter: 'FALSE'
+blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlier, e.g. KO_D0_1_S2, excluded in DESeq2 analysis only, optional
+
+# GSEA
+GSEA_ANALYSIS: True
+GSEA_NPLOTS: 100  
+GSEA_PLOT_SVG: True  
+
+# Only if start from COUNT
+COUNT_FILE: meta/COUNT.xlsx  # must have same format as feature_count output c1-c7 meta, c7- count
+# both txt and xlsx supported, meta/COUNT.xlsx will be converted to meta/COUNT.xlsx.txt
+# meta/COUNT.txt will be read as is
+
+# Only if start from RNK
+RNKS:
+  - name1.rnk.txt  # under ./meta/name1.rnk.txt
+  - name2.rnk.txt  # under ./meta/name2.rnk.txt
+
+# Optinoal Analysis
+
+# Alternative Splicing analysis (rMATS)
+DEXSEQ_ANALYSIS: True
+RMATS_ANALYSIS: True
+CONTRAST_AS: meta/contrast.csv
+RMATS_STRANDNESS:
+  {0 : fr-unstranded,
+  1 : fr-firststrand, 
+  2 : fr-secondstrand}
+
+# DEXSeq analysis
+MIN_GENE_COUNT: 10  # genes with less reads per sample will be removed from DEXSeq analysis, default 100, test with 10
+
+# TE analysis (SalmonTE)
+TE_ANALYSIS: True # True, include TE analysis in DESeq2 results (only if FASTQ provided); False, skip
+TE_REFERENCE: mm # mm, hs, dm, dr
+# hs : Homo Sapiens
+# mm : Mus musculus
+# dm : Drosophila melanogaster
+# dr : Danio rerio
+
+# For ASE
+ASE_ANALYSIS: False
+VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
+
+ASSEMBLY_ANALYSIS: True
+
+
+# WEBSITE maintenance parameters
+MAX_FASTQ_SIZE: 2000 # Unit GB. The size of all fastq files summed must be smaller than this
