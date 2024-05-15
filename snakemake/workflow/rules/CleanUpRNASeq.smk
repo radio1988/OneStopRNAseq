@@ -167,7 +167,8 @@ rule CleanUpRNAseq:
         gtf=GTF,
         ensdb=ENSDB
     output:
-        "CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf"
+        "CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf",
+        "CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
     log:
         "CleanUpRNAseqQC/plots.log"
     threads:
@@ -185,14 +186,15 @@ rule IR_DE:
         cnt=DESeq2_input(config),
         meta=config['META'],
         contrast=config["CONTRAST_DE"],
+        ir_rate="CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
     output:
-        expand("CleanUpRNAseqQC/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
+        "CleanUpRNAseqDE/CleanUpRNAseqDE.html"
     conda:
         "../envs/deseq2.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     params:
-        rmd="'./CleanUpRNAseqQC/DESeq2.IR.Rmd'",
+        rmd="'./CleanUpRNAseqDE/DESeq2.IR.Rmd'",
         fdr=MAX_FDR,
         lfc=MIN_LFC,
         independentFilter=config["independentFilter"],
@@ -205,12 +207,12 @@ rule IR_DE:
     threads:
         1
     log:
-        "CleanUpRNAseqQC/DESeq2.IR.log"
+        "CleanUpRNAseqDE/DESeq2.IR.log"
     benchmark:
-        "CleanUpRNAseqQC/DESeq2.IR.benchmark"
+        "CleanUpRNAseqDE/DESeq2.IR.benchmark"
     shell:
-        #Rscript -e rmarkdown::render({params.rmd})
-        'cp workflow/script/DESeq2.IR.Rmd CleanUpRNAseqQC; '
+        'cp workflow/script/DESeq2.IR.Rmd CleanUpRNAseqDE; '
+        
         'Rscript -e "rmarkdown::render( \
         {params.rmd}, \
         params=list( \
@@ -225,6 +227,7 @@ rule IR_DE:
             blackSamples=\'{params.blackSamples}\' \
             ), \
         output_file={params.o})" > {log} 2>&1 ;'
-        'D=CleanUpRNAseqQC; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
+        
+        'D=CleanUpRNAseqDE; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
 
 
