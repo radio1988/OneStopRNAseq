@@ -178,3 +178,55 @@ rule CleanUpRNAseq:
         "../envs/cleanuprnaseq.yaml"
     script:
         "../script/cleanuprnaseq.R"
+
+
+from ..osr import DESeq2_input
+
+rule IR_DE:
+    input:
+        cnt=DESeq2_input(config),
+        meta=config['META'],
+        contrast=config["CONTRAST_DE"],
+    output:
+        expand("CleanUpRNAseqQC/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
+    conda:
+        "../envs/deseq2.yaml"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000,
+    params:
+        rmd="'./CleanUpRNAseqQC/DESeq2.IR.Rmd'",
+        fdr=MAX_FDR,
+        lfc=MIN_LFC,
+        independentFilter=config["independentFilter"],
+        cooksCutoff=config["cooksCutoff"],
+        blackSamples=config['blackSamples'] if 'blackSamples' in config else "",
+        anno_tab=ANNO_TAB,
+        o="'DESeq2.html'"
+    priority:
+        100
+    threads:
+        1
+    log:
+        "CleanUpRNAseqQC/DESeq2.IR.log"
+    benchmark:
+        "CleanUpRNAseqQC/DESeq2.IR.benchmark"
+    shell:
+        #Rscript -e rmarkdown::render({params.rmd})
+        'cp workflow/script/DESeq2.IR.Rmd CleanUpRNAseqQC; '
+        'Rscript -e "rmarkdown::render( \
+        {params.rmd}, \
+        params=list( \
+            max_fdr={params.fdr}, \
+            min_lfc={params.lfc}, \
+            cookscutoff={params.cooksCutoff}, \
+            indfilter={params.independentFilter}, \
+            countFile=\'../{input.cnt}\', \
+            annoFile=\'{params.anno_tab}\', \
+            metaFile=\'../{input.meta}\', \
+            contrastFile=\'../{input.contrast}\', \
+            blackSamples=\'{params.blackSamples}\' \
+            ), \
+        output_file={params.o})" > {log} 2>&1 ;'
+        'D=CleanUpRNAseqQC; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
+
+
