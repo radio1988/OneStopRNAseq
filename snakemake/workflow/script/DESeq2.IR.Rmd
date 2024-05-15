@@ -390,7 +390,7 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
 meta.df <- readTable(metaFile)
 meta.df <- meta.df[!(meta.df[, 1] %in% blackSamples), ]
 
-x <- readRDS("./metadata.with.IR.rates.RDS")
+x <- readRDS("../CleanUpRNAseqQC/metadata.with.IR.rates.RDS")
 meta2.df <- data.frame(SAMPLE = x$sample_name, IR_rate = x$IR_rate)
 meta.df <- merge(meta.df, meta2.df, by = 1 )
 
