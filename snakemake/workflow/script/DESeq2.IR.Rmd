@@ -1,0 +1,895 @@
+---
+title: "DE Analysis and Standard Visualizations"
+output:
+  html_document:
+    toc: yes
+    code_folding: hide
+    toc_float: yes
+params: 
+  max_fdr: 0.05
+  min_lfc: 0.585
+  min_rowsum: 10
+  min_colsum: 20000
+  indfilter: FALSE
+  cookscutoff: FALSE
+  
+  countFile: "../feature_count/counts.strict.txt"
+  annoFile: "https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Homo_sapiens.GRCh38.111.anno.txt"
+  metaFile: "../meta/meta.csv"
+  contrastFile:  "../meta/contrast.csv"
+  blackSamples: 'NA_AAAAXXskjk, NA_BBBXXXYjkdmf'
+---
+
+## User ReadME:
+- Please search for **“Warning”** in this report for possible problems before proceeding
+-	Normalized expression values, differentially expressed genes, and various types of plots such as heatmap and volcano plots are in the DESeq2 folder. For example, TPM.xlsx contains normalized expression values.
+- Please use LFC_shrunken for Log2FoldChange, LFC_raw is not recommended
+- Please use FDR (padj) instead of raw p-values for identifying significantly differentially expressed genes.
+
+## Developer Log:
+- blackSamples added in params
+- manual dispersion estimation when DESeq() fails
+
+```{r setup, include=F}
+# Bioconductor
+library(BiocManager)
+library(DESeq2)
+library(EnhancedVolcano)
+
+# CRAN
+library(tidyverse)
+library(ggplot2)
+library(openxlsx)
+
+library(ggpubr) # ggmaplot
+library(ggrepel)
+library(ashr)
+library(MASS) # get_density
+library(RColorBrewer) #pheatmap
+library(pheatmap)
+library(PoiClaClu)  
+if(!require(berryFunctions)){
+    install.packages("berryFunctions", repos = "http://cran.us.r-project.org")
+    library(berryFunctions)
+}
+
+dir.create("./rnk", showWarnings = FALSE)
+TEST=FALSE  # if TRUE, skip Excel outputs to save time
+```
+
+## Input parameter extraction
+```{r params}
+max_fdr <- params$max_fdr
+min_lfc <- params$min_lfc
+indfilter <- params$indfilter
+cookscutoff <- params$cookscutoff
+
+countFile <- params$countFile
+annoFile <- params$annoFile
+metaFile <- params$metaFile
+contrastFile <-params$contrastFile
+
+blackSamplesStr <- gsub(" " , '', params$blackSamples)
+blackSamples <- unlist(strsplit(blackSamplesStr, ','))
+
+paste("Data file name:", countFile)
+paste("MetaData file name:", metaFile)
+paste("Contrast file name:", contrastFile)
+paste("Annotation file name:", annoFile)
+paste("FDR cut-off:", max_fdr)
+paste("Log2FC cut-off:", min_lfc)
+cat('blackSamples to remove:', blackSamples)
+```
+
+## Functions
+```{r functions}
+readTable <- function(fname){
+  if (str_ends(fname, '.txt')){
+      df <-  read_delim(fname, delim ="\t", comment = '#') 
+   } else if (str_ends(fname, '.csv')){
+     df <-  read_delim(fname, delim =",", comment = '#') 
+   }else if (str_ends(fname, '.xlsx')){
+      df <- read.xlsx( fname, na.strings = 'NA', sheet=1)  # na term important
+  } else{
+      stop("file format not supported")
+  }
+  return (df)
+}
+
+get_density <- function(x, y, ...) {
+  dens <- MASS::kde2d(x, y, ...)
+  ix <- findInterval(x, dens$x)
+  iy <- findInterval(y, dens$y)
+  ii <- cbind(ix, iy)
+  return(dens$z[ii])
+}
+
+volcanoplot <- function(res, anno, name='name', 
+                        lfcthresh=2, sigthresh=0.05, 
+                        labelsig=FALSE, xlim=100, ylim=1000, textcx=1) {
+  # If Annotation file is wrong, No annotation match
+  res0 <- res
+  res<-merge(data.frame(res0), anno, by.x = 0, by.y=1, all.x=T, sort=F)
+  if (sum(anno[, 1] %in% row.names(res0)) < 1) {
+    warning(
+      c("\nThe annotation file and the count filt does have no match in gene-id:\n", 
+        "count table gene-id: ", head(row.names(res0), 1), 
+        "\nanno table gene-id: ", anno[1:1, 1], 
+        "gene-id rather than gene-name used for Volcano-plot"
+      ))
+    res$Name <- res[, 1]
+  }
+  
+  # remove NA
+  res$padj[is.na(res$padj)] <- 1
+  # set lim on x, y
+  res$padj[res$padj < 10^(-ylim) & !is.na(res$padj)] <- 10^(-ylim) # y-axis top value 50
+  res$log2FoldChange[res$log2FoldChange > xlim] <- xlim
+  res$log2FoldChange[res$log2FoldChange < -xlim] <- -xlim
+  # show num_pos num_neg
+  pos <- subset(res, padj<sigthresh & log2FoldChange>lfcthresh)
+  neg <- subset(res, padj<sigthresh & log2FoldChange< -lfcthresh)
+  pos.n <- dim(pos)[1]
+  neg.n <- dim(neg)[1]
+  
+  EnhancedVolcano(res,
+                       lab = res$Name,
+                       #selectLab = as.character(res$Name[which(res$padj<labelcut)]), # mark top genes
+                       #selectLab = c("FOS", "LDHA"), # mark selected genes
+                       x = 'log2FoldChange',
+                       y = 'padj',
+                       title = name,
+                       subtitle = paste("Up:", pos.n, ", Down:", neg.n, sep = ""),
+                       xlab = bquote(~Log[2]~ "Fold Change"),
+                       ylab = bquote(~-Log[10]~italic(FDR)),
+                       pCutoff = max_fdr,
+                       FCcutoff = min_lfc,
+                       cutoffLineType = 'twodash',
+                       cutoffLineWidth = 0.8,
+                       legendLabels = c('NS', expression(Log[2]~FC),
+                                        "FDR", expression(FDR~and~Log[2]~FC)),
+                       caption = paste0('Total = ', nrow(res), ' genes'),
+                       legendPosition = 'right',
+                       legendLabSize = 10,
+                       axisLabSize = 10,
+                       legendIconSize = 3.0)
+  ggsave(paste(name, "pdf", sep="."), width=8, height=6)
+}
+
+# Default plot
+maplot <- function(res, anno, fname){
+  maplotdat <- merge(anno, data.frame(res), by.x=1, by.y=0)
+  ggmaplot(maplotdat, main = name,genenames = as.vector(maplotdat$Name),
+           fdr = max_fdr, fc = 2^min_lfc, size = 0.4,
+           xlab = "Log2 Mean Expression",
+           ylab = "Log2 Fold Change",
+           palette = c("#B31B21", "#1465AC", "darkgray"),
+           legend = "top", top = 20,
+           font.label = c("bold", 11),label.rectangle = TRUE,
+           font.legend = "bold",
+           font.main = "bold",
+           ggtheme = ggplot2::theme_minimal())
+  ggsave(fname)
+}
+
+zscore <- function(matrix){
+  return( t(scale(t(matrix))))
+}
+
+rename_num_vector_by_order <- function(l){
+  # l have to be a vector of numbers
+  # output vector of roman numbers ordered by appearance in the input vector
+  # e.g. c(2,3,3,2,1) -> c(I, II, II, I, III)
+  # test rename_num_vector_by_order(c(2,3,3,2,1))
+  u <- unique(l)
+  n=0
+  for (i in u){
+    n = n+1; 
+    l <- replace(l, l==i, as.character(as.roman(n)))
+  }
+  return(l)
+}
+
+
+Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
+  num_sig <- dim(df)[1] 
+  
+  if (num_sig < 20){CELL_HEIGHT = 20}else{CELL_HEIGHT = NA} # for plotting
+  
+  # prep group label
+  my_sample_col <- data.frame(group = coldata[,'group'])
+  row.names(my_sample_col) <- coldata[,'sample']
+  
+  if (num_sig < 1){
+    print(paste("No sig DEG to create Heatmap for:", main) )
+    return (0)
+  }
+  
+  if (num_sig <= nclass){
+    print(paste("Num-DEG less than num-class, there is no cut-tree for:", main))
+    plot1 <- pheatmap(df,
+                      annotation_col = my_sample_col,
+                      main = main,
+                      cluster_cols = F,
+                      cluster_rows = F,
+                      border_color = NA,
+                      show_rownames = F,
+                      breaks = seq(-3, 3, length.out = 100),
+                      cellheight = CELL_HEIGHT,
+                      filename = paste(fname, "pdf", sep = "."))
+    plot2 <- pheatmap(df,
+                      annotation_col = my_sample_col,
+                      main = main,
+                      cluster_cols = T,
+                      cluster_rows = F,
+                      border_color = NA,
+                      show_rownames = F,
+                      breaks = seq(-3, 3, length.out = 100),
+                      cellheight = CELL_HEIGHT,
+                      filename = paste(fname, "v2.pdf", sep = "."))
+  }
+  
+  if (num_sig > nclass){
+    p <- pheatmap(df, cluster_cols = F, cutree_rows = nclass) # Pre-plot to get hclust for cut-tree
+    # cutree manually, print out gene classification (https://www.biostars.org/p/287512/)
+    gene_classes <- sort(cutree(p$tree_row, k=nclass))
+    gene_classes <- data.frame(gene_classes) 
+    classification <- merge(gene_classes, df, by = 0)
+    row.names(classification) <- classification$Row.names
+    # Re-order original data (genes) to match ordering in heatmap (top-to-bottom)
+    idx <- rownames(df[p$tree_row[["order"]],])
+    classification <- classification[idx,] 
+    # rename gene classes
+    classification$gene_classes <- rename_num_vector_by_order(classification$gene_classes)
+    write.xlsx(classification, paste(fname,"gene_class.xlsx", sep = "."), 
+               keepNA = T, na.string = 'NA')
+    # get class label
+    annotation_row = data.frame(class = classification$gene_classes)
+    row.names(annotation_row) <- row.names(classification)
+    annotation_row$class <- as.character(annotation_row$class)
+    # output final plot
+    plot1 <- pheatmap(df,
+                      annotation_col = my_sample_col,
+                      main = main,
+                      border_color = NA,
+                      cluster_cols = F,
+                      cutree_rows = nclass,
+                      breaks = seq(-3, 3, length.out = 100),
+                      show_rownames = F,
+                      annotation_row = annotation_row,
+                      cellheight = CELL_HEIGHT,
+                      filename = paste(fname, "pdf", sep = "."))
+    
+    plot2 <- pheatmap(df,  # sample clustering
+                      annotation_col = my_sample_col,
+                      main = main,
+                      border_color = NA,
+                      cluster_cols = T,
+                      cutree_rows = nclass,
+                      breaks = seq(-3, 3, length.out = 100),
+                      show_rownames = F,
+                      annotation_row = annotation_row,
+                      cellheight = CELL_HEIGHT,
+                      filename = paste(fname, "v2.pdf", sep = "."))
+  }
+}
+
+
+
+process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='name', anno='anno.df', norm_exp="tpm.df"){
+    ## Summary
+    print(name)
+    print("\n>>> Summary using FDR cut-off only (LFC not used)")
+    summary(res, alpha=max_fdr)
+    
+    print("\n>>> Summary using both FDR and LFC_shrunken cut-off")
+    sig_idx <- res$padj<max_fdr & abs(res$log2FoldChange) > min_lfc
+    sig_idx[is.na(sig_idx)] <- FALSE
+    res_sig <- res[sig_idx,]
+    print(table(sig_idx))
+    
+    up_idx <- res$padj<max_fdr & res$log2FoldChange > min_lfc
+    up_idx[is.na(up_idx)] <- FALSE
+    res_sig <- res[up_idx,]
+    print(table(up_idx))
+    
+    down_idx <- res$padj<max_fdr & res$log2FoldChange < -min_lfc
+    down_idx[is.na(down_idx)] <- FALSE
+    res_sig <- res[down_idx,]
+    print(table(down_idx))
+
+    # Prep
+    res.df <- as.data.frame(res)
+    names(res.df)[2] <- "log2FoldChange_shrunken"
+    names(res.df)[3] <- "lfcSE_shrunken"
+
+    res2.df <- as.data.frame(res2)
+    names(res2.df)[2] <- "log2FoldChange_raw"
+    names(res2.df)[3] <- "lfcSE_raw"
+    res2.df <- res2.df[, c(2,3)]
+
+    resdata <- merge(res.df, res2.df, by=0, sort=F, all.x=T)
+    resdata <- merge(anno, resdata, by.x=1, by.y=1, sort=F, all.y=T)
+    resdata <- merge(resdata, norm_exp, by.x=1, by.y=0, all.x=T, sort=F)
+    head(resdata)
+    sig_idx <- resdata$padj<max_fdr & abs(resdata$log2FoldChange_shrunken) > min_lfc # important to put this line right before output sig.xlsx
+    sig_idx[is.na(sig_idx)] <- FALSE
+    resdata.sig <- resdata[sig_idx,]
+    head(resdata.sig)
+
+    ## Write results
+    if (!TEST){
+      write.xlsx(resdata, paste(name, 'deseq2.xlsx', sep = '.'), 
+                 keepNA = T, na.string = 'NA')
+      write.xlsx(resdata.sig, 
+                 paste(name, 'deseq2.sig.FDR', max_fdr, 'LFC', min_lfc, 'xlsx', sep = '.'), 
+                 keepNA = T, na.string = 'NA')
+    }
+
+    ## For GSEA
+    rnk <- subset(resdata, select = c("Name","log2FoldChange_shrunken"))
+    colnames(rnk) <- c("# Name","log2FoldChange_shrunken")
+    rnk <- rnk[order(rnk$log2FoldChange_shrunken), ]
+    rnk[, 1] <- toupper(rnk[, 1])
+    write.table(rnk, 
+                paste('rnk/', name, '.rnk', sep = ''), 
+                row.names = F, quote = F, sep='\t')
+
+
+    # # Corrlelation of Length and LFC
+    # resdata.sig.cor <- cor.test(resdata.sig$Length, 
+    #                        resdata.sig$log2FoldChange_shrunken, 
+    #                        method = "spearman")
+    # title <- paste("Spearman Cor:", format(resdata.sig.cor$estimate, digits=2, nsmall=2),
+    #                "p-value:", format(resdata.sig.cor$p.value, digits=3, nsmall=3),
+    #                sep = " ")
+    # 
+    # resdata.sig$density <- get_density(resdata.sig$Length, resdata.sig$log2FoldChange_shrunken, n = 100)
+    # # set lim (careful, only after outputting excel)
+    # resdata.sig$log2FoldChange_shrunken[resdata.sig$log2FoldChange_shrunken > 10] <- 10
+    # resdata.sig$log2FoldChange_shrunken[resdata.sig$log2FoldChange_shrunken < -10] <- -10
+    # resdata.sig$Length[resdata.sig$Length > 20000] <- 20000
+    # ggplot(resdata.sig) + 
+    #     geom_point(aes(Length, log2FoldChange_shrunken, color = density)) +
+    #     scale_color_viridis() +
+    #     ggtitle(paste(paste("Sig-DEG for", name), title, sep = "\n") ) + 
+    #     ylim(-10, 10) +        
+    #     xlim(0,20000)
+    
+    ##  Plots
+    ggplot(data.frame(res), aes(x=pvalue))+
+      geom_histogram(color="darkblue", fill="lightblue")
+    ggsave(paste0(name, '.pvalue.pdf'))
+    
+    ggplot(data.frame(res), aes(x=padj))+
+      geom_histogram(color="darkblue", fill="lightblue")
+    ggsave(paste0(name, '.fdr.pdf'))
+    
+    maplot(res, anno, paste0(name, '.maplot.shrunken_lfc.pdf'))
+    maplot(res2, anno, paste0(name, '.maplot.raw_lfc.pdf'))
+    
+    volcanoplot(res, anno, lfcthresh=min_lfc, sigthresh=max_fdr,
+                textcx=.8,  name= paste(name, "LFC_shrunken", sep="."))
+    volcanoplot(res2, anno, lfcthresh=min_lfc, sigthresh=max_fdr,
+                textcx=.8,name= paste(name, "LFC_raw", sep="."))
+    
+    n1 <- dim(resdata.sig)[2]
+    n2 <- dim(norm_exp)[2]
+    zscore.df <- zscore(resdata.sig[, (n1-n2+1):n1])
+    rownames(zscore.df) <- resdata.sig[,1]
+    colnames(zscore.df) <- gsub (":TPM", "", colnames(zscore.df))
+    colnames(zscore.df) <- gsub (":DESeq2NormalizedCount", "", colnames(zscore.df))
+    Heatmap(zscore.df, nclass = 2,
+            fname = paste(name, "heatmap", sep="."),
+            main = paste(name, "LFC >", min_lfc, "FDR <", max_fdr ))
+}
+```
+
+## Importing data
+```{r read_meta_data}
+meta.df <- readTable(metaFile)
+meta.df <- meta.df[!(meta.df[, 1] %in% blackSamples), ]
+
+x <- readRDS("./metadata.with.IR.rates.RDS")
+meta2.df <- data.frame(SAMPLE = x$sample_name, IR_rate = x$IR_rate)
+meta.df <- merge(meta.df, meta2.df, by = 1 )
+
+contrast.df <- readTable(contrastFile)
+print(contrast.df)
+```
+
+```{r read_count_data}
+# read
+paste('countFile:', countFile)
+df <- readTable(countFile)  
+names(df)[1] <- "GENE_ID"
+df <- df %>%
+  mutate(GENE_ID = gsub("\\.[^.]*$", "", GENE_ID))
+
+if (sum(duplicated(df$GENE_ID)) > 0) {
+  warning("count table gene_id not unique, has made it unique to run, but duplicated gene_id not valid for further analysis, please manually check duplicated gene_id")
+  df$GENE_ID <- make.unique(df$GENE_ID)
+}
+
+df = column_to_rownames(df, var =  colnames(df)[1]) 
+
+# auto-detect content format
+featureCountsFormat <- F
+cleanCountFormat <- F
+osrCountFormat <- F
+
+if (colnames(df)[1] == "Chr" & colnames(df)[2] == "Start" & colnames(df)[3] == "End"){
+  cat("featureCounts format table detected\n")
+  featureCountsFormat <- T
+  colnames(df) <- gsub("\\.bam$", "", colnames(df))
+  colnames(df) <- gsub("sorted_reads.", "", colnames(df))
+  colnames(df) <- gsub("mapped_reads.", "", colnames(df))
+  df[, 6:ncol(df)] <- sapply(df[, 6:ncol(df)], as.integer)
+  cts <- as.matrix(df[, 6:ncol(df)])
+} else if (ncol(df) == dim(meta.df)[1]){
+  cat("clean format table detected\n")
+  cleanCountFormat<- T
+  df[, 1:ncol(df)] <- sapply(df[, 1:ncol(df)], as.integer)
+  cts <- as.matrix(df[, 1:ncol(df)])
+} else if (colnames(df)[1] == "Name" & colnames(df)[2] == "Type" ) {
+  cat("OSR COUNT.xlsx format detected\n")
+  osrCountFormat <- T
+  colnames(df) <- gsub(".COUNT", "", colnames(df))
+  df[, 3:ncol(df)] <- sapply(df[, 3:ncol(df)], as.integer)
+  cts <- as.matrix(df[, 3:ncol(df)])
+} else {
+  stop("COUNT file not in featureCounts output format, nor cleanCountFormat format, nor osrCount format. \nMay have different number of samples in meta-data and count-table if cleanCountFormat is provided\n")
+}
+
+# remove blackSamples
+df <- df[, !(colnames(df) %in% blackSamples)]
+cts <- cts[, !(colnames(cts) %in% blackSamples)]
+
+# check sample names
+if (all(meta.df[[1]] %in% colnames(cts)) ){
+  cat("all samples in meta.df included in count table")
+} else {
+  warning("count-table: ", colnames(cts), "\n")
+  warning("meta-data: ",meta.df[[1]], "\n")
+  stop("some samples in meta not included in count table")
+}
+
+# match order
+cts_idx <- match(meta.df[[1]], colnames(cts))
+cts <- cts[,cts_idx]
+
+# Report Summary
+print(paste("lib-size in millions:"))
+print(format(colSums(cts/1e6), digits=2))
+print(paste("Dim of input data:"))
+print(dim(cts))
+```
+
+## Importing annotation
+```{r import_annotation}
+# from GitHub (must be raw, not zipped)
+getAnnotation <- function(urlpath) {
+  tmp <- tempfile()
+  download.file(urlpath, destfile = tmp, method = 'auto')
+  return(read.table(tmp, sep="\t", header = TRUE, quote=""))
+}
+
+paste("Getting data from", annoFile)
+
+if (grepl('https://', annoFile)){
+  print("downloading remote annoFile")
+  anno <- getAnnotation(annoFile)
+}else{
+  print("reading local annoFile")
+  anno <- read.table(annoFile, sep = "\t", header = T, quote="")
+}
+anno <- anno[!duplicated(anno[1]), ] # assume first column is Gene ID
+print("Dimention of annotation table: ")
+dim(anno)
+head(anno)
+
+if (sum(anno[, 1] %in% row.names(cts)) < 1){
+  warning("!!! Annotation file and count file have no ID in common")
+  warning("The results will be unannotated")
+  warning("Please Double check Annotation file")
+  print("count table ID:")
+  print(row.names(cts)[1:2])
+  print("anno table ID:")
+  print(anno[1:2, 1])
+  }
+```
+
+## COUNT output (without filtering)
+```{r count}
+count <- data.frame(cts)
+colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
+count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
+head(count_out)
+if (!TEST){
+  write.xlsx(count_out, 'COUNT.xlsx', keepNA = T, na.string = 'NA')
+  print("saved in COUNT.xlsx")}
+```
+
+## Filtering
+```{r filtering}
+min_rowsum <- params$min_rowsum
+gene_filter <- rowSums(cts) >= min_rowsum  # default 10
+
+min_colsum <- params$min_colsum
+sample_filter <- colSums(cts) >= min_colsum
+
+if (sum(gene_filter) > 2 & sum(sample_filter) >= 4){
+  kept_samples <-  names(sample_filter)[sample_filter]
+  meta.df <- meta.df[meta.df[[1]] %in% kept_samples,]
+  group_count <- plyr::count(meta.df[[2]])
+  cts <- cts[gene_filter, sample_filter]
+  if (featureCountsFormat) {
+    df <- df[gene_filter, c(rep(TRUE,5), sample_filter )]
+  }else if (cleanCountFormat) {
+    df <- df[gene_filter, sample_filter]
+  } else if (osrCountFormat) {
+    df <- df[gene_filter, c(rep(TRUE,2), sample_filter )]
+  }    
+  
+  # match order
+  meta.df <- meta.df[match(colnames(cts), meta.df[[1]]), ]
+  cat(paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples", "\n"))
+  cat(paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes", "\n"))
+  cat(paste("Data dim after filtering:"))
+  dim(cts)
+  print(group_count)
+  boxplot(
+            log10(cts+1), 
+            las=2, 
+            main = "Raw Gene Count Distribution After Filtering",
+            ylab = 'log10(count+1)'
+        )
+}else{
+  print("WARNING!!!: Library size too small, too few genes/samples would be left after filtering, so skipped filtering.")
+  print("PLEASE interpret results with caution!!!")
+  file.create('WARNING.LowCountSamples.Caution')
+  sample_filter[1:length(sample_filter)] <- rep(TRUE, length(sample_filter))
+  gene_filter[1:length(gene_filter)] <- rep(TRUE, length(gene_filter))
+  kept_samples <-  names(sample_filter)[sample_filter]
+  meta.df <- meta.df[meta.df[[1]] %in% kept_samples,]
+  group_count <- plyr::count(meta.df[[2]])
+  cts <- cts[gene_filter, sample_filter]
+  if (featureCountsFormat) {
+    df <- df[gene_filter, c(rep(TRUE,5), sample_filter )]
+  }else if (cleanCountFormat) {
+    df <- df[gene_filter, sample_filter]
+  } else if (osrCountFormat) {
+    df <- df[gene_filter, c(rep(TRUE,3), sample_filter )]
+  }    
+  
+  # match order
+  meta.df <- meta.df[match(colnames(cts), meta.df[[1]]), ]
+  cat(paste("Removed genes with less than ", min_rowsum, "reads/fragments across all samples", "\n"))
+  cat(paste("Removed samples with less than ", min_colsum, "reads/fragments across all genes", "\n"))
+  cat(paste("Data dim after filtering:"))
+  dim(cts)
+  print(group_count)
+  boxplot(
+            log10(cts+1), 
+            las=2, 
+            main = "Raw Gene Count Distribution After Filtering",
+            ylab = 'log10(count+1)'
+        )
+}
+```
+
+## COUNT calculation again (after filtering)
+```{r filtered_count}
+count <- data.frame(cts)
+colnames(count) <- paste(colnames(count),"COUNT", sep = ":")
+count_out <- merge(anno, count, by.x=1, by.y=0, all.y=T, sort=F)
+head(count_out)
+```
+
+## TPM calculation
+```{r tpm}
+calculateTPM <- function(counts,len) {
+  # michael's version
+  # https://support.bioconductor.org/p/91218/
+  x <- counts/len
+  return(t(t(x)*1e6/colSums(x)))
+}
+
+if (featureCountsFormat ){
+  tpm <- calculateTPM(cts, df$Length)
+  tpm <- data.frame(tpm)
+  colnames(tpm) <- paste(colnames(tpm),"TPM",  sep = ":")
+  tpm_out <- merge(anno, tpm, by.x=1, by.y=0, all.y=T, sort=F)
+  write.xlsx(tpm_out, 'TPM.xlsx', keepNA = T, na.string = 'NA')
+
+  print("saved in TPM.xlsx")
+} else {
+  cat ("TPM not calculated if COUNT-table is not featureCount format\n")
+}
+```
+
+## FPKM calculation
+```{r fpkm}
+calculateFPKM <- function(counts,len) {
+  x <- counts
+  x <- t(t(x)*1e6/colSums(x))
+  return (x/len*1e3)
+}
+
+if (featureCountsFormat ){
+  fpkm <- calculateFPKM(cts, df$Length)
+  fpkm <- data.frame(fpkm)
+  colnames(fpkm) <- paste(colnames(fpkm), "FPKM", sep = ":")
+  fpkm_out <- merge(anno, fpkm, by.x=1, by.y=0, all.y=T, sort=F)
+  # head(fpkm_out)
+  # tail(fpkm_out)
+  if (!TEST){
+    write.xlsx(fpkm_out, 'FPKM.xlsx', keepNA = T, na.string = 'NA')
+    print("saved in FPKM.xlsx")
+    print("Recommend to use TPM, rather than FPKM")}
+} else {
+  cat ("FPKM not calculated if COUNT-table is not featureCount format\n")
+}
+```
+
+## Design matrix extracted from meta-data
+```{r coldata}
+meta_idx <- match(colnames(cts), meta.df[[1]])
+meta_idx <- meta_idx[!is.na(meta_idx)]
+meta.df <- meta.df[meta_idx, ]
+cts <- cts[, colnames(cts) %in% meta.df[[1]]]
+
+sample <- factor(meta.df[[1]])
+group <- factor(meta.df[[2]])
+batch <- factor(meta.df[[3]])
+ir_rate <- meta.df[[4]]
+
+coldata <- data.frame(row.names=colnames(cts), 
+                      sample,
+                      group,
+                      batch,
+                      ir_rate
+                      )
+coldata
+```
+
+```{r SaveWorkSpace}
+save.image()
+```
+
+## Model fitting
+```{r dds}
+if (length(levels(batch)) > 1){
+  dds <- DESeqDataSetFromMatrix(countData = cts,
+                                colData = coldata,
+                                design = ~  0 + group + batch + ir_rate)
+}else{
+  dds <- DESeqDataSetFromMatrix(countData = cts,
+                                colData = coldata,
+                                design = ~  0 + group + ir_rate)  # converted to alph-order
+}
+# 
+# if (length(levels(batch)) > 1){
+#   dds <- DESeqDataSetFromMatrix(countData = cts, 
+#                                 colData = coldata, 
+#                                 design = ~  0 + group + batch)
+# }else{
+#   dds <- DESeqDataSetFromMatrix(countData = cts, 
+#                                 colData = coldata, 
+#                                 design = ~  0 + group)  # converted to alph-order
+# }
+
+
+dds
+if (is.error(dds <-DESeq(dds))){
+  cat("using manual dispersion estimation")
+  dds <- estimateSizeFactors(dds)
+  dds <- estimateDispersionsGeneEst(dds)
+  dispersions(dds) <- mcols(dds)$dispGeneEst
+  dds <- nbinomWaldTest(dds)
+}
+resultsNames(dds)
+#saveRDS(dds, file = 'deseq2.dds.rds')
+```
+
+## Save DESeq2 normalized counts
+```{r deseq2_norm}
+normalized_counts <- counts(dds, normalized=TRUE)
+normalized_counts <- data.frame(normalized_counts)
+
+boxplot(
+          log10(normalized_counts + 1), 
+          las=2, 
+          main = "Normazlied Gene Count Distribution",
+          ylab = 'log10(norm+1)'
+      )
+  
+colnames(normalized_counts) <- paste(colnames(normalized_counts),"DESeq2NormalizedCount",  sep = ":")
+normalized_counts_out <- merge(anno, normalized_counts, by.x=1, by.y=0, all.y=T, sort=F)
+if (!TEST){
+  write.xlsx(normalized_counts_out, 'DESeq2NormalizedCounts.xlsx', keepNA = T, na.string = 'NA')
+  print("saved in DESeq2NormalizedCounts.xlsx")
+}
+```
+
+<!-- ## QC Plots -->
+<!-- ## Data transformation -->
+<!-- ```{r} -->
+<!-- #vsd <- vst(dds, blind=FALSE) -->
+<!-- rld <- rlog(dds, blind=FALSE) -->
+<!-- counts <- counts(dds, normalized=0) -->
+<!-- logCounts <- log10(counts +1 ) -->
+<!-- normed <- counts(dds, normalized=1) -->
+<!-- logNormed <- log10(normed+1) -->
+<!-- ``` -->
+
+### Histogram of Log10(Counts)
+```{r histogram}
+log1p_count <- log10(counts(dds) + 1)
+hist(log1p_count, 
+     main = 'Histogram of log10(count + 1)', 
+     xlab = "log10(count+1)",
+     100) # by default, use non-normalized data by counts function
+```
+
+### Dispersion plot
+```{r dispersion_plot}
+plotDispEsts(dds, main="Dispersion plot")
+```
+
+### Sample PCA plot
+```{r pca}
+plotQC_PCA <- function(dds, fname='pca.pdf') {
+  vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
+  pcaData <- plotPCA(vsd, intgroup = 'group', returnData=TRUE) # labeling fixed
+  percentVar <- round(100 * attr(pcaData, 'percentVar'), 1)
+  if (length(levels(batch)) > 1){
+    ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
+    geom_point(size = 3) +
+    xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+    ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+    geom_label_repel(aes(label = sample),
+                      box.padding = 0.35,
+                      point.padding = 1,
+                      segment.color = 'grey50',
+                      segment.alpha = 0.5,
+                      show.legend = FALSE) + # if TRUE, legend display might not be correct
+    theme_classic()
+    ggsave(fname)
+
+  }else{
+    ggplot(pcaData, aes(PC1, PC2, color = group)) +
+    geom_point(size = 3) +
+    xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+    ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+    geom_label_repel(aes(label = sample),
+                      box.padding = 0.35,
+                      point.padding = 1,
+                      segment.color = 'grey50',
+                      segment.alpha = 0.5,
+                      max.overlaps = 20,
+                      show.legend = FALSE) + # if TRUE, legend display might not be correct
+    theme_classic()
+    ggsave(fname)
+  }
+}
+
+plotQC_PCA_no_label <- function(dds, fname='pca.pdf') {
+  vsd <- varianceStabilizingTransformation(dds) # fixed num < num(rowsum>5)
+  pcaData <- plotPCA(vsd, intgroup = 'group', returnData=TRUE) # labeling fixed
+  percentVar <- round(100 * attr(pcaData, 'percentVar'), 1)
+    if (length(levels(batch)) > 1){
+        ggplot(pcaData, aes(PC1, PC2, color = group, shape = batch)) +
+        geom_point(size = 3) +
+        xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+        ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+        theme_classic()
+        ggsave(fname)
+    }else{
+        ggplot(pcaData, aes(PC1, PC2, color = group)) +
+        geom_point(size = 3) +
+        xlab(paste0("PC1: ", percentVar[1], "% variance")) +
+        ylab(paste0("PC2: ", percentVar[2], "% variance")) +
+        theme_classic()
+        ggsave(fname)
+    }
+}
+
+plotQC_PCA_no_label(dds, "sample_PCA.pdf")
+
+if (max(unlist(lapply(meta.df[[1]], nchar))) <= 36){
+  plotQC_PCA(dds, "sample_PCA.labeled.pdf")
+}
+```
+
+### Sample heatmap (Poisson Distance Based)
+```{r poisson_heatmap}
+PoissonDistanceHeatmap <-  function(){
+  # dist matrix
+  poisd <- PoissonDistance(t(counts(dds)))
+  samplePoisDistMatrix <- as.matrix( poisd$dd ) 
+  rownames(samplePoisDistMatrix) <- coldata$sample
+  colnames(samplePoisDistMatrix) <- NULL
+
+  # sample_col
+  my_sample_col <- data.frame(group = coldata[,'group'])
+  row.names(my_sample_col) <- coldata[,'sample']
+  
+  pheatmap(samplePoisDistMatrix,
+           annotation_row = my_sample_col,
+           
+           clustering_distance_rows=poisd$dd,
+           clustering_distance_cols=poisd$dd,
+           clustering_method='complete', 
+           legend = T, 
+           col=colorRampPalette( rev(brewer.pal(9, "Blues")) )(255), 
+           
+           filename = "sample_poisson_distance.pdf")
+}
+PoissonDistanceHeatmap()
+```
+
+## DE analysis
+```{r, warning=T, error=T, DE_ANALYSIS}
+parse_name <- function(name){
+  name <- gsub(" ", "", name)
+  name <- gsub(";$", "", name)
+  names <- strsplit(name, ";") [[1]]
+  name <- gsub(";", ".", name)
+  return (list(name=name, names=names))
+}
+
+for (i in 1:dim(contrast.df)[2]){
+  # parse 
+  name1 <- parse_name(contrast.df[1,i])
+  name2 <- parse_name(contrast.df[2, i])
+  name <- paste(name1$name, name2$name, sep = "_vs_")
+  if (nchar(name) > 100) {name = paste0('contrast', i)}
+  print(paste(">>>", i, name))
+  
+  # check group_count for all groups in each contrast
+  groups <- unique(c(name1$names, name2$names))
+  
+  with_sample <- groups %in% group_count[[1]]  # count >= 1
+  if (!all(with_sample)){
+    print(paste('some groups in', name, 'has no filtered samples, skipped !!!'))
+    print(group_count)
+    next
+    }
+
+  group_with_reps <-  group_count[[1]][group_count$freq >= 2]
+  
+  with_reps1 <- any(name1$names %in% group_with_reps)
+  with_reps2 <- any(name2$names %in% group_with_reps)
+  
+  if (!any(with_reps1, with_reps2)) {
+    print(paste('no groups in', name, 'has reps, skipped !!!'))
+    print(group_count)
+    next
+  }
+
+  # analysis
+  gsub("group", "", resultsNames(dds))
+  poss <- match(name1$names, gsub("group", "", resultsNames(dds)))
+  negs <- match(name2$names, gsub("group", "", resultsNames(dds)))
+  contrast <- rep(0, length(resultsNames(dds)))
+  contrast[poss] <- 1/length(poss)
+  contrast[negs] <- -1/length(negs)
+  print(data.frame(resNames=gsub("group", "", resultsNames(dds)), 
+                   contrast=contrast))
+  
+  res <- lfcShrink(dds, contrast = contrast, type = 'ashr')
+  res2 <- results(dds, contrast = contrast, 
+                  independentFilter=indfilter, cooksCutoff=cookscutoff)
+
+  process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = normalized_counts)
+
+} 
+```
+
+## Log
+```{r log}
+save.image()
+sessionInfo()
+```
+
