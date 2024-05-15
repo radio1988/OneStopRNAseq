@@ -2,6 +2,11 @@ if (!requireNamespace("pheatmap", quietly = TRUE)) {
   install.packages("pheatmap", repos = 'http://cran.us.r-project.org')
 }
 
+if (!requireNamespace("KernSmooth", quietly = TRUE)) {
+  install.packages("KernSmooth", repos = 'http://cran.us.r-project.org')
+}
+
+
 if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
   BiocManager::install(pkgs = "haibol2016/CleanUpRNAseq" , type = 'source', aks = FALSE)
   
