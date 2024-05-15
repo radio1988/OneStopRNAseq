@@ -659,26 +659,47 @@ save.image()
 
 ## Model fitting
 ```{r dds}
-if (length(levels(batch)) > 1){
-  dds <- DESeqDataSetFromMatrix(countData = cts,
-                                colData = coldata,
-                                design = ~  0 + group + batch + ir_rate)
-}else{
-  dds <- DESeqDataSetFromMatrix(countData = cts,
-                                colData = coldata,
-                                design = ~  0 + group + ir_rate)  # converted to alph-order
+build_ir_dds <- function() {
+  if (length(levels(batch)) > 1) {
+    dds <- DESeqDataSetFromMatrix(
+      countData = cts,
+      colData = coldata,
+      design = ~  0 + group + batch + ir_rate
+    )
+  } else{
+    dds <- DESeqDataSetFromMatrix(
+      countData = cts,
+      colData = coldata,
+      design = ~  0 + group + ir_rate
+    )  
+  }
+  return (dds)
 }
-# 
-# if (length(levels(batch)) > 1){
-#   dds <- DESeqDataSetFromMatrix(countData = cts, 
-#                                 colData = coldata, 
-#                                 design = ~  0 + group + batch)
-# }else{
-#   dds <- DESeqDataSetFromMatrix(countData = cts, 
-#                                 colData = coldata, 
-#                                 design = ~  0 + group)  # converted to alph-order
-# }
 
+build_default_dds <- function() {
+  if (length(levels(batch)) > 1) {
+    dds <- DESeqDataSetFromMatrix(
+      countData = cts,
+      colData = coldata,
+      design = ~  0 + group + batch
+    )
+  } else{
+    dds <- DESeqDataSetFromMatrix(
+      countData = cts,
+      colData = coldata,
+      design = ~  0 + group
+    )
+  }
+    return (dds)
+}
+
+tryCatch({
+  dds <- build_ir_dds()
+}, error = function(error) {
+  message("LR_RATE can't be modeled, using standard DESeq2 instead")
+  build_default_dds()
+}
+)
 
 dds
 if (is.error(dds <-DESeq(dds))){
