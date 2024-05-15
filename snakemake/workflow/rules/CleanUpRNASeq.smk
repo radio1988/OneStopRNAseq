@@ -180,8 +180,6 @@ rule CleanUpRNAseq:
         "../script/cleanuprnaseq.R"
 
 
-from ..osr import DESeq2_input
-
 rule IR_DE:
     input:
         cnt=DESeq2_input(config),
