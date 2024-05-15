@@ -3,6 +3,8 @@ if (!requireNamespace("pheatmap", quietly = TRUE)) {
 }
 
 if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
+  BiocManager::install(pkgs = "haibol2016/CleanUpRNAseq" , type = 'source', aks = FALSE)
+  
   install.packages('./workflow/envs/CleanUpRNAseq/',
                    repos = NULL,
                    type = "source")  # works
