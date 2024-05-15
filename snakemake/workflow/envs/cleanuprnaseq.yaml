@@ -13,6 +13,7 @@ dependencies:
     - conda-forge::r-reshape2
     - conda-forge::r-devtools
     - conda-forge::r-patchwork
+    - conda-forge::r-kernsmooth
     - bioconda::bioconductor-plyranges
     - bioconda::bioconductor-deseq2
     - bioconda::bioconductor-rsamtools
