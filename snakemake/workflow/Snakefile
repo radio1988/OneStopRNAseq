@@ -361,9 +361,9 @@ if config['ALIGNER'] == 'STAR':
         conda:
             "envs/star.yaml"
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 6400   
+            mem_mb=lambda wildcards, attempt: attempt * 2400
         threads:
-            6
+            16
         log:
             INDEX+"/SAindex.log"
         benchmark:
@@ -464,9 +464,9 @@ elif config['ALIGNER'] == 'HISAT2':
                     if PAIR_END else \
                 "-U trimmed/{sample}.fastq.gz"
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 2000
+            mem_mb=lambda wildcards, attempt: attempt * 1000
         threads:
-            8
+            16
         log:
             "hisat2/log/{sample}.log"
         benchmark:
@@ -868,7 +868,7 @@ rule SalmonTE:
     params:
         ref=config['TE_REFERENCE'],
     threads:
-        12
+        16
     log:
         "log/SalmonTE.log"
     benchmark:
@@ -1399,9 +1399,9 @@ rule HISAT2_BUILD:
     conda:
         "envs/hisat2.yaml" 
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 42000
+        mem_mb=lambda wildcards, attempt: attempt * 10000
     threads:
-        4
+        16
     log:
         config['GENOME'] + '.hisat2_build.log'
     benchmark:
@@ -1433,9 +1433,9 @@ rule HISAT2:
                 if PAIR_END else \
             "-U trimmed/{sample}.fastq.gz"
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 2000
+        mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
-        8
+        16
     log:
         "hisat2/log/{sample}.log"
     benchmark:
@@ -1463,9 +1463,9 @@ rule StringTie:  # todo: group level
     params:
         strand=get_strandness_for_stringtie('meta/strandness.detected.txt')
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
+        mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
-        4
+        16
     log:
         "stringtie/log/{sample}.stringtie.log"
     benchmark:
@@ -1484,9 +1484,9 @@ rule StringTie_Merge:
     conda:
         "envs/stringtie.yaml" 
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000
+        mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
-        4
+        16
     log:
         "stringtie/log/stringtie.merged.gtf.log"
     benchmark:
