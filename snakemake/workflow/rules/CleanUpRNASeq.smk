@@ -103,9 +103,9 @@ if config["PAIR_END"]:
             extra="--seqBias --gcBias --posBias   --softclip  --softclipOverhangs",
             outdir="salmon/{sample}/"
         threads:
-            12
+            16
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 2000  # 18G for human
+            mem_mb=lambda wildcards, attempt: attempt * 1500  # 18G for human
         conda:
             "../envs/salmon.yaml"  # docker: combinelab/salmon:latest
         shell:
