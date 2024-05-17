@@ -111,7 +111,7 @@ if config["PAIR_END"]:
             """
             salmon quant -i {params.index} -l {params.libtype} \
             -1 {input.r1} -2 {input.r2} -p {threads} {params.extra} \
-            --validateMappings  -o salmon/{sample}/ &> {log}
+            --validateMappings  -o salmon/{wildcards.sample}/ &> {log}
             """
 else:
     rule salmon_quant_se:
