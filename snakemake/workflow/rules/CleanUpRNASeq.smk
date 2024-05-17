@@ -101,6 +101,7 @@ if config["PAIR_END"]:
             index=GENTROME + ".salmon_idx/",
             libtype="A", #ISF
             extra="--seqBias --gcBias --posBias   --softclip  --softclipOverhangs",
+            outdir="salmon/{sample}/"
         threads:
             12
         resources:
@@ -111,7 +112,7 @@ if config["PAIR_END"]:
             """
             salmon quant -i {params.index} -l {params.libtype} \
             -1 {input.r1} -2 {input.r2} -p {threads} {params.extra} \
-            --validateMappings  -o salmon/{wildcards.sample}/ &> {log}
+            --validateMappings  -o {params.outdir} &> {log}
             """
 else:
     rule salmon_quant_se:
