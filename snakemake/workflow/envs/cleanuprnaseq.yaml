@@ -31,3 +31,4 @@ dependencies:
     - bioconda::bioconductor-biocgenerics
     - bioconda::bioconductor-limma
     - conda-forge::r-readr
+    - conda-forge::r-biocmanager
