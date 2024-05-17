@@ -1,3 +1,4 @@
+# CONFIG
 GTF = config['GTF']
 GENOME = config['GENOME']
 # SALMON
@@ -14,7 +15,7 @@ rule gff_read:
         fasta=GENOME,
         annotation=GTF
     output:
-        records=TRANSCRIPTS,
+        records=TRANSCRIPTS
     threads: 1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
