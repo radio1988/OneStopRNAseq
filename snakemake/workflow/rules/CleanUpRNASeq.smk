@@ -104,7 +104,7 @@ if config["PAIR_END"]:
         threads:
             12
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 6000  # 18G for human
+            mem_mb=lambda wildcards, attempt: attempt * 2000  # 18G for human
         conda:
             "../envs/salmon.yaml"  # docker: combinelab/salmon:latest
         shell:
