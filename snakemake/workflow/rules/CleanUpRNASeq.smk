@@ -102,7 +102,7 @@ if config["PAIR_END"]:
             libtype="A", #ISF
             extra="--seqBias --gcBias --posBias   --softclip  --softclipOverhangs",
         threads:
-            4
+            12
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 6000  # 18G for human
         conda:
