@@ -1074,6 +1074,7 @@ if config["GSEA_ANALYSIS"]:
             "envs/deseq2.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000
+        priority: 100
         log:
             'gsea_bubble/log/MultiBubblePlot.log'
         threads:
