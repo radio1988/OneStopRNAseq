@@ -393,9 +393,9 @@ if config['ALIGNER'] == 'STAR':
         conda:
             "envs/star.yaml"
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 7680 
+            mem_mb=lambda wildcards, attempt: attempt * 2400 
         threads:
-            5
+            16
         log:
             "mapped_reads/log/{sample}.bash.log"
         benchmark:
