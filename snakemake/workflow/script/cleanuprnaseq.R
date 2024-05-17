@@ -9,18 +9,6 @@ if (!requireNamespace("KernSmooth", quietly = TRUE)) {
 
 if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
   BiocManager::install(pkgs = "haibol2016/CleanUpRNAseq" , type = 'source', aks = FALSE)
-  
-  install.packages('./workflow/envs/CleanUpRNAseq/',
-                   repos = NULL,
-                   type = "source")  # works
-  # BiocManager::install(
-  #   "CleanUpRNAseq",
-  #   update = TRUE,
-  #   ask = T,
-  #   checkBuilt = FALSE,
-  #   force = FALSE,
-  #   version = BiocManager::version()
-  # )
 }
 
 library(CleanUpRNAseq)

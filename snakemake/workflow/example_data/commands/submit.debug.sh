@@ -1,17 +1,17 @@
 #!/bin/bash
-# bsub -q long -W 144:00 -R rusage[mem=4000]  'bash submit.debug.sh'
+# bsub -q long -W 144:00 -R span[hosts=1] -R rusage[mem=2000] -n 2  'bash submit.debug.sh'
 
-rm -f lsf.log
 source ~/anaconda3/etc/profile.d/conda.sh
-conda activate osr-base > workflow.log  2>&1
+conda activate snakemake > workflow.log  2>&1
+
+mkdir -p log
 mkdir -p log/lsf/
 
-snakemake -pk --jobs 99 --rerun-triggers mtime \
---keep-incomplete   \
+snakemake -pk --jobs 999 --rerun-triggers mtime \
+--keep-incomplete   --nt --ri \
 --use-conda --conda-prefix ~/anaconda3/envs/osr_envs \
---nt --latency-wait 10 --ri --restart-times 0 \
---cluster 'bsub -q long -o log/lsf/%J.lsf.txt -e log/lsf/%J.snakemake.txt -R "rusage[mem={resources.mem_mb}]" -n {threads} -R span[hosts=1] -W 140:00' \
---cluster-cancel bkill \
+--restart-times 0 \
+--cluster 'bsub -q long -o log/lsf/%J.lsf.txt -R "rusage[mem={resources.mem_mb}]" -n {threads} -R span[hosts=1] -W 140:00' \
 >> workflow.log  2>&1
 
 snakemake -j 1 --report report.html > report.log  2>&1

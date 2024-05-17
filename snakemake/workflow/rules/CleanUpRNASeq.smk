@@ -1,3 +1,4 @@
+# CONFIG
 GTF = config['GTF']
 GENOME = config['GENOME']
 # SALMON
@@ -14,7 +15,7 @@ rule gff_read:
         fasta=GENOME,
         annotation=GTF
     output:
-        records=TRANSCRIPTS,
+        records=TRANSCRIPTS
     threads: 1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
@@ -49,8 +50,7 @@ rule salmon_index:
         sequences=GENTROME,
         decoys=DECOYS
     output:
-        index=directory(GENTROME + ".salmon_idx/"),
-        others=multiext(
+        multiext(
             GENTROME + ".salmon_idx/",
             "complete_ref_lens.bin",
             "ctable.bin",
@@ -88,7 +88,6 @@ if config["PAIR_END"]:
         input:
             r1="trimmed/{sample}.R1.fastq.gz",
             r2="trimmed/{sample}.R2.fastq.gz",
-            index=GENTROME + ".salmon_idx",
             flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
         output:
             quant="salmon/{sample}/quant.sf",
