@@ -118,25 +118,32 @@ else:
     rule salmon_quant_se:
         input:
             r="trimmed/{sample}.fastq.gz",
-            index=GENTROME + ".salmon_idx",
-            flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
+            index_flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
         output:
-            quant="salmon/{sample}/quant.sf",# salmon/SRR24754651/quant.sf
+            quant="salmon/{sample}/quant.sf",
             lib="salmon/{sample}/lib_format_counts.json"
         log:
-            "salmon/{sample}/log.txt"
+            "salmon/{sample}/log.txt",
         benchmark:
-            "salmon/{sample}/benchmark.txt"
+            "salmon/{sample}/benchmark.txt",
         params:
             # optional parameters
-            libtype="U",
-            extra=""
+            index=GENTROME + ".salmon_idx/",
+            libtype="U", #ISF
+            extra="--seqBias --gcBias --posBias   --softclip  --softclipOverhangs",
+            outdir="salmon/{sample}/"
         threads:
-            4
+            16
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 6000
-        wrapper:
-            "v3.10.2/bio/salmon/quant"
+            mem_mb=lambda wildcards, attempt: attempt * 1500  # 18G for human
+        conda:
+            "../envs/salmon.yaml"  # docker: combinelab/salmon:latest
+        shell:
+            """
+            salmon quant -i {params.index} -l {params.libtype} \
+            -1 {input.r} -p {threads} {params.extra} \
+            --validateMappings  -o {params.outdir} &> {log}
+            """
 
 
 rule MakeEnsdb:
