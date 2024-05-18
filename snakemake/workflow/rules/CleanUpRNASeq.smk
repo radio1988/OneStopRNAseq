@@ -172,7 +172,7 @@ rule MakeCleanUpMeta:
     script:
         "../script/cleanupmakemeta.py"  # pandas
 
-rule CleanUpRNAseq:
+rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
