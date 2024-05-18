@@ -172,7 +172,7 @@ rule MakeCleanUpMeta:
     script:
         "../script/cleanupmakemeta.py"  # pandas
 
-rule CleanUpRNAseq:
+rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
@@ -195,7 +195,7 @@ rule CleanUpRNAseq:
         "../script/cleanuprnaseq.R"
 
 
-rule IR_DE:
+rule DESeq2_IR:
     input:
         cnt=DESeq2_input(config),
         meta=config['META'],
