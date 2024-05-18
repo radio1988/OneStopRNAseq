@@ -185,10 +185,12 @@ rule CleanUpRNAseqQC:
         "CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
     log:
         "CleanUpRNAseqQC/plots.log"
+    benchmark:
+        "CleanUpRNAseqQC/plots.benchmark"
     threads:
-        8
+        16
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 6000
+        mem_mb=lambda wildcards, attempt: attempt * 500
     conda:
         "../envs/cleanuprnaseq.yaml"
     script:
