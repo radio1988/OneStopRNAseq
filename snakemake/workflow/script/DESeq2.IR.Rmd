@@ -693,13 +693,13 @@ build_default_dds <- function() {
     return (dds)
 }
 
-tryCatch({
-  dds <- build_ir_dds()
-}, finally = {
+
+dds <- try(build_ir_dds())
+
+if (!exists("dds")){
   message("LR_RATE can't be modeled, using standard DESeq2 instead")
-  build_default_dds()
+  dds <- build_default_dds()
 }
-)
 
 dds
 if (is.error(dds <-DESeq(dds))){
