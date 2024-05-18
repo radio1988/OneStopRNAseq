@@ -141,7 +141,7 @@ else:
         shell:
             """
             salmon quant -i {params.index} -l {params.libtype} \
-            -1 {input.r} -p {threads} {params.extra} \
+            -r {input.r} -p {threads} {params.extra} \
             --validateMappings  -o {params.outdir} &> {log}
             """
 
