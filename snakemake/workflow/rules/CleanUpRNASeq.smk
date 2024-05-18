@@ -195,7 +195,7 @@ rule CleanUpRNAseqQC:
         "../script/cleanuprnaseq.R"
 
 
-rule IR_DE:
+rule DESeq2_IR:
     input:
         cnt=DESeq2_input(config),
         meta=config['META'],
