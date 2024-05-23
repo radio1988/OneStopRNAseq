@@ -182,7 +182,8 @@ rule CleanUpRNAseqQC:
         ensdb=ENSDB
     output:
         "CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf",
-        "CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
+        "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
+        "CleanUpRNAseqQC/Diagnostic.plots.objects.RDS"
     log:
         "CleanUpRNAseqQC/plots.log"
     benchmark:
@@ -245,5 +246,23 @@ rule DESeq2_IR:
         output_file={params.o})" > {log} 2>&1 ;'
         
         'D=CleanUpRNAseqDE; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
+
+
+rule CleanUpRNAseqClean:
+    input:
+        qc = "CleanUpRNAseqQC/Diagnostic.plots.objects.RDS",
+        meta = "CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
+    output:
+        "CleanUpRNAseqQC/cleaned.global.count.csv"
+    log:
+        "CleanUpRNAseqQC/cleaned.global.count.csv.log"
+    conda:
+        "../envs/cleanuprnaseq.yaml"
+    threads:
+        1
+    resources:
+        mem_mb = lambda wildcards, attempt: attempt * 8000
+    script:
+        "../script/cleanuprnaseq_correction.R"
 
 
