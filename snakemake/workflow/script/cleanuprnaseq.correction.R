@@ -1,7 +1,7 @@
-library(CleanUpRNAseq)
-
 log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = c("output", "message"))
+
+library(CleanUpRNAseq)
 
 print(paste("Working Directory:", getwd()))
 
