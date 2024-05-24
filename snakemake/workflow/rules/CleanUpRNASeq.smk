@@ -8,6 +8,9 @@ DECOYS = GENTROME + '.decoys.txt'
 # CleanUpRNAseq
 META = config['META']
 ENSDB = GTF + '.ensdb.sqlite'
+LIBTYPES = ['A', 'F','R', 'U']  # salmon strand libtype
+#LIBTYPES = ['A', 'ISF','ISR', 'IU']  # salmon strand libtype
+
 
 
 rule gff_read:
@@ -84,7 +87,6 @@ rule salmon_index:
 
 
 if config["PAIR_END"]:
-    SS = ['A', 'F','R', 'U']  # salmon strand libtype
     rule salmon_quant_pe:
         input:
             r1="trimmed/{sample}.R1.fastq.gz",
@@ -251,7 +253,8 @@ rule DESeq2_IR:
 rule CleanUpRNAseqClean:
     input:
         qc = "CleanUpRNAseqQC/Diagnostic.plots.objects.RDS",
-        meta = "CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
+        meta = "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
+        salmon=expand("salmon/{sample}/quant.{libtype}.sf",sample=SAMPLES, libtype=LIBTYPES)
     output:
         "CleanUpRNAseqQC/cleaned.global.count.csv"
     log:
