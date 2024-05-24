@@ -204,7 +204,8 @@ rule CleanUpRNAseqCorrection:
         meta_rds = "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
         meta_tab = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         ensdb=ENSDB,
-        salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES)
+        salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),
+        strandness="meta/strandness.detected.txt"
     output:
         "CleanUpRNAseqQC/cleaned.global.count.csv"
     log:
@@ -221,51 +222,53 @@ rule CleanUpRNAseqCorrection:
         "../script/cleanuprnaseq.correction.R"
 
 
-rule DESeq2_IR:
-    input:
-        cnt=DESeq2_input(config),
-        meta=config['META'],
-        contrast=config["CONTRAST_DE"],
-        ir_rate="CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
-    output:
-        "CleanUpRNAseqDE/CleanUpRNAseqDE.html"
-    conda:
-        "../envs/deseq2.yaml"
-    resources:
-        mem_mb=lambda wildcards, attempt: attempt * 4000,
-    params:
-        rmd="'./CleanUpRNAseqDE/DESeq2.IR.Rmd'",
-        fdr=MAX_FDR,
-        lfc=MIN_LFC,
-        independentFilter=config["independentFilter"],
-        cooksCutoff=config["cooksCutoff"],
-        blackSamples=config['blackSamples'] if 'blackSamples' in config else "",
-        anno_tab=ANNO_TAB,
-        o="'CleanUpRNAseqDE.html'"
-    priority:
-        100
-    threads:
-        1
-    log:
-        "CleanUpRNAseqDE/DESeq2.IR.log"
-    benchmark:
-        "CleanUpRNAseqDE/DESeq2.IR.benchmark"
-    shell:
-        'cp workflow/script/DESeq2.IR.Rmd CleanUpRNAseqDE; '
-        
-        'Rscript -e "rmarkdown::render( \
-        {params.rmd}, \
-        params=list( \
-            max_fdr={params.fdr}, \
-            min_lfc={params.lfc}, \
-            cookscutoff={params.cooksCutoff}, \
-            indfilter={params.independentFilter}, \
-            countFile=\'../{input.cnt}\', \
-            annoFile=\'{params.anno_tab}\', \
-            metaFile=\'../{input.meta}\', \
-            contrastFile=\'../{input.contrast}\', \
-            blackSamples=\'{params.blackSamples}\' \
-            ), \
-        output_file={params.o})" > {log} 2>&1 ;'
-        
-        'D=CleanUpRNAseqDE; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
+ENOUGH_DF = True  # test
+if ENOUGH_DF:
+    rule DESeq2_IR:
+        input:
+            cnt=DESeq2_input(config),
+            meta=config['META'],
+            contrast=config["CONTRAST_DE"],
+            ir_rate="CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
+        output:
+            "CleanUpRNAseqDE/CleanUpRNAseqDE.html"
+        conda:
+            "../envs/deseq2.yaml"
+        resources:
+            mem_mb=lambda wildcards, attempt: attempt * 4000,
+        params:
+            rmd="'./CleanUpRNAseqDE/DESeq2.IR.Rmd'",
+            fdr=MAX_FDR,
+            lfc=MIN_LFC,
+            independentFilter=config["independentFilter"],
+            cooksCutoff=config["cooksCutoff"],
+            blackSamples=config['blackSamples'] if 'blackSamples' in config else "",
+            anno_tab=ANNO_TAB,
+            o="'CleanUpRNAseqDE.html'"
+        priority:
+            100
+        threads:
+            1
+        log:
+            "CleanUpRNAseqDE/DESeq2.IR.log"
+        benchmark:
+            "CleanUpRNAseqDE/DESeq2.IR.benchmark"
+        shell:
+            'cp workflow/script/DESeq2.IR.Rmd CleanUpRNAseqDE; '
+            
+            'Rscript -e "rmarkdown::render( \
+            {params.rmd}, \
+            params=list( \
+                max_fdr={params.fdr}, \
+                min_lfc={params.lfc}, \
+                cookscutoff={params.cooksCutoff}, \
+                indfilter={params.independentFilter}, \
+                countFile=\'../{input.cnt}\', \
+                annoFile=\'{params.anno_tab}\', \
+                metaFile=\'../{input.meta}\', \
+                contrastFile=\'../{input.contrast}\', \
+                blackSamples=\'{params.blackSamples}\' \
+                ), \
+            output_file={params.o})" > {log} 2>&1 ;'
+            
+            'D=CleanUpRNAseqDE; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'

@@ -11,11 +11,22 @@ qc <- readRDS(snakemake@input[['qc_rds']])
 meta.df <- read.csv(snakemake@input[['meta_tab']])
 print(meta.df)
 
-print(paste("PAIR_END:", snakemake@config[["PAIR_END"]]))
-if (snakemake@config[["PAIR_END"]]){
+strand_string <- scan(snakemake@input[['strandness']], what = character(), nlines = 1)
+print(paste('strand_string:', strand_string))
+if (strand_string == "feature_count/counts.s0.strict.txt.summary") {
+    stranded <- FALSE
+} else if (strand_string == "feature_count/counts.s1.strict.txt.summary"){
+    stranded <- TRUE
+} else if (strand_string == "feature_count/counts.s2.strict.txt.summary"){
+    stranded <- TRUE
+} else {
+    stop("strand_string not recognized")
+}
+
+if (stranded){
     corrected <- correct_for_contamination(
-        is_stranded_library = F,
-        unstranded_metadata = meta.df,
+        is_stranded_library = T,
+        stranded_metadata = meta.df,
         salmon_summary = qc$salmon_summary,
         correction_method = 'Global',
         featurecounts_summary = qc$featurecounts_summary,
@@ -23,8 +34,8 @@ if (snakemake@config[["PAIR_END"]]){
         ensdb_sqlite = snakemake@input[['ensdb']])
 } else{
     corrected <- correct_for_contamination(
-        is_stranded_library = T,
-        stranded_metadata = meta.df,
+        is_stranded_library = F,
+        unstranded_metadata = meta.df,
         salmon_summary = qc$salmon_summary,
         correction_method = 'Global',
         featurecounts_summary = qc$featurecounts_summary,
