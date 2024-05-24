@@ -8,8 +8,7 @@ DECOYS = GENTROME + '.decoys.txt'
 # CleanUpRNAseq
 META = config['META']
 ENSDB = GTF + '.ensdb.sqlite'
-LIBTYPES = ['A', 'F','R', 'U']  # salmon strand libtype
-#LIBTYPES = ['A', 'ISF','ISR', 'IU']  # salmon strand libtype
+LIBTYPES = ['A', 'ISF','ISR', 'IU']  # salmon strand libtype
 
 
 rule gff_read:
