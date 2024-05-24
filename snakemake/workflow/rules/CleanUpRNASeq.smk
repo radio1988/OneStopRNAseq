@@ -91,12 +91,12 @@ if config["PAIR_END"]:
             r2="trimmed/{sample}.R2.fastq.gz",
             index_flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
         output:
-            quant=expand("salmon/{sample}/quant.{ss}.sf", ss = SS),
-            lib=expand("salmon/{sample}/lib_format_counts.{ss}.json", ss = SS)
+            quant="salmon/{sample}/quant.{libtype}.sf",
+            lib="salmon/{sample}/lib_format_counts.{libtype}.json"
         log:
-            "salmon/{sample}/log.{ss}.txt",
+            "salmon/{sample}/log.{libtype}.txt",
         benchmark:
-            "salmon/{sample}/benchmark.{ss}.txt",
+            "salmon/{sample}/benchmark.{libtype}.txt",
         params:
             # optional parameters
             index=GENTROME + ".salmon_idx/",
@@ -110,7 +110,7 @@ if config["PAIR_END"]:
             "../envs/salmon.yaml"  # docker: combinelab/salmon:latest
         shell:
             """
-            salmon quant -i {params.index} -l {wildcards.ss} \
+            salmon quant -i {params.index} -l {wildcards.libtype} \
             -1 {input.r1} -2 {input.r2} -p {threads} {params.extra} \
             --validateMappings  -o {params.outdir} &> {log}
             """
