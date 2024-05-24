@@ -175,7 +175,7 @@ rule MakeCleanUpMeta:
         "../script/cleanuprnaseq.makemeta.py"
 
 def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
-    if config["PAIRED_END"]:
+    if config["PAIR_END"]:
         book = {0 : 'IU', 1 : "ISF", 2 : 'ISR'}  # PE
     else:
         book = {0 : 'U', 1 : "SF", 2 : 'SR'}  # SE
