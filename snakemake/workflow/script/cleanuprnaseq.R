@@ -16,7 +16,7 @@ library(CleanUpRNAseq)
 log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = c("output", "message"))
 
-message("Working Directory:", getwd())
+message("Working Directory:", getwd())  # original root
 
 meta <- read.csv(snakemake@input[['meta']])
 print(meta)

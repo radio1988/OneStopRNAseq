@@ -91,17 +91,17 @@ if config["PAIR_END"]:
             r2="trimmed/{sample}.R2.fastq.gz",
             index_flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
         output:
-            quant="salmon/{sample}/quant.{libtype}.sf",
-            lib="salmon/{sample}/lib_format_counts.{libtype}.json"
+            quant="salmon/{libtype}/{sample}/quant.sf",
+            lib="salmon/{libtype}/{sample}/lib_format_counts.json"
         log:
-            "salmon/{sample}/log.{libtype}.txt",
+            "salmon/{libtype}/{sample}/log.txt"
         benchmark:
-            "salmon/{sample}/benchmark.{libtype}.txt",
+            "salmon/{libtype}/{sample}/benchmark.txt"
         params:
             # optional parameters
             index=GENTROME + ".salmon_idx/",
             extra="--seqBias --gcBias --posBias   --softclip  --softclipOverhangs",
-            outdir="salmon/{sample}/"
+            outdir="salmon/{libtype}/{sample}/"
         threads:
             16
         resources:
@@ -252,7 +252,7 @@ rule CleanUpRNAseqClean:
     input:
         qc = "CleanUpRNAseqQC/Diagnostic.plots.objects.RDS",
         meta = "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
-        salmon=expand("salmon/{sample}/quant.{libtype}.sf",sample=SAMPLES, libtype=LIBTYPES)
+        salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES)
     output:
         "CleanUpRNAseqQC/cleaned.global.count.csv"
     log:
