@@ -152,7 +152,7 @@ def target_input(config, ASCN):
 
         l.append("CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf")  # QC
         if config['CleanUpRNAseq']:
-            l.append("CleanUpRNAseqQC/cleaned.global.count.csv")
+            l.append("CleanUpRNAseqQC/global.corrected.count.csv")
             l.append("CleanUpRNAseqDE/CleanUpRNAseqDE.html")  # DESeq2_IR
 
         if config["ASSEMBLY_ANALYSIS"]:

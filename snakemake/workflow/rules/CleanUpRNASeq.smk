@@ -207,7 +207,7 @@ rule CleanUpRNAseqCorrection:
         salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),
         strandness="meta/strandness.detected.txt"
     output:
-        "CleanUpRNAseqQC/cleaned.global.count.csv"
+        "CleanUpRNAseqQC/global.corrected.count.csv"
     log:
         "CleanUpRNAseqQC/CleanUpRNAseqCorrection.log"
     benchmark:
