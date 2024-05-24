@@ -170,7 +170,7 @@ rule MakeCleanUpMeta:
     log:
         "CleanUpRNAseqQC/meta.cleanuprnaseq.csv.log"
     script:
-        "../script/cleanupmakemeta.py"  # pandas
+        "../script/cleanuprnaseq.makemeta.R"
 
 rule CleanUpRNAseqQC:
     input:
@@ -195,7 +195,7 @@ rule CleanUpRNAseqQC:
     conda:
         "../envs/cleanuprnaseq.yaml"
     script:
-        "../script/cleanuprnaseq.R"
+        "../script/cleanuprnaseq.qc.R"
 
 
 rule DESeq2_IR:
