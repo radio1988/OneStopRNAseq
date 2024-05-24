@@ -193,9 +193,7 @@ def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
         return ("Strand File not found")
 def cleanuprnaseqqc_input (config):
     libtype = get_cleanuprnaseq_libtype()
-    print('libtype: ', libtype)
     files = ["salmon/{}/".format(libtype) + sample + "/quant.sf" for sample in SAMPLES]
-    print(files)
     return (files)
 
 rule CleanUpRNAseqQC:
