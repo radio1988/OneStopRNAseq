@@ -170,7 +170,7 @@ rule MakeCleanUpMeta:
     log:
         "CleanUpRNAseqQC/meta.cleanuprnaseq.csv.log"
     script:
-        "../script/cleanuprnaseq.makemeta.R"
+        "../script/cleanuprnaseq.makemeta.py"
 
 rule CleanUpRNAseqQC:
     input:
