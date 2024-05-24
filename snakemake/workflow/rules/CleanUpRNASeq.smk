@@ -164,7 +164,8 @@ rule MakeEnsdb:
 
 rule MakeCleanUpMeta:
     input:
-        META
+        META,
+        "meta/strandness.detected.txt"
     output:
         "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"
     log:
