@@ -17,6 +17,6 @@ with open(log_file, "a") as log:
 
     df.columns = ['sample_name', 'group', 'batch']
     df['BAM_file'] = 'mapped_reads/' + df['sample_name'] + '.bam'
-    df['salmon_quant_file'] = 'salmon/' + df['sample_name'] + '/quant.sf'
+    df['salmon_quant_file'] = 'salmon/A/' + df['sample_name'] + '/quant.sf'
 
     df.to_csv(snakemake.output[0], index=False)
