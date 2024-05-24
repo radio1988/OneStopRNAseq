@@ -11,7 +11,6 @@ ENSDB = GTF + '.ensdb.sqlite'
 LIBTYPES = ['ISF','ISR', 'IU']  # salmon strand libtype
 
 
-
 rule gff_read:
     input:
         fasta=GENOME,

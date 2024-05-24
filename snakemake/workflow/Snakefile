@@ -24,8 +24,6 @@ if config['START'] != 'RNK':
 else:
     SAMPLES=['placeholder']
 
-
-
 if config["START"] != 'RNK':
     check_meta_data(config)
 
@@ -209,8 +207,8 @@ rule targets:
 if PAIR_END:
     rule Trimmomatic_PE:
         input:
-            r1="fastq/{sample}.R1.fastq.gz",
-            r2="fastq/{sample}.R2.fastq.gz"
+            r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
+            r2="fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz"
         output:
             r1=temp("trimmed/{sample}.R1.fastq.gz"), 
             r2=temp("trimmed/{sample}.R2.fastq.gz"),
@@ -231,7 +229,7 @@ if PAIR_END:
 else:
     rule Trimmomatic_SE:
         input:
-            "fastq/{sample}.fastq.gz",
+            "fastq/{sample,[A-Za-z0-9_-]+}.fastq.gz",
         output:
             temp("trimmed/{sample}.fastq.gz")
         params:
