@@ -176,7 +176,7 @@ rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
-        salmon=expand("salmon/{sample}/quant.sf",sample=SAMPLES),
+        salmon=expand("salmon/{sample}/quant.A.sf",sample=SAMPLES),
         genome=GENOME,
         gtf=GTF,
         ensdb=ENSDB
