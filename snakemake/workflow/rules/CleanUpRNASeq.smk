@@ -8,7 +8,7 @@ DECOYS = GENTROME + '.decoys.txt'
 # CleanUpRNAseq
 META = config['META']
 ENSDB = GTF + '.ensdb.sqlite'
-LIBTYPES = ['A', 'ISF','ISR', 'IU']  # salmon strand libtype
+LIBTYPES = ['ISF','ISR', 'IU']  # salmon strand libtype
 
 
 
@@ -189,11 +189,18 @@ def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
         return ("Strand File not found")
 
+def xx ():
+    libtype = get_cleanuprnaseq_libtype()
+    print('libtype: ', libtype)
+    files = ["salmon/{libtype}/".format(libtype) + sample + "/quant.sf" for sample in SAMPLES]
+    print(files)
+    return (files)
+
 rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
-        salmon=expand("salmon/{}/{sample}/quant.sf".format(get_cleanuprnaseq_libtype()),sample=SAMPLES),
+        salmon=xx,
         genome=GENOME,
         gtf=GTF,
         ensdb=ENSDB
