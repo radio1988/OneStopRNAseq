@@ -1,5 +1,5 @@
-# log <- file(snakemake@log[[1]], open = "wt")
-# sink(log, type = c("output", "message"))
+log <- file(snakemake@log[[1]], open = "wt")
+sink(log, type = c("output", "message"))
 
 library(CleanUpRNAseq)
 
@@ -32,7 +32,7 @@ if (snakemake@config[["PAIR_END"]]){
         ensdb_sqlite = snakemake@input[['ensdb']])
 }
 
-write.csv(corrected, snakemake@output[1], quote=F)
+write.csv(corrected, snakemake@output[[1]], quote=F)
 
 
-# close(log)
+close(log)
