@@ -46,7 +46,8 @@ RNKS:
 
 ## Optinoal Analyses ## 
 CleanUpRNAseqQC: True
-CleanUpRNAseqClean: False
+CleanUpRNAseqCorrection:
+False
 
 # rMATs
 RMATS_ANALYSIS: True
