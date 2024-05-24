@@ -1,4 +1,4 @@
-log <- file(snakemake@log[[1]], open = "wt")
+log <- file(snakemake@log[[1]], open = "w")
 sink(log, type = c("output", "message"))
 
 library(CleanUpRNAseq)
@@ -35,4 +35,4 @@ if (snakemake@config[["PAIR_END"]]){
 write.csv(corrected, snakemake@output[1], quote=F)
 
 
-sink()
+close(log)
