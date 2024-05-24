@@ -11,6 +11,7 @@ ENSDB = GTF + '.ensdb.sqlite'
 LIBTYPES = ['A', 'ISF','ISR', 'IU']  # salmon strand libtype
 
 
+
 rule gff_read:
     input:
         fasta=GENOME,
@@ -173,11 +174,26 @@ rule MakeCleanUpMeta:
     script:
         "../script/cleanuprnaseq.makemeta.py"
 
+def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
+    book = {0 : 'U', 1 : "ISF", 2 : 'ISR'}  # PE
+    try:
+        with open(strandFile, "r") as file:
+            txt = file.readline()
+        p = re.compile("counts.s(.)\.[liberal|strict]")
+        res = p.search(txt)
+        if res.group(1) is None:
+            sys.exit("strandness detection wrong")
+        libtype = book[int(res.group(1))]
+        return (libtype)
+    except FileNotFoundError:
+        sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
+        return ("Strand File not found")
+
 rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
-        salmon=expand("salmon/A/{sample}/quant.sf",sample=SAMPLES),
+        salmon=expand("salmon/{}/{sample}/quant.sf".format(get_cleanuprnaseq_libtype()),sample=SAMPLES),
         genome=GENOME,
         gtf=GTF,
         ensdb=ENSDB
@@ -197,6 +213,7 @@ rule CleanUpRNAseqQC:
         "../envs/cleanuprnaseq.yaml"
     script:
         "../script/cleanuprnaseq.qc.R"
+
 
 
 rule CleanUpRNAseqCorrection:
