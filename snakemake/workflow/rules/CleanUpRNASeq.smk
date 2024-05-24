@@ -185,9 +185,9 @@ rule CleanUpRNAseqQC:
         "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
         "CleanUpRNAseqQC/Diagnostic.plots.objects.RDS"
     log:
-        "CleanUpRNAseqQC/plots.log"
+        "CleanUpRNAseqQC/CleanUpRNAseqQC.log"
     benchmark:
-        "CleanUpRNAseqQC/plots.benchmark"
+        "CleanUpRNAseqQC/CleanUpRNAseqQC.benchmark"
     threads:
         16
     resources:
@@ -208,15 +208,17 @@ rule CleanUpRNAseqCorrection:
     output:
         "CleanUpRNAseqQC/cleaned.global.count.csv"
     log:
-        "CleanUpRNAseqQC/cleaned.global.count.csv.log"
-    conda:
-        "../envs/cleanuprnaseq.yaml"
+        "CleanUpRNAseqQC/CleanUpRNAseqCorrection.log"
+    benchmark:
+        "CleanUpRNAseqQC/CleanUpRNAseqCorrection.benchmark"
     threads:
         1
     resources:
         mem_mb = lambda wildcards, attempt: attempt * 8000
+    conda:
+        "../envs/cleanuprnaseq.yaml"
     script:
-        "../script/cleanuprnaseq_correction.R"
+        "../script/cleanuprnaseq.correction.R"
 
 
 rule DESeq2_IR:
