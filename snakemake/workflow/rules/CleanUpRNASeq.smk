@@ -175,7 +175,11 @@ rule MakeCleanUpMeta:
         "../script/cleanuprnaseq.makemeta.py"
 
 def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
-    book = {0 : 'U', 1 : "ISF", 2 : 'ISR'}  # PE
+    if config["PAIRED_END"]:
+        book = {0 : 'IU', 1 : "ISF", 2 : 'ISR'}  # PE
+    else:
+        book = {0 : 'U', 1 : "SF", 2 : 'SR'}  # SE
+
     try:
         with open(strandFile, "r") as file:
             txt = file.readline()
@@ -188,8 +192,7 @@ def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
         return ("Strand File not found")
-
-def xx (config):
+def cleanuprnaseqqc_input (config):
     libtype = get_cleanuprnaseq_libtype()
     print('libtype: ', libtype)
     files = ["salmon/{}/".format(libtype) + sample + "/quant.sf" for sample in SAMPLES]
@@ -200,10 +203,11 @@ rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
-        salmon=xx,
+        salmon=cleanuprnaseqqc_input,
         genome=GENOME,
         gtf=GTF,
-        ensdb=ENSDB
+        ensdb=ENSDB,
+        strand_detection="meta/strandness.detected.txt"
     output:
         "CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf",
         "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
