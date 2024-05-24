@@ -84,22 +84,22 @@ rule salmon_index:
 
 
 if config["PAIR_END"]:
+    SS = ['A', 'F','R', 'U']  # salmon strand libtype
     rule salmon_quant_pe:
         input:
             r1="trimmed/{sample}.R1.fastq.gz",
             r2="trimmed/{sample}.R2.fastq.gz",
             index_flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
         output:
-            quant="salmon/{sample}/quant.sf",
-            lib="salmon/{sample}/lib_format_counts.json"
+            quant=expand("salmon/{sample}/quant.{ss}.sf", ss = SS),
+            lib=expand("salmon/{sample}/lib_format_counts.{ss}.json", ss = SS)
         log:
-            "salmon/{sample}/log.txt",
+            "salmon/{sample}/log.{ss}.txt",
         benchmark:
-            "salmon/{sample}/benchmark.txt",
+            "salmon/{sample}/benchmark.{ss}.txt",
         params:
             # optional parameters
             index=GENTROME + ".salmon_idx/",
-            libtype="A", #ISF
             extra="--seqBias --gcBias --posBias   --softclip  --softclipOverhangs",
             outdir="salmon/{sample}/"
         threads:
@@ -110,7 +110,7 @@ if config["PAIR_END"]:
             "../envs/salmon.yaml"  # docker: combinelab/salmon:latest
         shell:
             """
-            salmon quant -i {params.index} -l {params.libtype} \
+            salmon quant -i {params.index} -l {wildcards.ss} \
             -1 {input.r1} -2 {input.r2} -p {threads} {params.extra} \
             --validateMappings  -o {params.outdir} &> {log}
             """
