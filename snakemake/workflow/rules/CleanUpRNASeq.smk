@@ -192,7 +192,7 @@ def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
 def xx (config):
     libtype = get_cleanuprnaseq_libtype()
     print('libtype: ', libtype)
-    files = ["salmon/{libtype}/".format(libtype) + sample + "/quant.sf" for sample in SAMPLES]
+    files = ["salmon/{}/".format(libtype) + sample + "/quant.sf" for sample in SAMPLES]
     print(files)
     return (files)
 
