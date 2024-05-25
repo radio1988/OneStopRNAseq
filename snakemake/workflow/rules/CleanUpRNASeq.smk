@@ -227,7 +227,8 @@ rule CleanUpRNAseqQC:
     script:
         "../script/cleanuprnaseq.qc.R"
 
-def get_salmon_files (config, fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"):
+def get_salmon_files (config):
+    fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"
     df = pd.read_csv(fname)
     if 'salmon_quant_file' in df.columns:
         L = list(df['salmon_quant_file'])
@@ -246,7 +247,7 @@ rule CleanUpRNAseqCorrection:
         meta_tab = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         ensdb=ENSDB,
         # salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),  # PE/SE aware, all LIBTYPES,
-        salmon = get_salmon_files(config, fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"),
+        salmon = get_salmon_files,
         strandness="meta/strandness.detected.txt"
     output:
         "CleanUpRNAseqQC/global.corrected.count.csv"
