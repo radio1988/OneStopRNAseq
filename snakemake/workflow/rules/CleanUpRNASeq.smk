@@ -268,9 +268,45 @@ rule CleanUpRNAseqCorrection:
     script:
         "../script/cleanuprnaseq.correction.R"
 
+def deseq2_ir_df_is_enough(config):
+    output = True
+    if config['META'].ends_with('.csv'):
+        meta = pd.read_csv(config['META'])
+    elif config['META'].ends_with('.xlsx'):
+        meta = pd.read_excel(config['META'])
+    else:
+        sys.exit(config['META'] + " not right suffix (format)")
 
-ENOUGH_DF = True  # test
-if ENOUGH_DF:
+    if config['CONTRAST_DE'].ends_with('.csv'):
+        contrast = pd.read_csv(config['CONTRAST_DE'])
+    elif config['CONTRAST_DE'].ends_with('.xlsx'):
+        contrast = pd.read_excel(config['CONTRAST_DE'])
+    else:
+        sys.exit(config['CONTRAST_DE'] + " not right suffix (format)")
+
+    samples = list( meta.iloc[:,0])
+    groups = list( meta.iloc[:,1])
+    batches = list( meta.iloc[:,2])
+
+    if len(set(samples)) != len(samples):
+        sys.exit("In config['META'], duplicated samples exist")
+
+    for j in range(contrast.shape):
+        contrast_groups = list(contrast.iloc[:, j])  # [N, P]
+        relevant = [x in contrast_groups for x in groups]
+        n_sample = sum(relevant)
+        n_comparison = 1
+        n_ir = 1
+        batch_groups = [data for data, filter in zip(batches, relevant) if filter]
+        n_batch = len(set(batch_groups)) - 1  # N_batch - 1 # 1 -> 0, 2 -> 1
+        if n_sample - n_comparison - n_ir - n_batch < 1:
+            output = False
+    print("deseq2_ir_df_is_enough: ")
+    print(output)
+    return (output)
+
+
+if deseq2_ir_df_is_enough(config):
     rule DESeq2_IR:
         input:
             cnt=DESeq2_input(config),
