@@ -306,8 +306,9 @@ def deseq2_ir_df_is_enough(config):
         n_ir = 1
         batch_groups = [data for data, filter in zip(batches, relevant) if filter]
         n_batch = len(set(batch_groups)) - 1  # N_batch - 1 # 1 -> 0, 2 -> 1
-        if n_sample - n_comparison - n_ir - n_batch <= 1:
-            print(n_sample, batch_groups, n_batch, contrast_groups, contrast_groups_init, batches, groups)
+        degree_freedom = n_sample - n_comparison - n_ir - n_batch
+        if degree_freedom <= 1:
+            print (degree_freedom)
             output = False
     print("deseq2_ir_df_is_enough: ")
     print(output)
