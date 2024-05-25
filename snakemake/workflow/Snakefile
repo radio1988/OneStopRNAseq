@@ -147,10 +147,10 @@ def target_input(config, ASCN):
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
-
         l.append("CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf")  # QC
+
         if config['CleanUpRNAseq']:
-            l.append("CleanUpRNAseqQC/global.corrected.count.csv")
+            l.append("CleanUpRNAseqQC/global.corrected.count.csv")  # correction
             l.append("CleanUpRNAseqDE/CleanUpRNAseqDE.html")  # DESeq2_IR
 
         if config["ASSEMBLY_ANALYSIS"]:
