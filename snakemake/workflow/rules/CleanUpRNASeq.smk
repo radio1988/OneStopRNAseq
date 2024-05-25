@@ -296,8 +296,8 @@ def deseq2_ir_df_is_enough(config):
         contrast_groups = []
         for string in contrast_groups_init:
             if ";" in string:
-                groups = string.split(";")
-                contrast_groups.extend(groups)
+                gs = string.split(";")
+                contrast_groups.extend(gs)
             else:
                 contrast_groups.append(string)
         relevant = [x in contrast_groups for x in groups]
