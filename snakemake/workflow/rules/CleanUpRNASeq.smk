@@ -205,7 +205,8 @@ rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
-        salmon=cleanuprnaseqqc_input,  # PE/SE aware, strand aware
+        # salmon=cleanuprnaseqqc_input,  # PE/SE aware, strand aware
+        salmon=expand("salmon/{libtype}/{sample}/quant.sf", libtype = LIBTYPES, sample=SAMPLES),
         genome=GENOME,
         gtf=GTF,
         ensdb=ENSDB,
