@@ -227,7 +227,7 @@ rule CleanUpRNAseqQC:
     script:
         "../script/cleanuprnaseq.qc.R"
 
-def get_salmon_files (config):
+def get_salmon_files (config):  # meta.csv not possibly ready at workflow construction
     fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"
     try:
         df = pd.read_csv(fname)
@@ -250,8 +250,8 @@ rule CleanUpRNAseqCorrection:
         meta_rds = "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
         meta_tab = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         ensdb=ENSDB,
-        # salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),  # PE/SE aware, all LIBTYPES,
-        salmon = get_salmon_files,
+        salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),  # PE/SE aware, all LIBTYPES,
+        # salmon = get_salmon_files,
         strandness="meta/strandness.detected.txt"
     output:
         "CleanUpRNAseqQC/global.corrected.count.csv"
