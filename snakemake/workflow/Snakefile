@@ -151,7 +151,8 @@ def target_input(config, ASCN):
 
         if config['CleanUpRNAseq']:
             l.append("CleanUpRNAseqQC/global.corrected.count.csv")  # correction
-            l.append("CleanUpRNAseqDE/CleanUpRNAseqDE.html")  # DESeq2_IR
+            if config['DESEQ2_ANALYSIS'] or config['GSEA_ANALYSIS']:
+                l.append("CleanUpRNAseqDE/CleanUpRNAseqDE.html")  # DESeq2_IR (df > 1) or DESeq2_DNA_Corrected (df = 1)
 
         if config["ASSEMBLY_ANALYSIS"]:
             if config['START'] not in ['FASTQ']:
@@ -918,7 +919,7 @@ if config['DESEQ2_ANALYSIS']:
             "DESeq2/DESeq2.html",
             expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
         conda:
-            "envs/deseq2.yaml" 
+            "envs/deseq2.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000,
         params:

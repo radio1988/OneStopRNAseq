@@ -382,7 +382,7 @@ else:
             cooksCutoff=config["cooksCutoff"],
             blackSamples=config['blackSamples'] if 'blackSamples' in config else "",
             anno_tab=ANNO_TAB,
-            o="'DESeq2.html'"
+            o="'CleanUpRNAseqDE.html'"
         priority:
             100
         threads:
