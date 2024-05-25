@@ -102,7 +102,7 @@ if config["PAIR_END"]:
             "salmon/{libtype}/{sample}/benchmark.txt"
         params:
             # optional parameters
-            index=GENTROME + ".salmon_idx/",
+            index=GENTROME + ".salmon_idx",
             extra="--seqBias --gcBias --posBias   --softclip  --softclipOverhangs",
             outdir="salmon/{libtype}/{sample}/"
         threads:
@@ -131,10 +131,9 @@ else:
             "salmon/{libtype}/{sample}/benchmark.txt"
         params:
             # optional parameters
-            index=GENTROME + ".salmon_idx/",
-            libtype="U", #ISF
+            index=GENTROME + ".salmon_idx",
             extra="--seqBias --gcBias --posBias   --softclip  --softclipOverhangs",
-            outdir="salmon/{sample}/"
+            outdir="salmon/{libtype}/{sample}/"
         threads:
             16
         resources:
