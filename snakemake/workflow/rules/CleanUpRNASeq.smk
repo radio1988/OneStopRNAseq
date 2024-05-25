@@ -370,7 +370,7 @@ else:
             "CleanUpRNAseqDE/CleanUpRNAseqDE.html",
             expand("CleanUpRNAseqDE/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
         conda:
-            "envs/deseq2.yaml"
+            "../envs/deseq2.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000,
         params:
