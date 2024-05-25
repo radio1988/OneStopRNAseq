@@ -229,7 +229,11 @@ rule CleanUpRNAseqQC:
 
 def get_salmon_files (config):
     fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"
-    df = pd.read_csv(fname)
+    try:
+        df = pd.read_csv(fname)
+    except FileNotFoundError:
+        sys.stderr.write(fname + "will be found in real run, not in dry run\n")
+        return (None)
     if 'salmon_quant_file' in df.columns:
         L = list(df['salmon_quant_file'])
     else:
