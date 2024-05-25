@@ -1,4 +1,7 @@
 # CONFIG
+import pandas as pd
+import sys
+
 GTF = config['GTF']
 GENOME = config['GENOME']
 # SALMON
@@ -202,7 +205,7 @@ rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
-        salmon=cleanuprnaseqqc_input,  # PE/SE aware
+        salmon=cleanuprnaseqqc_input,  # PE/SE aware, strand aware
         genome=GENOME,
         gtf=GTF,
         ensdb=ENSDB,
@@ -224,6 +227,19 @@ rule CleanUpRNAseqQC:
     script:
         "../script/cleanuprnaseq.qc.R"
 
+def get_salmon_files (config):
+    fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"
+    df = pd.read_csv(fname)
+    if 'salmon_quant_file' in df.columns:
+        L = list(df['salmon_quant_file'])
+    else:
+        sys.exit(fname + " does not contain correct salmon_quant_file_columns\n")
+    if 'salmon_quant_file_strand' in df.columns:
+        L.extend(list(df['salmon_quant_file_strand']))
+    if 'salmon_quant_file_reverse_strand' in df.columns:
+        L.extend(list(df['salmon_quant_file_reverse_strand']))
+    return (L)
+
 
 
 rule CleanUpRNAseqCorrection:
@@ -232,7 +248,8 @@ rule CleanUpRNAseqCorrection:
         meta_rds = "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
         meta_tab = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         ensdb=ENSDB,
-        salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),  # PE/SE aware
+        # salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),  # PE/SE aware, all LIBTYPES,
+        salmon = get_salmon_files()
         strandness="meta/strandness.detected.txt"
     output:
         "CleanUpRNAseqQC/global.corrected.count.csv"
