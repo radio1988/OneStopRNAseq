@@ -195,7 +195,7 @@ def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
         return (libtype)
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
-        return ("Strand File not found")
+        return ("placeholder")
 def cleanuprnaseqqc_input (config):
     libtype = get_cleanuprnaseq_libtype()
     files = ["salmon/{}/".format(libtype) + sample + "/quant.sf" for sample in SAMPLES]
