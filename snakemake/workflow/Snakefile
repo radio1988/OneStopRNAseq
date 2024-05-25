@@ -958,8 +958,6 @@ if config['DESEQ2_ANALYSIS']:
             'D=DESeq2; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
 
 
-
-
 rule GSEA:
     """
     config[START] == RNK, then find config[RNKS], else, find {contrast} 
