@@ -292,7 +292,14 @@ def deseq2_ir_df_is_enough(config):
         sys.exit("In config['META'], duplicated samples exist")
 
     for j in range(contrast.shape[1]):
-        contrast_groups = list(contrast.iloc[:, j])  # [N, P]
+        contrast_groups_init = list(contrast.iloc[:, j])  # [N, P, N;P]
+        contrast_groups = []
+        for string in contrast_groups_init:
+            if ";" in string:
+                groups = string.split(";")
+                contrast_groups.extend(groups)
+            else:
+                contrast_groups.append(string)
         relevant = [x in contrast_groups for x in groups]
         n_sample = sum(relevant)
         n_comparison = 1
