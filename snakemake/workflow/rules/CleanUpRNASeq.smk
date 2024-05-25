@@ -319,7 +319,8 @@ if deseq2_ir_df_is_enough(config):
             contrast=config["CONTRAST_DE"],
             ir_rate="CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
         output:
-            "CleanUpRNAseqDE/CleanUpRNAseqDE.html"
+            "CleanUpRNAseqDE/CleanUpRNAseqDE.html",
+            expand("CleanUpRNAseqDE/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
         conda:
             "../envs/deseq2.yaml"
         resources:
