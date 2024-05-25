@@ -270,16 +270,16 @@ rule CleanUpRNAseqCorrection:
 
 def deseq2_ir_df_is_enough(config):
     output = True
-    if config['META'].ends_with('.csv'):
+    if config['META'].endswith('.csv'):
         meta = pd.read_csv(config['META'])
-    elif config['META'].ends_with('.xlsx'):
+    elif config['META'].endswith('.xlsx'):
         meta = pd.read_excel(config['META'])
     else:
         sys.exit(config['META'] + " not right suffix (format)")
 
-    if config['CONTRAST_DE'].ends_with('.csv'):
+    if config['CONTRAST_DE'].endswith('.csv'):
         contrast = pd.read_csv(config['CONTRAST_DE'])
-    elif config['CONTRAST_DE'].ends_with('.xlsx'):
+    elif config['CONTRAST_DE'].endswith('.xlsx'):
         contrast = pd.read_excel(config['CONTRAST_DE'])
     else:
         sys.exit(config['CONTRAST_DE'] + " not right suffix (format)")
