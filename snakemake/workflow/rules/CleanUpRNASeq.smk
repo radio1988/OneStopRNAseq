@@ -227,8 +227,7 @@ rule CleanUpRNAseqQC:
     script:
         "../script/cleanuprnaseq.qc.R"
 
-def get_salmon_files (config):
-    fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"
+def get_salmon_files (config, fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"):
     df = pd.read_csv(fname)
     if 'salmon_quant_file' in df.columns:
         L = list(df['salmon_quant_file'])
@@ -240,8 +239,6 @@ def get_salmon_files (config):
         L.extend(list(df['salmon_quant_file_reverse_strand']))
     return (L)
 
-
-
 rule CleanUpRNAseqCorrection:
     input:
         qc_rds = "CleanUpRNAseqQC/Diagnostic.plots.objects.RDS",
@@ -249,7 +246,7 @@ rule CleanUpRNAseqCorrection:
         meta_tab = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         ensdb=ENSDB,
         # salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),  # PE/SE aware, all LIBTYPES,
-        salmon = get_salmon_files(),
+        salmon = get_salmon_files(config, fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"),
         strandness="meta/strandness.detected.txt"
     output:
         "CleanUpRNAseqQC/global.corrected.count.csv"
