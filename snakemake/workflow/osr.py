@@ -179,6 +179,13 @@ def input_rnk_fname1(wildcards, config):
         # e.g. DESeq2/rnk/KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8.rnk
     return fname1
 
+def input_rnk_fname1_cleanuprnaseq(wildcards, config):
+    if config['START'] == 'RNK':
+        fname1 = 'meta/' + wildcards['fname']
+    else:
+        fname1 = "CleanUpRNAseqDE/rnk/" + wildcards['fname'] + ".rnk"
+    return fname1
+
 
 def rnk_fname1_to_fname2(fname1):
     '''
