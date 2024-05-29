@@ -961,9 +961,8 @@ if config['DESEQ2_ANALYSIS']:
 
 rule GSEA:
     """
-    config[START] == RNK, then find config[RNKS], else, find {contrast} 
-    config[RNKS] contains the full name of the rank file (xlsx or txt), must be put in ./meta/ folder
-    rnk file must be named xxx.rnk.txt when feeded to GSEA
+    config[START] == RNK, then find config[RNKS], else, find DESeq2/rnk or CleanUpRNAseqDE/rnk
+    config[RNKS]  must be put in ./meta/ folder, and has suffix of txt or xlsx
     """
     input: 
         deseq2= "Workflow_DAG.all.pdf" # dummy assume existing
