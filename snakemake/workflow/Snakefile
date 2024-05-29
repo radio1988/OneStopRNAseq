@@ -969,7 +969,7 @@ rule GSEA:
         deseq2= "Workflow_DAG.all.pdf" # dummy assume existing
             if config["START"] == "RNK"
             else "DESeq2/DESeq2.html" , # DESEq2, then GSEA
-        rnk=lambda wildcards: input_rnk_fname1_cleanuprnaseq(wildcards, config)
+        rnk=lambda wildcards: input_rnk_fname1_cleanuprnaseq(wildcards, config),
         db=lambda wildcards: os.path.join(config['GSEA_DB_PATH'] , wildcards["db"])
     output:
         "gsea/{fname}/{db}.GseaPreranked/index.html"
