@@ -270,6 +270,8 @@ rule CleanUpRNAseqCorrection:
         "../script/cleanuprnaseq.correction.R"
 
 def deseq2_ir_df_is_enough(config):
+    if config['START'] != 'FASTQ':
+        return None
     output = True
     if config['META'].endswith('.csv'):
         meta = pd.read_csv(config['META'])
