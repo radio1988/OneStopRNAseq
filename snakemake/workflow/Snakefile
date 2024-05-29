@@ -970,8 +970,6 @@ rule GSEA:
             if config["START"] == "RNK"
             else "DESeq2/DESeq2.html" , # DESEq2, then GSEA
         rnk=lambda wildcards: input_rnk_fname1_cleanuprnaseq(wildcards, config)
-            if config["START"] == "FASTQ" and config['CleanUpRNAseq']
-            else lambda wildcards: input_rnk_fname1(wildcards, config) ,
         db=lambda wildcards: os.path.join(config['GSEA_DB_PATH'] , wildcards["db"])
     output:
         "gsea/{fname}/{db}.GseaPreranked/index.html"

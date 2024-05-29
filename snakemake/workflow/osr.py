@@ -181,9 +181,11 @@ def input_rnk_fname1(wildcards, config):
 
 def input_rnk_fname1_cleanuprnaseq(wildcards, config):
     if config['START'] == 'RNK':
-        fname1 = 'meta/' + wildcards['fname']
-    else:
+        fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
+    elif config['START'] == 'FASTQ' and config['CleanUpRNAseq']:
         fname1 = "CleanUpRNAseqDE/rnk/" + wildcards['fname'] + ".rnk"
+    else:
+        fname1 = "DESeq2/rnk/" + wildcards['fname'] + ".rnk"
     return fname1
 
 
