@@ -49,7 +49,7 @@ library(RColorBrewer) #pheatmap
 library(pheatmap)
 library(PoiClaClu)  
 if(!require(berryFunctions)){
-    install.packages("berryFunctions", repos = "http://cran.us.r-project.org")
+    install.packages("berryFunctions", repos = "https://mirror.las.iastate.edu/CRAN/")
     library(berryFunctions)
 }
 
