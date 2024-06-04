@@ -1,16 +1,18 @@
+START: RNK
+
+RNKS:
+    - test1.rnk.txt
+    - test2.rnk.xlsx
+
+GSEA_ANALYSIS: True
+GSEA_NPLOTS: 10
+GSEA_PLOT_SVG: True
+GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/test
+
+
+
+
 SAMPLES:
-    - KO_D0_1_S2
-    - KO_D0_2_S8
-    - KO_D2_1_S4
-    - KO_D2_2_S10
-    - KO_D8_1_S6
-    - KO_D8_2_S12
-    - WT_D0_1_S1
-    - WT_D0_2_S7
-    - WT_D2_1_S3
-    - WT_D2_2_S9
-    - WT_D8_1_S5
-    - WT_D8_2_S11
 
 ADAPTORS: workflow/resources/adapters/merged.fa
 ALIGNER: STAR  # HISAT2, STAR
@@ -31,12 +33,8 @@ MODE: strict
 
 INTRON: true
 
-START: RNK
 
 COUNT_FILE: meta/COUNT.txt
-
-RNKS:
-    - name1.rnk.txt
 
 # DEG analysis
 DESEQ2_ANALYSIS: False
@@ -67,9 +65,5 @@ MIN_GENE_COUNT: 100
 ASE_ANALYSIS: False
 VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
 
-#GSEA
-GSEA_ANALYSIS: True
-GSEA_NPLOTS: 10
-GSEA_PLOT_SVG: False
-GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/test
 ASSEMBLY_ANALYSIS: False
+CleanUpRNAseq: False
