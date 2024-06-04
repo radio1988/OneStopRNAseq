@@ -3,7 +3,7 @@ import sys, re, os, math
 from snakemake.utils import min_version
 from osr import gunzip, get_read_length, read_table,check_fastq_size
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
-from osr import DESeq2_input, input_rnk_fname1, input_rnk_fname2, input_rnk_fname1_cleanuprnaseq, \
+from osr import DESeq2_input, input_rnk_fname2, input_rnk_fname1_cleanuprnaseq, \
 Merge_TE_and_Gene_input, strand_detection_input
 from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
 get_strandness_for_hisat2_SE, get_strandness_for_stringtie

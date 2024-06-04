@@ -213,7 +213,7 @@ def input_rnk_fname2(wildcards, config):
     '''
     the corresponding flat rnk.txt file name (fname1) for corresponding fname1
     '''
-    fname1=input_rnk_fname1(wildcards, config)
+    fname1=input_rnk_fname1_cleanuprnaseq(wildcards, config)
     return rnk_fname1_to_fname2(fname1)
 
 
