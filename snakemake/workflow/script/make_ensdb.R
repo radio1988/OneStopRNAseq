@@ -8,7 +8,7 @@ if (!requireNamespace("pheatmap", quietly = TRUE)) {
 }
 
 if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
-  BiocManager::install(pkgs = "haibol2016/CleanUpRNAseq" , type = 'source', aks = FALSE)
+  BiocManager::install(pkgs = "haibol2016/CleanUpRNAseq" , type = 'source', ask = FALSE)
 }
 
 library(CleanUpRNAseq)
