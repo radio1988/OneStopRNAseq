@@ -3,7 +3,7 @@ import sys, re, os, math
 from snakemake.utils import min_version
 from osr import gunzip, get_read_length, read_table,check_fastq_size
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
-from osr import DESeq2_input, input_rnk_fname2, input_rnk_fname1_cleanuprnaseq, \
+from osr import DESeq2_input, input_rnk_fname2, input_rnk_fname1, \
 Merge_TE_and_Gene_input, strand_detection_input
 from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
 get_strandness_for_hisat2_SE, get_strandness_for_stringtie
@@ -968,7 +968,7 @@ rule GSEA:
         deseq2= "Workflow_DAG.all.pdf" # dummy assume existing
             if config["START"] == "RNK"
             else "DESeq2/DESeq2.html" , # DESEq2, then GSEA
-        rnk=lambda wildcards: input_rnk_fname1_cleanuprnaseq(wildcards, config),
+        rnk=lambda wildcards: input_rnk_fname1(wildcards, config),
         db=lambda wildcards: os.path.join(config['GSEA_DB_PATH'] , wildcards["db"])
     output:
         "gsea/{fname}/{db}.GseaPreranked/index.html"
