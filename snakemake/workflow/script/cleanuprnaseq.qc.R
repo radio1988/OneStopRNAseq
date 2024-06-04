@@ -7,7 +7,7 @@ if (!requireNamespace("KernSmooth", quietly = TRUE)) {
 }
 
 if (!requireNamespace("CleanUpRNAseq", quietly = TRUE)) {
-  BiocManager::install(pkgs = "haibol2016/CleanUpRNAseq" , type = 'source', ask = FALSE)
+  BiocManager::install(pkgs = "haibol2016/CleanUpRNAseq" , type = 'source', ask = FALSE, dependencies = T)
 }
 
 library(CleanUpRNAseq)
