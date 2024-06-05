@@ -29,7 +29,7 @@ rule gff_read:
     log:
         GTF + '.fa.log'
     params:
-        extra=""
+        extra="-g " + GENOME,
     wrapper:
         "v3.10.2/bio/gffread"
 
