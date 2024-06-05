@@ -5,5 +5,5 @@ channels:
 
 dependencies:
   - bioconda::fastqc   #=0.12.1
-  - bioconda::multiqc  #=1.6
+  - bioconda::multiqc=1.22.2  # 1.6
   #- anaconda::dataclasses
