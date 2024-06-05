@@ -1,13 +1,18 @@
 import sys
 import pandas as pd
+import re
+
 
 def get_STRAND(strand_string):
     print(strand_string)
-    if strand_string == 'feature_count/counts.s0.strict.txt.summary':
+    p0 = re.compile("counts.s0\.[liberal|strict]")
+    p1 = re.compile("counts.s1\.[liberal|strict]")
+    p2 = re.compile("counts.s2\.[liberal|strict]")
+    if re.search(p0, strand_string):
         STRAND = 'U'
-    elif strand_string == 'feature_count/counts.s1.strict.txt.summary':
+    elif re.search(p1, strand_string):
         STRAND = 'F'
-    elif strand_string == 'feature_count/counts.s2.strict.txt.summary':
+    elif re.search(p2, strand_string):
         STRAND = 'R'
     else:
         sys.exit("strand_string not recognized")
