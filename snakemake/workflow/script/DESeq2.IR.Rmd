@@ -192,7 +192,13 @@ rename_num_vector_by_order <- function(l){
 
 
 Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
-  num_sig <- dim(df)[1] 
+  num_sig <- dim(df)[1]
+
+  if (num_sig > 10000){
+    warning("sorry, too many significant genes for heatmap, heatmap skipped")
+    warning(num_sig)
+    return (0)
+  }
   
   if (num_sig < 20){CELL_HEIGHT = 20}else{CELL_HEIGHT = NA} # for plotting
   
