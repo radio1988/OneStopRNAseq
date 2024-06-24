@@ -12,9 +12,9 @@ DECOYS = GENTROME + '.decoys.txt'
 META = config['META']
 ENSDB = GTF + '.ensdb.sqlite'
 if config['PAIR_END']:
-    LIBTYPES = ['ISF','ISR', 'IU']  # salmon strand libtype
+    LIBTYPES = ['ISF', 'ISR', 'IU']  # salmon strand libtype
 else:
-    LIBTYPES = ['SF','SR', 'U']  # salmon strand libtype
+    LIBTYPES = ['SF', 'SR', 'U']  # salmon strand libtype
 
 
 rule gff_read:
@@ -178,14 +178,15 @@ rule MakeCleanUpMeta:
     script:
         "../script/cleanuprnaseq.makemeta.py"
 
-def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
+
+def get_cleanuprnaseq_libtype(strandFile="meta/strandness.detected.txt"):
     if config["PAIR_END"]:
-        book = {0 : 'IU', 1 : "ISF", 2 : 'ISR'}  # PE
+        book = {0: 'IU', 1: "ISF", 2: 'ISR'}  # PE
     else:
-        book = {0 : 'U', 1 : "SF", 2 : 'SR'}  # SE
+        book = {0: 'U', 1: "SF", 2: 'SR'}  # SE
 
     try:
-        with open(strandFile, "r") as file:
+        with open(strandFile,"r") as file:
             txt = file.readline()
         p = re.compile("counts.s(.)\.[liberal|strict]")
         res = p.search(txt)
@@ -196,17 +197,20 @@ def get_cleanuprnaseq_libtype (strandFile="meta/strandness.detected.txt"):
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
         return ("placeholder")
-def cleanuprnaseqqc_input (config):
+
+
+def cleanuprnaseqqc_input(config):
     libtype = get_cleanuprnaseq_libtype()
     files = ["salmon/{}/".format(libtype) + sample + "/quant.sf" for sample in SAMPLES]
     return (files)
+
 
 rule CleanUpRNAseqQC:
     input:
         meta="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
         # salmon=cleanuprnaseqqc_input,  # PE/SE aware, strand aware
-        salmon=expand("salmon/{libtype}/{sample}/quant.sf", libtype = LIBTYPES, sample=SAMPLES),
+        salmon=expand("salmon/{libtype}/{sample}/quant.sf",libtype=LIBTYPES,sample=SAMPLES),
         genome=GENOME,
         gtf=GTF,
         ensdb=ENSDB,
@@ -228,7 +232,8 @@ rule CleanUpRNAseqQC:
     script:
         "../script/cleanuprnaseq.qc.R"
 
-def get_salmon_files (config):  # meta.csv not possibly ready at workflow construction
+
+def get_salmon_files(config):  # meta.csv not possibly ready at workflow construction
     fname = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv"
     try:
         df = pd.read_csv(fname)
@@ -245,13 +250,14 @@ def get_salmon_files (config):  # meta.csv not possibly ready at workflow constr
         L.extend(list(df['salmon_quant_file_reverse_strand']))
     return (L)
 
+
 rule CleanUpRNAseqCorrection:
     input:
-        qc_rds = "CleanUpRNAseqQC/Diagnostic.plots.objects.RDS",
-        meta_rds = "CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
-        meta_tab = "CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
+        qc_rds="CleanUpRNAseqQC/Diagnostic.plots.objects.RDS",
+        meta_rds="CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
+        meta_tab="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         ensdb=ENSDB,
-        salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES, libtype=LIBTYPES),  # PE/SE aware, all LIBTYPES,
+        salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES,libtype=LIBTYPES),# PE/SE aware, all LIBTYPES,
         # salmon = get_salmon_files,
         strandness="meta/strandness.detected.txt"
     output:
@@ -263,11 +269,12 @@ rule CleanUpRNAseqCorrection:
     threads:
         1
     resources:
-        mem_mb = lambda wildcards, attempt: attempt * 8000
+        mem_mb=lambda wildcards, attempt: attempt * 8000
     conda:
         "../envs/cleanuprnaseq.yaml"
     script:
         "../script/cleanuprnaseq.correction.R"
+
 
 def deseq2_ir_df_is_enough(config):
     if config['START'] != 'FASTQ':
@@ -277,6 +284,8 @@ def deseq2_ir_df_is_enough(config):
         meta = pd.read_csv(config['META'])
     elif config['META'].endswith('.xlsx'):
         meta = pd.read_excel(config['META'])
+    elif config['META'].endswith('.txt'):
+        meta = pd.read_table(config['META'])
     else:
         sys.exit(config['META'] + " not right suffix (format)")
 
@@ -284,12 +293,14 @@ def deseq2_ir_df_is_enough(config):
         contrast = pd.read_csv(config['CONTRAST_DE'])
     elif config['CONTRAST_DE'].endswith('.xlsx'):
         contrast = pd.read_excel(config['CONTRAST_DE'])
+    elif config['CONTRAST_DE'].endswith('.txt'):
+        contrast = pd.read_table(config['CONTRAST_DE'])
     else:
         sys.exit(config['CONTRAST_DE'] + " not right suffix (format)")
 
-    samples = list( meta.iloc[:,0])
-    groups = list( meta.iloc[:,1])
-    batches = list( meta.iloc[:,2])
+    samples = list(meta.iloc[:, 0])
+    groups = list(meta.iloc[:, 1])
+    batches = list(meta.iloc[:, 2])
 
     if len(set(samples)) != len(samples):
         sys.exit("In config['META'], duplicated samples exist")
@@ -307,7 +318,7 @@ def deseq2_ir_df_is_enough(config):
         n_sample = sum(relevant)
         n_comparison = 1
         n_ir = 1
-        batch_groups = [data for data, filter in zip(batches, relevant) if filter]
+        batch_groups = [data for data, filter in zip(batches,relevant) if filter]
         n_batch = len(set(batch_groups)) - 1  # N_batch - 1 # 1 -> 0, 2 -> 1
         if n_sample - n_comparison - n_ir - n_batch <= 1:
             output = False
@@ -324,7 +335,7 @@ if config['START'] != 'RNK':
                 ir_rate="CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
             output:
                 "CleanUpRNAseqDE/CleanUpRNAseqDE.html",
-                expand("CleanUpRNAseqDE/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
+                expand("CleanUpRNAseqDE/rnk/{contrast}.rnk",contrast=CONTRASTS_DE)
             conda:
                 "../envs/deseq2.yaml"
             resources:
@@ -348,7 +359,7 @@ if config['START'] != 'RNK':
                 "CleanUpRNAseqDE/DESeq2.IR.benchmark"
             shell:
                 'cp workflow/script/DESeq2.IR.Rmd CleanUpRNAseqDE; '
-                
+
                 'Rscript -e "rmarkdown::render( \
                 {params.rmd}, \
                 params=list( \
@@ -363,7 +374,7 @@ if config['START'] != 'RNK':
                     blackSamples=\'{params.blackSamples}\' \
                     ), \
                 output_file={params.o})" > {log} 2>&1 ;'
-                
+
                 'D=CleanUpRNAseqDE; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
     else:
         rule DESeq2_DNA_Corrected:
@@ -373,13 +384,13 @@ if config['START'] != 'RNK':
                 contrast=config["CONTRAST_DE"],
             output:
                 "CleanUpRNAseqDE/CleanUpRNAseqDE.html",
-                expand("CleanUpRNAseqDE/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
+                expand("CleanUpRNAseqDE/rnk/{contrast}.rnk",contrast=CONTRASTS_DE)
             conda:
                 "../envs/deseq2.yaml"
             resources:
                 mem_mb=lambda wildcards, attempt: attempt * 4000,
             params:
-                dir = "./CleanUpRNAseqDE/",
+                dir="./CleanUpRNAseqDE/",
                 rmd="'./CleanUpRNAseqDE/DESeq2.Rmd'",
                 fdr=MAX_FDR,
                 lfc=MIN_LFC,
