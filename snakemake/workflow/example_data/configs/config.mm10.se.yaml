@@ -68,4 +68,5 @@ ASSEMBLY_ANALYSIS: True
 
 # WEBSITE maintenance parameters
 #MAX_FASTQ_SIZE: 1000 # Unit GB. The size of all fastq files summed must be smaller than this
-CleanUpRNAseq: True
+CleanUpRNAseqQC: True
+CleanUpRNAseqCorrection: False

@@ -147,9 +147,10 @@ def target_input(config, ASCN):
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
-        l.append("CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf")  # QC
+        if config['CleanUpRNAseqQC']:
+            l.append("CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf")  # QC
 
-        if config['CleanUpRNAseq']:
+        if config['CleanUpRNAseqCorrection']:
             l.append("CleanUpRNAseqQC/global.corrected.count.csv")  # correction
             if config['DESEQ2_ANALYSIS'] or config['GSEA_ANALYSIS']:
                 l.append("CleanUpRNAseqDE/CleanUpRNAseqDE.html")  # DESeq2_IR (df > 1) or DESeq2_DNA_Corrected (df = 1)
