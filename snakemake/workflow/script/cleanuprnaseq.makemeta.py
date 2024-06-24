@@ -35,6 +35,8 @@ if fname.endswith('csv'):
     df = pd.read_csv(fname)
 elif fname.endswith('xlsx'):
     df = pd.read_excel(fname)
+elif fname.endswith('txt'):
+    df = pd.read_table(fname)
 
 df.columns = ['sample_name', 'group', 'batch']
 df['BAM_file'] = 'mapped_reads/' + df['sample_name'] + '.bam'
