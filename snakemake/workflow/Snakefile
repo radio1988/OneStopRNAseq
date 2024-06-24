@@ -975,7 +975,7 @@ rule GSEA:
     config[RNKS]  must be put in ./meta/ folder, and has suffix of txt or xlsx
     """
     input:
-        deseq2="Workflow_DAG.all.pdf"  # dummy assume existing
+        deseq2=lambda wildcards: input_rnk_fname1(wildcards,config)
         if config["START"] == "RNK"
         else "DESeq2/DESeq2.html",# DESEq2, then GSEA
         rnk=lambda wildcards: input_rnk_fname1(wildcards,config),
