@@ -233,7 +233,7 @@ if PAIR_END:
         benchmark:
             "trimmed/log/{sample}.trim.log.benchmark"
         wrapper:
-            "v1.23.3/bio/trimmomatic/pe"
+            "v3.13.1/bio/trimmomatic/pe"
 else:
     rule Trimmomatic_SE:
         input:
@@ -252,7 +252,7 @@ else:
         benchmark:
             "trimmed/log/{sample}.trim.log.benchmark"
         wrapper:
-            "v1.23.3/bio/trimmomatic/se"
+            "v3.13.1/bio/trimmomatic/se"
 
 
 rule FastQC1:
