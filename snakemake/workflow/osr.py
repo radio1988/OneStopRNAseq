@@ -163,21 +163,6 @@ def DESeq2_input(config):
         else:
             folder = 'feature_count'
         return (folder + '/counts.' + config['MODE'] + '.txt' )
-        
-
-def input_rnk_fname1(wildcards, config):
-    '''
-    fname1: the rnk file name as input for rule GSEA , 
-    which is the output of upstream analysis
-    '''
-    if config['START'] == 'RNK':
-        fname1 = 'meta/' + wildcards['fname']  
-        # wildcards['fname']  = one of config['RNKS'], 
-        # e.g. meta/wrong.rnk.xlsx, meta/name1.rnk.txt
-    else:
-        fname1 = "DESeq2/rnk/" + wildcards['fname'] + ".rnk"  
-        # e.g. DESeq2/rnk/KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8.rnk
-    return fname1
 
 def input_rnk_fname1(wildcards, config):
     if config['START'] == 'RNK':
