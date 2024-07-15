@@ -43,7 +43,6 @@ def GSEA_OUTPUT(config):
             L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=config["RNKS"],db=gsea_dbs)
     else:
         L = ["Workflow_DAG.all.pdf"]
-
     return (L)
 
 
