@@ -2,6 +2,7 @@ import os
 import sys
 
 output = open(snakemake.output[0], "w")
+log = open(snakemake.log[0], "w")
 
 
 def count_of_small_files(filenames):
@@ -11,9 +12,10 @@ def count_of_small_files(filenames):
     """
     N = 0
     for filename in filenames:
-        print(filename, os.path.getsize(filename), file=output)
+        m = filename + str(os.path.getsize(filename))
+        print(m, file=output)
         if os.path.getsize(filename) < 100:
-            sys.stderr.write("file too small:" + os.path.getsize(filename) + "\n")
+            print("file too small: " + m, file=log)
             N += 1
     return N
 
@@ -31,3 +33,4 @@ else:
     sys.exit(outstring)
 
 output.close()
+log.close()
