@@ -588,7 +588,7 @@ rule QoRTs:
         bam="sorted_reads/{sample}.bam",
         gtf=config['GTF'],
         length="meta/read_length.max.txt",
-        check="meta/CheckFiles.txt"
+        check="meta/CheckFile/CheckFile.{sample}.txt"
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
@@ -661,7 +661,8 @@ rule zip_bam_qc:
 rule bamCoverage:
     input:
         bam="sorted_reads/{sample}.bam",
-        bai="sorted_reads/{sample}.bam.bai"
+        bai="sorted_reads/{sample}.bam.bai",
+        check="meta/CheckFile/CheckFile.{sample}.txt"
     output:
         "bigWig/{sample}.{mode}.cpm.bw"
     params:

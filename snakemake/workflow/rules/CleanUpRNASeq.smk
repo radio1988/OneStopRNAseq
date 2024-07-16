@@ -95,7 +95,8 @@ if config["PAIR_END"]:
         input:
             r1="trimmed/{sample}.R1.fastq.gz",
             r2="trimmed/{sample}.R2.fastq.gz",
-            index_flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
+            index_flag=GENTROME + ".salmon_idx/complete_ref_lens.bin",
+            check="meta/CheckFile/CheckFile.{sample}.txt"
         output:
             quant="salmon/{libtype}/{sample}/quant.sf",
             lib="salmon/{libtype}/{sample}/lib_format_counts.json"
@@ -124,7 +125,8 @@ else:
     rule salmon_quant_se:
         input:
             r="trimmed/{sample}.fastq.gz",
-            index_flag=GENTROME + ".salmon_idx/complete_ref_lens.bin"
+            index_flag=GENTROME + ".salmon_idx/complete_ref_lens.bin",
+            check="meta/CheckFile/CheckFile.{sample}.txt"
         output:
             quant="salmon/{libtype}/{sample}/quant.sf",
             lib="salmon/{libtype}/{sample}/lib_format_counts.json"
