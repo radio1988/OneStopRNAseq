@@ -11,14 +11,19 @@ def are_files_non_empty(filenames):
   """
 
   for filename in filenames:
-    if os.path.getsize(filename) == 0:
+    print(filename, os.path.getsize(filename))
+    if os.path.getsize(filename) < 100:
       return False
   return True
 
 # Example usage:
+output = open(snakemake.output[0], "w")
+
 file_list = snakemake.input
-print(file_list)
+print(file_list, file=output)
 if are_files_non_empty(file_list):
   print("All files are non-empty")
 else:
   print("At least one file is empty")
+
+output.close()
