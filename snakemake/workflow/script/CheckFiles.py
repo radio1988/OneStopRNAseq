@@ -21,7 +21,7 @@ print(file_list, file=output)
 if are_files_non_empty(file_list):
     print("All trimmed.fastq.gz files are big enough", file=output)
 else:
-    print("At least one trimmed fastq.gz is too small", file=output)
-    sys.exit("At least one trimmed fastq.gz is too small")
+    print("At least one trimmed fastq.gz file is too small", file=output)
+    sys.exit("At least one trimmed fastq.gz file is too small")
 
 output.close()
