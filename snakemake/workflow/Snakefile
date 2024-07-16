@@ -608,6 +608,7 @@ rule QoRTs:
         java -Xmx16G -jar workflow/envs/hartleys-QoRTs-099881f/QoRTs.jar QC {params.pe} \
         {params.aligner} \
         --maxReadLength {params.length} \
+        --maxPhredScore 45 \
         {input.bam} {input.gtf} bam_qc/QoRTs/{wildcards.sample}/ &> {log}
         """
 
