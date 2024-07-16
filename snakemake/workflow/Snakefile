@@ -1535,3 +1535,4 @@ rule reset:
 
 # subworkflow
 include: 'rules/CleanUpRNASeq.smk'
+include: 'rules/CheckConfig.smk'
