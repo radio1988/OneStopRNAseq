@@ -7,7 +7,7 @@ filenames = snakemake.input
 
 N = 0
 for filename in filenames:
-    message = filename + str(os.path.getsize(filename))
+    message = filename + " " + str(os.path.getsize(filename)) + " bytes"
     print(message, file=output)
     if os.path.getsize(filename) < 100:
         print("file too small: " + message, file=log)
@@ -16,7 +16,7 @@ for filename in filenames:
 if N < 1:
     print("All files are big enough", file=output)
 else:
-    outstring = "{} files too small, workflow aborted!!!".format(N)
+    outstring = "{} files too small, aborted!!!".format(N)
     print(outstring, file=output)
     print(outstring, file=log)
     sys.exit(outstring)
