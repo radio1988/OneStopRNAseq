@@ -150,6 +150,7 @@ def target_input(config, ASCN):
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
+        l.append("meta/CheckFiles.txt")  # check fastq.gz size after trimming, if empty, abort
         if config['CleanUpRNAseqQC']:
             l.append("CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf")  # QC
 
