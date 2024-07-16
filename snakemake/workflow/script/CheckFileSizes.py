@@ -9,6 +9,7 @@ N = 0
 for filename in filenames:
     message = filename + " " + str(os.path.getsize(filename)) + " bytes"
     print(message, file=output)
+    print(message, file=log)
     if os.path.getsize(filename) < 100:
         print("file too small: " + message, file=log)
         N += 1
