@@ -19,9 +19,9 @@ file_list = snakemake.input
 print(file_list, file=output)
 N = count_of_small_files(file_list)
 if N < 1:
-    print("All trimmed.fastq.gz files are big enough", file=output)
+    print("All files are big enough", file=output)
 else:
-    outstring = "{} trimmed.fastq.gz files too small, workflow aborted".format(N)
+    outstring = "{} files too small, workflow aborted".format(N)
     print(outstring, file=output)
     sys.exit(outstring)
 

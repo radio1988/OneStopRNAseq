@@ -23,4 +23,23 @@ rule CheckTrimmedFiles:
     output:
         'meta/CheckFiles.txt'
     script:
-        "../script/CheckFiles.py"
+        "../script/CheckFileSizes.py"
+
+
+if config['PAIR_END']:
+    rule CheckTrimmedFile:
+        input:
+            "trimmed/{sample}.R1.fastq.gz",
+            "trimmed/{sample}.R2.fastq.gz"
+        output:
+            'meta/CheckFile/CheckFile.{sample}.txt'
+        script:
+            "../script/CheckFileSizes.py"
+else:
+    rule CheckTrimmedFile:
+        input:
+            "trimmed/{sample}.fastq.gz"
+        output:
+            'meta/CheckFile/CheckFile.{sample}.txt'
+        script:
+            "../script/CheckFileSizes.py"
