@@ -16,6 +16,8 @@ def CheckTrimmedFiles_Input(config, SAMPLES):
     else:
         L = ["trimmed/{}.R1.fastq.gz".format(sample) for sample in SAMPLES]
         L.extend(["trimmed/{}.R2.fastq.gz".format(sample) for sample in SAMPLES])
+    print(L)
+    return (L)
 
 # CHECK FILES
 rule CheckTrimmedFiles:
