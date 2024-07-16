@@ -587,7 +587,8 @@ rule QoRTs:
     input:
         bam="sorted_reads/{sample}.bam",
         gtf=config['GTF'],
-        length="meta/read_length.max.txt"
+        length="meta/read_length.max.txt",
+        check="meta/CheckFiles.txt"
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
