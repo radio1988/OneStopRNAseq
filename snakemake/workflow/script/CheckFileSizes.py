@@ -8,11 +8,14 @@ filenames = snakemake.input
 N = 0
 for filename in filenames:
     message = filename + " " + str(os.path.getsize(filename)) + " bytes"
+    # output
     print(message, file=output)
-    print(message, file=log)
+    # log
     if os.path.getsize(filename) < 100:
         print("file too small: " + message, file=log)
         N += 1
+    else:
+        print(message, file=log)
 
 if N < 1:
     print("All files are big enough", file=output)
