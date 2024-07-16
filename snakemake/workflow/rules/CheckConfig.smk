@@ -9,7 +9,7 @@ if config["INTRON"] and config["CleanUpRNAseqCorrection"]:
     pass
 
 
-def CheckTrimmedFiles_Input():
+def CheckTrimmedFiles_Input(config, SAMPLES):
     L = []
     if config['STRAND'] == 0:
         L = ["trimmed/{sample}.R1.fastq.gz".format(sample) for sample in SAMPLES]
@@ -20,7 +20,7 @@ def CheckTrimmedFiles_Input():
 # CHECK FILES
 rule CheckTrimmedFiles:
     input:
-        CheckTrimmedFiles_Input
+        CheckTrimmedFiles_Input(config, SAMPLES)
     output:
         'meta/CheckFiles.txt'
     script:
