@@ -17,7 +17,7 @@ def CheckTrimmedFiles_Input(config, SAMPLES):
 
 
 # CHECK FILES
-rule CheckTrimmedFiles:
+rule CheckTrimmedReadFiles:
     """check trimmed.fastq.gz for all samples, pass if all non empty (>100bytes)"""
     input:
         CheckTrimmedFiles_Input(config, SAMPLES)
@@ -30,7 +30,7 @@ rule CheckTrimmedFiles:
 
 
 
-rule CheckTrimmedFile:
+rule CheckTrimmedReadFile:
     """check trimmed.fastq.gz for each sample, pass if non empty (>100bytes)"""
     input:
         ["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] \
