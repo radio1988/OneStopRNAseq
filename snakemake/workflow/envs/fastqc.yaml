@@ -2,8 +2,10 @@ name: fastqc
 
 channels:
   - bioconda
+  - conda-forge
 
 dependencies:
   - bioconda::fastqc   #=0.12.1
   - bioconda::multiqc=1.22.2  # 1.6
+  - conda-forge::pyaml
   #- anaconda::dataclasses

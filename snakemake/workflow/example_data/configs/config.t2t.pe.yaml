@@ -53,4 +53,5 @@ GSEA_NPLOTS: 100
 GSEA_PLOT_SVG: False  
 GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
 
-
+CleanUpRNAseqQC: True
+CleanUpRNAseqCorrection: False
