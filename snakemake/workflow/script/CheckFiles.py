@@ -16,7 +16,7 @@ def are_files_non_empty(filenames):
   return True
 
 # Example usage:
-file_list = snakemake.input[0]
+file_list = snakemake.input
 print(file_list)
 if are_files_non_empty(file_list):
   print("All files are non-empty")
