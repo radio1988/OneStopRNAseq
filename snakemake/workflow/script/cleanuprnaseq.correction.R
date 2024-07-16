@@ -13,11 +13,12 @@ print(meta.df)
 
 strand_string <- scan(snakemake@input[['strandness']], what = character(), nlines = 1)
 print(paste('strand_string:', strand_string))
-if (strand_string == "feature_count/counts.s0.strict.txt.summary") {
+
+if (grepl("counts.s0.strict|counts.s0.liberal", strand_string)) { # todo: confirm liberal/intron is allowed
     stranded <- FALSE
-} else if (strand_string == "feature_count/counts.s1.strict.txt.summary"){
+} else if (grepl("counts.s1.strict|counts.s1.liberal", strand_string)){
     stranded <- TRUE
-} else if (strand_string == "feature_count/counts.s2.strict.txt.summary"){
+} else if (grepl("counts.s2.strict|counts.s2.liberal", strand_string)){
     stranded <- TRUE
 } else {
     stop("strand_string not recognized")
