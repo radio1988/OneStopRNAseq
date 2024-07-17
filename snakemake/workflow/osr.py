@@ -5,6 +5,21 @@ import os
 import math
 import shutil
 
+def check_config(config):
+    """
+    Check conflicts in config.yaml,
+    call this in main snakefile
+    sys.exit if not compatible
+    """
+    # INTRON and gDNA correction, only can choose one at most
+    if config['START'] == 'FASTQ' and config["INTRON"] and config["CleanUpRNAseqCorrection"]:
+        message = "INTRON mode and CleanUpRNAseqCorrection is incompatible.\n" + \
+        "gDNA correction is only possible for exon level rnaseq quantification"
+        sys.exit(message)
+    # SPECIES and Analysis options
+    # Not now
+
+
 def check_fastq_size(config,SAMPLES):
     '''
     check size of all fastq files

@@ -1,7 +1,7 @@
 import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
-from osr import gunzip, get_read_length, read_table, check_fastq_size
+from osr import gunzip, get_read_length, read_table, check_fastq_size, check_config
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname2, input_rnk_fname1, \
     Merge_TE_and_Gene_input, strand_detection_input
@@ -96,16 +96,7 @@ MIN_LFC = config["MIN_LFC"]
 MIN_GENE_COUNT = config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
 CONTRAST_AS = config['CONTRAST_AS']
 
-def config_check(config):
-    # INTRON and gDNA correction, only can choose one at most
-    if config['START'] == 'FASTQ' and config["INTRON"] and config["CleanUpRNAseqCorrection"]:
-        message = "INTRON mode and CleanUpRNAseqCorrection is incompatible.\n \
-        gDNA correction is only possible for exon level rnaseq quantification"
-        sys.exit(message)
-    # SPECIES and Analysis options
-    # Not now
-
-config_check(config)
+check_config(config)
 
 if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
     check_fastq_size(config,SAMPLES)
