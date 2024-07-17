@@ -1,15 +1,15 @@
 import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
-from osr import gunzip, get_read_length, read_table
-from osr import check_fastq_size, check_config, uncompress_gzip_genome_files
-from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
-from osr import DESeq2_input, input_rnk_fname2, input_rnk_fname1, \
-    Merge_TE_and_Gene_input, strand_detection_input
-from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
-    get_strandness_for_hisat2_SE, get_strandness_for_stringtie
-from osr import mapped_bam_single_input, mapped_bam_inputs, check_meta_data
-from osr import GSEA_OUTPUT, GSEACOMPRESS_OUTPUT, GSEA_SINGLEBUBBLE_OUTPUT
+# from osr import gunzip, get_read_length, read_table
+# from osr import check_fastq_size, check_config, uncompress_gzip_genome_files
+# from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
+# from osr import DESeq2_input, input_rnk_fname2, input_rnk_fname1, \
+#     Merge_TE_and_Gene_input, strand_detection_input
+# from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
+#     get_strandness_for_hisat2_SE, get_strandness_for_stringtie
+# from osr import mapped_bam_single_input, mapped_bam_inputs, check_meta_data
+# from osr import GSEA_OUTPUT, GSEACOMPRESS_OUTPUT, GSEA_SINGLEBUBBLE_OUTPUT
 
 ###  Usage Tips  ###
 # See: https://github.com/radio1988/OneStopRNAseq/blob/master/snakemake/README.md
@@ -1481,5 +1481,6 @@ rule reset:
 
 
 # subworkflow
+include: 'rules/common.smk'
 include: 'rules/CleanUpRNASeq.smk'
 include: 'rules/CheckConfig.smk'
