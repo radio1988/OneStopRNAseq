@@ -42,7 +42,7 @@ CONTRASTS_AS = [l.replace('.','_') for l in CONTRASTS_DE]
 
 # for rMATS
 if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
-    G = get_contrast_groups(CONTRAST_AS)
+    G = get_contrast_groups(config['CONTRAST_AS'])
     #print("\nGRPUPS:\n", G[0], "\nVS\n", G[1])
 
     g2s = get_dict_from_meta(config['META'])
