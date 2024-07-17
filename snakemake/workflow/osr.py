@@ -19,7 +19,23 @@ def check_config(config):
     # SPECIES and Analysis options
     # Not now
 
+def uncompress_gzip_genome_files(config):
+    """
+    # umcompress files (todo: make it a rule with checkpoints)
+    """
+    if config["GENOME"].endswith(".gz"):
+        gunzip(config["GENOME"])
+        config["GENOME"] = re.sub(".gz$","",config["GENOME"])
 
+    if config["GTF"].endswith(".gz"):
+        gunzip(config["GTF"])
+        config["GTF"] = re.sub(".gz$","",config["GTF"])
+
+    if config["VCF"].endswith(".gz"):
+        gunzip(config["VCF"])
+        config["VCF"] = re.sub(".gz$","",config["VCF"])
+
+    return config
 def check_fastq_size(config,SAMPLES):
     '''
     check size of all fastq files
@@ -358,3 +374,46 @@ def check_meta_data(config):
         check_contrast_file(config['CONTRAST_AS'])
     if config['DESEQ2_ANALYSIS'] or config['RMATS_ANALYSIS'] or config['DEXSEQ_ANALYSIS']:
         check_meta_file(config['META'])
+
+
+def GSEA_OUTPUT(config):
+    L = []
+    if config["GSEA_ANALYSIS"]:
+        gsea_dbs = []
+        for f in os.listdir(config['GSEA_DB_PATH']):
+            if f.endswith('.gmt'):
+                gsea_dbs.append(f)
+        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
+        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=CONTRASTS_DE,db=gsea_dbs)
+        else:
+            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=config["RNKS"],db=gsea_dbs)
+    else:
+        L = ["Workflow_DAG.all.pdf"]
+    return (L)
+
+def GSEACOMPRESS_OUTPUT(config):
+    L = []
+    if config["GSEA_ANALYSIS"]:
+        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+            L = expand("gsea/{contrast}.tar.gz",contrast=CONTRASTS_DE)
+        else:
+            L = expand("gsea/{contrast}.tar.gz",contrast=config["RNKS"])
+    else:
+        L = ["Workflow_DAG.all.pdf"]
+    return (L)
+
+
+def GSEA_SINGLEBUBBLE_OUTPUT(config):
+    L = []
+    if config["GSEA_ANALYSIS"]:
+        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=CONTRASTS_DE)
+        else:
+            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=config["RNKS"])
+    else:
+        L = ["Workflow_DAG.all.pdf"]
+    return (L)
+
+
+

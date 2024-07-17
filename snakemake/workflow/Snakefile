@@ -1,24 +1,23 @@
 import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
-from osr import gunzip, get_read_length, read_table, check_fastq_size, check_config
+from osr import gunzip, get_read_length, read_table
+form osr import check_fastq_size, check_config, uncompress_gzip_genome_files
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname2, input_rnk_fname1, \
     Merge_TE_and_Gene_input, strand_detection_input
 from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hisat2_PE, \
     get_strandness_for_hisat2_SE, get_strandness_for_stringtie
 from osr import mapped_bam_single_input, mapped_bam_inputs, check_meta_data
+from osr import GSEA_OUTPUT, GSEACOMPRESS_OUTPUT, GSEA_SINGLEBUBBLE_OUTPUT
 
 ###  Usage Requirements  ###
-# inputs in ./fastq/
-# named as {sample}.R1.fastq.gz {sample}.R2.fastq.gz for PE reads
-# {sample}.fastq.gz for SE reads
+# See: https://github.com/radio1988/OneStopRNAseq/blob/master/snakemake/README.md
 
 min_version("7.2")  # check snakemake version
-configfile: "config.yaml"
-containerized: "docker://liruiradiant/osr-dev:test0"
-#container: "docker://snakemake/snakemake:v7.24.1"
 localrules: targets
+configfile: "config.yaml"
+
 
 if config['START'] != 'RNK':
     SAMPLES = read_table(config['META']).iloc[:, 0].tolist()
@@ -28,60 +27,7 @@ else:
 if config["START"] != 'RNK':
     check_meta_data(config)
 
-
-def GSEA_OUTPUT(config):
-    L = []
-    if config["GSEA_ANALYSIS"]:
-        gsea_dbs = []
-        for f in os.listdir(config['GSEA_DB_PATH']):
-            if f.endswith('.gmt'):
-                gsea_dbs.append(f)
-        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
-        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=CONTRASTS_DE,db=gsea_dbs)
-        else:
-            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=config["RNKS"],db=gsea_dbs)
-    else:
-        L = ["Workflow_DAG.all.pdf"]
-    return (L)
-
-
-def GSEACOMPRESS_OUTPUT(config):
-    L = []
-    if config["GSEA_ANALYSIS"]:
-        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea/{contrast}.tar.gz",contrast=CONTRASTS_DE)
-        else:
-            L = expand("gsea/{contrast}.tar.gz",contrast=config["RNKS"])
-    else:
-        L = ["Workflow_DAG.all.pdf"]
-    return (L)
-
-
-def GSEA_SINGLEBUBBLE_OUTPUT(config):
-    L = []
-    if config["GSEA_ANALYSIS"]:
-        if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=CONTRASTS_DE)
-        else:
-            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=config["RNKS"])
-    else:
-        L = ["Workflow_DAG.all.pdf"]
-    return (L)
-
-
-# umcompress files (todo: make it a rule)
-if config["GENOME"].endswith(".gz"):
-    gunzip(config["GENOME"])
-    config["GENOME"] = re.sub(".gz$","",config["GENOME"])
-
-if config["GTF"].endswith(".gz"):
-    gunzip(config["GTF"])
-    config["GTF"] = re.sub(".gz$","",config["GTF"])
-
-if config["VCF"].endswith(".gz"):
-    gunzip(config["VCF"])
-    config["VCF"] = re.sub(".gz$","",config["VCF"])
+config = uncompress_gzip_genome_files(config)  # genome, vcf, gtf
 
 # params todo: check yaml format
 PAIR_END = config['PAIR_END']
