@@ -491,7 +491,7 @@ rule featureCounts_EXON:
     params:
         pe='-p' if config['PAIR_END'] else ' ',
         mode='-Q 20 --minOverlap 1 --fracOverlap 0 -B -C' \
-            if MODE == 'strict' else \
+            if config['MODE'] == 'strict' else \
             '-M -Q 0 --primary --minOverlap 1 --fracOverlap 0'
     conda:
         "../envs/subread.yaml"
