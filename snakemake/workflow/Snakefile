@@ -150,7 +150,7 @@ def target_input(config, ASCN):
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
-        l.append("meta/CheckFile/all.txt")  # check fastq.gz size after trimming, if empty, abort
+        l.append("fastqc/CheckFile/all.txt")  # check fastq.gz size after trimming, if empty, abort
         if config['CleanUpRNAseqQC']:
             l.append("CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf")  # QC
 
@@ -588,7 +588,7 @@ rule QoRTs:
         bam="sorted_reads/{sample}.bam",
         gtf=config['GTF'],
         length="meta/read_length.max.txt",
-        check="meta/CheckFile/CheckFile.{sample}.txt"
+        check="fastqc/CheckFile/CheckFile.{sample}.txt"
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
@@ -662,7 +662,7 @@ rule bamCoverage:
     input:
         bam="sorted_reads/{sample}.bam",
         bai="sorted_reads/{sample}.bam.bai",
-        check="meta/CheckFile/CheckFile.{sample}.txt"
+        check="fastqc/CheckFile/CheckFile.{sample}.txt"
     output:
         "bigWig/{sample}.{mode}.cpm.bw"
     params:

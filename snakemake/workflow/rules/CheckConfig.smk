@@ -22,9 +22,9 @@ rule CheckTrimmedReadFiles:
     input:
         CheckTrimmedFiles_Input(config, SAMPLES)
     output:
-        'meta/CheckFile/all.txt'
+        'fastqc/CheckFile/all.txt'
     log:
-        "meta/CheckFile/all.log"
+        "fastqc/CheckFile/all.log"
     script:
         "../script/CheckFileSizes.py"
 
@@ -37,8 +37,19 @@ rule CheckTrimmedReadFile:
             if config['PAIR_END'] \
             else "trimmed/{sample}.fastq.gz"
     output:
-        'meta/CheckFile/CheckFile.{sample}.txt'
+        'fastqc/CheckFile/CheckFile.{sample}.txt'
     log:
-        'meta/CheckFile/CheckFile.{sample}.log'
+        'fastqc/CheckFile/CheckFile.{sample}.log'
     script:
         "../script/CheckFileSizes.py"
+
+
+rule CheckConfig:
+    input:
+        "config.yaml"
+    output:
+        "meta/configCheck.txt"
+    log:
+        "meta/configCheck.log"
+    script:
+        "../script/configCheck.py"
