@@ -189,6 +189,8 @@ if config['ALIGNER'] == 'STAR':
         output:
             log="mapped_reads/{sample}.Log.final.out",
             bam=temp("mapped_reads/{sample}.bam"),
+        params:
+            index = config['INDEX']
         conda:
             "../envs/star.yaml"
         resources:
@@ -201,7 +203,7 @@ if config['ALIGNER'] == 'STAR':
             "mapped_reads/log/{sample}.benchmark"
         shell:
             """
-            STAR --runThreadN {threads} --genomeDir {config['INDEX']} --sjdbGTFfile {input.gtf} \
+            STAR --runThreadN {threads} --genomeDir {params.index} --sjdbGTFfile {input.gtf} \
             --readFilesCommand zcat --readFilesIn {input.reads} \
             --outFileNamePrefix mapped_reads/{wildcards.sample}. \
             --outFilterType BySJout \
