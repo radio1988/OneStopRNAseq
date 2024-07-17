@@ -2,7 +2,7 @@ import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
 from osr import gunzip, get_read_length, read_table
-form osr import check_fastq_size, check_config, uncompress_gzip_genome_files
+from osr import check_fastq_size, check_config, uncompress_gzip_genome_files
 from osr import get_contrast_fnames, get_contrast_groups, get_dict_from_meta, G2B_workflow
 from osr import DESeq2_input, input_rnk_fname2, input_rnk_fname1, \
     Merge_TE_and_Gene_input, strand_detection_input
@@ -11,14 +11,14 @@ from osr import get_strandness, get_strandness_for_dexseq, get_strandness_for_hi
 from osr import mapped_bam_single_input, mapped_bam_inputs, check_meta_data
 from osr import GSEA_OUTPUT, GSEACOMPRESS_OUTPUT, GSEA_SINGLEBUBBLE_OUTPUT
 
-###  Usage Requirements  ###
+###  Usage Tips  ###
 # See: https://github.com/radio1988/OneStopRNAseq/blob/master/snakemake/README.md
 
 min_version("7.2")  # check snakemake version
 localrules: targets
 configfile: "config.yaml"
 
-
+# CONFIGs
 if config['START'] != 'RNK':
     SAMPLES = read_table(config['META']).iloc[:, 0].tolist()
 else:
@@ -28,9 +28,10 @@ if config["START"] != 'RNK':
     check_meta_data(config)
 
 config = uncompress_gzip_genome_files(config)  # genome, vcf, gtf
+check_config(config)  # check for incompatible config params
+if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
+    check_fastq_size(config,SAMPLES)
 
-# params todo: check yaml format
-PAIR_END = config['PAIR_END']
 GENOME = config["GENOME"]
 INDEX = GENOME + '.star_idx'
 GTF = config["GTF"]
@@ -41,11 +42,6 @@ MAX_FDR = config["MAX_FDR"]
 MIN_LFC = config["MIN_LFC"]
 MIN_GENE_COUNT = config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
 CONTRAST_AS = config['CONTRAST_AS']
-
-check_config(config)
-
-if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
-    check_fastq_size(config,SAMPLES)
 
 # for DESeq2
 if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
@@ -160,7 +156,7 @@ rule targets:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
 
-if PAIR_END:
+if config['PAIR_END']:
     rule Trimmomatic_PE:
         input:
             r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
@@ -206,12 +202,12 @@ else:
 
 rule FastQC1:
     input:
-        ["fastq/{sample}.R1.fastq.gz", "fastq/{sample}.R2.fastq.gz"] if PAIR_END else \
+        ["fastq/{sample}.R1.fastq.gz", "fastq/{sample}.R2.fastq.gz"] if config['PAIR_END'] else \
             "fastq/{sample}.fastq.gz"
     output:
-        ["fastqc/details_raw/{sample}.R1_fastqc.html", "fastqc/details_raw/{sample}.R2_fastqc.html"] if PAIR_END else \
+        ["fastqc/details_raw/{sample}.R1_fastqc.html", "fastqc/details_raw/{sample}.R2_fastqc.html"] if config['PAIR_END'] else \
             "fastqc/details_raw/{sample}_fastqc.html",
-        ["fastqc/details_raw/{sample}.R1_fastqc.zip", "fastqc/details_raw/{sample}.R2_fastqc.zip"] if PAIR_END else \
+        ["fastqc/details_raw/{sample}.R1_fastqc.zip", "fastqc/details_raw/{sample}.R2_fastqc.zip"] if config['PAIR_END'] else \
             "fastqc/details_raw/{sample}_fastqc.zip"
     conda:
         "envs/fastqc.yaml"
@@ -231,7 +227,7 @@ rule FastQC_MultiQC1:
     input:
         [expand("fastqc/details_raw/{sample}.R1_fastqc.zip",sample=SAMPLES),
          expand("fastqc/details_raw/{sample}.R2_fastqc.zip",sample=SAMPLES)] \
-            if PAIR_END else \
+            if config['PAIR_END'] else \
             expand("fastqc/details_raw/{sample}_fastqc.zip",sample=SAMPLES)
     output:
         "fastqc/raw_reads_multiqc_report.html"
@@ -250,14 +246,14 @@ rule FastQC_MultiQC1:
 
 rule FastQC2:
     input:
-        ["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] if PAIR_END else \
+        ["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] if config['PAIR_END'] else \
             "trimmed/{sample}.fastq.gz"
     output:
         ["fastqc/details_trimmed/{sample}.R1_fastqc.html",
-         "fastqc/details_trimmed/{sample}.R2_fastqc.html"] if PAIR_END else \
+         "fastqc/details_trimmed/{sample}.R2_fastqc.html"] if config['PAIR_END'] else \
             "fastqc/details_trimmed/{sample}_fastqc.html",
         ["fastqc/details_trimmed/{sample}.R1_fastqc.zip",
-         "fastqc/details_trimmed/{sample}.R2_fastqc.zip"] if PAIR_END else \
+         "fastqc/details_trimmed/{sample}.R2_fastqc.zip"] if config['PAIR_END'] else \
             "fastqc/details_trimmed/{sample}_fastqc.zip"
     conda:
         "envs/fastqc.yaml"
@@ -277,7 +273,7 @@ rule FastQC_MultiQC2:
     input:
         [expand("fastqc/details_trimmed/{sample}.R1_fastqc.zip",sample=SAMPLES),
          expand("fastqc/details_trimmed/{sample}.R2_fastqc.zip",sample=SAMPLES)] \
-            if PAIR_END else \
+            if config['PAIR_END'] else \
             expand("fastqc/details_trimmed/{sample}_fastqc.zip",sample=SAMPLES)
     output:
         "fastqc/trimmed_reads_multiqc_report.html"
@@ -344,7 +340,7 @@ if config['ALIGNER'] == 'STAR':
             index=INDEX + "/SAindex",
             gtf=GTF,
             reads=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] \
-                if PAIR_END else \
+                if config['PAIR_END'] else \
                 "trimmed/{sample}.fastq.gz"
         output:
             log="mapped_reads/{sample}.Log.final.out",
@@ -411,7 +407,7 @@ elif config['ALIGNER'] == 'HISAT2':
             genome=config['GENOME'],
             index=config['GENOME'] + '.hisat2_build.finished',
             reads=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] \
-                if PAIR_END else \
+                if config['PAIR_END'] else \
                 "trimmed/{sample}.fastq.gz",
         output:
             bam=temp("mapped_reads/{sample}.bam")
@@ -420,7 +416,7 @@ elif config['ALIGNER'] == 'HISAT2':
         params:
             strand=" ",# all set to unstranded for now(test)
             pe="-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
-                if PAIR_END else \
+                if config['PAIR_END'] else \
                 "-U trimmed/{sample}.fastq.gz"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 1000
@@ -540,7 +536,7 @@ rule QoRTs:
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
-        pe=' ' if PAIR_END else '--singleEnded',
+        pe=' ' if config['PAIR_END'] else '--singleEnded',
         aligner="--minMAPQ 60" if config['ALIGNER'] == 'HISAT2' else "",# only support STAR and HISAT2
         length=get_read_length("meta/read_length.max.txt")
     conda:
@@ -638,7 +634,7 @@ rule featureCounts_EXON:
     exon read count
     recognizes config.yaml: 
         - MODE: strict, liberal
-        - PAIR_END: True, False
+        - config['PAIR_END']: True, False
     '''
     input:
         bams=mapped_bam_inputs(config,SAMPLES),
@@ -647,7 +643,7 @@ rule featureCounts_EXON:
         COUNT="feature_count/counts.s{strand}.{mode}.txt",
         summary="feature_count/counts.s{strand}.{mode}.txt.summary"
     params:
-        pe='-p' if PAIR_END else ' ',
+        pe='-p' if config['PAIR_END'] else ' ',
         mode='-Q 20 --minOverlap 1 --fracOverlap 0 -B -C' \
             if MODE == 'strict' else \
             '-M -Q 0 --primary --minOverlap 1 --fracOverlap 0'
@@ -698,7 +694,7 @@ rule featureCounts_GENE:
     the larger one of gene-count/exon-count for each gene, is used as gene-count
     recognizes config.yaml: 
         - MODE: strict, liberal
-        - PAIR_END: True, False
+        - config['PAIR_END']: True, False
     '''
     input:
         bams=mapped_bam_inputs(config,SAMPLES),
@@ -708,7 +704,7 @@ rule featureCounts_GENE:
         ct='feature_count_gene_level/counts.s{strand}.{mode}.txt',
         summary='feature_count_gene_level/counts.s{strand}.{mode}.txt.summary'
     params:
-        pe='-p -B -C ' if PAIR_END else ' ',
+        pe='-p -B -C ' if config['PAIR_END'] else ' ',
         mode='-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
     conda:
         "envs/subread.yaml"
@@ -813,13 +809,13 @@ rule SalmonTE:
     # only start from Fastq
     input:
         reads=expand("fastq_salmon/{sample}_{n}.fastq.gz",n=[1, 2],sample=SAMPLES) \
-            if PAIR_END else \
+            if config['PAIR_END'] else \
             expand("trimmed/{sample}.fastq.gz",sample=SAMPLES),
         raw_reads=expand("trimmed/{sample}.R1.fastq.gz",sample=SAMPLES) \
-            if PAIR_END else \
+            if config['PAIR_END'] else \
             expand("trimmed/{sample}.fastq.gz",sample=SAMPLES),
         raw_reads2=expand("trimmed/{sample}.R2.fastq.gz",sample=SAMPLES) \
-            if PAIR_END else \
+            if config['PAIR_END'] else \
             expand("trimmed/{sample}.fastq.gz",sample=SAMPLES)
     output:
         "SalmonTE_output/EXPR.csv"
@@ -1373,7 +1369,7 @@ rule HISAT2:
         genome=config['GENOME'],
         index=config['GENOME'] + '.hisat2_build.finished',
         reads=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] \
-            if PAIR_END else \
+            if config['PAIR_END'] else \
             "trimmed/{sample}.fastq.gz",
         strandness="meta/strandness.detected.txt"
     output:
@@ -1384,7 +1380,7 @@ rule HISAT2:
     params:
         strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt"),# todo: SE?
         pe="-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
-            if PAIR_END else \
+            if config['PAIR_END'] else \
             "-U trimmed/{sample}.fastq.gz"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
