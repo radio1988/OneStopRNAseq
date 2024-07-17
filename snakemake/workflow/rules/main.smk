@@ -52,7 +52,7 @@ rule FastQC1:
         ["fastqc/details_raw/{sample}.R1_fastqc.zip", "fastqc/details_raw/{sample}.R2_fastqc.zip"] if config['PAIR_END'] else \
             "fastqc/details_raw/{sample}_fastqc.zip"
     conda:
-        "envs/fastqc.yaml"
+        "../envs/fastqc.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
@@ -74,7 +74,7 @@ rule FastQC_MultiQC1:
     output:
         "fastqc/raw_reads_multiqc_report.html"
     conda:
-        "envs/fastqc.yaml"
+        "../envs/fastqc.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000
     threads:
@@ -98,7 +98,7 @@ rule FastQC2:
          "fastqc/details_trimmed/{sample}.R2_fastqc.zip"] if config['PAIR_END'] else \
             "fastqc/details_trimmed/{sample}_fastqc.zip"
     conda:
-        "envs/fastqc.yaml"
+        "../envs/fastqc.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
@@ -120,7 +120,7 @@ rule FastQC_MultiQC2:
     output:
         "fastqc/trimmed_reads_multiqc_report.html"
     conda:
-        "envs/fastqc.yaml"
+        "../envs/fastqc.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
@@ -156,7 +156,7 @@ if config['ALIGNER'] == 'STAR':
         output:
             INDEX + "/SAindex"
         conda:
-            "envs/star.yaml"
+            "../envs/star.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 2400
         threads:
@@ -188,7 +188,7 @@ if config['ALIGNER'] == 'STAR':
             log="mapped_reads/{sample}.Log.final.out",
             bam=temp("mapped_reads/{sample}.bam"),
         conda:
-            "envs/star.yaml"
+            "../envs/star.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 2400
         threads:
@@ -230,7 +230,7 @@ if config['ALIGNER'] == 'STAR':
             log=expand("bam_qc/STAR_Align_summary/{sample}.Log.final.out",sample=SAMPLES),
             report="bam_qc/STAR_Align_summary_multiqc_report.html",
         conda:
-            "envs/fastqc.yaml"
+            "../envs/fastqc.yaml"
         resources:
             mem_mb=2000
         threads:
@@ -254,7 +254,7 @@ elif config['ALIGNER'] == 'HISAT2':
         output:
             bam=temp("mapped_reads/{sample}.bam")
         conda:
-            "envs/hisat2.yaml"
+            "../envs/hisat2.yaml"
         params:
             strand=" ",# all set to unstranded for now(test)
             pe="-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
@@ -283,7 +283,7 @@ rule SAMtools_sort:
     output:
         protected("sorted_reads/{sample}.bam")
     conda:
-        "envs/samtools.yaml"
+        "../envs/samtools.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:
@@ -305,7 +305,7 @@ rule SAMtools_index:
     output:
         "sorted_reads/{sample}.bam.bai"
     conda:
-        "envs/samtools.yaml"
+        "../envs/samtools.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 500
     threads:
@@ -327,7 +327,7 @@ rule SAMtools_QC:
         idxstats="bam_qc/idxstats/{sample}.idxstats.txt",
         flagstat="bam_qc/flagstat/{sample}.flagstat.txt"
     conda:
-        "envs/samtools.yaml"
+        "../envs/samtools.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 2000
     threads:
@@ -354,7 +354,7 @@ rule SAMtools_QC_MultiQc:
         idxstats="bam_qc/samtools_idxstats_multiqc_report.html",
         flagstat="bam_qc/samtools_flagstat_multiqc_report.html",
     conda:
-        "envs/fastqc.yaml"
+        "../envs/fastqc.yaml"
     resources:
         mem_mb=2000
     threads:
@@ -382,7 +382,7 @@ rule QoRTs:
         aligner="--minMAPQ 60" if config['ALIGNER'] == 'HISAT2' else "",# only support STAR and HISAT2
         length=get_read_length("meta/read_length.max.txt")
     conda:
-        "envs/java11.yaml"
+        "../envs/java11.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 16500
     threads:
@@ -407,7 +407,7 @@ rule QoRTs_MultiPlot:
     output:
         "bam_qc/QoRTs_MultiPlot/plot-basic.pdf"
     conda:
-        "envs/qorts.yaml"
+        "../envs/qorts.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 8000,
     threads:
@@ -454,7 +454,7 @@ rule bamCoverage:
     params:
         "--minMappingQuality 20" if MODE == "strict" else " "
     conda:
-        "envs/deeptools.yaml"
+        "../envs/deeptools.yaml"
     threads:
         4
     resources:
@@ -490,7 +490,7 @@ rule featureCounts_EXON:
             if MODE == 'strict' else \
             '-M -Q 0 --primary --minOverlap 1 --fracOverlap 0'
     conda:
-        "envs/subread.yaml"
+        "../envs/subread.yaml"
     priority:
         100
     resources:
@@ -515,7 +515,7 @@ rule featureCounts_EXON_multiqc:
     output:
         "feature_count/counts.s{strand}.{mode}.txt.summary.multiqc_report.html"
     conda:
-        "envs/fastqc.yaml"
+        "../envs/fastqc.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
@@ -549,7 +549,7 @@ rule featureCounts_GENE:
         pe='-p -B -C ' if config['PAIR_END'] else ' ',
         mode='-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
     conda:
-        "envs/subread.yaml"
+        "../envs/subread.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000,
     threads:
@@ -580,7 +580,7 @@ rule featureCounts_GENE_multiqc:
     output:
         "feature_count_gene_level/counts.s{strand}.{mode}.txt.summary.multiqc_report.html"
     conda:
-        "envs/fastqc.yaml"
+        "../envs/fastqc.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
@@ -662,7 +662,7 @@ rule SalmonTE:
     output:
         "SalmonTE_output/EXPR.csv"
     conda:
-        "envs/salmonte.yaml"  # test
+        "../envs/salmonte.yaml"  # test
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     params:
@@ -719,7 +719,7 @@ if config['DESEQ2_ANALYSIS']:
             "DESeq2/DESeq2.html",
             expand("DESeq2/rnk/{contrast}.rnk",contrast=CONTRASTS_DE)
         conda:
-            "envs/deseq2.yaml"
+            "../envs/deseq2.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000,
         params:
@@ -770,7 +770,7 @@ rule GSEA:
     output:
         "gsea/{fname}/{db}.GseaPreranked/index.html"
     conda:
-        "envs/java11.yaml"  # test
+        "../envs/java11.yaml"  # test
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 8100
     params:
@@ -841,7 +841,7 @@ rule GSEA_SingleBubblePlot:
     output:
         touch('gsea_bubble/log/{contrast}.SingleBubblePlot.done')
     conda:
-        "envs/deseq2.yaml"
+        "../envs/deseq2.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
@@ -865,7 +865,7 @@ if config["GSEA_ANALYSIS"]:
         output:
             touch('gsea_bubble/log/MultiBubblePlot.done')
         conda:
-            "envs/deseq2.yaml"
+            "../envs/deseq2.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000
         priority: 100
@@ -938,7 +938,7 @@ if config['RMATS_ANALYSIS']:
             "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/A5SS.MATS.JCEC.txt",
             "rMATS.{ascn}/output/Results_JunctionCountsAndExonCountsBased/RI.MATS.JCEC.txt",
         conda:
-            "envs/rmats.yaml"
+            "../envs/rmats.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 10000,
         threads:
@@ -1045,7 +1045,7 @@ rule DEXSeq_GFF_Prep:
     benchmark:
         DEXSeq_GFF + ".benchmark"
     conda:
-        "envs/bioconda_misc.yaml"
+        "../envs/bioconda_misc.yaml"
     shell:
         "python workflow/script/dexseq_prepare_annotation.py -r no {input} {output} &> {log}"
 
@@ -1058,7 +1058,7 @@ rule DEXSeq_Count:
     output:
         "DEXSeq_count/{sample}_count.txt"
     conda:
-        "envs/bioconda_misc.yaml"
+        "../envs/bioconda_misc.yaml"
     params:
         strand=get_strandness_for_dexseq('meta/strandness.detected.txt'),
         readType=('-p yes -r pos' if config['PAIR_END'] else ' '),
@@ -1084,7 +1084,7 @@ if config['DEXSEQ_ANALYSIS']:
         output:
             "DEXSeq/contrast{ascn}/contrast{ascn}.RData"
         conda:
-            "envs/dexseq.yaml"
+            "../envs/dexseq.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 3000
         threads:
@@ -1111,7 +1111,7 @@ rule Genome_Faidx:
     output:
         config['GENOME'] + '.fai'
     conda:
-        "envs/samtools.yaml"
+        "../envs/samtools.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     threads:
@@ -1130,7 +1130,7 @@ rule GATK_CreateSequenceDictionary:
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 16000
     conda:
-        "envs/gatk.yaml"  # test
+        "../envs/gatk.yaml"  # test
     threads:
         1
     log:
@@ -1151,7 +1151,7 @@ rule GATK_ASEReadCounter:
     output:
         table="GATK_ASEReadCounter/{sample}.table"
     conda:
-        "envs/gatk.yaml"  # test
+        "../envs/gatk.yaml"  # test
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 16000
     threads:
@@ -1189,7 +1189,7 @@ rule HISAT2_BUILD:
         index=config['GENOME'] + ".1.ht2",
         flag=touch(config['GENOME'] + '.hisat2_build.finished')
     conda:
-        "envs/hisat2.yaml"
+        "../envs/hisat2.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 10000
     threads:
@@ -1218,7 +1218,7 @@ rule HISAT2:
         bam="hisat2/{sample}.bam",
         bai="hisat2/{sample}.bam.bai"
     conda:
-        "envs/hisat2.yaml"
+        "../envs/hisat2.yaml"
     params:
         strand=get_strandness_for_hisat2_PE("meta/strandness.detected.txt"),# todo: SE?
         pe="-1 trimmed/{sample}.R1.fastq.gz -2 trimmed/{sample}.R2.fastq.gz" \
@@ -1250,7 +1250,7 @@ rule StringTie:  # todo: group level
     output:
         "stringtie/{sample}.stringtie.gtf"
     conda:
-        "envs/stringtie.yaml"
+        "../envs/stringtie.yaml"
     params:
         strand=get_strandness_for_stringtie('meta/strandness.detected.txt')
     resources:
@@ -1273,7 +1273,7 @@ rule StringTie_Merge:
     output:
         "stringtie/stringtie.merged.gtf"
     conda:
-        "envs/stringtie.yaml"
+        "../envs/stringtie.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
     threads:
