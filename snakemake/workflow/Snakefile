@@ -23,8 +23,7 @@ check_config(config)  # check for incompatible config params
 if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
     check_fastq_size(config,SAMPLES)
 
-GENOME = config["GENOME"]
-INDEX = GENOME + '.star_idx'
+config['INDEX'] = config['GENOME'] + '.star_idx'
 GTF = config["GTF"]
 ANNO_TAB = config["ANNO_TAB"]
 STRAND = config["STRAND"]

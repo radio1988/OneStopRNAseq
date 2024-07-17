@@ -151,10 +151,10 @@ rule fastqc_compress:
 if config['ALIGNER'] == 'STAR':
     rule STAR_Index:
         input:
-            fa=GENOME,
+            fa=config['GENOME'],
             gtf=GTF,
         output:
-            INDEX + "/SAindex"
+            config['INDEX'] + "/SAindex"
         conda:
             "../envs/star.yaml"
         resources:
@@ -162,7 +162,7 @@ if config['ALIGNER'] == 'STAR':
         threads:
             16
         log:
-            INDEX + "/SAindex.log"
+            config['INDEX'] + "/SAindex.log"
         benchmark:
             "log/star_idx/star_idx.benchmark"
         shell:
@@ -171,7 +171,7 @@ if config['ALIGNER'] == 'STAR':
 
             STAR --runThreadN {threads} \
             --runMode genomeGenerate \
-            --genomeDir {INDEX} \
+            --genomeDir {config['INDEX']} \
             --genomeFastaFiles {input.fa} \
             --sjdbGTFfile {input.gtf} &>> {log}
             """
@@ -179,7 +179,7 @@ if config['ALIGNER'] == 'STAR':
 
     rule STAR:
         input:
-            index=INDEX + "/SAindex",
+            index=config['INDEX'] + "/SAindex",
             gtf=GTF,
             reads=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] \
                 if config['PAIR_END'] else \
@@ -199,7 +199,7 @@ if config['ALIGNER'] == 'STAR':
             "mapped_reads/log/{sample}.benchmark"
         shell:
             """
-            STAR --runThreadN {threads} --genomeDir {INDEX} --sjdbGTFfile {input.gtf} \
+            STAR --runThreadN {threads} --genomeDir {config['INDEX']} --sjdbGTFfile {input.gtf} \
             --readFilesCommand zcat --readFilesIn {input.reads} \
             --outFileNamePrefix mapped_reads/{wildcards.sample}. \
             --outFilterType BySJout \

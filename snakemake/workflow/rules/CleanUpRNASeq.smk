@@ -3,7 +3,6 @@ import pandas as pd
 import sys
 
 GTF = config['GTF']
-GENOME = config['GENOME']
 # SALMON
 TRANSCRIPTS = GTF + '.fa'
 GENTROME = GTF + '.gentrome.fa'
@@ -19,7 +18,7 @@ else:
 
 rule gff_read:
     input:
-        fasta=GENOME,
+        fasta=config['GENOME'],
         annotation=GTF
     output:
         records=TRANSCRIPTS
@@ -29,7 +28,7 @@ rule gff_read:
     log:
         GTF + '.fa.log'
     params:
-        extra="-g " + GENOME,
+        extra="-g " + config['GENOME'],
     wrapper:
         "v3.10.2/bio/gffread"
 
@@ -37,7 +36,7 @@ rule gff_read:
 rule salmon_decoy:
     input:
         transcriptome=TRANSCRIPTS,
-        genome=GENOME
+        genome=config['GENOME']
     output:
         gentrome=GENTROME,
         decoys=DECOYS
@@ -213,7 +212,7 @@ rule CleanUpRNAseqQC:
         bam=expand("mapped_reads/{sample}.bam",sample=SAMPLES),
         # salmon=cleanuprnaseqqc_input,  # PE/SE aware, strand aware
         salmon=expand("salmon/{libtype}/{sample}/quant.sf",libtype=LIBTYPES,sample=SAMPLES),
-        genome=GENOME,
+        genome=config['GENOME'],
         gtf=GTF,
         ensdb=ENSDB,
         strand_detection="meta/strandness.detected.txt"
