@@ -456,7 +456,7 @@ rule bamCoverage:
     output:
         "bigWig/{sample}.{mode}.cpm.bw"
     params:
-        "--minMappingQuality 20" if MODE == "strict" else " "
+        "--minMappingQuality 20" if config['MODE'] == "strict" else " "
     conda:
         "../envs/deeptools.yaml"
     threads:
