@@ -57,7 +57,7 @@ if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
     # print("B2S:", B2S)
 
     # Get contrast for rMATS
-    df2 = read_table(CONTRAST_AS)
+    df2 = read_table(config['CONTRAST_AS'])
     ASCN = df2.shape[1]  # alternative splicing contrast count
 else:
     B1 = "placeholder.bam"
