@@ -9,7 +9,7 @@ localrules: targets
 configfile: "config.yaml"
 include: 'rules/common.smk'
 
-# CONFIGs
+# CONFIG
 if config['START'] != 'RNK':
     SAMPLES = read_table(config['META']).iloc[:, 0].tolist()
 else:
@@ -67,7 +67,6 @@ if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
     # Get contrast for rMATS
     df2 = read_table(CONTRAST_AS)
     ASCN = df2.shape[1]  # alternative splicing contrast count
-#print("ASCN", ASCN)
 else:
     B1 = "placeholder.bam"
     B1S = ["placeholder"]
@@ -77,10 +76,10 @@ else:
 
 
 def target_input(config, ASCN):
-    '''
+    """
     - define target results to generate
     - check config logic error (in-compatibility)
-    '''
+    """
     l = ["Workflow_DAG.all.pdf"]
 
     if config['START'] == 'FASTQ':
@@ -121,7 +120,6 @@ def target_input(config, ASCN):
             l.append(["DEXSeq/contrast{ascn}/contrast{ascn}.RData". \
                           format(ascn=ascn) for ascn in range(1,ASCN + 1)])
 
-        # todo: fix GATK env
         if config['ASE_ANALYSIS']:
             l.extend(["GATK_ASEReadCounter/{sample}.table". \
                           format(sample=sample) for sample in SAMPLES])
@@ -146,7 +144,6 @@ rule targets:
         1
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000
-
 
 
 # subworkflow
