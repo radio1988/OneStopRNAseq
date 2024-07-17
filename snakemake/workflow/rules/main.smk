@@ -152,7 +152,7 @@ if config['ALIGNER'] == 'STAR':
     rule STAR_Index:
         input:
             fa=config['GENOME'],
-            gtf=GTF,
+            gtf=config["GTF"],
         output:
             config['INDEX'] + "/SAindex"
         params:
@@ -182,7 +182,7 @@ if config['ALIGNER'] == 'STAR':
     rule STAR:
         input:
             index=config['INDEX'] + "/SAindex",
-            gtf=GTF,
+            gtf=config["GTF"],
             reads=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] \
                 if config['PAIR_END'] else \
                 "trimmed/{sample}.fastq.gz"
@@ -484,7 +484,7 @@ rule featureCounts_EXON:
     '''
     input:
         bams=mapped_bam_inputs(config,SAMPLES),
-        gtf=GTF
+        gtf=config["GTF"]
     output:
         COUNT="feature_count/counts.s{strand}.{mode}.txt",
         summary="feature_count/counts.s{strand}.{mode}.txt.summary"
@@ -539,19 +539,19 @@ rule featureCounts_GENE:
     gene read count, including exon and intron reads
     the larger one of gene-count/exon-count for each gene, is used as gene-count
     recognizes config.yaml: 
-        - MODE: strict, liberal
+        - config['MODE']: strict, liberal
         - config['PAIR_END']: True, False
     '''
     input:
         bams=mapped_bam_inputs(config,SAMPLES),
         exon_counts="feature_count/counts.s{strand}.{mode}.txt",
-        gtf=GTF
+        gtf=config["GTF"]
     output:
         ct='feature_count_gene_level/counts.s{strand}.{mode}.txt',
         summary='feature_count_gene_level/counts.s{strand}.{mode}.txt.summary'
     params:
         pe='-p -B -C ' if config['PAIR_END'] else ' ',
-        mode='-Q 20 ' if MODE == 'strict' else '-M --primary -Q 0'
+        mode='-Q 20 ' if config['MODE'] == 'strict' else '-M --primary -Q 0'
     conda:
         "../envs/subread.yaml"
     resources:
@@ -728,12 +728,12 @@ if config['DESEQ2_ANALYSIS']:
             mem_mb=lambda wildcards, attempt: attempt * 4000,
         params:
             rmd="'./DESeq2/DESeq2.Rmd'",
-            fdr=MAX_FDR,
-            lfc=MIN_LFC,
+            fdr=config['MAX_FDR'],
+            lfc=config['MIN_LFC'],
             independentFilter=config["independentFilter"],
             cooksCutoff=config["cooksCutoff"],
             blackSamples=config['blackSamples'] if 'blackSamples' in config else "",
-            anno_tab=ANNO_TAB,
+            anno_tab=config['ANNO_TAB'],
             o="'DESeq2.html'"
         priority:
             100
@@ -927,7 +927,7 @@ if config['RMATS_ANALYSIS']:
         input:
             b1=lambda wildcards: B1S[int(wildcards['ascn']) - 1],
             b2=lambda wildcards: B2S[int(wildcards['ascn']) - 1],
-            gtf=GTF,
+            gtf=config["GTF"],
             length_file="meta/read_length.median.txt",
             strand_file="meta/strandness.detected.txt",
         output:
@@ -954,7 +954,7 @@ if config['RMATS_ANALYSIS']:
             analysis="P" if config['PAIR_END'] else "U",
             length=get_read_length("meta/read_length.median.txt"),
             strandness=get_strandness("meta/strandness.detected.txt",config),
-            MAX_FDR=MAX_FDR
+            MAX_FDR=config['MAX_FDR']
         log:
             "rMATS.{ascn}/rMATS.log"
         benchmark:
@@ -1082,7 +1082,7 @@ if config['DEXSEQ_ANALYSIS']:
         input:
             count_files=expand("DEXSeq_count/{sample}_count.txt",sample=SAMPLES),
             meta=config['META'],
-            contrast=CONTRAST_AS,
+            contrast=config['CONTRAST_AS'],
             gffFile=config['GTF'] + ".dexseq.gff",
             strandness="meta/strandness.detected.txt"
         output:
@@ -1095,7 +1095,9 @@ if config['DEXSEQ_ANALYSIS']:
             12
         params:
             rmd="'workflow/script/dexseq.r'",
-            annoFile=config["ANNO_TAB"],
+            annoFile=config['ANNO_TAB'],
+            max_fdr = config['MAX_FDR'],
+            min_lfc = config['MIN_LFC']
         log:
             "DEXSeq/contrast{ascn}/DEXSeq.log"
         benchmark:
@@ -1104,7 +1106,8 @@ if config['DEXSEQ_ANALYSIS']:
             """
             mkdir -p DEXSeq 
             cp workflow/script/dexseq.r DEXSeq/ &> {log}
-            Rscript workflow/script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {params.annoFile} {MAX_FDR} {MIN_LFC} {threads} {MIN_GENE_COUNT} {wildcards.ascn} &>> {log}
+            Rscript workflow/script/dexseq.r {input.meta} {input.contrast} {input.gffFile} {params.annoFile} \
+            {params.max_fdr} {params.min_lfc} {threads} {MIN_GENE_COUNT} {wildcards.ascn} &>> {log}
             D=DEXSeq/contrast{wildcards.ascn}
             rm -f $D.zip && [ -d $D ] && zip -rq $D.zip $D/ &>> {log}
             """

@@ -24,14 +24,7 @@ if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if c
     check_fastq_size(config,SAMPLES)
 
 config['INDEX'] = config['GENOME'] + '.star_idx'
-GTF = config["GTF"]
-ANNO_TAB = config["ANNO_TAB"]
-STRAND = config["STRAND"]
-MODE = config["MODE"]
-MAX_FDR = config["MAX_FDR"]
-MIN_LFC = config["MIN_LFC"]
-MIN_GENE_COUNT = config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
-CONTRAST_AS = config['CONTRAST_AS']
+MIN_GENE_COUNT = config['MIN_GENE_COUNT'] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
 
 # for DESeq2
 if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
