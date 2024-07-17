@@ -17,6 +17,8 @@ from snakemake.utils import min_version
 min_version("7.2")  # check snakemake version
 localrules: targets
 configfile: "config.yaml"
+include: 'rules/common.smk'
+
 
 # CONFIGs
 if config['START'] != 'RNK':
@@ -1481,6 +1483,5 @@ rule reset:
 
 
 # subworkflow
-include: 'rules/common.smk'
 include: 'rules/CleanUpRNASeq.smk'
 include: 'rules/CheckConfig.smk'
