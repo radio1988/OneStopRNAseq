@@ -96,6 +96,17 @@ MIN_LFC = config["MIN_LFC"]
 MIN_GENE_COUNT = config["MIN_GENE_COUNT"] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
 CONTRAST_AS = config['CONTRAST_AS']
 
+def config_check(config):
+    # INTRON and gDNA correction, only can choose one at most
+    if config['START'] == 'FASTQ' and config["INTRON"] and config["CleanUpRNAseqCorrection"]:
+        message = "INTRON mode and CleanUpRNAseqCorrection is incompatible. \
+        gDNA correction is only possible for exon level rnaseq quantification"
+        sys.exit(message)
+    # SPECIES and Analysis options
+    # Not now
+
+config_check(config)
+
 if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
     check_fastq_size(config,SAMPLES)
 
