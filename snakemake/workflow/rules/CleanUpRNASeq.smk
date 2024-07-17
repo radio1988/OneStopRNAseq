@@ -343,12 +343,12 @@ if config['START'] != 'RNK':
                 mem_mb=lambda wildcards, attempt: attempt * 4000,
             params:
                 rmd="'./CleanUpRNAseqDE/DESeq2.IR.Rmd'",
-                fdr=MAX_FDR,
-                lfc=MIN_LFC,
+                fdr=config['MAX_FDR'],
+                lfc=config['MIN_LFC'],
                 independentFilter=config["independentFilter"],
                 cooksCutoff=config["cooksCutoff"],
                 blackSamples=config['blackSamples'] if 'blackSamples' in config else "",
-                anno_tab=ANNO_TAB,
+                anno_tab=config['ANNO_TAB'],
                 o="'CleanUpRNAseqDE.html'"
             priority:
                 100
@@ -393,12 +393,12 @@ if config['START'] != 'RNK':
             params:
                 dir="./CleanUpRNAseqDE/",
                 rmd="'./CleanUpRNAseqDE/DESeq2.Rmd'",
-                fdr=MAX_FDR,
-                lfc=MIN_LFC,
+                fdr=config['MAX_FDR'],
+                lfc=config['MIN_LFC'],
                 independentFilter=config["independentFilter"],
                 cooksCutoff=config["cooksCutoff"],
                 blackSamples=config['blackSamples'] if 'blackSamples' in config else "",
-                anno_tab=ANNO_TAB,
+                anno_tab=config['ANNO_TAB'],
                 o="'CleanUpRNAseqDE.html'"
             priority:
                 100
