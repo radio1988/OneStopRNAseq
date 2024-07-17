@@ -155,6 +155,8 @@ if config['ALIGNER'] == 'STAR':
             gtf=GTF,
         output:
             config['INDEX'] + "/SAindex"
+        params:
+            index = config['INDEX']
         conda:
             "../envs/star.yaml"
         resources:
@@ -171,7 +173,7 @@ if config['ALIGNER'] == 'STAR':
 
             STAR --runThreadN {threads} \
             --runMode genomeGenerate \
-            --genomeDir {config['INDEX']} \
+            --genomeDir {params.index} \
             --genomeFastaFiles {input.fa} \
             --sjdbGTFfile {input.gtf} &>> {log}
             """
