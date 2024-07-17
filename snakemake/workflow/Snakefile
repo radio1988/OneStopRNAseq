@@ -99,7 +99,7 @@ CONTRAST_AS = config['CONTRAST_AS']
 def config_check(config):
     # INTRON and gDNA correction, only can choose one at most
     if config['START'] == 'FASTQ' and config["INTRON"] and config["CleanUpRNAseqCorrection"]:
-        message = "INTRON mode and CleanUpRNAseqCorrection is incompatible. \
+        message = "INTRON mode and CleanUpRNAseqCorrection is incompatible.\n \
         gDNA correction is only possible for exon level rnaseq quantification"
         sys.exit(message)
     # SPECIES and Analysis options
