@@ -629,7 +629,7 @@ rule Strand_Detection_GeneLevel:
     log:
         "feature_count_gene_level/log/strandness.detected.txt.log"
     script:
-        "script/strandness_detection.ge.py"
+        "../script/strandness_detection.ge.py"
 
 
 # rule SalmonTE_prep
