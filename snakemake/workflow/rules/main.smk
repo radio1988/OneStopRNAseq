@@ -612,7 +612,7 @@ rule Strand_Detection:
     log:
         "meta/log/strandness.detected.txt.log"
     script:
-        "script/strandness_detection.py"
+        "../script/strandness_detection.py"
 
 
 rule Strand_Detection_GeneLevel:
