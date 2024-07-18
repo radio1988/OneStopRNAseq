@@ -31,7 +31,7 @@ blackSamples: 'sampleXXXXX,sampleYYY' # list of sample names to remove as outlie
 
 # GSEA
 GSEA_ANALYSIS: True
-GSEA_NPLOTS: 10
+GSEA_NPLOTS: 2
 GSEA_PLOT_SVG: True  
 GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/test
 

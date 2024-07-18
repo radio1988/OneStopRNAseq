@@ -11,7 +11,7 @@ snakemake -pk --jobs 999 --rerun-triggers mtime \
 --keep-incomplete   --nt --ri \
 --use-conda --conda-prefix ~/anaconda3/envs/osr_envs \
 --restart-times 0 \
---cluster 'bsub -q long -N -o log/lsf/%J.lsf.txt -R "rusage[mem={resources.mem_mb}]" -n {threads} -R span[hosts=1] -W 140:00' \
+--cluster 'bsub -q short -N -o log/lsf/%J.lsf.txt -R "rusage[mem={resources.mem_mb}]" -n {threads} -R span[hosts=1] -W 4:00' \
 >> workflow.log  2>&1
 
 snakemake -j 1 --report report.html > report.log  2>&1
