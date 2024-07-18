@@ -28,7 +28,7 @@ rule gff_read:
     log:
         GTF + '.fa.log'
     params:
-        extra="-g " + config['GENOME'],
+        extra="-x -g " + config['GENOME'],
     wrapper:
         "v3.10.2/bio/gffread"
 
