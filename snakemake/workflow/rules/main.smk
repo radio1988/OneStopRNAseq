@@ -867,18 +867,18 @@ if config["GSEA_ANALYSIS"]:
         input:
             GSEA_compression_OUTPUT
         output:
-            touch('gsea_bubble/log/MultiBubblePlot.done')
+            touch('gsea/gsea_bubble/log/MultiBubblePlot.done')
         conda:
             "../envs/deseq2.yaml"
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000
         priority: 100
         log:
-            'gsea_bubble/log/MultiBubblePlot.log'
+            'gsea/gsea_bubble/log/MultiBubblePlot.log'
         threads:
             1
         benchmark:
-            'gsea_bubble/log/MultiBubblePlot.benchmark'
+            'gsea/gsea_bubble/log/MultiBubblePlot.benchmark'
         shell:
             "Rscript workflow/script/gsea_bubble.R {input} MultiBubblePlot &> {log}"
 
