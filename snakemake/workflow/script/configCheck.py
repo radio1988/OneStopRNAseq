@@ -10,12 +10,6 @@ if snakemake.config['START'] == 'FASTQ' and snakemake.config["INTRON"] and snake
     gDNA correction is only possible for exon level rnaseq quantification"
     print(message, file=log)
     sys.exit(message)
-else:
-    print("INTRON {} and CleanUpRNAseqCorrection {} compatible".format(
-        snakemake.config['INTRON'], snakemake.config['CleanUpRNAseqCorrection'],
-        file = output
-    ))
-
 
 # SPECIES and Analysis options
 # Not now
