@@ -124,7 +124,7 @@ def target_input(config, ASCN):
         #l.extend(GSEA_OUTPUT(config))
         l.extend(GSEACOMPRESS_OUTPUT(config))
         l.extend(GSEA_SINGLEBUBBLE_OUTPUT(config))
-        l.append('gsea_bubble/log/MultiBubblePlot.done')
+        l.append('gsea/gsea_bubble/log/MultiBubblePlot.done')
 
     return (l)
 

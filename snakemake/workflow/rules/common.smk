@@ -408,9 +408,9 @@ def GSEA_SINGLEBUBBLE_OUTPUT(config):
     L = []
     if config["GSEA_ANALYSIS"]:
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=CONTRASTS_DE)
+            L = expand("gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=CONTRASTS_DE)
         else:
-            L = expand("gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=config["RNKS"])
+            L = expand("gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=config["RNKS"])
     else:
         L = ["Workflow_DAG.all.pdf"]
     return (L)

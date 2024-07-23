@@ -68,11 +68,12 @@ e <- 0.001
 max.n <- 100 # max num of gene sets in plots, if 0, skips filtering
 
 # PREP
-dir.create('gsea_bubble', showWarnings = FALSE)
-multiBubble.path <- file.path('gsea_bubble',outname,'multiBubble')
-fdr_nes.path <- file.path('gsea_bubble',outname,'fdr_nes')
-dataTables.path <- file.path('gsea_bubble',outname,'dataTables')
-mergedTables.path <- file.path('gsea_bubble',outname,'mergedTables')
+dir.create('gsea', showWarnings = FALSE)
+dir.create('gsea/gsea_bubble', showWarnings = FALSE)
+multiBubble.path <- file.path('gsea/gsea_bubble',outname,'multiBubble')
+fdr_nes.path <- file.path('gsea/gsea_bubble',outname,'fdr_nes')
+dataTables.path <- file.path('gsea/gsea_bubble',outname,'dataTables')
+mergedTables.path <- file.path('gsea/gsea_bubble',outname,'mergedTables')
 dir.create(multiBubble.path, showWarnings = FALSE, recursive = TRUE)
 dir.create(fdr_nes.path, showWarnings = FALSE, recursive = TRUE)
 dir.create(dataTables.path, showWarnings = FALSE, recursive = TRUE)

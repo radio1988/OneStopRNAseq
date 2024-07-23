@@ -843,17 +843,17 @@ rule GSEA_SingleBubblePlot:
     input:
         "gsea/{contrast}.tar.gz"
     output:
-        touch('gsea_bubble/log/{contrast}.SingleBubblePlot.done')
+        touch('gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.done')
     conda:
         "../envs/deseq2.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 4000
     log:
-        'gsea_bubble/log/{contrast}.SingleBubblePlot.log'
+        'gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.log'
     threads:
         1
     benchmark:
-        'gsea_bubble/log/{contrast}.SingleBubblePlot.benchmark'
+        'gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.benchmark'
     shell:
         "Rscript workflow/script/gsea_bubble.R {input} {wildcards.contrast} &> {log}"
 
