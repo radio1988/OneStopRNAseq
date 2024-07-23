@@ -5,14 +5,10 @@ RNKS:
     - test2.rnk.xlsx
 
 GSEA_ANALYSIS: True
-GSEA_NPLOTS: 10
+GSEA_NPLOTS: 2
 GSEA_PLOT_SVG: True
 GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/test
 
-
-
-
-SAMPLES:
 
 ADAPTORS: workflow/resources/adapters/merged.fa
 ALIGNER: STAR  # HISAT2, STAR
