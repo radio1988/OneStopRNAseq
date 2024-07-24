@@ -25,7 +25,7 @@ GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/gsea_db
 # mouse mm39 (ensembl, recommend)
 GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10_ensembl/Mus_musculus.GRCm39.dna_sm.primary_assembly.fa
 GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10_ensembl/Mus_musculus.GRCm39.111.gtf
-ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/mm39.ensembl.111.anno.txt
+ANNO_TAB:  https://github.com/radio1988/OneStopRNAseq/raw/master/snakemake/workflow/resources/anno_tables/mm39.ensembl.111.anno.txt  # 7 columns
 GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/gsea_db
 
 # rat BN7
