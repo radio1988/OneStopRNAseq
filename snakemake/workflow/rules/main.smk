@@ -1,3 +1,7 @@
+def checkFileInput(wildcards):
+    check="fastqc/CheckFile/CheckFile.{sample}.txt" if config['START'] == 'FASTQ' else 'Workflow_DAG.all.pdf'
+    return check
+
 if config['PAIR_END']:
     rule Trimmomatic_PE:
         input:
@@ -378,7 +382,7 @@ rule QoRTs:
         bam="sorted_reads/{sample}.bam",
         gtf=config['GTF'],
         length="meta/read_length.max.txt",
-        check="fastqc/CheckFile/CheckFile.{sample}.txt"
+        check=checkFileInput
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
@@ -452,7 +456,7 @@ rule bamCoverage:
     input:
         bam="sorted_reads/{sample}.bam",
         bai="sorted_reads/{sample}.bam.bai",
-        check="fastqc/CheckFile/CheckFile.{sample}.txt"
+        check=checkFileInput
     output:
         "bigWig/{sample}.{mode}.cpm.bw"
     params:
