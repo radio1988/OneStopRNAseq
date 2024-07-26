@@ -1,36 +1,6 @@
-todo*
 *.DS_Store
 ._*
 .snake*
 *__pycache__*
 script/.ipynb_checkpoints/
 
-# large files
-genome/
-fastq/
-envs/hand_sandbox.simg
-
-# results
-DESeq2/
-gsea/
-mapped_reads/
-sorted_reads/
-bigWig/
-feature_count/
-bam_qc/
-log/
-nohup.out
-lsf.log
-report.html
-Workflow_DAG.all.svg
-trash/
-workflow.cwl
-pull2mac.sh
-push2hpc.sh
-hpc2mccb.sh
-
-meta/contrast.de.xlsx.txt
-meta/decoder.txt
-meta/meta.xlsx.txt
-meta/read_length.txt
-meta/strandness.detected.txt
