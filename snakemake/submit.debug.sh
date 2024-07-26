@@ -1,1 +1,1 @@
-workflow/resources/example_data/commands/submit.debug.sh
+workflow/resources/commands/submit.debug.sh

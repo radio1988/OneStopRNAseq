@@ -1,1 +1,1 @@
-workflow/resources/example_data/commands/submit.sh
+workflow/resources/commands/submit.lsf.sh
