@@ -378,7 +378,7 @@ if config['START'] != 'RNK':
 
                 'D=CleanUpRNAseqDE; rm -f $D/$D.zip && [ -d $D ] && zip -rq  $D/$D.zip $D/ >> {log} 2>&1;'
     else:
-        rule DESeq2_DNA_Corrected:
+        rule DESeq2_GlobalCorrected:
             input:
                 cnt="CleanUpRNAseqQC/global.corrected.count.csv",
                 meta=config['META'],
