@@ -1,3 +1,5 @@
+import sys
+
 # CHECK CONFIG.YAML
 if config["MODE"] == 'liberal' and config["CleanUpRNAseqCorrection"]:
     pass
@@ -29,13 +31,23 @@ rule CheckTrimmedReadFiles:
         "../script/CheckFileSizes.py"
 
 
+def CheckTrimmedReadFile_Input(wildcards):
+    if config['START'] == 'FASTQ':
+        if config['PAIR_END']:
+            return ["trimmed/{wildcards.sample}.R1.fastq.gz", "trimmed/{wildcards.sample}.R2.fastq.gz"]
+        else:
+            return "trimmed/{wildcards.sample}.fastq.gz"
+    elif config['START'] == 'BAM':
+            return "mapped_reads/{wildcards.sample}.bam"
+    else:
+        sys.exit("error")
+
+
 
 rule CheckTrimmedReadFile:
     """check trimmed.fastq.gz for each sample, pass if non empty (>100bytes)"""
     input:
-        ["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] \
-            if config['PAIR_END'] \
-            else "trimmed/{sample}.fastq.gz"
+        CheckTrimmedReadFile_Input
     output:
         'fastqc/CheckFile/CheckFile.{sample}.txt'
     log:

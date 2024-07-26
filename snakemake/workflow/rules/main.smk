@@ -378,7 +378,7 @@ rule QoRTs:
         bam="sorted_reads/{sample}.bam",
         gtf=config['GTF'],
         length="meta/read_length.max.txt",
-        check="fastqc/CheckFile/CheckFile.{sample}.txt"
+        check="fastqc/CheckFile/CheckFile.{sample}.txt" if config['START'] == 'FASTQ' else ''
     output:
         temp(directory("bam_qc/QoRTs/{sample}"))
     params:
