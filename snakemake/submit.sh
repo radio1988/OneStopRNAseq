@@ -1,1 +1,1 @@
-./workflow/example_data/commands/submit.hpc.sh
+workflow/resources/example_data/commands/submit.sh
