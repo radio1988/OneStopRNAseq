@@ -72,13 +72,13 @@ def read_table(fname='meta/contrast.de.xlsx'):
     except:
         sys.exit(">>> Fatal Error: " + fname + " format error, it can't be read correctly." +
                 "\nPlease check if you saved txt file as xlsx or vice versa\n\n")
-    return (df)
+    return df
 
 def gunzip(fname):
     import gzip
     outname = re.sub(".gz$", "", fname)
     if outname == fname:
-        sys.exit("config error:", fname, "does not end with .gz")
+        sys.exit("config error: " + fname + " does not end with .gz")
     # todo: skip if uncompressed file exists (but how to check for previous uncompress integrity
     # todo: use bash gunzip to keep system timestamp of gz file
     with gzip.open(fname, 'rb') as f_in:
@@ -107,7 +107,7 @@ def get_contrast_fnames(fname):
             CONTRASTS.append(c1 + "_vs_" + c2)
     # CONTRATS = ['KO_D8_vs_KO_D0', 'WT_D8.KO_D8_vs_WT_D0.KO_D0', 'KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8']
     CONTRASTS = [x.replace("-", '.') for x in CONTRASTS]
-    return (CONTRASTS)
+    return CONTRASTS
 
 def get_contrast_groups (fname):
     df2=read_table(fname)
@@ -123,7 +123,7 @@ def get_contrast_groups (fname):
         c2s = c2.split(";")
         C1S.append(c1s)
         C2S.append(c2s)
-    return ([C1S, C2S])
+    return [C1S, C2S]
 
 def get_dict_from_meta (fname):
     df = read_table(fname)
@@ -136,7 +136,7 @@ def get_dict_from_meta (fname):
         else:
             d[group] = []
             d[group].append(sample)
-    return (d)
+    return d
 
 def swap_list_element(l, d):
     '''internal'''
@@ -145,20 +145,20 @@ def swap_list_element(l, d):
 def flatten(l):
     '''internal'''
     flat_list = [item for sublist in l for item in sublist]
-    return (flat_list)
+    return flat_list
 
 def collapseL2(L3):
     '''internal'''
     L2 = []
     for l in L3:
         L2.append(flatten(l))
-    return (L2)
+    return L2
 
 def s2b(S):
     '''internal'''
     K = flatten(S)
     V = ["sorted_reads/"+x+".bam" for x in K]
-    return (dict(zip(K, V)))
+    return dict(zip(K, V))
 
 def G2B_workflow(G, g2s):
     S = swap_list_element(G, g2s)
@@ -166,35 +166,36 @@ def G2B_workflow(G, g2s):
     s2b_dict = s2b(S)
     BS = swap_list_element(S, s2b_dict)
     B = [",".join(x) for x in BS]
-    return (BS, B)
+    return BS, B
 
 ###  Input functions (functions to create input fnames for rules)  ###
 def Merge_TE_and_Gene_input(config):
     if config['MODE'] == 'strict' and config['INTRON']:
-        return("feature_count_gene_level/counts.strict.txt") 
+        return "feature_count_gene_level/counts.strict.txt"
     if config['MODE'] == 'strict':
-        return("feature_count/counts.strict.txt")
+        return "feature_count/counts.strict.txt"
     if config['MODE'] == 'liberal' and config['INTRON']:
-        return("feature_count_gene_level/counts.liberal.txt")
+        return "feature_count_gene_level/counts.liberal.txt"
     if config['MODE'] == 'liberal':
-        return("feature_count/counts.liberal.txt")
-    raise Exeeption ('config error')
+        return "feature_count/counts.liberal.txt"
+    raise Exception('config error')
 
     
 def DESeq2_input(config):
     if config['START'] in ['COUNT']:
-        return(config['COUNT_FILE'])
+        return config['COUNT_FILE']
 
     if config['TE_ANALYSIS']:
-        return("feature_count_gene_level/TE_included.txt" \
-                if config['INTRON'] \
-                else "feature_count/TE_included.txt")
+        if config['INTRON']:
+            return "feature_count_gene_level/TE_included.txt"
+        else:
+            "feature_count/TE_included.txt"
     else:
         if config['INTRON']:
             folder = 'feature_count_gene_level'
         else:
             folder = 'feature_count'
-        return (folder + '/counts.' + config['MODE'] + '.txt' )
+        return folder + '/counts.' + config['MODE'] + '.txt'
 
 def input_rnk_fname1(wildcards, config):
     if config['START'] == 'RNK':
@@ -245,10 +246,10 @@ def get_strandness (strandFile="meta/strandness.detected.txt", config="config_di
         if res.group(1) is None:
             sys.exit("strandness detection wrong")
         strand = (RMATS_STRANDNESS[int(res.group(1))])
-        return (strand)
+        return strand
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
-        return (None)
+        return None
 
 def get_strandness_for_dexseq (strandFile="meta/strandness.detected.txt"):
     book = {0 : '-s no', 1 : '-s yes', 2 : '-s reverse'}
@@ -260,10 +261,10 @@ def get_strandness_for_dexseq (strandFile="meta/strandness.detected.txt"):
         if res.group(1) is None:
             sys.exit("strandness detection wrong")
         strand = book[int(res.group(1))]
-        return (strand)
+        return strand
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
-        return ("Strand File not found")
+        return "Strand File not found"
 
 def get_strandness_for_hisat2_PE (strandFile="meta/strandness.detected.txt"):
     book = {0 : ' ', 1 : '--rna-strandness FR', 2 : '--rna-strandness RF'}
@@ -275,10 +276,10 @@ def get_strandness_for_hisat2_PE (strandFile="meta/strandness.detected.txt"):
         if res.group(1) is None:
             sys.exit("strandness detection wrong")
         strand = book[int(res.group(1))]
-        return (strand)
+        return strand
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
-        return ("Strand File not found")
+        return "Strand File not found"
 
 def get_strandness_for_hisat2_SE (strandFile="meta/strandness.detected.txt"):
     book = {0 : ' ', 1 : '--rna-strandness F', 2 : '--rna-strandness R'}
@@ -290,10 +291,10 @@ def get_strandness_for_hisat2_SE (strandFile="meta/strandness.detected.txt"):
         if res.group(1) is None:
             sys.exit("strandness detection wrong")
         strand = book[int(res.group(1))]
-        return (strand)
+        return strand
     except FileNotFoundError:
         sys.stderr.write(strandFile + "will be found in real run, not in dry run\n")
-        return ("Strand File not found")
+        return "Strand File not found"
 
 def get_strandness_for_stringtie (strandFile="meta/strandness.detected.txt"):
     book = {0 : ' ', 1 : '--fr', 2 : '--rf'}
@@ -308,7 +309,7 @@ def get_strandness_for_stringtie (strandFile="meta/strandness.detected.txt"):
         return (strand)
     except FileNotFoundError:
         sys.stderr.write("meta/strandness.detected.txt will be found in real run, not in dry run\n")
-        return ("Strand File not found")
+        return "Strand File not found"
 
 def get_read_length(lengthFile="meta/read_length.txt"):
     try:
@@ -318,7 +319,7 @@ def get_read_length(lengthFile="meta/read_length.txt"):
         return (length)
     except FileNotFoundError:
         sys.stderr.write(lengthFile + "not found in dry run, will be found in real run\n")
-        return (None)
+        return None
 
 
 
@@ -390,7 +391,7 @@ def GSEA_OUTPUT(config):
             L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=config["RNKS"],db=gsea_dbs)
     else:
         L = ["Workflow_DAG.all.pdf"]
-    return (L)
+    return L
 
 def GSEACOMPRESS_OUTPUT(config):
     L = []
@@ -401,7 +402,7 @@ def GSEACOMPRESS_OUTPUT(config):
             L = expand("gsea/{contrast}.tar.gz",contrast=config["RNKS"])
     else:
         L = ["Workflow_DAG.all.pdf"]
-    return (L)
+    return L
 
 
 def GSEA_SINGLEBUBBLE_OUTPUT(config):
@@ -413,7 +414,7 @@ def GSEA_SINGLEBUBBLE_OUTPUT(config):
             L = expand("gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=config["RNKS"])
     else:
         L = ["Workflow_DAG.all.pdf"]
-    return (L)
+    return L
 
 
 
