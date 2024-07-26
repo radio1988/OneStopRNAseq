@@ -38,7 +38,7 @@ def CheckTrimmedReadFile_Input(wildcards):
         else:
             return "trimmed/{wildcards.sample}.fastq.gz"
     elif config['START'] == 'BAM':
-            return "mapped_reads/{wildcards.sample}.bam"
+        return "mapped_reads/{wildcards.sample}.bam"
     else:
         sys.exit("error")
 
