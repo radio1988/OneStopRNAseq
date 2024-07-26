@@ -1,5 +1,5 @@
 #!/bin/bash
-# bsub -q long -W 144:00 -R rusage[mem=8000]  'bash submit.sh'
+# bsub -q long -W 144:00 -R rusage[mem=4000]  'bash submit.sh'
 
 source /home/rui.li-umw/anaconda3/etc/profile.d/conda.sh
 conda activate snakemake > workflow.log  2>&1
