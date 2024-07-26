@@ -42,18 +42,3 @@ rule CheckTrimmedReadFile:
         'fastqc/CheckFile/CheckFile.{sample}.log'
     script:
         "../script/CheckFileSizes.py"
-
-
-# rule CheckConfig:
-#     """
-#     not used yet
-#     using function check_config now
-#     """
-#     input:
-#         "config.yaml"
-#     output:
-#         "meta/configCheck.txt"
-#     log:
-#         "meta/configCheck.log"
-#     script:
-#         "../script/configCheck.py"

@@ -1297,7 +1297,7 @@ rule StringTie_Merge:
 
 rule Create_DAG:
     input:
-        "meta/configCheck.txt"
+        "config.yaml"
     resources:
         mem_mb=lambda wildcards, attempt: attempt * 1000,
     threads:
