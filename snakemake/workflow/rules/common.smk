@@ -189,7 +189,7 @@ def DESeq2_input(config):
         if config['INTRON']:
             return "feature_count_gene_level/TE_included.txt"
         else:
-            "feature_count/TE_included.txt"
+            return "feature_count/TE_included.txt"
     else:
         if config['INTRON']:
             folder = 'feature_count_gene_level'
