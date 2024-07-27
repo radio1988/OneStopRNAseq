@@ -34,11 +34,11 @@ rule CheckTrimmedReadFiles:
 def CheckTrimmedReadFile_Input(wildcards):
     if config['START'] == 'FASTQ':
         if config['PAIR_END']:
-            return ["trimmed/{wildcards.sample}.R1.fastq.gz", "trimmed/{wildcards.sample}.R2.fastq.gz"]
+            return ["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"]
         else:
-            return "trimmed/{wildcards.sample}.fastq.gz"
+            return "trimmed/{sample}.fastq.gz"
     elif config['START'] == 'BAM':
-        return "mapped_reads/{wildcards.sample}.bam"
+        return "mapped_reads/{sample}.bam"
     else:
         sys.exit("error")
 
