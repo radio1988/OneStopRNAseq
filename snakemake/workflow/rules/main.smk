@@ -886,6 +886,18 @@ if config["GSEA_ANALYSIS"]:
         shell:
             "Rscript workflow/script/gsea_bubble.R {input} MultiBubblePlot &> {log}"
 
+    rule GSEA_Bubble_Compression:
+        input:
+            'gsea/gsea_bubble/log/MultiBubblePlot.done'
+        output:
+            'gsea/gsea_bubble.tar.gz'
+        resources:
+            mem_mb=1000
+        threads:
+            4
+        shell:
+            "tar cf - gsea/gsea_bubble | pigz -p {threads} > {output} "
+
 rule Read_Length_Detection:
     input:
         expand("bam_qc/stats/{sample}.stats.txt",sample=SAMPLES)
