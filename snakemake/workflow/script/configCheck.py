@@ -13,3 +13,7 @@ if snakemake.config['START'] == 'FASTQ' and snakemake.config["INTRON"] and snake
 
 # SPECIES and Analysis options
 # Not now
+
+
+# meta.csv
+# todo: sample name can't contain count, abundance, length
