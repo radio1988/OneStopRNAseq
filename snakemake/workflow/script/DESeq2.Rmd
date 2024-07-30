@@ -13,8 +13,8 @@ params:
   indfilter: FALSE
   cookscutoff: FALSE
   
-  countFile: "../example_data/counts/example_osrCount.mm10.xlsx" # "../example_data/counts/example_cleanCount.mm10.xlsx" # "../example_data/counts/example_featureCounts.mm10.txt"
-  annoFile: 'https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt'
+  countFile: '../CleanUpRNAseqQC/global.corrected.count.csv'
+  annoFile: 'https://github.com/radio1988/OneStopRNAseq/raw/dev/snakemake/workflow/resources/anno_tables/mm39.ensembl.111.anno.txt'
   metaFile: "../meta/meta.csv"
   contrastFile:  "../meta/contrast.csv"
   blackSamples: 'NA_AAAAXXskjk, NA_BBBXXXYjkdmf'
@@ -159,7 +159,9 @@ volcanoplot <- function(res, anno, name='name',
 # Default plot
 maplot <- function(res, anno, fname){
   maplotdat <- merge(anno, data.frame(res), by.x=1, by.y=0)
-  ggmaplot(maplotdat, main = name,genenames = as.vector(maplotdat$Name),
+  ggmaplot(maplotdat, 
+           main = name,
+           genenames = as.vector(maplotdat$Name),
            fdr = max_fdr, fc = 2^min_lfc, size = 0.4,
            xlab = "Log2 Mean Expression",
            ylab = "Log2 Fold Change",
@@ -419,6 +421,18 @@ df = column_to_rownames(df, var =  colnames(df)[1])
 featureCountsFormat <- F
 cleanCountFormat <- F
 osrCountFormat <- F
+salmonCountFormat <- F
+
+match_salmon_quant_format <- function (df){
+  n_abundances <- sum(grepl('abundance', colnames(df)))
+  n_counts <- sum(grepl('counts.', colnames(df)))
+  n_lengths <- sum(grepl('length.', colnames(df)))
+  if (n_abundances + n_counts + n_lengths == ncol(df) & n_abundances == n_counts & n_counts == n_lengths & ncol(df) >= 3){
+    return (T)
+  }else{
+    return (F)
+  }
+}
 
 if (colnames(df)[1] == "Chr" & colnames(df)[2] == "Start" & colnames(df)[3] == "End"){
   cat("featureCounts format table detected\n")
@@ -439,7 +453,14 @@ if (colnames(df)[1] == "Chr" & colnames(df)[2] == "Start" & colnames(df)[3] == "
   colnames(df) <- gsub(".COUNT", "", colnames(df))
   df[, 3:ncol(df)] <- sapply(df[, 3:ncol(df)], as.integer)
   cts <- as.matrix(df[, 3:ncol(df)])
-} else {
+} else if (match_salmon_quant_format(df)){
+  cat("Salmon Quant CSV format detected\n")
+  salmonCountFormat <- T
+  df <- df[,grepl('count.', colnames(df))]
+  colnames(df) <- gsub("counts\\.", "", colnames(df))
+  df[,] <- sapply(df[,], as.integer)
+  cts <- as.matrix(df)
+}else {
   stop("COUNT file not in featureCounts output format, nor cleanCountFormat format, nor osrCount format. \nMay have different number of samples in meta-data and count-table if cleanCountFormat is provided\n")
 }
 
