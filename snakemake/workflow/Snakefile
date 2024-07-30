@@ -140,6 +140,8 @@ rule targets:
 
 # subworkflow
 include: 'rules/main.smk'
+include: 'rules/fastqc.smk'
+include: 'rules/align.smk'
 include: 'rules/gsea.smk'
 include: 'rules/CleanUpRNASeq.smk'
 include: 'rules/CheckConfig.smk'
