@@ -139,11 +139,17 @@ rule targets:
 
 
 # subworkflows
+# popular
 include: 'rules/main.smk'
 include: 'rules/trim_qc.smk'
 include: 'rules/align_qc_bw.smk'
 include: 'rules/quant.smk'
-include: 'rules/as.smk'
-include: 'rules/CleanUpRNASeq.smk'
+include: 'rules/cleanuprnaseq.smk'
 include: 'rules/gsea.smk'
+# tricky
+include: 'rules/rmats.smk'  # rmats has poor statistical power for obvious AS events
+include: 'rules/dexseq.smk'  # low power, poor annotation
+# uncommon
 include: 'rules/assembly.smk'
+include: 'rules/ase.smk'  # ASE allele specific expression (quantification only)
+

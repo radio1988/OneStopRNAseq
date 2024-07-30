@@ -1,7 +1,6 @@
 """
-AS: Alternative Splicing
-- rMATS: AS
-- DEXSeq: differential exon usage
+rMATS Alternative Splicing Analysis
+caveats: rMATS does not perform well as claimed, low statitical power for obvious AS events
 """
 
 rule Read_Length_Detection:
