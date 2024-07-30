@@ -2,7 +2,7 @@
 Align (STAR/HISAT2), sort, qc, bigWig
 """
 
-if config['ALIGNER'] == 'STAR':
+if config['ALIGNER'] == 'STAR' and config['START'] == 'FASTQ':  # only when FASTQ, to skip the align DAG, for BAM start
     rule STAR_Index:
         input:
             fa=config['GENOME'],
