@@ -6,7 +6,7 @@ if config['ALIGNER'] == 'STAR':
         output:
             config['INDEX'] + "/SAindex"
         params:
-            index = config['INDEX']
+            index=config['INDEX']
         conda:
             "../envs/star.yaml"
         resources:
@@ -40,7 +40,7 @@ if config['ALIGNER'] == 'STAR':
             log="mapped_reads/{sample}.Log.final.out",
             bam=temp("mapped_reads/{sample}.bam"),
         params:
-            index = config['INDEX']
+            index=config['INDEX']
         conda:
             "../envs/star.yaml"
         resources:
@@ -98,7 +98,6 @@ if config['ALIGNER'] == 'STAR':
             multiqc {input} -f -n {output.report} &> {log}
             """
 
-
 if config['ALIGNER'] == 'HISAT2':
     rule HISAT2_UNSTRANDED:
         input:
@@ -129,8 +128,6 @@ if config['ALIGNER'] == 'HISAT2':
             hisat2 -x {input.genome} -p {threads} --dta-cufflinks \
             {params.pe} {params.strand} > {output.bam} 2> {log} 
             """
-else:
-    sys.exit("config['ALIGNER'] option not recognized")
 
 
 rule SAMtools_sort:
@@ -153,7 +150,6 @@ rule SAMtools_sort:
         rm -f {output}.tmp.*.bam;
         samtools sort -@ {threads} -m 3G {input} -o {output} &> {log}
         """
-
 
 rule SAMtools_index:
     input:
