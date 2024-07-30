@@ -140,5 +140,6 @@ rule targets:
 
 # subworkflow
 include: 'rules/main.smk'
+include: 'rules/gsea.smk'
 include: 'rules/CleanUpRNASeq.smk'
 include: 'rules/CheckConfig.smk'
