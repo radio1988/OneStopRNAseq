@@ -138,10 +138,11 @@ rule targets:
         mem_mb=lambda wildcards, attempt: attempt * 1000
 
 
-# subworkflow
+# subworkflows
 include: 'rules/main.smk'
-include: 'rules/fq_trim_qc.smk'
+include: 'rules/trim_qc.smk'
 include: 'rules/align_qc_bw.smk'
+include: 'rules/quant.smk'
 include: 'rules/CleanUpRNASeq.smk'
 include: 'rules/gsea.smk'
 include: 'rules/assembly.smk'
