@@ -17,7 +17,7 @@ def check_config(config):
         "gDNA correction is only possible for exon level rnaseq quantification"
         sys.exit(message)
 
-    if config['ALIGNER'] == 'STAR' and config['ALIGNER'] != 'HISAT2':
+    if config['ALIGNER'] != 'STAR' and config['ALIGNER'] != 'HISAT2':
         sys.exit("config['ALIGNER'] not STAR nor HISAT2")
     # SPECIES and Analysis options
     # Not now
