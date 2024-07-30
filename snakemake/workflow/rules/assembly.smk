@@ -1,3 +1,8 @@
+"""
+HISAT2 -> StringTie
+"""
+
+
 rule HISAT2_BUILD:
     """
     guided by GTF

@@ -1,3 +1,10 @@
+"""
+Gene Expression Quantification:
+- featureCounts
+- SalmonTE
+"""
+
+
 rule featureCounts_EXON:
     '''
     exon read count
