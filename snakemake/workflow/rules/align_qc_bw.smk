@@ -1,3 +1,7 @@
+"""
+Align (STAR/HISAT2), sort, qc, bigWig
+"""
+
 if config['ALIGNER'] == 'STAR':
     rule STAR_Index:
         input:
