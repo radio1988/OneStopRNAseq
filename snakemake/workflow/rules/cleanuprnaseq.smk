@@ -258,7 +258,7 @@ rule CleanUpRNAseqCorrection:
         meta_rds="CleanUpRNAseqQC/metadata.with.IR.rates.RDS",
         meta_tab="CleanUpRNAseqQC/meta.cleanuprnaseq.csv",
         ensdb=ENSDB,
-        salmon=expand("salmon/{libtype}/{sample}/quant.sf",sample=SAMPLES,libtype=LIBTYPES),# PE/SE aware, all LIBTYPES,
+        salmon=expand("salmon/{libtype}/{sample}/quant.sf", sample=SAMPLES, libtype=LIBTYPES),  # PE/SE aware
         strandness="meta/strandness.detected.txt"
     output:
         "CleanUpRNAseqQC/global.corrected.count.csv"
