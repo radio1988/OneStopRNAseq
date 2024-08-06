@@ -13,11 +13,11 @@ print(meta.df)
 
 strand_string <- scan(snakemake@input[['strandness']], what = character(), nlines = 1)
 print(paste('strand_string:', strand_string))
-if (strand_string == "feature_count/counts.s0.strict.txt.summary") {
+if (strand_string == "feature_count/counts.s0.strict.txt.summary" | strand_string == "feature_count/counts.s0.liberal.txt.summary") {
     stranded <- FALSE
-} else if (strand_string == "feature_count/counts.s1.strict.txt.summary"){
+} else if (strand_string == "feature_count/counts.s1.strict.txt.summary" | strand_string == "feature_count/counts.s1.liberal.txt.summary"){
     stranded <- TRUE
-} else if (strand_string == "feature_count/counts.s2.strict.txt.summary"){
+} else if (strand_string == "feature_count/counts.s2.strict.txt.summary" | strand_string == "feature_count/counts.s2.liberal.txt.summary"){
     stranded <- TRUE
 } else {
     stop("strand_string not recognized")
