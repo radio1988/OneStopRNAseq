@@ -175,6 +175,12 @@ rule CheckTrimmedReadFiles:
         'fastqc/CheckFile/all.txt'
     log:
         "fastqc/CheckFile/all.log"
+    benchmark:
+        "fastqc/CheckFile/all.benchmark"
+    resources:
+        mem_mb=lambda wildcards, attempt: attempt * 4000
+    threads:
+        1
     script:
         "../script/CheckFileSizes.py"
 
