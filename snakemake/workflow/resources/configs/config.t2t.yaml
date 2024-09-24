@@ -1,10 +1,12 @@
+# Human T2T on HPC
+
 START: FASTQ             # FASTQ/ BAM/ COUNT/ RNK
 PAIR_END: True          # True/False
 ADAPTORS: workflow/resources/adapters/merged.fa     # For Trimming 
 ALIGNER: STAR           # HISAT2/STAR
 GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens_t2t/ensembl_rapid/Homo_sapiens-GCA_009914755.4-softmasked.fa
 ASSEMBLY_ANALYSIS: True
-TE_ANALYSIS: True      # True/False. Include TE analysis in DESeq2 results, by counting TE expression with SalmonTE
+TE_ANALYSIS: False      # True/False. Include TE analysis in DESeq2 results, by counting TE expression with SalmonTE
 TE_REFERENCE: hs        # mm/ hs/ dm/ dr
                         # hs : Homo Sapiens
                         # mm : Mus musculus
@@ -16,16 +18,16 @@ STRAND: [0, 1, 2]       # [0, 1, 2]: auto detect; [0]: unstranded; [1]: stranded
 MODE: strict            # strict/liberal. liberal: allow Multi-Mapping, No fragment size reqirement; strict: opposite
 INTRON: False           # True/False. Perform gene level featureCount as well as exon level, and max(gene-count, exon-count) will be taken as gene-count
 
-RMATS_ANALYSIS: True     # Alternative Splicing analysis with rMATS (Optional)
-CONTRAST_AS: meta/contrast.de.csv
+RMATS_ANALYSIS: False         # Alternative Splicing analysis with rMATS (Optional)
+CONTRAST_AS: meta/contrast.csv
 RMATS_STRANDNESS:
   {0 : fr-unstranded,
   1 : fr-firststrand, 
   2 : fr-secondstrand}
-                        # don't modify this. a dictionary for rMATS
+                             # don't modify this. a dictionary for rMATS
 
-DEXSEQ_ANALYSIS: True       # exon level DE analysis
-MIN_GENE_COUNT: 100       # genes with less reads per sample will be removed from DEXSeq analysis, default 100, a smaller value leads to longer running time
+DEXSEQ_ANALYSIS: False       # exon level DE analysis
+MIN_GENE_COUNT: 100          # genes with less reads per sample will be removed from DEXSeq analysis, default 100, a smaller value leads to longer running time
 
 ASE_ANALYSIS: False         # Allele Specific Expression Analysis
 VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vcf
@@ -36,8 +38,8 @@ COUNT_FILE: meta/COUNT.xlsx
 DESEQ2_ANALYSIS: True
 MAX_FDR: 0.05
 MIN_LFC: 0.585 
-META: meta/meta.txt       # see example files
-CONTRAST_DE: meta/contrast.de.csv
+META: meta/meta.csv       # see example files
+CONTRAST_DE: meta/contrast.csv
 cooksCutoff: 'FALSE'        # see http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
 independentFilter: 'FALSE'
 blackSamples: 'sampleXXX,sampleYYY' # list of sample names to be excluded in DESeq2 analysis, optional
