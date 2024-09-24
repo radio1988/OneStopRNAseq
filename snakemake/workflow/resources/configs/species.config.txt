@@ -40,10 +40,10 @@ GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/saccharomyces_cerevisiae/Saccharom
 ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Saccharomyces_cerevisiae.R64-1-1.90.anno.txt
 GSEA_DB_PATH: workflow/resources/gsea_db/saccharomyces_cerevisiae/gsea_db/
 
-# worm
-GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235.dna.toplevel.fa
-GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/Caenorhabditis_elegans.WBcel235.90.gtf
-ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Caenorhabditis_elegans.WBcel235.90.anno.txt
+# worm (240924)
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/c_elegans.PRJNA13758.WS286.genomic_softmasked.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/c_elegans.PRJNA13758.WS286.canonical_geneset.gtf
+ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/c_elegans.PRJNA13758.WS286.canonical_geneset.gtf.anno.txt
 GSEA_DB_PATH: workflow/resources/gsea_db/caenorhabditis_elegans/wormEnrichr/
 
 # fruit fly
