@@ -5,7 +5,7 @@ PAIR_END: True          # True/False
 ADAPTORS: workflow/resources/adapters/merged.fa     # For Trimming 
 ALIGNER: STAR           # HISAT2/STAR
 GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens_t2t/ensembl_rapid/Homo_sapiens-GCA_009914755.4-softmasked.fa
-ASSEMBLY_ANALYSIS: True
+ASSEMBLY_ANALYSIS: False
 TE_ANALYSIS: False      # True/False. Include TE analysis in DESeq2 results, by counting TE expression with SalmonTE
 TE_REFERENCE: hs        # mm/ hs/ dm/ dr
                         # hs : Homo Sapiens
