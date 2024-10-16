@@ -25,24 +25,43 @@ if config['PAIR_END']:
         wrapper:
             "v3.13.1/bio/trimmomatic/pe"
 else:
-    rule Trimmomatic_SE:
+    rule fastp_se:
         input:
-            "fastq/{sample,[A-Za-z0-9_-]+}.fastq.gz",
+            sample=["fastq/{sample,[A-Za-z0-9_-]+}.fastq.gz"]
         output:
-            temp("trimmed/{sample}.fastq.gz")
+            trimmed=temp("trimmed/{sample}.fastq.gz"),
+            failed=temp("trimmed/failed/{sample}.fastq.gz"),
+            html="trimmed/{sample}.html",
+            json="trimmed/{sample}.json"
+        log:
+            "trimmed/log/{sample}.trim.log"
         params:
-            trimmer=["ILLUMINACLIP:" + config[
-                'ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
+            adapters="config['ADAPTORS']",
+            extra=""
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 1000
         threads:
             4
-        log:
-            "trimmed/log/{sample}.trim.log"
-        benchmark:
-            "trimmed/log/{sample}.trim.log.benchmark"
         wrapper:
-            "v3.13.1/bio/trimmomatic/se"
+            "v4.7.2/bio/fastp"
+    # rule Trimmomatic_SE:
+    #     input:
+    #         "fastq/{sample,[A-Za-z0-9_-]+}.fastq.gz",
+    #     output:
+    #         temp("trimmed/{sample}.fastq.gz")
+    #     params:
+    #         trimmer=["ILLUMINACLIP:" + config[
+    #             'ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
+    #     resources:
+    #         mem_mb=lambda wildcards, attempt: attempt * 1000
+    #     threads:
+    #         4
+    #     log:
+    #         "trimmed/log/{sample}.trim.log"
+    #     benchmark:
+    #         "trimmed/log/{sample}.trim.log.benchmark"
+    #     wrapper:
+    #         "v3.13.1/bio/trimmomatic/se"
 
 
 rule FastQC_Raw:
