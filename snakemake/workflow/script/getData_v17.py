@@ -365,7 +365,7 @@ for srr in srrList:
             f.write(cmd_mv + "\n")
         subprocess.call(cmd_mv, shell = True)
 
-    cmd = "cd " + fastq_folder + " && bsub -q long -n 1 -W 40:00 -R rusage[mem=10000] -o " + fastq_folder + "/fastq_dump_" + srr + ".log.txt" + " parallel-fastq-dump -s " + srr + ".sra -t 1 -O ./ --tmpdir ./ --split-files --gzip"
+    cmd = "cd " + fastq_folder + " && bsub -q long -n 1 -W 40:00 -R rusage[mem=1000] -o " + fastq_folder + "/fastq_dump_" + srr + ".log.txt" + " parallel-fastq-dump -s " + srr + ".sra -t 1 -O ./ --tmpdir ./ --split-files --gzip"
 
     dumpLogFile = fastq_folder + "/fastq_dump_" + srr + ".log.txt"
     if os.path.exists(dumpLogFile):
