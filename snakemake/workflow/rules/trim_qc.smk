@@ -35,11 +35,13 @@ else:
             json="trimmed/{sample}.json"
         log:
             "trimmed/log/{sample}.trim.log"
+        benchmark:
+            "trimmed/log/{sample}.trim.benchmark"
         params:
             adapters="config['ADAPTORS']",
             extra=""
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1000
+            mem_mb=lambda wildcards, attempt: attempt * 2000
         threads:
             4
         wrapper:
