@@ -5,7 +5,7 @@ if config['PAIR_END']:
         input:
             sample=["fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz", "fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz"]
         output:
-            trimmed=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R1.fastq.gz"], # how to temp()
+            trimmed=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"], # how to temp()
             r1=temp("trimmed/{sample}.R1.fastq.gz"),
             r2=temp("trimmed/{sample}.R2.fastq.gz"),
             # Unpaired reads separately
