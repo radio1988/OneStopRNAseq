@@ -7,6 +7,7 @@ if config['PAIR_END']:
         default min-len 15
         -5, -3, window 4 , min 20Q, max 5N
         adaptors will be trimmed
+        output is Phred33
         """
         input:
             r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
@@ -71,14 +72,18 @@ else:
         benchmark:
             "trimmed/log/{sample}.trim.benchmark"
         params:
-            adapters="config['ADAPTORS']",
-            extra=""
+            extra="--adapter_fasta " + config['ADAPTORS'],
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 2000
         threads:
             4
-        wrapper:
-            "v5.5.0/bio/fastp" # "v4.7.2/bio/fastp"
+        conda:
+            "../envs/fastp.yaml"
+        shell:
+            "fastp -i {input.sample} -o {output.trimmed} \
+            --failed_out {output.failed} \
+            -j {output.json} -h {output.html} -R {wildcards.sample} \
+            -w {threads} {params.extra} &> {log}"
     # rule Trimmomatic_SE:
     #     input:
     #         "fastq/{sample,[A-Za-z0-9_-]+}.fastq.gz",
