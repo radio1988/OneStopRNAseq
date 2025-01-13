@@ -32,6 +32,7 @@ if config['PAIR_END']:
             "trimmed/log/{sample}.trim.log.benchmark"
         shell:
             "fastp -i {input.r1} -I {input.r2} -o {output.r1} -O {output.r2} \
+            --unpaired1 {output.r1_unpaired} --unpaired2 {output.r2_unpaired} \
             -j {output.json} -h {output.html} -R {wildcards.sample} \
             -w {threads} {params.extra} &> {log}"
     # rule Trimmomatic_PE:
