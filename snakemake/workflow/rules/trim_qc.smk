@@ -8,15 +8,14 @@ if config['PAIR_END']:
             trimmed=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"], # how to temp()
             r1=temp("trimmed/{sample}.R1.fastq.gz"),
             r2=temp("trimmed/{sample}.R2.fastq.gz"),
-            # Unpaired reads separately
             unpaired1=temp("trimmed/unpaired/{sample}.R1.fastq.gz"),
             unpaired2=temp("trimmed/unpaired/{sample}.R2.fastq.gz"),
-            merged=temp("trimmed/pe/{sample}.merged.fastq"),
+            #merged=temp("trimmed/pe/{sample}.merged.fastq"),
             failed=temp("trimmed/pe/{sample}.failed.fastq"),
-            html="report/pe/{sample}.html",
-            json="report/pe/{sample}.json"
+            html="trimmed/report/{sample}.html",
+            json="trimmed/report/{sample}.json"
         log:
-            "logs/fastp/pe/{sample}.log"
+            "trimmed/log/{sample}.fastp_pe.log"
         params:
             adapters="--adapter_sequence ACGGCTAGCTA --adapter_sequence_r2 AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC",
             extra="--merge"
