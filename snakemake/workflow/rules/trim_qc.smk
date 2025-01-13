@@ -2,32 +2,38 @@ import sys
 
 if config['PAIR_END']:
     rule fastp_pe:
-            input:
-                r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
-                r2="fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz"
-            output:
-                r1=temp("trimmed/{sample}.R1.fastq.gz"),
-                r2=temp("trimmed/{sample}.R2.fastq.gz"),
-                r1_unpaired=temp("trimmed/unpaired/{sample}.R1.fastq.gz"),
-                r2_unpaired=temp("trimmed/unpaired/{sample}.R2.fastq.gz"),
-                html="trimmed/report/{sample}.html",
-                json="trimmed/report/{sample}.json"
-            conda:
-                "../envs/fastp.yaml"
-            params:
-                extra="--adapter_fasta " + config['ADAPTORS'] + " --detect_adapter_for_pe",
-            resources:
-                mem_mb=lambda wildcards, attempt: attempt * 1000
-            threads:
-                4
-            log:
-                "trimmed/log/{sample}.trim.log"
-            benchmark:
-                "trimmed/log/{sample}.trim.log.benchmark"
-            shell:
-                "fastp -i {input.r1} -I {input.r2} -o {output.r1} -O {output.r2} \
-                -j {output.r1}.json -h {output.r1}.html -R {wildcards.sample} \
-                -w {threads} {params.extra} &> {log}"  # default min-len 15, -5, -3, window 4 , min 20Q, max 5N
+        """
+        Trim paired-end reads using fastp
+        default min-len 15
+        -5, -3, window 4 , min 20Q, max 5N
+        adaptors will be trimmed
+        """
+        input:
+            r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
+            r2="fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz"
+        output:
+            r1=temp("trimmed/{sample}.R1.fastq.gz"),
+            r2=temp("trimmed/{sample}.R2.fastq.gz"),
+            r1_unpaired=temp("trimmed/unpaired/{sample}.R1.fastq.gz"),
+            r2_unpaired=temp("trimmed/unpaired/{sample}.R2.fastq.gz"),
+            html="trimmed/report/{sample}.html",
+            json="trimmed/report/{sample}.json"
+        conda:
+            "../envs/fastp.yaml"
+        params:
+            extra="--adapter_fasta " + config['ADAPTORS'] + " --detect_adapter_for_pe",
+        resources:
+            mem_mb=lambda wildcards, attempt: attempt * 1000
+        threads:
+            4
+        log:
+            "trimmed/log/{sample}.trim.log"
+        benchmark:
+            "trimmed/log/{sample}.trim.log.benchmark"
+        shell:
+            "fastp -i {input.r1} -I {input.r2} -o {output.r1} -O {output.r2} \
+            -j {output.r1}.json -h {output.r1}.html -R {wildcards.sample} \
+            -w {threads} {params.extra} &> {log}"
     # rule Trimmomatic_PE:
     #         input:
     #             r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
