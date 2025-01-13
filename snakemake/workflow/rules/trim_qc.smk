@@ -1,29 +1,48 @@
 import sys
 
-
 if config['PAIR_END']:
-    rule Trimmomatic_PE:
+    rule fastp_pe:
         input:
-            r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
-            r2="fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz"
+            sample=["fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz", "fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz"]
         output:
-            r1=temp("trimmed/{sample}.R1.fastq.gz"),
-            r2=temp("trimmed/{sample}.R2.fastq.gz"),
-            r1_unpaired=temp("trimmed/unpaired/{sample}.R1.fastq.gz"),
-            r2_unpaired=temp("trimmed/unpaired/{sample}.R2.fastq.gz"),
-        params:
-            trimmer=["ILLUMINACLIP:" + config[
-                'ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
-        resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1000
-        threads:
-            4
+            trimmed=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R1.fastq.gz"], # how to temp()
+            # Unpaired reads separately
+            unpaired1=temp("trimmed/unpaired/{sample}.R1.fastq.gz"),
+            unpaired2=temp("trimmed/unpaired/{sample}.R2.fastq.gz"),
+            merged=temp("trimmed/pe/{sample}.merged.fastq"),
+            failed=temp("trimmed/pe/{sample}.failed.fastq"),
+            html="report/pe/{sample}.html",
+            json="report/pe/{sample}.json"
         log:
-            "trimmed/log/{sample}.trim.log"
-        benchmark:
-            "trimmed/log/{sample}.trim.log.benchmark"
+            "logs/fastp/pe/{sample}.log"
+        params:
+            adapters="--adapter_sequence ACGGCTAGCTA --adapter_sequence_r2 AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC",
+            extra="--merge"
+        threads: 2
         wrapper:
-            "v3.13.1/bio/trimmomatic/pe"
+            "v5.5.0/bio/fastp"
+    # rule Trimmomatic_PE:
+    #         input:
+    #             r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
+    #             r2="fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz"
+    #         output:
+    #             r1=temp("trimmed/{sample}.R1.fastq.gz"),
+    #             r2=temp("trimmed/{sample}.R2.fastq.gz"),
+    #             r1_unpaired=temp("trimmed/unpaired/{sample}.R1.fastq.gz"),
+    #             r2_unpaired=temp("trimmed/unpaired/{sample}.R2.fastq.gz"),
+    #         params:
+    #             trimmer=["ILLUMINACLIP:" + config[
+    #                 'ADAPTORS'] + ":2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:16 TOPHRED33"],
+    #         resources:
+    #             mem_mb=lambda wildcards, attempt: attempt * 1000
+    #         threads:
+    #             4
+    #         log:
+    #             "trimmed/log/{sample}.trim.log"
+    #         benchmark:
+    #             "trimmed/log/{sample}.trim.log.benchmark"
+    #         wrapper:
+    #             "v3.13.1/bio/trimmomatic/pe"
 else:
     rule fastp_se:
         input:
@@ -45,7 +64,7 @@ else:
         threads:
             4
         wrapper:
-            "v4.7.2/bio/fastp"
+            "v5.5.0/bio/fastp" # "v4.7.2/bio/fastp"
     # rule Trimmomatic_SE:
     #     input:
     #         "fastq/{sample,[A-Za-z0-9_-]+}.fastq.gz",
