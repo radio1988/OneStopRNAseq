@@ -2,5 +2,11 @@
 ._*
 .snake*
 *__pycache__*
+*swp
+workflow/report.log
 script/.ipynb_checkpoints/
+workflow/resources/gsea_db/arabidopsis_thaliana/
+workflow/resources/gsea_db/saccharomyces_cerevisiae/gsea_db/Hcm1.gmt
+workflow/workflow.log
+workflow/resources/gsea_db/mus_musculus/gsea_db/all/
 
