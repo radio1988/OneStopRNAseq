@@ -416,6 +416,8 @@ def GSEA_OUTPUT(config):
             if f.endswith('.gmt'):
                 gsea_dbs.append(f)
         gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
+        if len(gsea_dbs) < 1:
+            sys.exit("No gsea databases found in " + config['GSEA_DB_PATH'])
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
             L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=CONTRASTS_DE,db=gsea_dbs)
         else:
