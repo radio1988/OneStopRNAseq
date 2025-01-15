@@ -12,8 +12,10 @@ r1_zip_path = sys.argv[1]  # "folder.zip"
 r2_zip_path = sys.argv[2]  # "folder.zip"
 
 # File inside the ZIP to read
-r1_file_path = r1_zip_path.replace(".zip", "") + "/fastqc_data.txt"
-r2_file_path = r2_zip_path.replace(".zip", "") + "/fastqc_data.txt"
+r1_base_name = os.path.basename(r1_zip_path)
+r2_base_name = os.path.basename(r2_zip_path)
+r1_file_path = r1_base_name.replace(".zip", "") + "/fastqc_data.txt"
+r2_file_path = r2_base_name.replace(".zip", "") + "/fastqc_data.txt"
 
 r1_total_sequences = 0
 r2_total_sequences = 0
