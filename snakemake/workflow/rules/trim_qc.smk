@@ -144,7 +144,7 @@ if config['PAIR_END']:
         log:
             "fastqc/details_raw/log/{sample}.check.log"
         shell:
-            "python ../script/check_r1_r2.py {input.r1} {input.r2} &> {log} && touch {output}"
+            "python workflow/script/check_r1_r2.py {input.r1} {input.r2} &> {log} && touch {output}"
 
 
 rule MultiQC_Raw:
