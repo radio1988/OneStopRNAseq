@@ -2,6 +2,7 @@ def checkFileInput(wildcards):
     check = "fastqc/CheckFile/CheckFile.{sample}.txt" if config['START'] == 'FASTQ' else 'Workflow_DAG.all.pdf'
     return check
 
+localrules: Create_DAG
 
 rule DESeq2:
     input:

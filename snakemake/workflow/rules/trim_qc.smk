@@ -131,6 +131,7 @@ rule FastQC_Raw:
 
 
 if config['PAIR_END']:
+    localrules: Check_R1_R2
     rule Check_R1_R2:
         input:
             r1="fastqc/details_raw/{sample}.R1_fastqc.zip",
