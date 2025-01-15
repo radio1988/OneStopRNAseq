@@ -39,7 +39,8 @@ if config['ALIGNER'] == 'STAR' and config['START'] == 'FASTQ':  # only when FAST
             gtf=config["GTF"],
             reads=["trimmed/{sample}.R1.fastq.gz", "trimmed/{sample}.R2.fastq.gz"] \
                 if config['PAIR_END'] else \
-                "trimmed/{sample}.fastq.gz"
+                "trimmed/{sample}.fastq.gz",
+            r1_r2_check="fastqc/details_raw/{sample}.r1r2_checked" if config['PAIR_END'] else ""
         output:
             log="mapped_reads/{sample}.Log.final.out",
             bam=temp("mapped_reads/{sample}.bam"),
