@@ -78,10 +78,6 @@ def target_input(config, ASCN):
         l.append("fastqc/fastqc.zip")
         l.append("fastqc/CheckFile/all.txt")  # check fastq.gz size after trimming, if empty, abort
 
-        if config['PAIR_END']:
-            # if r1 != r2, abort
-            l.extend(["fastqc/details_raw/{sample}.r1r2_checked".format(sample=sample) for sample in SAMPLES])
-
         if config['CleanUpRNAseqQC']:
             l.append("CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf")  # QC
 

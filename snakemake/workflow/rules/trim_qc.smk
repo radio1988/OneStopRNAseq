@@ -11,7 +11,8 @@ if config['PAIR_END']:
         """
         input:
             r1="fastq/{sample,[A-Za-z0-9_-]+}.R1.fastq.gz",
-            r2="fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz"
+            r2="fastq/{sample,[A-Za-z0-9_-]+}.R2.fastq.gz",
+            r1_r2_check="fastqc/details_raw/{sample}.r1r2_checked"  # if r1 != r2, abort
         output:
             r1=temp("trimmed/{sample}.R1.fastq.gz"),
             r2=temp("trimmed/{sample}.R2.fastq.gz"),
