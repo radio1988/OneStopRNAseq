@@ -128,6 +128,7 @@ rule FastQC_Raw:
     shell:
         "fastqc -t {threads} {input} -o fastqc/details_raw &> {log};"
 
+
 if config['PAIR_END']:
     rule Check_R1_R2:
         input:

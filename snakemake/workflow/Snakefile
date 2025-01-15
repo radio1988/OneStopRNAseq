@@ -79,7 +79,8 @@ def target_input(config, ASCN):
         l.append("fastqc/CheckFile/all.txt")  # check fastq.gz size after trimming, if empty, abort
 
         if config['PAIR_END']:
-            l.extend(["fastqc/details_raw/{sample}.r1r2_checked" for sample in SAMPLES]) # if r1 != r2, abort
+            # if r1 != r2, abort
+            l.extend(["fastqc/details_raw/{sample}.r1r2_checked".format(sample=sample) for sample in SAMPLES])
 
         if config['CleanUpRNAseqQC']:
             l.append("CleanUpRNAseqQC/Fig7.PCA.showing.sample.variability.pdf")  # QC
@@ -109,16 +110,15 @@ def target_input(config, ASCN):
                 for strand in config['STRAND']])
 
         if config['RMATS_ANALYSIS']:
-            l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.sig.tsv'. \
-                          format(ascn=ascn) for ascn in range(1,1 + ASCN)])
+            l.extend(['rMATS.{ascn}/output/Results_JunctionCountsBased/RI.MATS.JC.sig.tsv'.format(ascn=ascn) \
+                      for ascn in range(1,1 + ASCN)])
 
         if config['DEXSEQ_ANALYSIS']:
             l.append(["DEXSeq/contrast{ascn}/contrast{ascn}.RData". \
                           format(ascn=ascn) for ascn in range(1,ASCN + 1)])
 
         if config['ASE_ANALYSIS']:
-            l.extend(["GATK_ASEReadCounter/{sample}.table". \
-                          format(sample=sample) for sample in SAMPLES])
+            l.extend(["GATK_ASEReadCounter/{sample}.table".format(sample=sample) for sample in SAMPLES])
 
     if config['START'] in ['FASTQ', 'BAM', 'COUNT']:
         if config['DESEQ2_ANALYSIS']:
@@ -130,12 +130,12 @@ def target_input(config, ASCN):
         l.extend(GSEA_SINGLEBUBBLE_OUTPUT(config))
         l.append('gsea/gsea_bubble.tar.gz')
 
-    return (l)
+    return l
 
 
 rule targets:
     input:
-        target_input(config,ASCN)
+        target_input(config, ASCN)
     threads:
         1
     resources:
