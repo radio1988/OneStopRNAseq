@@ -44,6 +44,9 @@ with zipfile.ZipFile(r2_zip_path, 'r') as zip_file:
         else:
             sys.exit("fastqc_data.txt does not contain 'Total Sequences'")
 
+print("R1: ", r1_total_sequences)
+print("R2: ", r2_total_sequences)
+
 if r1_total_sequences != r2_total_sequences:
     sys.exit("R1 and R2 files have different number of sequences")
 else:
