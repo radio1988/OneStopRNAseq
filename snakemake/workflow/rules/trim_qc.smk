@@ -128,6 +128,22 @@ rule FastQC_Raw:
     shell:
         "fastqc -t {threads} {input} -o fastqc/details_raw &> {log};"
 
+if config['PAIR_END']:
+    rule Check_R1_R2:
+        input:
+            r1="fastqc/details_raw/{sample}.R1_fastqc.zip",
+            r2="fastqc/details_raw/{sample}.R2_fastqc.zip"
+        output:
+            "fastqc/details_raw/{sample}.r1r2_checked",
+        resources:
+            mem_mb=lambda wildcards, attempt: attempt * 1000
+        threads:
+            1
+        log:
+            "fastqc/details_raw/log/{sample}.check.log"
+        shell:
+            "python ../script/check_r1_r2.py {input.r1} {input.r2} &> {log} && touch {output}"
+
 
 rule MultiQC_Raw:
     input:
