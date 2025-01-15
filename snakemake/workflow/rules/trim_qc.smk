@@ -66,8 +66,8 @@ else:
         output:
             trimmed=temp("trimmed/{sample}.fastq.gz"),
             failed=temp("trimmed/failed/{sample}.fastq.gz"),
-            html="trimmed/{sample}.html",
-            json="trimmed/{sample}.json"
+            html="trimmed/report/{sample}.html",
+            json="trimmed/report/{sample}.json"
         log:
             "trimmed/log/{sample}.trim.log"
         benchmark:
