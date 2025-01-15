@@ -6,6 +6,7 @@ If yes, print "R1 and R2 files have the same number of sequences"
 import zipfile
 import re
 import sys
+import os
 
 # Path to the ZIP archive
 r1_zip_path = sys.argv[1]  # "folder.zip"
