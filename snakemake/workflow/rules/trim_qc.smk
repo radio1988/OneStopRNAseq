@@ -143,7 +143,7 @@ if config['PAIR_END']:
         threads:
             1
         log:
-            "fastqc/details_raw/log/{sample}.check.log"
+            "fastqc/details_raw/{sample}.r1r2_checked.log",
         shell:
             "python workflow/script/check_r1_r2.py {input.r1} {input.r2} &> {log} && touch {output}"
 
