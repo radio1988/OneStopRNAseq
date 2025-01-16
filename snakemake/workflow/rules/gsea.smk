@@ -78,7 +78,7 @@ rule GSEA_compression:
     threads:
         4
     benchmark:
-        "gsea/log/{contrast}.tar.gz.benchmark
+        "gsea/log/{contrast}.tar.gz.benchmark"
     shell:
         "tar cf - -C gsea {wildcards.contrast} | pigz -p {threads} > {output} "
 

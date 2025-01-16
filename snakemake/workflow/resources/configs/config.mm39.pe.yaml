@@ -54,7 +54,7 @@ independentFilter: 'FALSE'
 blackSamples: 'sampleXXX,sampleYYY' # list of sample names to be excluded in DESeq2 analysis, optional
 
 ## WHEN START is RNK
-GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/test
+GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/gsea_db
 RNKS:
   - name1.rnk.txt          # path ./meta/name1.rnk.txt
   - name2.rnk.txt          # path ./meta/name2.rnk.txt
