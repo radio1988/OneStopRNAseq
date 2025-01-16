@@ -77,8 +77,10 @@ rule GSEA_compression:
         mem_mb=1000
     threads:
         4
+    benchmark:
+        "gsea/log/{contrast}.tar.gz.benchmark
     shell:
-        "tar cf - gsea/{wildcards.contrast} | pigz -p {threads} > {output} "
+        "tar cf - -C gsea {wildcards.contrast} | pigz -p {threads} > {output} "
 
 rule GSEA_SingleBubblePlot:
     input:
@@ -128,9 +130,11 @@ if config["GSEA_ANALYSIS"]:
             'gsea/gsea_bubble/log/MultiBubblePlot.done'
         output:
             'gsea/gsea_bubble.tar.gz'
+        benchmark:
+            'gsea/log/gsea_bubble.tar.gz.benchmark'
         resources:
             mem_mb=1000
         threads:
             4
         shell:
-            "tar cf - gsea/gsea_bubble | pigz -p {threads} > {output} "
+            "tar cf - -C gsea gsea_bubble | pigz -p {threads} > {output} "
