@@ -416,7 +416,8 @@ for srr in srrList:
                             current_time = now.strftime("%H:%M:%S")
                             f.write(current_time + " " + srr + " dumped. Move on.\n")
         if resubmit:
-            os.remove(dumpLogFile)
+            # os.remove(dumpLogFile)
+            os.rename(dumpLogFile, dumpLogFile + ".failed")
             with open(logFile, "a") as f:
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
