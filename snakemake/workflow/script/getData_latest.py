@@ -241,7 +241,8 @@ for srr in srrList:
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
                 f.write(current_time + " prefetch job reach 9000-second limit, resubmit job to hpc.\n")
-                os.remove(prefetchLogFile)
+                # os.remove(prefetchLogFile)
+                os.rename(prefetchLogFile, prefetchLogFile + ".failed")
                 subprocess.call(cmd, shell=True)
 
         if timer > 27000:
