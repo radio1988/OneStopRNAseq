@@ -152,7 +152,7 @@ for srr in srrList:
     # jobCheckFile = fastq_folder + "/job_prefetch_" + srx + "_" + srr + ".txt"
     cmd_clearPrefetchLogFile  = "rm " + prefetchLogFile # Clear potential log file before submit new job
     cmd_clearPrefetchPrevious = "rm " + fastq_folder + "/" + srr + ".sra*" # get rid of srx.sra* files otherwise may prevent new prefetch from executing.
-    cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=500] -o " + prefetchLogFile + " \"prefetch -f yes --max-size 200GB -o " + fastq_folder + "/" + srr + ".sra " + srr + "\""
+    cmd = "bsub -q short -n 1 -W 4:00 -R rusage[mem=500] -o " + prefetchLogFile + " \"ls /pi/hira.goel-umw/Kai && prefetch -f yes --max-size 200GB -o " + fastq_folder + "/" + srr + ".sra " + srr + "\""
     
     with open(logFile, "a") as f:
         now = datetime.now()
