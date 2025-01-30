@@ -19,6 +19,9 @@ import subprocess
 from datetime import datetime
 from os.path import exists
 import pathlib
+import random
+import string
+import shutil
 
 srx = sys.argv[1]
 sampleName = sys.argv[2]
@@ -184,7 +187,8 @@ for srr in srrList:
                         now = datetime.now()
                         current_time = now.strftime("%H:%M:%S")
                         f.write(current_time + " prefetch " + prefetchLogFile + " complete.\n")
-                    # since we also check the res file, so the below check of the log file is redundant
+                    # since we also check the res file, so the below check of the log file is redundant 
+                    time.sleep(120)
                     for line in open(prefetchLogFile):
                         if "Successfully completed." in line:
                             with open(logFile, "a") as f:
@@ -198,6 +202,8 @@ for srr in srrList:
                             prefetchError = 0
                             break
                     if prefetchError == 1:
+                        random_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+                        shutil.copy(prefetchLogFile, prefetchLogFile + ".failed." + random_suffix)
                         with open(logFile, "a") as f:
                             now = datetime.now()
                             current_time = now.strftime("%H:%M:%S")
@@ -206,7 +212,7 @@ for srr in srrList:
                         break
 
         if prefetchLogComplete and not prefetchError:
-            time.sleep(10) # wait for 10 seconds for the .sra file to be ready.
+            time.sleep(60) # wait for 60 seconds for the .sra file to be ready.
             if not os.path.exists(prefetchSraFile):
                 prefetchError = 1
                 resubmit = resubmit + 1
@@ -242,7 +248,9 @@ for srr in srrList:
                 current_time = now.strftime("%H:%M:%S")
                 f.write(current_time + " prefetch job reach 9000-second limit, resubmit job to hpc.\n")
                 # os.remove(prefetchLogFile)
-                os.rename(prefetchLogFile, prefetchLogFile + ".failed")
+                random_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+                os.rename(prefetchLogFile, prefetchLogFile + ".failed." + random_suffix) # add a random suffix
+                
                 subprocess.call(cmd, shell=True)
 
         if timer > 27000:
