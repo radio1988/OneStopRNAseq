@@ -218,7 +218,9 @@ def DESeq2_input(config):
 
 
 def input_rnk_fname1(wildcards, config):
-    if config['START'] == 'RNK':
+    if config['START'] == 'RNK' and 'MSHEET' in config and config['MSHEET']:
+        fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
+    elif config['START'] == 'RNK':  # not MSHEET
         fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
     elif config['START'] == 'FASTQ' and config['CleanUpRNAseqCorrection']:
         fname1 = "CleanUpRNAseqDE/rnk/" + wildcards['fname'] + ".rnk"
@@ -409,6 +411,9 @@ def check_meta_data(config):
 
 
 def GSEA_OUTPUT(config):
+    """
+    GSEA_OUTPUT: smart to get all possible output files for GSEA
+    """
     L = []
     if config["GSEA_ANALYSIS"]:
         gsea_dbs = []
@@ -420,8 +425,10 @@ def GSEA_OUTPUT(config):
             sys.exit("No gsea databases found in " + config['GSEA_DB_PATH'])
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
             L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=CONTRASTS_DE,db=gsea_dbs)
-        else:
+        elif config["START"] == "RNK":
             L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=config["RNKS"],db=gsea_dbs)
+        else:
+            sys.exit("config['START'] not recognized")
     else:
         L = ["Workflow_DAG.all.pdf"]
     return L

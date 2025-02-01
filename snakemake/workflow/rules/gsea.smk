@@ -2,6 +2,33 @@
 GSEA
 GSEA_Bubble
 """
+import pandas as pd
+import os
+def split_msheet_rnk_file(config):
+    if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
+        # check config
+        if len(config['RNKS']) > 1:
+            raise ValueError("If MSHEET is True, only one RNK file is allowed")
+
+        msheet_fname = config['RNKS'][0]
+        if not msheet_fname.endswith(".xlsx"):
+            raise ValueError("If MSHEET is True, the RNK file must be xlsx")
+
+        #split sheets
+        os.makedirs("meta", exist_ok = True)  # todo: relative directory?
+        dfs = pd.read_excel(msheet_fname, sheet_name = None)
+        rnk_file_names = []
+        for sheet_name, sheet_df in dfs.items():
+            comparison_name = sheet_df.columns[0]
+            sheet_df.to_csv(f"meta/{comparison_name}.txt", sep = "\t", index = False)
+            rnk_file_names.append(f"meta/{comparison_name}.txt")
+
+    return rnk_file_names
+
+
+if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
+    rnk_file_names = split_msheet_rnk_file(config)
+    config['RNKS'] = rnk_file_names  # todo: does it work?
 
 
 rule GSEA:
