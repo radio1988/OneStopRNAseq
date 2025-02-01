@@ -4,10 +4,8 @@ GSEA_Bubble
 """
 import pandas as pd
 import os
-from pathlib import Path
 
 def split_msheet_rnk_file(config):
-    print(Path.cwd())
     if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
         # check config
         if len(config['RNKS']) > 1:
@@ -18,13 +16,13 @@ def split_msheet_rnk_file(config):
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
         #split sheets
-        os.makedirs("meta", exist_ok = True)  # todo: relative directory?
+        os.makedirs("meta", exist_ok = True)  # Path.cwd is analysis root
         dfs = pd.read_excel(msheet_fname, sheet_name = None)
         rnk_file_names = []
         for sheet_name, sheet_df in dfs.items():
             comparison_name = sheet_df.columns[0]
-            sheet_df.to_csv(f"meta/{comparison_name}.txt", sep = "\t", index = False)
-            rnk_file_names.append(f"{comparison_name}.txt")
+            sheet_df.to_csv(f"meta/{comparison_name}.rnk.txt", sep = "\t", index = False)
+            rnk_file_names.append(f"meta/{comparison_name}.rnk.txt")
 
     print(rnk_file_names)
     return rnk_file_names
