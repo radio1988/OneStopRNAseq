@@ -22,7 +22,7 @@ def split_msheet_rnk_file(config):
         for sheet_name, sheet_df in dfs.items():
             comparison_name = sheet_df.columns[0]
             sheet_df.to_csv(f"meta/{comparison_name}.rnk.txt", sep = "\t", index = False)
-            rnk_file_names.append(f"meta/{comparison_name}.rnk.txt")
+            rnk_file_names.append(f"{comparison_name}.rnk.txt")
 
     print(rnk_file_names)
     return rnk_file_names
@@ -30,7 +30,7 @@ def split_msheet_rnk_file(config):
 
 if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
     rnk_file_names = split_msheet_rnk_file(config)
-    config['RNKS'] = rnk_file_names  # todo: does it work?
+    config['RNKS'] = rnk_file_names  # only basename of rnk files
 
 
 rule GSEA:
