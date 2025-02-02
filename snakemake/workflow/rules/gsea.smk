@@ -21,6 +21,7 @@ def split_msheet_rnk_file(config):
         rnk_file_names = []
         for sheet_name, sheet_df in dfs.items():
             comparison_name = sheet_df.columns[0]
+            sheet_df.columns[0] = "# " + sheet_df.columns[0]  # add space to avoid conflict with GSEA
             sheet_df.to_csv(f"meta/{comparison_name}.rnk.txt", sep = "\t", index = False)
             rnk_file_names.append(f"{comparison_name}.rnk.txt")
 
@@ -31,6 +32,7 @@ def split_msheet_rnk_file(config):
 if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
     rnk_file_names = split_msheet_rnk_file(config)
     config['RNKS'] = rnk_file_names  # only basename of rnk files
+    config['']
 
 
 rule GSEA:
