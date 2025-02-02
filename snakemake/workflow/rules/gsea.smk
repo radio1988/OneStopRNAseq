@@ -37,7 +37,6 @@ def split_msheet_rnk_file(config):
 if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
     rnk_file_names = split_msheet_rnk_file(config)
     config['RNKS'] = rnk_file_names  # only basename of rnk files
-    config['']
 
 
 rule GSEA:
