@@ -434,7 +434,6 @@ def split_msheet_rnk_file(config):
             sheet_df.to_csv(f"meta/{comparison_name}.rnk.txt", sep = "\t", index = False)
             rnk_file_names.append(f"{comparison_name}.rnk.txt")
 
-    print(rnk_file_names)
     return rnk_file_names
 
 def GSEA_OUTPUT(config):
