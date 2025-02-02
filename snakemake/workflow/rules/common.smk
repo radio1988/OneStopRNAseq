@@ -436,7 +436,7 @@ def split_msheet_rnk_file(config):
             comparison_name = sheet_df.columns[0].replace("#", "").strip()
             rnk_file_names.append(f"{comparison_name}.rnk.txt")
             single_sheet_fname = f"meta/{comparison_name}.rnk.txt"
-            if single_sheet_fname.exists():
+            if Path(single_sheet_fname).exists():
                 saved = pd.read_table(single_sheet_fname)
                 print(saved.head())
                 if all(sheet_df.iloc[:, 1] == saved.iloc[:, 1]):
