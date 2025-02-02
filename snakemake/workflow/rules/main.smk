@@ -84,9 +84,7 @@ rule reset:
         rm -rf report.log report.html   workflow_full_DAG.pdf 
         rm -f meta/strandness.detected.txt  meta/decoder.txt meta/read_length.median.txt 
         rm -f meta/read_length.max.txt
-        
-        rm -rf .snakemake
-        
+                
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
