@@ -439,7 +439,7 @@ def GSEACOMPRESS_OUTPUT(config):
     if config["GSEA_ANALYSIS"]:
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
             L = expand("gsea/{contrast}.tar.gz",contrast=CONTRASTS_DE)
-        else:
+        else: # todo: here
             L = expand("gsea/{contrast}.tar.gz",contrast=config["RNKS"])
     else:
         L = ["Workflow_DAG.all.pdf"]
