@@ -20,8 +20,13 @@ def split_msheet_rnk_file(config):
         dfs = pd.read_excel(msheet_fname, sheet_name = None)
         rnk_file_names = []
         for sheet_name, sheet_df in dfs.items():
-            comparison_name = sheet_df.columns[0]
-            sheet_df.columns[0] = "# " + sheet_df.columns[0]  # add space to avoid conflict with GSEA
+            sheet_df.columns = sheet_df.columns.str.strip()
+            sheet_df.columns = sheet_df.columns.str.replace(" ", "_")
+            # column name need # for GSEA to recognize
+            if not sheet_df.columns[0].startswith("#"):
+                sheet_df.columns[0] = "# " + sheet_df.columns[0]  # add space to avoid conflict with GSEA
+            # comparison_name for snakemake can't have #
+            comparison_name = sheet_df.columns[0].replace("#", "")
             sheet_df.to_csv(f"meta/{comparison_name}.rnk.txt", sep = "\t", index = False)
             rnk_file_names.append(f"{comparison_name}.rnk.txt")
 
