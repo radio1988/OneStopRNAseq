@@ -67,6 +67,11 @@ else:
     ASCN = 0
 
 
+# For MSHEET RNK START GSEA, split RNK files before DAG is built
+if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
+    rnk_file_names = split_msheet_rnk_file(config)
+    config['RNKS'] = rnk_file_names  # only basename of rnk files
+
 def target_input(config, ASCN):
     """
     - define target results to generate
