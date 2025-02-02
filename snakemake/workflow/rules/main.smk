@@ -69,11 +69,6 @@ rule Create_DAG:
 
 rule reset:
     run:
-        split_msheet_rnk_file(config) # change config['RNKS']
-        print(config['RNKS'])
-        # if "MSHEET" in config and config["MSHEET"] and config["START"] == 'RNK':
-        #     shell(f"rm -rf {' '.join(config['RNKS'])}")
-
         shell(f"""
                 echo 'deleting result and logs..'
                 rm -rf lsf.log log/ meta/configCheck.log meta/configCheck.txt meta/log/ workflow.log 
