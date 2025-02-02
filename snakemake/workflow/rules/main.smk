@@ -68,8 +68,8 @@ rule Create_DAG:
 
 
 rule reset:
-    shell:
-        """
+    run:
+        shell(f"""
         echo 'deleting result and logs..'
         rm -rf lsf.log log/ meta/configCheck.log meta/configCheck.txt meta/log/ workflow.log 
         rm -rf dag rulegraph rulegraph.pdf workflow_full_DAG.pdf workflow_full_DAG.pdf.log
@@ -87,4 +87,9 @@ rule reset:
                 
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
-        """
+        """)
+
+        if "MSHEET" in config and config["MSHEET"] and config["START"] == 'RNK':
+            files = split_msheet_rnk_files(config)
+            shell(f"rm -rf {' '.join(files)}")
+
