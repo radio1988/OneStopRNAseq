@@ -438,7 +438,6 @@ def split_msheet_rnk_file(config):
             single_sheet_fname = f"meta/{comparison_name}.rnk.txt"
             if Path(single_sheet_fname).exists():
                 saved = pd.read_table(single_sheet_fname)
-                print(saved.head())
                 if all(sheet_df.iloc[:, 1] == saved.iloc[:, 1]):
                     continue  # skip if the same to avoid re-run rule GSEA
             sheet_df.to_csv(single_sheet_fname, sep = "\t", index = False)
