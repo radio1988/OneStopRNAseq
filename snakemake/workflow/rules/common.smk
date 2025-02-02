@@ -1,9 +1,11 @@
-import pandas as pd
 import sys
 import re
 import os
+from pathlib import Path
 import math
 import shutil
+import pandas as pd
+
 
 
 def check_config(config):
@@ -22,8 +24,10 @@ def check_config(config):
         sys.exit("config['ALIGNER'] not STAR nor HISAT2")
 
 
-# SPECIES and Analysis options
-# Not now
+def checkFileInput(wildcards):
+    check = "fastqc/CheckFile/CheckFile.{sample}.txt" if config['START'] == 'FASTQ' else 'workflow_full_DAG.pdf'
+    return check
+
 
 def uncompress_gzip_genome_files(config):
     """
@@ -258,7 +262,6 @@ def input_rnk_fname2(wildcards, config):
     return rnk_fname1_to_fname2(fname1)
 
 
-### Get parameters ###
 RMATS_STRANDNESS = {0: 'fr-unstranded', 1: 'fr-firststrand', 2: 'fr-secondstrand'}
 
 
@@ -431,8 +434,14 @@ def split_msheet_rnk_file(config):
                 sheet_df.columns = ["# " + sheet_df.columns[0]] + sheet_df.columns[1:].to_list() # index element is immutable
             # comparison_name for snakemake can't have #
             comparison_name = sheet_df.columns[0].replace("#", "").strip()
-            sheet_df.to_csv(f"meta/{comparison_name}.rnk.txt", sep = "\t", index = False)
             rnk_file_names.append(f"{comparison_name}.rnk.txt")
+            single_sheet_fname = f"meta/{comparison_name}.rnk.txt"
+            if single_sheet_fname.exists():
+                saved = pd.read_table(single_sheet_fname)
+                print(saved.head())
+                if all(sheet_df.iloc[:, 1] == saved.iloc[:, 1]):
+                    continue  # skip if the same to avoid re-run rule GSEA
+            sheet_df.to_csv(single_sheet_fname, sep = "\t", index = False)
 
     return rnk_file_names
 
