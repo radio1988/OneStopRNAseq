@@ -419,7 +419,7 @@ def split_msheet_rnk_file(config):
             raise ValueError("If MSHEET is True, only one RNK file is allowed")
 
         msheet_fname = config['RNKS'][0]
-        if not msheet_fname.endswith(".xlsx"):
+        if not msheet_fname.endswith(".xlsx") and 'repeated_split_msheet_rnk_file_run' not in config:
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
         #split sheets
