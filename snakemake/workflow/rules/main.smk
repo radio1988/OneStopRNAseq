@@ -1,5 +1,3 @@
-
-
 localrules: Create_DAG, reset
 
 rule DESeq2:
@@ -72,16 +70,23 @@ rule Create_DAG:
 rule reset:
     shell:
         """
-        echo 'deleting files..'
-        rm -rf lsf.log  meta/log/ gsea_bubble/ log/ workflow.log fastqc/ bam_qc/ trimmed/ mapped_reads/ sorted_reads/ bam_qc/ bigWig/ \
-        feature_count/ fastq_salmon SalmonTE_output/ DESeq2/ salmon/ gsea/ gsea_compressed/ \
-        GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ CleanUpRNAseqQC/ CleanUpRNAseqDE/ \
-        _STARgenome _STARtmp \
-        feature_count_gene_level hisat2 stringtie \
-        lsf.log Log.out nohup.out report.log report.html  dag workflow_full_DAG.pdf \
-        rulegraph  rulegraph.pdf report.log workflow.log log/ \
-        meta/strandness.detected.txt  meta/decoder.txt meta/read_length.median.txt \
-        meta/read_length.max.txt workflow_full_DAG.pdf.log
+        echo 'deleting result and logs..'
+        rm -rf lsf.log log/ meta/configCheck.log meta/configCheck.txt meta/log/ workflow.log 
+        rm -rf dag rulegraph rulegraph.pdf workflow_full_DAG.pdf workflow_full_DAG.pdf.log
+        rm -rf feature_count/ DESeq2/ gsea/ feature_count_gene_level/
+        rm -rf trimmed/ fastqc/ mapped_reads/ sorted_reads/ bigWig/ bam_qc/
+        rm -rf CleanUpRNAseqQC/ CleanUpRNAseqDE/
+        rm -rf fastq_salmon/   SalmonTE_output/
+        rm -rf salmon/ DEXSeq_count/  DEXSeq/ rMATS.*/
+        rm -rf GATK_ASEReadCounter/   
+        rm -rf _STARgenome _STARtmp 
+        rm -rf hisat2 stringtie 
+        rm -rf report.log report.html   workflow_full_DAG.pdf 
+        rm -f meta/strandness.detected.txt  meta/decoder.txt meta/read_length.median.txt 
+        rm -f meta/read_length.max.txt
+        
+        rm -rf .snakemake
+        
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """
