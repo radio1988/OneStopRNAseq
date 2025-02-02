@@ -415,6 +415,7 @@ def check_meta_data(config):
 def split_msheet_rnk_file(config):
     if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
         # check config
+        print(config['RNKS']) # test
         if len(config['RNKS']) > 1:
             raise ValueError("If MSHEET is True, only one RNK file is allowed")
 

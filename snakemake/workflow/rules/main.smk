@@ -69,27 +69,26 @@ rule Create_DAG:
 
 rule reset:
     run:
-        shell(f"""
-        echo 'deleting result and logs..'
-        rm -rf lsf.log log/ meta/configCheck.log meta/configCheck.txt meta/log/ workflow.log 
-        rm -rf dag rulegraph rulegraph.pdf workflow_full_DAG.pdf workflow_full_DAG.pdf.log
-        rm -rf feature_count/ DESeq2/ gsea/ feature_count_gene_level/
-        rm -rf trimmed/ fastqc/ mapped_reads/ sorted_reads/ bigWig/ bam_qc/
-        rm -rf CleanUpRNAseqQC/ CleanUpRNAseqDE/
-        rm -rf fastq_salmon/   SalmonTE_output/
-        rm -rf salmon/ DEXSeq_count/  DEXSeq/ rMATS.*/
-        rm -rf GATK_ASEReadCounter/   
-        rm -rf _STARgenome _STARtmp 
-        rm -rf hisat2 stringtie 
-        rm -rf report.log report.html   workflow_full_DAG.pdf 
-        rm -f meta/strandness.detected.txt  meta/decoder.txt meta/read_length.median.txt 
-        rm -f meta/read_length.max.txt
-                
-        echo 'unlocking dir..'
-        snakemake -j 1 --unlock
-        """)
-
         if "MSHEET" in config and config["MSHEET"] and config["START"] == 'RNK':
             files = split_msheet_rnk_file(config)
             shell(f"rm -rf {' '.join(files)}")
 
+        shell(f"""
+                echo 'deleting result and logs..'
+                rm -rf lsf.log log/ meta/configCheck.log meta/configCheck.txt meta/log/ workflow.log 
+                rm -rf dag rulegraph rulegraph.pdf workflow_full_DAG.pdf workflow_full_DAG.pdf.log
+                rm -rf feature_count/ DESeq2/ gsea/ feature_count_gene_level/
+                rm -rf trimmed/ fastqc/ mapped_reads/ sorted_reads/ bigWig/ bam_qc/
+                rm -rf CleanUpRNAseqQC/ CleanUpRNAseqDE/
+                rm -rf fastq_salmon/   SalmonTE_output/
+                rm -rf salmon/ DEXSeq_count/  DEXSeq/ rMATS.*/
+                rm -rf GATK_ASEReadCounter/   
+                rm -rf _STARgenome _STARtmp 
+                rm -rf hisat2 stringtie 
+                rm -rf report.log report.html   workflow_full_DAG.pdf 
+                rm -f meta/strandness.detected.txt  meta/decoder.txt meta/read_length.median.txt 
+                rm -f meta/read_length.max.txt
+                        
+                echo 'unlocking dir..'
+                snakemake -j 1 --unlock
+        """)
