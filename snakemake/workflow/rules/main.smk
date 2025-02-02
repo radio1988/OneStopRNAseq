@@ -1,5 +1,5 @@
 def checkFileInput(wildcards):
-    check = "fastqc/CheckFile/CheckFile.{sample}.txt" if config['START'] == 'FASTQ' else 'Workflow_DAG.all.pdf'
+    check = "fastqc/CheckFile/CheckFile.{sample}.txt" if config['START'] == 'FASTQ' else 'workflow_full_DAG.pdf'
     return check
 
 localrules: Create_DAG
@@ -61,13 +61,13 @@ rule Create_DAG:
     threads:
         1
     output:
-        "Workflow_DAG.all.pdf",
+        "workflow_full_DAG.pdf",
         "rulegraph.pdf"
     log:
-        "Workflow_DAG.all.pdf.log"
+        "workflow_full_DAG.pdf.log"
     shell:
         "snakemake --dag targets > dag 2> {log};"
-        "cat dag|dot -Tpdf > Workflow_DAG.all.pdf 2>> {log};"
+        "cat dag|dot -Tpdf > workflow_full_DAG.pdf 2>> {log};"
         "snakemake  --rulegraph targets > rulegraph; cat rulegraph| dot -Tpdf > rulegraph.pdf 2>> {log}"
 
 
@@ -80,10 +80,10 @@ rule reset:
         GATK_ASEReadCounter/ DEXSeq_count/  DEXSeq/ rMATS.*/ CleanUpRNAseqQC/ CleanUpRNAseqDE/ \
         _STARgenome _STARtmp \
         feature_count_gene_level hisat2 stringtie \
-        lsf.log Log.out nohup.out report.log report.html  dag Workflow_DAG.all.pdf \
+        lsf.log Log.out nohup.out report.log report.html  dag workflow_full_DAG.pdf \
         rulegraph  rulegraph.pdf report.log workflow.log log/ \
         meta/strandness.detected.txt  meta/decoder.txt meta/read_length.median.txt \
-        meta/read_length.max.txt Workflow_DAG.all.pdf.log
+        meta/read_length.max.txt workflow_full_DAG.pdf.log
         echo 'unlocking dir..'
         snakemake -j 1 --unlock
         """

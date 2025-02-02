@@ -457,7 +457,7 @@ def GSEA_OUTPUT(config):
         else:
             sys.exit("config['START'] not recognized")
     else:
-        L = ["Workflow_DAG.all.pdf"]
+        L = ["workflow_full_DAG.pdf"]
     return L
 
 
@@ -471,7 +471,7 @@ def GSEACOMPRESS_OUTPUT(config):
         else:
             raise Exception("config['START'] not recognized")
     else:
-        L = ["Workflow_DAG.all.pdf"]
+        L = ["workflow_full_DAG.pdf"]
     return L
 
 
@@ -483,5 +483,5 @@ def GSEA_SINGLEBUBBLE_OUTPUT(config):
         else:
             L = expand("gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=config["RNKS"])
     else:
-        L = ["Workflow_DAG.all.pdf"]
+        L = ["workflow_full_DAG.pdf"]
     return L

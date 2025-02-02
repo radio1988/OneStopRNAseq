@@ -77,7 +77,7 @@ def target_input(config, ASCN):
     - define target results to generate
     - check config logic error (in-compatibility)
     """
-    l = ["Workflow_DAG.all.pdf"]
+    l = ["workflow_full_DAG.pdf"]
 
     if config['START'] == 'FASTQ':
         l.append("fastqc/fastqc.zip")
