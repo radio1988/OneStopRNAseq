@@ -415,11 +415,11 @@ def check_meta_data(config):
 def split_msheet_rnk_file(config):
     if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
         # check config
-        if len(config['RNKS']) > 1 and 'repeated_split_msheet_rnk_file_run' not in config:
+        if len(config['RNKS']) > 1:
             raise ValueError("If MSHEET is True, only one RNK file is allowed")
 
         msheet_fname = config['RNKS'][0]
-        if not msheet_fname.endswith(".xlsx") and 'repeated_split_msheet_rnk_file_run' not in config:
+        if not msheet_fname.endswith(".xlsx"):
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
         #split sheets
@@ -443,7 +443,6 @@ def split_msheet_rnk_file(config):
                     continue  # skip if the same to avoid re-run rule GSEA
             sheet_df.to_csv(single_sheet_fname, sep = "\t", index = False)
 
-    config['repeated_split_msheet_rnk_file_run'] = True
     return rnk_file_names
 
 def GSEA_OUTPUT(config):

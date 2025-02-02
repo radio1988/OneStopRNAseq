@@ -69,9 +69,10 @@ rule Create_DAG:
 
 rule reset:
     run:
-        if "MSHEET" in config and config["MSHEET"] and config["START"] == 'RNK':
-            files = split_msheet_rnk_file(config)
-            shell(f"rm -rf {' '.join(files)}")
+        split_msheet_rnk_file(config) # change config['RNKS']
+        print(config['RNKS'])
+        # if "MSHEET" in config and config["MSHEET"] and config["START"] == 'RNK':
+        #     shell(f"rm -rf {' '.join(config['RNKS'])}")
 
         shell(f"""
                 echo 'deleting result and logs..'
