@@ -24,9 +24,9 @@ def split_msheet_rnk_file(config):
             sheet_df.columns = sheet_df.columns.str.replace(" ", "_")
             # column name need # for GSEA to recognize
             if not sheet_df.columns[0].startswith("#"):
-                sheet_df.columns[0] = "# " + sheet_df.columns[0]  # add space to avoid conflict with GSEA
+                sheet_df.columns = ["# " + sheet_df.columns[0]] + sheet_df.columns[1:].to_list() # index element is immutable
             # comparison_name for snakemake can't have #
-            comparison_name = sheet_df.columns[0].replace("#", "")
+            comparison_name = sheet_df.columns[0].replace("#", "").strip()
             sheet_df.to_csv(f"meta/{comparison_name}.rnk.txt", sep = "\t", index = False)
             rnk_file_names.append(f"{comparison_name}.rnk.txt")
 
