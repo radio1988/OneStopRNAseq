@@ -259,9 +259,9 @@ def DESeq2_input(config):
 
 def input_rnk_fname1(wildcards, config):
     if config['START'] == 'RNK' and 'MSHEET' in config and config['MSHEET']:
-        fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
+        fname1 = wildcards['fname']  # meta/mrnk.xlsx
     elif config['START'] == 'RNK':  # not MSHEET
-        fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
+        fname1 = wildcards['fname']  # meta/test1.rnk.txt meta/test1.rnk meta/test1.rnk.xlsx
     elif config['START'] == 'FASTQ' and config['CleanUpRNAseqCorrection']:
         fname1 = "CleanUpRNAseqDE/rnk/" + wildcards['fname'] + ".rnk"
     else:
@@ -274,7 +274,7 @@ def rnk_fname1_to_fname2(fname1):
     xxx.rnk -> xxx.rnk.txt
     xxx.rnk.xlsx -> xxx.rnk.txt
     xxx.rnk.txt -> xxx.rnk.txt
-    internal
+    internal (common.gmt)
     '''
     if fname1.endswith('.rnk.xlsx'):
         return re.sub('.rnk.xlsx$','.rnk.txt',fname1)
