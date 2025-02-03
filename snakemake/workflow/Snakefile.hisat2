@@ -26,7 +26,7 @@ def GSEA_OUTPUT(config):
                 gsea_dbs.append(f)
         gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=CONTRASTS_DE, db=gsea_dbs))
+            return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=DE_CONTRAST_NAMES, db=gsea_dbs))
         else:
             return(expand("gsea/{contrast}/{db}.GseaPreranked/index.html", contrast=config["RNKS"], db=gsea_dbs))
     else:
@@ -64,17 +64,17 @@ SAMPLES=read_table(config['META']).iloc[:,0].tolist()
 
 # for DESeq2
 if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
-    CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
-    CONTRASTS_DE = [x.replace("-", '.') for x in CONTRASTS_DE]
+    DE_CONTRAST_NAMES = get_contrast_fnames(config['CONTRAST_DE'])
+    DE_CONTRAST_NAMES = [x.replace("-", '.') for x in DE_CONTRAST_NAMES]
 else:
-    CONTRASTS_DE = ["placeholder"]
+    DE_CONTRAST_NAMES = ["placeholder"]
 
 # for DEXSeq
 if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]:
-    CONTRASTS_AS = get_contrast_fnames(config['CONTRAST_AS'])
+    AS_CONTRAST_NAMES = get_contrast_fnames(config['CONTRAST_AS'])
 else:
-    CONTRASTS_AS = ["placeholder"]
-CONTRASTS_AS = [l.replace('.','_') for l in CONTRASTS_DE]
+    AS_CONTRAST_NAMES = ["placeholder"]
+AS_CONTRAST_NAMES = [l.replace('.','_') for l in DE_CONTRAST_NAMES]
 
 
 # for rMATS
@@ -802,7 +802,7 @@ rule DESeq2:
         contrast=config["CONTRAST_DE"],
     output:
         "DESeq2/DESeq2.html",
-        expand("DESeq2/rnk/{contrast}.rnk", contrast=CONTRASTS_DE)
+        expand("DESeq2/rnk/{contrast}.rnk", contrast=DE_CONTRAST_NAMES)
     conda:
         "envs/deseq2.yaml" 
     resources:

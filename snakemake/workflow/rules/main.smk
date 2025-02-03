@@ -7,7 +7,7 @@ rule DESeq2:
         contrast=config["CONTRAST_DE"],
     output:
         "DESeq2/DESeq2.html",
-        expand("DESeq2/rnk/{contrast}.rnk",contrast=CONTRASTS_DE)
+        expand("DESeq2/rnk/{contrast}.rnk",contrast=DE_CONTRAST_NAMES)
     conda:
         "../envs/deseq2.yaml"
     resources:

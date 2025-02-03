@@ -335,7 +335,7 @@ if config['START'] != 'RNK':
                 ir_rate="CleanUpRNAseqQC/metadata.with.IR.rates.RDS"
             output:
                 "CleanUpRNAseqDE/CleanUpRNAseqDE.html",
-                expand("CleanUpRNAseqDE/rnk/{contrast}.rnk",contrast=CONTRASTS_DE)
+                expand("CleanUpRNAseqDE/rnk/{contrast}.rnk",contrast=DE_CONTRAST_NAMES)
             conda:
                 "../envs/deseq2.yaml"
             resources:
@@ -384,7 +384,7 @@ if config['START'] != 'RNK':
                 contrast=config["CONTRAST_DE"],
             output:
                 "CleanUpRNAseqDE/CleanUpRNAseqDE.html",
-                expand("CleanUpRNAseqDE/rnk/{contrast}.rnk",contrast=CONTRASTS_DE)
+                expand("CleanUpRNAseqDE/rnk/{contrast}.rnk",contrast=DE_CONTRAST_NAMES)
             conda:
                 "../envs/deseq2.yaml"
             resources:

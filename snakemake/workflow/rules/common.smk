@@ -40,19 +40,19 @@ def check_and_update_config(config):
         SAMPLES = ['placeholder']
 
     if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
-        CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
-        CONTRASTS_DE = [x.replace("-",'.') for x in CONTRASTS_DE]
+        DE_CONTRAST_NAMES = get_contrast_fnames(config['CONTRAST_DE'])
+        DE_CONTRAST_NAMES = [x.replace("-",'.') for x in DE_CONTRAST_NAMES]
     else:
-        CONTRASTS_DE = ["placeholder"]
+        DE_CONTRAST_NAMES = ["placeholder"]
 
     # for DEXSeq
     if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]:
-        CONTRASTS_AS = get_contrast_fnames(config['CONTRAST_AS'])
+        AS_CONTRAST_NAMES = get_contrast_fnames(config['CONTRAST_AS'])
     else:
-        CONTRASTS_AS = ["placeholder"]
-    CONTRASTS_AS = [l.replace('.','_') for l in CONTRASTS_DE]
+        AS_CONTRAST_NAMES = ["placeholder"]
+    AS_CONTRAST_NAMES = [l.replace('.','_') for l in DE_CONTRAST_NAMES]
 
-    return config, SAMPLES, CONTRASTS_DE, CONTRASTS_AS
+    return config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES
 
 
 def checkFileInput(wildcards):
@@ -133,7 +133,11 @@ def gunzip(fname):
 
 ### get CONTRASTS from meta/contrast.xlsx  ###
 def get_contrast_fnames(fname):
-    '''Get contrast name for DESeq2'''
+    """
+    Get contrast names
+    input: meta/contrast.xlsx
+    output:  ['KO_D8_vs_KO_D0', 'WT_D8.KO_D8_vs_WT_D0.KO_D0', 'KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8']
+    """
     df = read_table(fname)
     CONTRASTS = []
     for j in range(df.shape[1]):
@@ -500,7 +504,7 @@ def GSEA_OUTPUT(config):
         if len(gsea_dbs) < 1:
             sys.exit("No gsea databases found in " + config['GSEA_DB_PATH'])
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=CONTRASTS_DE,db=gsea_dbs)
+            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=DE_CONTRAST_NAMES,db=gsea_dbs)
         elif config["START"] == "RNK":
             L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=config["RNKS"],db=gsea_dbs)
         else:
@@ -514,7 +518,7 @@ def GSEACOMPRESS_OUTPUT(config):
     L = []
     if config["GSEA_ANALYSIS"]:
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea/{contrast}.tar.gz",contrast=CONTRASTS_DE)
+            L = expand("gsea/{contrast}.tar.gz",contrast=DE_CONTRAST_NAMES)
         elif config["START"] == "RNK":
             L = expand("gsea/{contrast}.tar.gz",contrast=config["RNKS"])
         else:
@@ -528,7 +532,7 @@ def GSEA_SINGLEBUBBLE_OUTPUT(config):
     L = []
     if config["GSEA_ANALYSIS"]:
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=CONTRASTS_DE)
+            L = expand("gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=DE_CONTRAST_NAMES)
         else:
             L = expand("gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.done",contrast=config["RNKS"])
     else:

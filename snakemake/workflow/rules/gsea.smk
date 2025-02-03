@@ -104,7 +104,7 @@ rule GSEA_SingleBubblePlot:
 
 if config["GSEA_ANALYSIS"]:
     if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-        GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz",contrast=CONTRASTS_DE)
+        GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz",contrast=DE_CONTRAST_NAMES)
     else:
         GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz",contrast=config["RNKS"])
 
