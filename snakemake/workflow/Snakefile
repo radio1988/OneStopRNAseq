@@ -14,7 +14,7 @@ configfile: "config.yaml"
 include: 'rules/common.smk'  # common functions
 
 # CONFIGURATION
-config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES = check_and_update_config(config)  # check for incompatible config params
+config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES = check_and_update_config(config)
 
 # for rMATS
 if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
@@ -42,10 +42,6 @@ else:
     B2S = B1S
     ASCN = 0
 
-# For MSHEET RNK START GSEA, split RNK files before DAG is built
-if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
-    rnk_file_names = split_msheet_rnk_file(config)
-    config['RNKS'] = rnk_file_names  # only basename of rnk files
 
 
 def target_input(config, ASCN):

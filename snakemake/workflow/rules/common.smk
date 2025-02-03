@@ -52,6 +52,11 @@ def check_and_update_config(config):
         AS_CONTRAST_NAMES = ["placeholder"]
     AS_CONTRAST_NAMES = [l.replace('.','_') for l in DE_CONTRAST_NAMES]
 
+    # For MSHEET RNK START GSEA, split RNK files before DAG is built
+    if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
+        rnk_file_names = split_msheet_rnk_file(config)
+        config['RNKS'] = rnk_file_names  # only basename of rnk files
+
     return config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES
 
 
@@ -271,8 +276,6 @@ def rnk_fname1_to_fname2(fname1):
     xxx.rnk.txt -> xxx.rnk.txt
     internal
     '''
-    import re
-    import sys
     if fname1.endswith('.rnk.xlsx'):
         return re.sub('.rnk.xlsx$','.rnk.txt',fname1)
     elif fname1.endswith('.rnk'):
@@ -463,20 +466,21 @@ def split_msheet_rnk_file(config):
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
         #split sheets
-        os.makedirs("meta",exist_ok=True)  # Path.cwd is analysis root
-        dfs = pd.read_excel(msheet_fname,sheet_name=None)
+        os.makedirs("meta", exist_ok=True)  # Path.cwd is analysis root
+        dfs = pd.read_excel(msheet_fname, sheet_name=None)
         rnk_file_names = []
         for sheet_name, sheet_df in dfs.items():
             sheet_df.columns = sheet_df.columns.str.strip()
-            sheet_df.columns = sheet_df.columns.str.replace(" ","_")
+            sheet_df.columns = sheet_df.columns.str.replace(" ", "_")
             # column name need # for GSEA to recognize
             if not sheet_df.columns[0].startswith("#"):
-                sheet_df.columns = ["# " + sheet_df.columns[0]] + sheet_df.columns[
-                                                                  1:].to_list()  # index element is immutable
+                sheet_df.columns = ["# " + sheet_df.columns[0]] + sheet_df.columns[1:].to_list()
+                # index element is immutable
             # comparison_name for snakemake can't have #
-            comparison_name = sheet_df.columns[0].replace("#","").strip()
-            rnk_file_names.append(f"{comparison_name}.rnk.txt")
+            comparison_name = sheet_df.columns[0].replace("#", "").strip()
             single_sheet_fname = f"meta/{comparison_name}.rnk.txt"
+            rnk_file_names.append(single_sheet_fname)
+
             if Path(single_sheet_fname).exists():
                 saved = pd.read_table(single_sheet_fname)
                 if all(sheet_df.iloc[:, 1] - saved.iloc[:, 1] < 1e-10):  # small error float comparison
