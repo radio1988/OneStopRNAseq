@@ -60,6 +60,6 @@ RNKS:
   - name2.rnk.txt          # path ./meta/name2.rnk.txt
 
 GSEA_ANALYSIS: True
-GSEA_NPLOTS: 400
+GSEA_NPLOTS: 2
 GSEA_PLOT_SVG: True
 

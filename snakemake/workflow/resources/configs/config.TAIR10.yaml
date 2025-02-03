@@ -1,9 +1,9 @@
-# Human hg38 on HPC
+# TAIR10 on HPC
 
 START: FASTQ             # FASTQ/ BAM/ COUNT/ RNK
 
 ## WHEN START is FASTQ
-GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/hg38_ensembl/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/arabidopsis_thaliana/tair10/Arabidopsis_thaliana.TAIR10.dna_sm.toplevel.fa
 PAIR_END: True          # True/False
 
 ADAPTORS: workflow/resources/adapters/merged.fa     # For Trimming 
@@ -20,14 +20,14 @@ ASSEMBLY_ANALYSIS: False
 
 
 ## WHEN START is BAM
-GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/hg38_ensembl/Homo_sapiens.GRCh38.111.gtf
+GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/arabidopsis_thaliana/tair10/Arabidopsis_thaliana.TAIR10.57.gtf
 STRAND: [0, 1, 2]       # [0, 1, 2]: auto detect; [0]: unstranded; [1]: stranded, forward; [2]: stranded, reverse
 
 MODE: strict            # strict/liberal. liberal: allow Multi-Mapping, No fragment size reqirement; strict: opposite
 INTRON: False           # True/False. Perform gene level featureCount as well as exon level, and max(gene-count, exon-count) will be taken as gene-count
 
 RMATS_ANALYSIS: False         # Alternative Splicing analysis with rMATS (Optional)
-CONTRAST_AS: meta/contrast.as.xlsx
+CONTRAST_AS: meta/contrast.csv
 RMATS_STRANDNESS:
   {0 : fr-unstranded,
   1 : fr-firststrand, 
@@ -42,7 +42,7 @@ VCF: example_data/genome/mm10_chr19/BALB_cJ.mgp.v5.indels.dbSNP142.normed.chr.vc
 
 ## WHEN START is COUNT
 COUNT_FILE: meta/COUNT.xlsx
-ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Homo_sapiens.GRCh38.111.anno.txt  # 7 columns
+ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/Arabidopsis_thaliana.TAIR10.57.anno_tab.txt
 
 DESEQ2_ANALYSIS: True
 MAX_FDR: 0.05
@@ -54,12 +54,12 @@ independentFilter: 'FALSE'
 blackSamples: 'sampleXXX,sampleYYY' # list of sample names to be excluded in DESeq2 analysis, optional
 
 ## WHEN START is RNK
-GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/ 
+GSEA_DB_PATH: workflow/resources/gsea_db/arabidopsis_thaliana/gsea_db/ # needs reformatting
 RNKS:
   - name1.rnk.txt          # path ./meta/name1.rnk.txt
   - name2.rnk.txt          # path ./meta/name2.rnk.txt
 
-GSEA_ANALYSIS: True
-GSEA_NPLOTS: 2
+GSEA_ANALYSIS: False
+GSEA_NPLOTS: 2 
 GSEA_PLOT_SVG: True
 
