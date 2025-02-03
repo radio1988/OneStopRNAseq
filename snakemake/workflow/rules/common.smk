@@ -133,11 +133,7 @@ def gunzip(fname):
 
 ### get CONTRASTS from meta/contrast.xlsx  ###
 def get_contrast_fnames(fname):
-    """
-    Get contrast names
-    input: meta/contrast.xlsx
-    output:  ['KO_D8_vs_KO_D0', 'WT_D8.KO_D8_vs_WT_D0.KO_D0', 'KO_D0.KO_D2.KO_D8_vs_WT_D0.WT_D2.WT_D8']
-    """
+    '''Get contrast name for DESeq2'''
     df = read_table(fname)
     CONTRASTS = []
     for j in range(df.shape[1]):
