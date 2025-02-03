@@ -257,43 +257,7 @@ def DESeq2_input(config):
         return folder + '/counts.' + config['MODE'] + '.txt'
 
 
-def input_rnk_fname1(wildcards, config):
-    if config['START'] == 'RNK' and 'MSHEET' in config and config['MSHEET']:
-        fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
-    elif config['START'] == 'RNK':  # not MSHEET
-        fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
-    elif config['START'] == 'FASTQ' and config['CleanUpRNAseqCorrection']:
-        fname1 = "CleanUpRNAseqDE/rnk/" + wildcards['fname'] + ".rnk"
-    else:
-        fname1 = "DESeq2/rnk/" + wildcards['fname'] + ".rnk"
-    return fname1
 
-
-def rnk_fname1_to_fname2(fname1):
-    '''
-    xxx.rnk -> xxx.rnk.txt
-    xxx.rnk.xlsx -> xxx.rnk.txt
-    xxx.rnk.txt -> xxx.rnk.txt
-    internal
-    '''
-    if fname1.endswith('.rnk.xlsx'):
-        return re.sub('.rnk.xlsx$','.rnk.txt',fname1)
-    elif fname1.endswith('.rnk'):
-        return fname1 + ".txt"
-    elif fname1.endswith('.rnk.txt'):
-        return fname1
-    else:
-        sys.stderr.write(fname1)
-        sys.exit('rnk file type not rnk, rnk.txt, or rnk.xlsx')
-        return None
-
-
-def input_rnk_fname2(wildcards, config):
-    '''
-    the corresponding flat rnk.txt file name (fname1) for corresponding fname1
-    '''
-    fname1 = input_rnk_fname1(wildcards,config)
-    return rnk_fname1_to_fname2(fname1)
 
 
 RMATS_STRANDNESS = {0: 'fr-unstranded', 1: 'fr-firststrand', 2: 'fr-secondstrand'}
@@ -453,8 +417,6 @@ def split_msheet_rnk_file(config):
     only active if config['MSHEET'] is True and config['START'] is 'RNK'
     caveat: you can't run this function more than once, the second run will fail because the updated config['RNKS']
             is not MSHEET
-
-    todo: skip MSHEET in config.yaml
     """
     if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
         # check config
@@ -489,7 +451,43 @@ def split_msheet_rnk_file(config):
 
     return rnk_file_names
 
+def input_rnk_fname1(wildcards, config):
+    if config['START'] == 'RNK' and 'MSHEET' in config and config['MSHEET']:
+        fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
+    elif config['START'] == 'RNK':  # not MSHEET
+        fname1 = 'meta/' + wildcards['fname']  # meta/test1.rnk.txt
+    elif config['START'] == 'FASTQ' and config['CleanUpRNAseqCorrection']:
+        fname1 = "CleanUpRNAseqDE/rnk/" + wildcards['fname'] + ".rnk"
+    else:
+        fname1 = "DESeq2/rnk/" + wildcards['fname'] + ".rnk"
+    return fname1
 
+
+def rnk_fname1_to_fname2(fname1):
+    '''
+    xxx.rnk -> xxx.rnk.txt
+    xxx.rnk.xlsx -> xxx.rnk.txt
+    xxx.rnk.txt -> xxx.rnk.txt
+    internal
+    '''
+    if fname1.endswith('.rnk.xlsx'):
+        return re.sub('.rnk.xlsx$','.rnk.txt',fname1)
+    elif fname1.endswith('.rnk'):
+        return fname1 + ".txt"
+    elif fname1.endswith('.rnk.txt'):
+        return fname1
+    else:
+        sys.stderr.write(fname1)
+        sys.exit('rnk file type not rnk, rnk.txt, or rnk.xlsx')
+        return None
+
+
+def input_rnk_fname2(wildcards, config):
+    '''
+    the corresponding flat rnk.txt file name (fname1) for corresponding fname1
+    '''
+    fname1 = input_rnk_fname1(wildcards,config)
+    return rnk_fname1_to_fname2(fname1)
 def GSEA_OUTPUT(config):
     """
     GSEA_OUTPUT: smart to get all possible output files for GSEA
