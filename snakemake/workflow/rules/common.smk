@@ -7,8 +7,7 @@ import shutil
 import pandas as pd
 
 
-
-def check_and_update_config(config, SAMPLES):
+def check_and_update_config(config):
     """
     Check conflicts in config.yaml,
     call this in main snakefile
@@ -30,7 +29,7 @@ def check_and_update_config(config, SAMPLES):
         sys.exit("config['ALIGNER'] not STAR nor HISAT2")
 
     if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
-        check_fastq_size(config, SAMPLES)
+        check_fastq_size(config,SAMPLES)
 
     config = uncompress_gzip_genome_files(config)  # genome, vcf, gtf
     config['INDEX'] = config['GENOME'] + '.star_idx'
@@ -42,20 +41,18 @@ def check_and_update_config(config, SAMPLES):
 
     if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
         CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
-        CONTRASTS_DE = [x.replace("-", '.') for x in CONTRASTS_DE]
+        CONTRASTS_DE = [x.replace("-",'.') for x in CONTRASTS_DE]
     else:
         CONTRASTS_DE = ["placeholder"]
-
 
     # for DEXSeq
     if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]:
         CONTRASTS_AS = get_contrast_fnames(config['CONTRAST_AS'])
     else:
         CONTRASTS_AS = ["placeholder"]
-    CONTRASTS_AS = [l.replace('.', '_') for l in CONTRASTS_DE]
+    CONTRASTS_AS = [l.replace('.','_') for l in CONTRASTS_DE]
 
     return config, SAMPLES, CONTRASTS_DE, CONTRASTS_AS
-
 
 
 def checkFileInput(wildcards):
@@ -446,6 +443,7 @@ def check_meta_data(config):
     if config['DESEQ2_ANALYSIS'] or config['RMATS_ANALYSIS'] or config['DEXSEQ_ANALYSIS']:
         check_meta_file(config['META'])
 
+
 def split_msheet_rnk_file(config):
     """
     split MSHEET into multiple rnk files, and change config['RNKS'] to the new list
@@ -465,26 +463,28 @@ def split_msheet_rnk_file(config):
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
         #split sheets
-        os.makedirs("meta", exist_ok = True)  # Path.cwd is analysis root
-        dfs = pd.read_excel(msheet_fname, sheet_name = None)
+        os.makedirs("meta",exist_ok=True)  # Path.cwd is analysis root
+        dfs = pd.read_excel(msheet_fname,sheet_name=None)
         rnk_file_names = []
         for sheet_name, sheet_df in dfs.items():
             sheet_df.columns = sheet_df.columns.str.strip()
-            sheet_df.columns = sheet_df.columns.str.replace(" ", "_")
+            sheet_df.columns = sheet_df.columns.str.replace(" ","_")
             # column name need # for GSEA to recognize
             if not sheet_df.columns[0].startswith("#"):
-                sheet_df.columns = ["# " + sheet_df.columns[0]] + sheet_df.columns[1:].to_list() # index element is immutable
+                sheet_df.columns = ["# " + sheet_df.columns[0]] + sheet_df.columns[
+                                                                  1:].to_list()  # index element is immutable
             # comparison_name for snakemake can't have #
-            comparison_name = sheet_df.columns[0].replace("#", "").strip()
+            comparison_name = sheet_df.columns[0].replace("#","").strip()
             rnk_file_names.append(f"{comparison_name}.rnk.txt")
             single_sheet_fname = f"meta/{comparison_name}.rnk.txt"
             if Path(single_sheet_fname).exists():
                 saved = pd.read_table(single_sheet_fname)
                 if all(sheet_df.iloc[:, 1] - saved.iloc[:, 1] < 1e-10):  # small error float comparison
                     continue  # skip if the same to avoid re-run rule GSEA
-            sheet_df.to_csv(single_sheet_fname, sep = "\t", index = False)
+            sheet_df.to_csv(single_sheet_fname,sep="\t",index=False)
 
     return rnk_file_names
+
 
 def GSEA_OUTPUT(config):
     """
@@ -516,7 +516,7 @@ def GSEACOMPRESS_OUTPUT(config):
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
             L = expand("gsea/{contrast}.tar.gz",contrast=CONTRASTS_DE)
         elif config["START"] == "RNK":
-            L = expand("gsea/{contrast}.tar.gz", contrast=config["RNKS"])
+            L = expand("gsea/{contrast}.tar.gz",contrast=config["RNKS"])
         else:
             raise Exception("config['START'] not recognized")
     else:
