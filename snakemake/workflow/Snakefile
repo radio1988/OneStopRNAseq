@@ -1,44 +1,20 @@
+"""
+Snakemake workflow for RNA-seq analysis
+Manual: https://github.com/radio1988/OneStopRNAseq/blob/master/snakemake/README.md
+"""
+
 import pandas as pd
 import sys, re, os, math
 from snakemake.utils import min_version
 
-# Manual: https://github.com/radio1988/OneStopRNAseq/blob/master/snakemake/README.md
 
 min_version("7.2")  # check snakemake version
 localrules: targets
 configfile: "config.yaml"
-include: 'rules/common.smk'
+include: 'rules/common.smk'  # common functions
 
-# CONFIG
-if config['START'] != 'RNK':
-    SAMPLES = read_table(config['META']).iloc[:, 0].tolist()
-else:
-    SAMPLES = ['placeholder']
-
-if config["START"] != 'RNK':
-    check_meta_data(config)
-
-config = uncompress_gzip_genome_files(config)  # genome, vcf, gtf
-check_config(config)  # check for incompatible config params
-if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
-    check_fastq_size(config,SAMPLES)
-
-config['INDEX'] = config['GENOME'] + '.star_idx'
-MIN_GENE_COUNT = config['MIN_GENE_COUNT'] if 'MIN_GENE_COUNT' in config else 100  # DEXSeq
-
-# for DESeq2
-if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
-    CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
-    CONTRASTS_DE = [x.replace("-",'.') for x in CONTRASTS_DE]
-else:
-    CONTRASTS_DE = ["placeholder"]
-
-# for DEXSeq
-if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]:
-    CONTRASTS_AS = get_contrast_fnames(config['CONTRAST_AS'])
-else:
-    CONTRASTS_AS = ["placeholder"]
-CONTRASTS_AS = [l.replace('.','_') for l in CONTRASTS_DE]
+# CONFIGURATION
+config, SAMPLES, CONTRASTS_DE, CONTRASTS_AS = check_and_update_config(config)  # check for incompatible config params
 
 # for rMATS
 if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
@@ -66,11 +42,11 @@ else:
     B2S = B1S
     ASCN = 0
 
-
 # For MSHEET RNK START GSEA, split RNK files before DAG is built
 if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
     rnk_file_names = split_msheet_rnk_file(config)
     config['RNKS'] = rnk_file_names  # only basename of rnk files
+
 
 def target_input(config, ASCN):
     """
@@ -136,7 +112,7 @@ def target_input(config, ASCN):
 
 rule targets:
     input:
-        target_input(config, ASCN)
+        target_input(config,ASCN)
     threads:
         1
     resources:
@@ -157,4 +133,3 @@ include: 'rules/dexseq.smk'  # low power, poor annotation
 # uncommon
 include: 'rules/assembly.smk'
 include: 'rules/ase.smk'  # ASE allele specific expression (quantification only)
-

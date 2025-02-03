@@ -24,8 +24,11 @@ rule DEXSeq_GFF_Prep:
 
 
 rule DEXSeq_Count:
+    """
+    Count reads for DEXSeq
+    """
     input:
-        bam="sorted_reads/{sample}.bam",
+        bam="sorted_reads/{sample}.bam", # todo: maybe -r name (sort by name) is faster, low priority
         strandFile="meta/strandness.detected.txt",
         gff=DEXSeq_GFF
     output:
@@ -43,9 +46,9 @@ rule DEXSeq_Count:
     benchmark:
         "DEXSeq_count/log/{sample}_count.txt.benchmark"
     shell:
-        "python workflow/script/dexseq_count.py -f bam -a {params.MAPQ} {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output} &> {log}"
+        "python workflow/script/dexseq_count.py -f bam -a {params.MAPQ} \
+        {params.readType} {params.strand} {DEXSeq_GFF} {input.bam} {output} &> {log}"
 
-# todo: maybe -r name (sort by name) is faster
 
 if config['DEXSEQ_ANALYSIS']:
     rule DEXSeq:
@@ -67,7 +70,8 @@ if config['DEXSEQ_ANALYSIS']:
             rmd="'workflow/script/dexseq.r'",
             annoFile=config['ANNO_TAB'],
             max_fdr=config['MAX_FDR'],
-            min_lfc=config['MIN_LFC']
+            min_lfc=config['MIN_LFC'],
+            min_gene_count=config['MIN_GENE_COUNT'] if 'MIN_GENE_COUNT' in config else 100
         log:
             "DEXSeq/contrast{ascn}/DEXSeq.log"
         benchmark:

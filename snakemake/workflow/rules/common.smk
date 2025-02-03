@@ -8,13 +8,19 @@ import pandas as pd
 
 
 
-def check_config(config):
+def check_and_update_config(config, SAMPLES):
     """
     Check conflicts in config.yaml,
     call this in main snakefile
     sys.exit if not compatible
+
+    Also updates: config['INDEX'] and config['RNKS']
     """
-    # INTRON and gDNA correction, only can choose one at most
+
+    if config["START"] != 'RNK':
+        check_meta_data(config)
+
+    # INTRON and gDNA correction are incompatible
     if config['START'] == 'FASTQ' and config["INTRON"] and config["CleanUpRNAseqCorrection"]:
         message = "INTRON mode and CleanUpRNAseqCorrection is incompatible.\n" + \
                   "gDNA correction is only possible for exon level rnaseq quantification"
@@ -22,6 +28,34 @@ def check_config(config):
 
     if config['ALIGNER'] != 'STAR' and config['ALIGNER'] != 'HISAT2':
         sys.exit("config['ALIGNER'] not STAR nor HISAT2")
+
+    if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
+        check_fastq_size(config, SAMPLES)
+
+    config = uncompress_gzip_genome_files(config)  # genome, vcf, gtf
+    config['INDEX'] = config['GENOME'] + '.star_idx'
+
+    if config['START'] != 'RNK':
+        SAMPLES = read_table(config['META']).iloc[:, 0].tolist()
+    else:
+        SAMPLES = ['placeholder']
+
+    if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
+        CONTRASTS_DE = get_contrast_fnames(config['CONTRAST_DE'])
+        CONTRASTS_DE = [x.replace("-", '.') for x in CONTRASTS_DE]
+    else:
+        CONTRASTS_DE = ["placeholder"]
+
+
+    # for DEXSeq
+    if config['DEXSEQ_ANALYSIS'] and config["START"] in ["FASTQ", "BAM"]:
+        CONTRASTS_AS = get_contrast_fnames(config['CONTRAST_AS'])
+    else:
+        CONTRASTS_AS = ["placeholder"]
+    CONTRASTS_AS = [l.replace('.', '_') for l in CONTRASTS_DE]
+
+    return config, SAMPLES, CONTRASTS_DE, CONTRASTS_AS
+
 
 
 def checkFileInput(wildcards):
