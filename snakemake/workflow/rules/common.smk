@@ -461,12 +461,12 @@ def split_msheet_rnk_file(config):
         if len(config['RNKS']) > 1:
             raise ValueError("If MSHEET is True, only one RNK file is allowed")
 
-        msheet_fname = os.path.join('meta/', config['RNKS'][0] ) # convention, always put rnk under meta/,and skip meta/ in config
+        msheet_fname = config['RNKS'][0]
         if not msheet_fname.endswith(".xlsx"):
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
         #split sheets
-        os.makedirs("meta", exist_ok=True)  # Path.cwd is analysis root
+        os.makedirs(os.path.dirname(msheet_fname), exist_ok=True)  # Path.cwd is analysis root
         dfs = pd.read_excel(msheet_fname, sheet_name=None)
         rnk_file_names = []
         for sheet_name, sheet_df in dfs.items():
@@ -478,7 +478,7 @@ def split_msheet_rnk_file(config):
                 # index element is immutable
             # comparison_name for snakemake can't have #
             comparison_name = sheet_df.columns[0].replace("#", "").strip()
-            single_sheet_fname = f"meta/{comparison_name}.rnk.txt"
+            single_sheet_fname = os.path.join(os.path.dirname(msheet_fname), f"{comparison_name}.rnk.txt")
             rnk_file_names.append(single_sheet_fname)
 
             if Path(single_sheet_fname).exists():
