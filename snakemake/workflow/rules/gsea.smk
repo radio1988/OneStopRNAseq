@@ -6,11 +6,6 @@ import pandas as pd
 import os
 
 
-
-
-
-
-
 rule GSEA:
     """
     config[START] == RNK, then find config[RNKS], else, find DESeq2/rnk or CleanUpRNAseqDE/rnk

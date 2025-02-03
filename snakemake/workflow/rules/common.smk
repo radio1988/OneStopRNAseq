@@ -413,6 +413,14 @@ def check_meta_data(config):
         check_meta_file(config['META'])
 
 def split_msheet_rnk_file(config):
+    """
+    split MSHEET into multiple rnk files, and change config['RNKS'] to the new list
+    only active if config['MSHEET'] is True and config['START'] is 'RNK'
+    caveat: you can't run this function more than once, the second run will fail because the updated config['RNKS']
+            is not MSHEET
+
+    todo: skip MSHEET in config.yaml
+    """
     if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
         # check config
         if len(config['RNKS']) > 1:

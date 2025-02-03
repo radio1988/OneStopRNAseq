@@ -2,10 +2,10 @@ import sys
 import pandas as pd
 import re
 
-print("function: make all lower case letters in txt file upper case, remove all spaces/quotes in gene symbols, then save to txt file for GSEA")
+print(
+    "function: make all lower case letters in txt file upper case, remove all spaces/quotes in gene symbols, then save to txt file for GSEA")
 print("usage: rnk_to_upper.py file.xlsx/file.txt/file.rnk")
 print("path/file.txt or path/file.xlsx will be converted to path/file.rnk.txt")
-
 
 fname = sys.argv[1]
 
@@ -21,12 +21,13 @@ elif fname.endswith(".txt"):
     over_write = False
 elif fname.endswith(".rnk"):
     df = pd.read_table(fname, header=0)
-    outname = fname+".txt"
+    outname = fname + ".txt"
     over_write = True
 else:
     sys.exit("Error: File format not .xlsx, nor .txt, nor .rnk, Exit\n")
-    
+
 print("input:\n", fname, "\n", df.head())
+
 
 def containslower(string):
     if string:
@@ -34,9 +35,15 @@ def containslower(string):
         if any(char.islower() for char in string):
             return (True)
         else:
-            return(False)
+            return (False)
     else:
-        return(False)
+        return (False)
+
+
+# header must contain #
+if not df.columns[0].startswith("#"):
+    df.rename(columns={df.columns[0]: "# " + df.columns[0].strip()}, inplace=True)
+    over_write = True
 
 # lower gene name to upper
 if any(containslower(name) for name in df.iloc[:, 0]):
@@ -63,5 +70,3 @@ if over_write:
     print("output:\n", outname, "\n", df.head())
 else:
     print("no lower case nor spaces found in file, not updating", fname)
-
-
