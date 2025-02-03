@@ -27,7 +27,7 @@ MODE: strict            # strict/liberal. liberal: allow Multi-Mapping, No fragm
 INTRON: False           # True/False. Perform gene level featureCount as well as exon level, and max(gene-count, exon-count) will be taken as gene-count
 
 RMATS_ANALYSIS: False         # Alternative Splicing analysis with rMATS (Optional)
-CONTRAST_AS: meta/contrast.csv
+CONTRAST_AS: meta/contrast.as.xlsx
 RMATS_STRANDNESS:
   {0 : fr-unstranded,
   1 : fr-firststrand, 
@@ -47,8 +47,8 @@ ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snak
 DESEQ2_ANALYSIS: True
 MAX_FDR: 0.05
 MIN_LFC: 0.585 
-META: meta/meta.csv       # see example files
-CONTRAST_DE: meta/contrast.csv
+META: meta/meta.txt       # see example files
+CONTRAST_DE: meta/contrast.de.csv
 cooksCutoff: 'FALSE'        # see http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
 independentFilter: 'FALSE'
 blackSamples: 'sampleXXX,sampleYYY' # list of sample names to be excluded in DESeq2 analysis, optional
