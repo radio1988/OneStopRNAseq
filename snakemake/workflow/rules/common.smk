@@ -422,8 +422,7 @@ def split_msheet_rnk_file(config):
         if len(config['RNKS']) > 1:
             raise ValueError("If MSHEET is True, only one RNK file is allowed")
 
-        if not config['RNKS'][0].startswith("meta/"):
-            msheet_fname = os.path.join('meta/', config['RNKS'][0] ) # convention, always put rnk under meta/,and skip meta/ in config
+        msheet_fname = os.path.join('meta/', config['RNKS'][0] ) # convention, always put rnk under meta/,and skip meta/ in config
         if not msheet_fname.endswith(".xlsx"):
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
@@ -439,9 +438,10 @@ def split_msheet_rnk_file(config):
                 # index element is immutable
             # comparison_name for snakemake can't have #
             comparison_name = sheet_df.columns[0].replace("#", "").strip()
-            single_sheet_fname = f"meta/{comparison_name}.rnk.txt"
-            rnk_file_names.append(single_sheet_fname)
+            config_RNKS_ = f"{comparison_name}.rnk.txt"  # to replace config['RNKS']
+            rnk_file_names.append(config_RNKS_)
 
+            single_sheet_fname = 'meta/' + config_RNKS_
             if Path(single_sheet_fname).exists():
                 saved = pd.read_table(single_sheet_fname)
                 if all(sheet_df.iloc[:, 1] - saved.iloc[:, 1] < 1e-10):  # small error float comparison
