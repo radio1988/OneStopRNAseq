@@ -438,7 +438,7 @@ def split_msheet_rnk_file(config):
                 # index element is immutable
             # comparison_name for snakemake can't have #
             comparison_name = sheet_df.columns[0].replace("#", "").strip()
-            single_sheet_fname = f"{comparison_name}.rnk.txt"
+            single_sheet_fname = f"meta/{comparison_name}.rnk.txt"
             rnk_file_names.append(single_sheet_fname)
 
             if Path(single_sheet_fname).exists():
