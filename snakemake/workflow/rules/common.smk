@@ -17,7 +17,12 @@ def check_and_update_config(config):
     """
 
     if config["START"] != 'RNK':
-        check_meta_data(config)
+        check_CONTRAST_and_META(config)
+
+    if config['START'] != 'RNK':
+        SAMPLES = read_table(config['META']).iloc[:, 0].tolist()
+    else:
+        SAMPLES = ['placeholder']
 
     # INTRON and gDNA correction are incompatible
     if config['START'] == 'FASTQ' and config["INTRON"] and config["CleanUpRNAseqCorrection"]:
@@ -28,16 +33,11 @@ def check_and_update_config(config):
     if config['ALIGNER'] != 'STAR' and config['ALIGNER'] != 'HISAT2':
         sys.exit("config['ALIGNER'] not STAR nor HISAT2")
 
-    if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
-        check_fastq_size(config,SAMPLES)
-
     config = uncompress_gzip_genome_files(config)  # genome, vcf, gtf
     config['INDEX'] = config['GENOME'] + '.star_idx'
 
-    if config['START'] != 'RNK':
-        SAMPLES = read_table(config['META']).iloc[:, 0].tolist()
-    else:
-        SAMPLES = ['placeholder']
+    if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
+        check_fastq_size(config, SAMPLES)
 
     if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
         DE_CONTRAST_NAMES = get_contrast_fnames(config['CONTRAST_DE'])
@@ -402,7 +402,7 @@ def check_meta_file(fname="meta/meta.txt"):
         raise ValueError(fname + " does not have three columns: SAMPLE_LABEL\tGROUP_LABEL\tBATCH\n\n")
 
 
-def check_meta_data(config):
+def check_CONTRAST_and_META(config):
     if config['DESEQ2_ANALYSIS']:
         check_contrast_file(config['CONTRAST_DE'])
     if config['RMATS_ANALYSIS'] or config['DEXSEQ_ANALYSIS']:
