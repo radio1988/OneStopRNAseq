@@ -422,7 +422,8 @@ def split_msheet_rnk_file(config):
         if len(config['RNKS']) > 1:
             raise ValueError("If MSHEET is True, only one RNK file is allowed")
 
-        msheet_fname = os.path.join('meta/', config['RNKS'][0] ) # convention, always put rnk under meta/,and skip meta/ in config
+        if not config['RNKS'][0].begins_with("meta/"):
+            msheet_fname = os.path.join('meta/', config['RNKS'][0] ) # convention, always put rnk under meta/,and skip meta/ in config
         if not msheet_fname.endswith(".xlsx"):
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
