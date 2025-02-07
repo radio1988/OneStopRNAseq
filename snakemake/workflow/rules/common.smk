@@ -57,6 +57,14 @@ def check_and_update_config(config):
         rnk_file_names = split_msheet_rnk_file(config)
         config['RNKS'] = rnk_file_names  # only basename of rnk files
 
+    if config["GSEA_ANALYSIS"]:
+        gsea_dbs = []
+        for f in os.listdir(config['GSEA_DB_PATH']):
+            if f.endswith('.gmt'):
+                gsea_dbs.append(f)
+        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
+        config["GSEA_DB_NAMES"] = gsea_dbs
+
     return config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES
 
 

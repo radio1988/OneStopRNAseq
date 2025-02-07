@@ -5,13 +5,7 @@ GSEA_Bubble
 import pandas as pd
 import os
 
-if config["GSEA_ANALYSIS"]:
-    gsea_dbs = []
-    for f in os.listdir(config['GSEA_DB_PATH']):
-        if f.endswith('.gmt'):
-            gsea_dbs.append(f)
-    gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
-    config["GSEA_DB_NAMES"] = gsea_dbs
+
 
 rule GSEA:
     """
