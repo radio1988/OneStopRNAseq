@@ -73,7 +73,7 @@ rule GSEA:
 
 rule GSEA_compression:
     input:
-        ALL_GSEA_OUTPUT(config)
+        ALL_GSEA_OUTPUT(config)  # todo: even some failed, still compress the successful ones
     output:
         "gsea/{contrast}.tar.gz"
     resources:
