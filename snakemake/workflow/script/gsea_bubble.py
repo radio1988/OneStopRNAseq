@@ -16,6 +16,7 @@ import os
 import math
 import matplotlib.pyplot as plt
 import argparse
+import warnings
 
 
 def parse_gsea_edb(edb_path):
@@ -102,9 +103,16 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     """
     # Create bubble plot
     nrows = df['GeneSet'].unique().shape[0]
-    if nrows < 1:
-        sys.exit(f"ERROR: No GeneSets found with FDR < {alpha}.")
+
     plt.figure(figsize=(8, nrows * 0.2 + 2))
+
+    if nrows < 1:
+        plt.text(
+            0.5, 0.5,  # Coordinates for center
+            "No significant GeneSet",
+            ha="center", va="center", fontsize=14, color="red", fontweight="bold"
+        )
+        warnings.warn("No significant GeneSet")
 
     sns.scatterplot(
         data=df,
