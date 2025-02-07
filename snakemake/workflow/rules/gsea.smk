@@ -119,7 +119,7 @@ if config["GSEA_ANALYSIS"]:
 
     rule GSEA_MultiBubblePlot:
         input:
-            GSEA_compression_OUTPUT
+            expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb", fname=config["RNKS"])
         output:
             'gsea/gsea_bubble/{db}.pdf'
         resources:
