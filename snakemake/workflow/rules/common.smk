@@ -487,6 +487,8 @@ def input_rnk_fname2(wildcards, config):
     '''
     fname1 = input_rnk_fname1(wildcards,config)
     return rnk_fname1_to_fname2(fname1)
+
+
 def GSEA_OUTPUT(config):
     """
     GSEA_OUTPUT: smart to get all possible output files for GSEA

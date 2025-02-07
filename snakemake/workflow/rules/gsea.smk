@@ -5,6 +5,13 @@ GSEA_Bubble
 import pandas as pd
 import os
 
+if config["GSEA_ANALYSIS"]:
+    gsea_dbs = []
+    for f in os.listdir(config['GSEA_DB_PATH']):
+        if f.endswith('.gmt'):
+            gsea_dbs.append(f)
+    gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
+    config["GSEA_DB_NAMES"] = gsea_dbs
 
 rule GSEA:
     """
@@ -15,7 +22,8 @@ rule GSEA:
         rnk=lambda wildcards: input_rnk_fname1(wildcards,config),
         db=lambda wildcards: os.path.join(config['GSEA_DB_PATH'],wildcards["db"])
     output:
-        "gsea/{fname}/{db}.GseaPreranked/index.html"
+        html="gsea/{fname}/{db}.GseaPreranked/index.html",
+        edb="gsea/{fname}/{db}.GseaPreranked/edb/results.edb"
     conda:
         "../envs/java11.yaml"  # test
     resources:
@@ -104,32 +112,31 @@ rule GSEA_SingleBubblePlot:
 
 if config["GSEA_ANALYSIS"]:
     if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-        GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz",contrast=DE_CONTRAST_NAMES)
+        # GSEA_compression_OUTPUT  = expand("gsea/{contrast}.tar.gz",contrast=DE_CONTRAST_NAMES)
+        GSEA_compression_OUTPUT = expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb", fname=DE_CONTRAST_NAMES)
     else:
-        GSEA_compression_OUTPUT = expand("gsea/{contrast}.tar.gz",contrast=config["RNKS"])
+        GSEA_compression_OUTPUT = expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb", fname=config["RNKS"])
 
     rule GSEA_MultiBubblePlot:
         input:
             GSEA_compression_OUTPUT
         output:
-            touch('gsea/gsea_bubble/log/MultiBubblePlot.done')
-        conda:
-            "../envs/deseq2.yaml"
+            'gsea/gsea_bubble/{db}.pdf'
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000
         priority: 100
         log:
-            'gsea/gsea_bubble/log/MultiBubblePlot.log'
+            'gsea/gsea_bubble/log/MultiBubblePlot.{db}.log'
         threads:
             1
         benchmark:
-            'gsea/gsea_bubble/log/MultiBubblePlot.benchmark'
+            'gsea/gsea_bubble/log/MultiBubblePlot.{db}.benchmark'
         shell:
-            "Rscript workflow/script/gsea_bubble.R {input} MultiBubblePlot &> {log}"
+            "python workflow/script/gsea_bubble.py -edbs {input} -output {output} -alpha 0.05 -topn 1000 &> {log}
 
     rule GSEA_Bubble_Compression:
         input:
-            'gsea/gsea_bubble/log/MultiBubblePlot.done'
+            expand('gsea/gsea_bubble/{db}.pdf', db=config['GSEA_DB_NAMES'])
         output:
             'gsea/gsea_bubble.tar.gz'
         benchmark:
