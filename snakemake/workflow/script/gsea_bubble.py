@@ -12,6 +12,7 @@ import pandas as pd
 import seaborn as sns
 import re
 import os
+import math
 import matplotlib.pyplot as plt
 import argparse
 
@@ -39,10 +40,12 @@ def parse_gsea_edb(edb_path):
             )
             if match:
                 ranked_list, geneset, es, nes, np, fdr = match.groups()
-                ranked_list = ranked_list.replace('.rnk', '')
-                fdr = float(fdr) if fdr else 1.0  # Default FDR to 1.0 if not present
-                np = float(np) if np else 1.0
-                data.append([ranked_list, geneset, float(es), float(nes), np, fdr])
+                # if not (math.isnan(es) or math.isnan(nes) or math.isnan(np) or math.isnan(fdr)):
+                if not (math.isnan(nes) or math.isnan(fdr)):  # skip row if NES or FDR is NaN
+                    ranked_list = ranked_list.replace('.rnk', '')
+                    fdr = float(fdr) if fdr else 1.0  # Default FDR to 1.0 if not present
+                    np = float(np) if np else 1.0
+                    data.append([ranked_list, geneset, float(es), float(nes), np, fdr])
 
     df = pd.DataFrame(data, columns=["Comparison", "GeneSet", "ES", "NES", "NP", "FDR"])
     return df
