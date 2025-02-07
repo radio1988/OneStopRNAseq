@@ -119,7 +119,11 @@ if config["GSEA_ANALYSIS"]:
 
     rule GSEA_MultiBubblePlot:
         input:
-            expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb", fname=config["RNKS"])
+            lambda wildcards: expand(
+                "gsea/{fname}/{db}.GseaPreranked/edb/results.edb",
+                fname=config["RNKS"],
+                db=[wildcards.db]  # Use the single {db} wildcard
+            )
         output:
             'gsea/gsea_bubble/{db}.pdf'
         resources:
@@ -134,16 +138,16 @@ if config["GSEA_ANALYSIS"]:
         shell:
             "python workflow/script/gsea_bubble.py -edbs {input} -output {output} -alpha 0.05 -topn 1000 &> {log}"
 
-    # rule GSEA_Bubble_Compression:
-    #     input:
-    #         expand('gsea/gsea_bubble/{db}.pdf', db=config['GSEA_DB_NAMES'])
-    #     output:
-    #         'gsea/gsea_bubble.tar.gz'
-    #     benchmark:
-    #         'gsea/log/gsea_bubble.tar.gz.benchmark'
-    #     resources:
-    #         mem_mb=1000
-    #     threads:
-    #         4
-    #     shell:
-    #         "tar cf - -C gsea gsea_bubble | pigz -p {threads} > {output} "
+        # rule GSEA_Bubble_Compression:
+        #     input:
+        #         expand('gsea/gsea_bubble/{db}.pdf', db=config['GSEA_DB_NAMES'])
+        #     output:
+        #         'gsea/gsea_bubble.tar.gz'
+        #     benchmark:
+        #         'gsea/log/gsea_bubble.tar.gz.benchmark'
+        #     resources:
+        #         mem_mb=1000
+        #     threads:
+        #         4
+        #     shell:
+        #         "tar cf - -C gsea gsea_bubble | pigz -p {threads} > {output} "
