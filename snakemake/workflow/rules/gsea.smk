@@ -105,8 +105,11 @@ rule GSEA_SingleBubblePlot:
 
 if config["GSEA_ANALYSIS"]:
     if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-        # GSEA_compression_OUTPUT  = expand("gsea/{contrast}.tar.gz",contrast=DE_CONTRAST_NAMES)
-        GSEA_MultiBubblePlot_Input = expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb",fname=DE_CONTRAST_NAMES)
+        GSEA_MultiBubblePlot_Input = lambda wildcards: expand(
+            "gsea/{fname}/{db}.GseaPreranked/edb/results.edb",
+            fname=DE_CONTRAST_NAMES,
+            db=[wildcards.db]  # Use the single {db} wildcard
+        )
     else:
         GSEA_MultiBubblePlot_Input = lambda wildcards: expand(
             "gsea/{fname}/{db}.GseaPreranked/edb/results.edb",
