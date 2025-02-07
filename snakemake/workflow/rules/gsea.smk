@@ -111,11 +111,11 @@ rule GSEA_SingleBubblePlot:
         "Rscript workflow/script/gsea_bubble.R {input} {wildcards.contrast} &> {log}"
 
 if config["GSEA_ANALYSIS"]:
-    if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-        # GSEA_compression_OUTPUT  = expand("gsea/{contrast}.tar.gz",contrast=DE_CONTRAST_NAMES)
-        GSEA_compression_OUTPUT = expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb", fname=DE_CONTRAST_NAMES)
-    else:
-        GSEA_compression_OUTPUT = expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb", fname=config["RNKS"])
+    # if config["START"] in ["FASTQ", "BAM", "COUNT"]:
+    #     # GSEA_compression_OUTPUT  = expand("gsea/{contrast}.tar.gz",contrast=DE_CONTRAST_NAMES)
+    #     GSEA_compression_OUTPUT = expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb", fname=DE_CONTRAST_NAMES)
+    # else:
+    #     GSEA_compression_OUTPUT = expand("gsea/{fname}/{db}.GseaPreranked/edb/results.edb", fname=config["RNKS"])
 
     rule GSEA_MultiBubblePlot:
         input:
