@@ -126,7 +126,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
 
     # Set x-axis limits
     MAX_X_RANGE = df['NES'].dropna().abs().max() + 0.5
-    print(MAX_X_RANGE)
+    print("MAX_X_RANGE: ", MAX_X_RANGE)
     plt.xlim(-MAX_X_RANGE, MAX_X_RANGE)
 
     plt.xlabel("Normalized Enrichment Score (NES)")
