@@ -1,6 +1,6 @@
 START: RNK
 
-RNKS:
+RNKS: # assume under meta/
     - test1.rnk.txt
     - test2.rnk.xlsx
 

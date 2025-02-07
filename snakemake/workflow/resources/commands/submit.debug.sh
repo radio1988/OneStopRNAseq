@@ -15,3 +15,5 @@ snakemake -pk --jobs 999 --rerun-triggers mtime \
 >> workflow.log  2>&1
 
 snakemake -j 1 --report report.html > report.log  2>&1
+
+tar cf - -C gsea gsea_bubble| pigz -p 2 > gsea/gsea_bubble.tar.gz
