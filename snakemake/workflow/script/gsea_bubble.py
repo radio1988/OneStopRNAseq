@@ -46,8 +46,6 @@ def parse_gsea_edb(edb_path):
                     fdr = float(fdr) if fdr else 1.0  # Default FDR to 1.0 if not present
                     np = float(np) if np else 1.0
                     data.append([ranked_list, geneset, float(es), float(nes), np, fdr])
-                else:
-                    print(f"Skipping row with NaN values: {line.strip()}")
 
     df = pd.DataFrame(data, columns=["Comparison", "GeneSet", "ES", "NES", "NP", "FDR"])
     return df
@@ -127,8 +125,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     plt.gca().set_axisbelow(True)  # Ensure grid is behind the scatter points
 
     # Set x-axis limits
-    MAX_X_RANGE = df['NES'].abs().max() + 0.5
-    print(MAX_X_RANGE)
+    MAX_X_RANGE = df['NES'].dropna().abs().max() + 0.5
     plt.xlim(-MAX_X_RANGE, MAX_X_RANGE)
 
     plt.xlabel("Normalized Enrichment Score (NES)")
