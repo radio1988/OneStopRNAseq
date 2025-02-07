@@ -6,6 +6,7 @@ gsea/Comparison2.rnk.txt/m5.go.bp.v2024.1.Mm.symbols.gmt.GseaPreranked/edb/resul
 -alpha 0.05 \
 -topn 100
 """
+import sys
 
 import numpy as np
 import pandas as pd
@@ -101,6 +102,8 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     """
     # Create bubble plot
     nrows = df['GeneSet'].unique().shape[0]
+    if nrows < 1:
+        sys.exit(f"ERROR: No GeneSets found with FDR < {alpha}.")
     plt.figure(figsize=(8, nrows * 0.2 + 2))
 
     sns.scatterplot(
