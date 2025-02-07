@@ -132,7 +132,7 @@ if config["GSEA_ANALYSIS"]:
         benchmark:
             'gsea/gsea_bubble/log/MultiBubblePlot.{db}.benchmark'
         shell:
-            "python workflow/script/gsea_bubble.py -edbs {input} -output {output} -alpha 0.05 -topn 1000 &> {log}
+            "python workflow/script/gsea_bubble.py -edbs {input} -output {output} -alpha 0.05 -topn 1000 &> {log}"
 
     rule GSEA_Bubble_Compression:
         input:
