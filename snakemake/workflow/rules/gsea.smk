@@ -73,7 +73,7 @@ rule GSEA:
 
 rule GSEA_compression:
     input:
-        GSEA_OUTPUT(config)
+        ALL_GSEA_OUTPUT(config)
     output:
         "gsea/{contrast}.tar.gz"
     resources:
@@ -86,6 +86,9 @@ rule GSEA_compression:
         "tar cf - -C gsea {wildcards.contrast} | pigz -p {threads} > {output} "
 
 rule GSEA_SingleBubblePlot:
+    """
+    old R version, should update or delete
+    """
     input:
         "gsea/{contrast}.tar.gz"
     output:
@@ -102,6 +105,7 @@ rule GSEA_SingleBubblePlot:
         'gsea/gsea_bubble/log/{contrast}.SingleBubblePlot.benchmark'
     shell:
         "Rscript workflow/script/gsea_bubble.R {input} {wildcards.contrast} &> {log}"
+
 
 if config["GSEA_ANALYSIS"]:
     if config["START"] in ["FASTQ", "BAM", "COUNT"]:
