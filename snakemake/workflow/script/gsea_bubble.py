@@ -125,7 +125,8 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     plt.gca().set_axisbelow(True)  # Ensure grid is behind the scatter points
 
     # Set x-axis limits
-    MAX_X_RANGE = df['NES'].dropna().abs().max() + 0.5
+    max_x_range_value = df['NES'].dropna().abs().max()
+    MAX_X_RANGE = max_x_range_value + 0.5 if not pd.isna(max_x_range_value) else 0.5
     print("MAX_X_RANGE: ", MAX_X_RANGE)
     plt.xlim(-MAX_X_RANGE, MAX_X_RANGE)
 
