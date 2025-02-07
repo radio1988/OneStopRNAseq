@@ -169,7 +169,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     merged_handles = filtered_handles + size_handles
     merged_labels = filtered_labels + size_labels
 
-    plt.legend(merged_handles, merged_labels, bbox_to_anchor=(1, 0.9))
+    plt.legend(merged_handles, merged_labels, bbox_to_anchor=(1, 1))
 
     plt.savefig(output_path, format="pdf", bbox_inches="tight")
 
