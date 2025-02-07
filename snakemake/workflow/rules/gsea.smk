@@ -137,3 +137,17 @@ if config["GSEA_ANALYSIS"]:
             'gsea/gsea_bubble/log/{db}.{topn}.pdf.log'
         shell:
             "python workflow/script/gsea_bubble.py -edbs {input} -output {output} -alpha 0.05 -topn {wildcards.topn} &> {log}"
+
+    rule Compress_GSEA_BubblePlots:
+        input:
+            expand('gsea/gsea_bubble/{db}.{topn}.pdf', db=config["GSEA_DB"], topn=config["GSEA_TOPNS"])
+        output:
+            "gsea/gsea_bubble.tar.gz
+        resources:
+            mem_mb=1000
+        threads:
+            4
+        benchmark:
+            "gsea/gsea_bubble/log/{db}.{topn}.tar.gz.benchmark"
+        shell:
+            "tar cf - -C gsea gsea_bubble| pigz -p {threads} > {output} "
