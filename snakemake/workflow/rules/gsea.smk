@@ -140,7 +140,7 @@ if config["GSEA_ANALYSIS"]:
 
     rule Compress_GSEA_BubblePlots:
         input:
-            expand('gsea/gsea_bubble/{db}.{topn}.pdf', db=config["GSEA_DB"], topn=config["GSEA_TOPNS"])
+            expand('gsea/gsea_bubble/{db}.{topn}.pdf', db=config["GSEA_DB_NAMES"], topn=config["GSEA_TOPNS"])
         output:
             "gsea/gsea_bubble.tar.gz"
         resources:
