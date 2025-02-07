@@ -103,7 +103,7 @@ def target_input(config, ASCN):
         # l.extend(GSEA_SINGLEBUBBLE_OUTPUT(config))
         l.extend(["gsea/gsea_bubble/{db}.{topn}.pdf".format(db=db, topn=topn) \
                   for db in config['GSEA_DB_NAMES'] for topn in config['GSEA_TOPNS']    ])
-        # l.append('gsea/gsea_bubble.tar.gz')
+        l.append('gsea/gsea_bubble.tar.gz')
 
     return l
 
