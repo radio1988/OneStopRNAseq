@@ -41,7 +41,7 @@ def parse_gsea_edb(edb_path):
             if match:
                 ranked_list, geneset, es, nes, np, fdr = match.groups()
                 # if not (math.isnan(es) or math.isnan(nes) or math.isnan(np) or math.isnan(fdr)):
-                if not (math.isnan(nes) or math.isnan(fdr)):  # skip row if NES or FDR is NaN
+                if not (math.isnan(float(nes)) or math.isnan(float(fdr))):  # skip row if NES or FDR is NaN
                     ranked_list = ranked_list.replace('.rnk', '')
                     fdr = float(fdr) if fdr else 1.0  # Default FDR to 1.0 if not present
                     np = float(np) if np else 1.0
