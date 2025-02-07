@@ -18,7 +18,7 @@ configfile: "config.yaml"
 containerized: "docker://liruiradiant/osr-dev:test0"
 #container: "docker://snakemake/snakemake:v7.24.1"
 
-def GSEA_OUTPUT(config):
+def ALL_GSEA_OUTPUT(config):
     if config["GSEA_ANALYSIS"]:
         gsea_dbs = []
         for f in os.listdir(config['GSEA_DB_PATH']):
@@ -128,7 +128,7 @@ def target_input(config, ASCN):
         l.append("DESeq2/DESeq2.html")
 
     if config['GSEA_ANALYSIS']:
-        l.extend(GSEA_OUTPUT(config))
+        l.extend(ALL_GSEA_OUTPUT(config))
 
     if config['RMATS_ANALYSIS']:
         if config['START'] not in ['FASTQ', 'BAM']:

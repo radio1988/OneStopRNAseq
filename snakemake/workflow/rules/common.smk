@@ -37,7 +37,7 @@ def check_and_update_config(config):
     config['INDEX'] = config['GENOME'] + '.star_idx'
 
     if config['START'] == 'FASTQ' and 'MAX_FASTQ_SIZE' in config:  # skip check if config ignored this
-        check_fastq_size(config, SAMPLES)
+        check_fastq_size(config,SAMPLES)
 
     if config['DESEQ2_ANALYSIS'] and config['START'] in ["FASTQ", "BAM", "COUNT"]:
         DE_CONTRAST_NAMES = get_contrast_fnames(config['CONTRAST_DE'])
@@ -63,6 +63,8 @@ def check_and_update_config(config):
             if f.endswith('.gmt'):
                 gsea_dbs.append(f)
         gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
+        if len(gsea_dbs) < 1:
+            sys.exit("No gsea databases found in " + config['GSEA_DB_PATH'])
         config["GSEA_DB_NAMES"] = gsea_dbs
 
     return config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES
@@ -265,9 +267,6 @@ def DESeq2_input(config):
         return folder + '/counts.' + config['MODE'] + '.txt'
 
 
-
-
-
 RMATS_STRANDNESS = {0: 'fr-unstranded', 1: 'fr-firststrand', 2: 'fr-secondstrand'}
 
 
@@ -430,22 +429,23 @@ def split_msheet_rnk_file(config):
         if len(config['RNKS']) > 1:
             raise ValueError("If MSHEET is True, only one RNK file is allowed")
 
-        msheet_fname = os.path.join('meta/', config['RNKS'][0] ) # convention, always put rnk under meta/,and skip meta/ in config
+        msheet_fname = os.path.join('meta/',
+            config['RNKS'][0])  # convention, always put rnk under meta/,and skip meta/ in config
         if not msheet_fname.endswith(".xlsx"):
             raise ValueError("If MSHEET is True, the RNK file must be xlsx")
 
         #split sheets
-        dfs = pd.read_excel(msheet_fname, sheet_name=None)
+        dfs = pd.read_excel(msheet_fname,sheet_name=None)
         rnk_file_names = []
         for sheet_name, sheet_df in dfs.items():
             sheet_df.columns = sheet_df.columns.str.strip()
-            sheet_df.columns = sheet_df.columns.str.replace(" ", "_")
+            sheet_df.columns = sheet_df.columns.str.replace(" ","_")
             # column name need # for GSEA to recognize
             if not sheet_df.columns[0].startswith("#"):
                 sheet_df.columns = ["# " + sheet_df.columns[0]] + sheet_df.columns[1:].to_list()
-                # index element is immutable
+            # index element is immutable
             # comparison_name for snakemake can't have #
-            comparison_name = sheet_df.columns[0].replace("#", "").strip()
+            comparison_name = sheet_df.columns[0].replace("#","").strip()
             config_RNKS_ = f"{comparison_name}.rnk.txt"  # to replace config['RNKS']
             rnk_file_names.append(config_RNKS_)
 
@@ -457,6 +457,7 @@ def split_msheet_rnk_file(config):
             sheet_df.to_csv(single_sheet_fname,sep="\t",index=False)
 
     return rnk_file_names
+
 
 def input_rnk_fname1(wildcards, config):
     if config['START'] == 'RNK' and 'MSHEET' in config and config['MSHEET']:
@@ -497,23 +498,23 @@ def input_rnk_fname2(wildcards, config):
     return rnk_fname1_to_fname2(fname1)
 
 
-def GSEA_OUTPUT(config):
+def ALL_GSEA_OUTPUT(config):
     """
-    GSEA_OUTPUT: smart to get all possible output files for GSEA
+    ALL_GSEA_OUTPUT: smart to get all possible output files for GSEA
     """
     L = []
     if config["GSEA_ANALYSIS"]:
-        gsea_dbs = []
-        for f in os.listdir(config['GSEA_DB_PATH']):
-            if f.endswith('.gmt'):
-                gsea_dbs.append(f)
-        gsea_dbs = [os.path.basename(x) for x in gsea_dbs]
-        if len(gsea_dbs) < 1:
+        gsea_dbs = config["GSEA_DB_NAMES"]
+        if len(config["GSEA_DB_NAMES"]) < 1:
             sys.exit("No gsea databases found in " + config['GSEA_DB_PATH'])
         if config["START"] in ["FASTQ", "BAM", "COUNT"]:
-            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=DE_CONTRAST_NAMES,db=gsea_dbs)
+            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",
+                contrast=DE_CONTRAST_NAMES,
+                db=config["GSEA_DB_NAMES"])
         elif config["START"] == "RNK":
-            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",contrast=config["RNKS"],db=gsea_dbs)
+            L = expand("gsea/{contrast}/{db}.GseaPreranked/index.html",
+                contrast=config["RNKS"],
+                db=config["GSEA_DB_NAMES"])
         else:
             sys.exit("config['START'] not recognized")
     else:
