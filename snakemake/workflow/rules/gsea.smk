@@ -125,15 +125,15 @@ if config["GSEA_ANALYSIS"]:
         input:
             GSEA_MultiBubblePlot_Input
         output:
-            'gsea/gsea_bubble/{db}.pdf'
+            'gsea/gsea_bubble/{db}.{topn}.pdf'
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 4000
         priority: 100
         log:
-            'gsea/gsea_bubble/log/MultiBubblePlot.{db}.log'
+            'gsea/gsea_bubble/log/{db}.{topn}.pdf.log'
         threads:
             1
         benchmark:
-            'gsea/gsea_bubble/log/MultiBubblePlot.{db}.benchmark'
+            'gsea/gsea_bubble/log/{db}.{topn}.pdf.log'
         shell:
-            "python workflow/script/gsea_bubble.py -edbs {input} -output {output} -alpha 0.05 -topn 1000 &> {log}"
+            "python workflow/script/gsea_bubble.py -edbs {input} -output {output} -alpha 0.05 -topn {wildcards.topn} &> {log}"
