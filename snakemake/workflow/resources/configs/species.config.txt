@@ -1,23 +1,26 @@
-# human t2t ensembl-rapid
+# human hg38
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/hg38/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/hg38/Homo_sapiens.GRCh38.111.gtf
+ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Homo_sapiens.GRCh38.111.anno.txt  # 7 columns
+GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
+
+
+# human t2t
 GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens_t2t/ensembl_rapid/Homo_sapiens-GCA_009914755.4-softmasked.fa
 GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens_t2t/ensembl_rapid/Homo_sapiens-GCA_009914755.4-2022_07-genes.gtf
 ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/t2t.ensembl_rapid.GCA_009914755.4-2022_07-gene.anno.txt
 GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
 
-# human hg38 (archive)
-GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens/hg38.primary.fa
-GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/homo_sapiens/gencode.v34.primary_assembly.annotation.gtf
+
+# human hg38_gencode_v34 (archive)
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/archive/hg38_gencode_v34/hg38.primary.fa.gz
+GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/archive/hg38_gencode_v34/gencode.v34.primary_assembly.annotation.gtf.gz
 ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/hg38.gencode.v34.te_included.anno.txt
 GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
 
-# human hg38 ensembl (recommend)
-GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/hg38_ensembl/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa
-GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/hg38_ensembl/Homo_sapiens.GRCh38.111.gtf
-ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Homo_sapiens.GRCh38.111.anno.txt  # 7 columns
-GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
 
 # mouse mm10 (Gencode, archive)
-GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/mm10.ucsc.fa
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10/mm10.ucsc.fa
 GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/gencode.vM25.primary_assembly.annotation.gtf
 ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt
 GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/gsea_db
