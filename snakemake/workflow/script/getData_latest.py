@@ -246,12 +246,11 @@ for srr in srrList:
             with open(logFile, "a") as f:
                 now = datetime.now()
                 current_time = now.strftime("%H:%M:%S")
-                f.write(current_time + " prefetch job reach 9000-second limit, resubmit job to hpc.\n")
+                f.write(current_time + " prefetch job reach 9000-second limit, may need to resubmit job to hpc, but cowardly not to prevent duplicate job, wait for the prefetch short queue to time out ...\n")
                 # os.remove(prefetchLogFile)
-                random_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-                os.rename(prefetchLogFile, prefetchLogFile + ".failed." + random_suffix) # add a random suffix
-                
-                subprocess.call(cmd, shell=True)
+                # random_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+                # os.rename(prefetchLogFile, prefetchLogFile + ".failed." + random_suffix) # add a random suffix
+                # subprocess.call(cmd, shell=True)
 
         if timer > 27000:
             with open(logFile, "a") as f:
