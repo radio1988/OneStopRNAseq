@@ -1,4 +1,4 @@
-# 250211
+# 250212
 SPECIES: mm10
 START: FASTQ             # FASTQ/ BAM/ COUNT/ RNK
 
@@ -52,6 +52,7 @@ blackSamples: 'sampleXXX,sampleYYY' # list of sample names to be excluded in DES
 RNKS:
   - name1.rnk.txt          # path ./meta/name1.rnk.txt
   - name2.rnk.txt          # path ./meta/name2.rnk.txt
+MSHEET: False      # only works for xlsx files with multiple sheets, each sheet a rnk
 
 GSEA_ANALYSIS: True
 GSEA_NPLOTS: 2

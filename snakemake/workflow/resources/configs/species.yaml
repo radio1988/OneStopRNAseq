@@ -35,7 +35,7 @@ worm:  # c_elegans.PRJNA13758.WS286
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/c_elegans.PRJNA13758.WS286.genomic_softmasked.fa
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/c_elegans.PRJNA13758.WS286.canonical_geneset.gtf
   ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/c_elegans.PRJNA13758.WS286.canonical_geneset.gtf.anno.txt
-  GSEA_DB_PATH: workflow/resources/gsea_db/caenorhabditis_elegans/wormEnrichr/
+  GSEA_DB_PATH: workflow/resources/gsea_db/caenorhabditis_elegans/gsea_db/
 
 yeast: # Saccharomyces_cerevisiae.R64-1-1.90
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
@@ -72,3 +72,9 @@ tomato: # Solanum_lycopersicum.SL3.0.57
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/solanum_lycopersicum/Solanum_lycopersicum.SL3.0.57.gtf
   ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Solanum_lycopersicum.SL3.0.57.anno.txt  # 6 columns
   GSEA_DB_PATH: None
+
+TAIR10:
+  GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/arabidopsis_thaliana/tair10/Arabidopsis_thaliana.TAIR10.dna_sm.toplevel.fa
+  GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/arabidopsis_thaliana/tair10/Arabidopsis_thaliana.TAIR10.57.gtf
+  ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/Arabidopsis_thaliana.TAIR10.57.anno_tab.txt
+  GSEA_DB_PATH: None # workflow/resources/gsea_db/arabidopsis_thaliana/gsea_db/ # needs reformatting
