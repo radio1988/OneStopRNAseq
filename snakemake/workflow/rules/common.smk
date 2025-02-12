@@ -82,7 +82,7 @@ def check_and_update_config(config):
     AS_CONTRAST_NAMES = [l.replace('.','_') for l in DE_CONTRAST_NAMES]
 
     # For MSHEET RNK START GSEA, split RNK files before DAG is built
-    if config['GSEA_DB_PATH'] is None:
+    if config['GSEA_DB_PATH'] == 'None':
         config['GSEA_ANALYSIS'] = False
 
     if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
