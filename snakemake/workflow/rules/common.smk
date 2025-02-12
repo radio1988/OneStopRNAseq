@@ -30,6 +30,7 @@ def read_species(config):
         })
     else:
         sys.exit("species not found in " + fname)
+
     return config
 
 
