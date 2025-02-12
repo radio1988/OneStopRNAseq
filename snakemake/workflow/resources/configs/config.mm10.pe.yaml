@@ -3,7 +3,7 @@
 START: FASTQ             # FASTQ/ BAM/ COUNT/ RNK
 
 ## WHEN START is FASTQ
-GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/mm10.ucsc.fa
+GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10/mm10.ucsc.fa
 PAIR_END: True          # True/False
 
 ADAPTORS: workflow/resources/adapters/merged.fa     # For Trimming
@@ -20,7 +20,7 @@ ASSEMBLY_ANALYSIS: False
 
 
 ## WHEN START is BAM
-GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mus_musculus/gencode.vM25.primary_assembly.annotation.gtf
+GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10/gencode.vM25.primary_assembly.annotation.gtf
 STRAND: [0, 1, 2]       # [0, 1, 2]: auto detect; [0]: unstranded; [1]: stranded, forward; [2]: stranded, reverse
 
 MODE: strict            # strict/liberal. liberal: allow Multi-Mapping, No fragment size reqirement; strict: opposite
