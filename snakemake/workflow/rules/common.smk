@@ -21,6 +21,7 @@ def read_species(config):
         species_config = yaml.safe_load(file)
 
     if config['SPECIES'] in species_config:
+        SPECIES = config['SPECIES']
         config.update({
             'GENOME': species_config[SPECIES]['GENOME'],
             'GTF': species_config[SPECIES]['GTF'],
