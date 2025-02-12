@@ -44,6 +44,7 @@ def check_and_update_config(config):
     """
     config = read_species(config)
 
+
     if config["START"] != 'RNK':
         check_CONTRAST_and_META(config)
 
@@ -81,6 +82,9 @@ def check_and_update_config(config):
     AS_CONTRAST_NAMES = [l.replace('.','_') for l in DE_CONTRAST_NAMES]
 
     # For MSHEET RNK START GSEA, split RNK files before DAG is built
+    if config['GSEA_DB_PATH'] is None:
+        config['GSEA_ANALYSIS'] = False
+
     if config['START'] == "RNK" and 'MSHEET' in config and config['MSHEET']:
         rnk_file_names = split_msheet_rnk_file(config)
         config['RNKS'] = rnk_file_names  # only basename of rnk files
