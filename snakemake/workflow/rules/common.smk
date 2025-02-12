@@ -5,6 +5,31 @@ from pathlib import Path
 import math
 import shutil
 import pandas as pd
+import yaml
+
+
+def read_species(config):
+    """
+    read config.yaml for species
+    read species.yaml for genome, gtf, anno_tab, gsea_db_path
+    assume 'workflow/resources/configs/species.yaml'
+    update config with genome, gtf, anno_tab, gsea_db_path
+    return updated config
+    """
+    fname = 'workflow/resources/configs/species.yaml'
+    with open(fname,'r') as file:
+        species_config = yaml.safe_load(file)
+
+    if config['SPECIES'] in species_config:
+        config.update({
+            'GENOME': species_config[SPECIES]['GENOME'],
+            'GTF': species_config[SPECIES]['GTF'],
+            'ANNO_TAB': species_config[SPECIES]['ANNO_TAB'],
+            'GSEA_DB_PATH': species_config[SPECIES]['GSEA_DB_PATH']
+        })
+    else:
+        sys.exit("species not found in " + fname)
+    return config
 
 
 def check_and_update_config(config):
@@ -15,6 +40,7 @@ def check_and_update_config(config):
 
     Also updates: config['INDEX'] and config['RNKS']
     """
+    config = read_species(config)
 
     if config["START"] != 'RNK':
         check_CONTRAST_and_META(config)
