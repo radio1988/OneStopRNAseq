@@ -102,9 +102,9 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
         None
     """
     # Create bubble plot
-    nrows = df['GeneSet'].unique().shape[0]
+    nrows = df['GeneSet'].shape[0]
 
-    plt.figure(figsize=(10, nrows * 0.18 + 1))
+    plt.figure(figsize=(10, nrows * 0.17 + 1))
 
     if nrows < 1:
         plt.text(
@@ -121,6 +121,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
         size="-log10(FDR)",
         hue="Comparison",
         palette="Set1",
+        #palette=["aqua", "orange"],
         sizes=(20, 80),  # Control bubble size range
         edgecolor="black",
         alpha=0.7
@@ -174,24 +175,52 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     plt.savefig(output_path, format="pdf", bbox_inches="tight")
 
 
-def main():
+def filter_df_by_gs_list(df, gs_list):
+    """
+    Filter the dataframe by a list of gene sets.
+    Args:
+        df (pd.DataFrame): DataFrame containing GSEA results with columns ['comparison_name', 'GSEA_DB', 'NES', 'p_value'].
+        gs_list (list): List of gene sets to keep.
+
+    Returns:
+        pd.DataFrame: Filtered DataFrame.
+    """
+    return df[df['GeneSet'].isin(gs_list)]
+def arg_parser():
     parser = argparse.ArgumentParser(description="Parse GSEA .edb files and create a bubble plot.")
     parser.add_argument("-edbs", nargs="+", required=True, help="List of .edb files.")
     parser.add_argument("-output", required=True, help="Output fname for the plot.")
     parser.add_argument("-alpha", type=float, default=0.05, help="max-value for: min-FDR in all comparisons; threshold for filtering GeneSets (default: 0.05).")
-    parser.add_argument("-topn", type=int, default=1000, help="Top n GeneSets to keep based on ranked min-FDR (default: 1000).")
+    parser.add_argument("-topn", type=int, default=100, help="Top n GeneSets to keep based on ranked min-FDR (default: 100).")
+    parser.add_argument("-gs_list", nargs="*", help="List of gene sets to filter (optional).")
     args = parser.parse_args()
+    return args
+def main():
+    args = arg_parser()
 
     # Ensure output directory exists
-    os.makedirs(os.path.dirname(args.output), exist_ok=True)
+    if os.path.dirname(args.output):
+        os.makedirs(os.path.dirname(args.output), exist_ok=True)
 
     # Read all .edb files
     all_data = [parse_gsea_edb(edb) for edb in args.edbs]
     combined_df = pd.concat(all_data, ignore_index=True)
     combined_df["-log10(FDR)"] = -np.log10(combined_df["FDR"].replace(0, 1e-4))  # Replace 0 with a small value to avoid log(0) issue
-    df_filtered = filter_top_gsea_results(combined_df, alpha=args.alpha, topn=args.topn)
+
+    # Read gs_list if provided
+    if args.gs_list:
+        with open(args.gs_list[0], "r") as file:
+            gs_list = [line.strip() for line in file]
+    else:
+        gs_list = None
+
+    combined_df_short = filter_df_by_gs_list(combined_df, gs_list) if gs_list else combined_df
+
+    # Filter by min-FDR and topn
+    df_filtered = filter_top_gsea_results(combined_df_short, alpha=args.alpha, topn=args.topn)
 
     # Create the plot
+    df_filtered.to_csv(args.output.replace('.pdf', '.csv'), index=False)
     create_bubble_plot(df_filtered, args.output, args.alpha)
 
 if __name__ == "__main__":
