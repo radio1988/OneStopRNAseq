@@ -98,8 +98,8 @@ def target_input(config, ASCN):
             l.append("DESeq2/DESeq2.html")
 
     if config['GSEA_ANALYSIS']:
-        l.extend(ALL_GSEA_OUTPUT(config))
-        l.extend(GSEACOMPRESS_OUTPUT(config))
+        #l.extend(ALL_GSEA_OUTPUT(config))
+        #l.extend(GSEACOMPRESS_OUTPUT(config))
         # l.extend(GSEA_SINGLEBUBBLE_OUTPUT(config))
         l.extend(["gsea/gsea_bubble/{db}.{topn}.pdf".format(db=db, topn=topn) \
                   for db in config['GSEA_DB_NAMES'] for topn in config['GSEA_TOPNS']    ])

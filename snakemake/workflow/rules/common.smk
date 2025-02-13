@@ -472,6 +472,7 @@ def split_msheet_rnk_file(config):
         dfs = pd.read_excel(msheet_fname,sheet_name=None)
         rnk_file_names = []
         for sheet_name, sheet_df in dfs.items():
+            sheet_df.columns = sheet_df.columns.str.replace("#","")
             sheet_df.columns = sheet_df.columns.str.strip()
             sheet_df.columns = sheet_df.columns.str.replace(" ","_")
             # column name need # for GSEA to recognize
