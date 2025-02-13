@@ -4,6 +4,7 @@ library(tidyverse)
 library(openxlsx)
 library(methods)
 
+## OBSOLETE
 
 setClass('gsea_edb', slots=list(gsea_db='character',  # m1.all.v2022
                                 edb_path = 'character', # "gsea/TN_AKT2KO_vs_TN_WT/m1.all.v2022.1.Mm.symbols.gmt.GseaPreranked/edb/results.edb"

@@ -17,6 +17,8 @@ import math
 import matplotlib.pyplot as plt
 import argparse
 import warnings
+from matplotlib.colors import Normalize
+
 
 
 def parse_gsea_edb(edb_path):
@@ -114,6 +116,8 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
         )
         warnings.warn("No significant GeneSet")
 
+    norm = Normalize(vmin=0, vmax=4)  # Assuming your -log10(FDR) ranges from 0 to 4
+
     sns.scatterplot(
         data=df,
         x="NES",
@@ -124,7 +128,8 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
         #palette=["aqua", "orange"],
         sizes=(20, 80),  # Control bubble size range
         edgecolor="black",
-        alpha=0.7
+        alpha=0.7,
+        size_norm=norm
     )
 
     # Add vertical reference lines
