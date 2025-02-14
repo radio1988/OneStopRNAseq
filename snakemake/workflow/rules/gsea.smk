@@ -145,7 +145,7 @@ if config["GSEA_ANALYSIS"]:
         log:
             "gsea/gsea_bubble/log/gsea_bubble.tar.gz.log"
         resources:
-            mem_mb=1000
+            mem_mb=2000
         threads:
             4
         shell:
