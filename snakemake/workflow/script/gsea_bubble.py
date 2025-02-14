@@ -176,7 +176,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     merged_labels = filtered_labels + size_labels
 
     plt.legend(merged_handles, merged_labels, bbox_to_anchor=(1, 1))
-    plt.gca().margins(y=0.02 * (1000-nrow)/1000)  # Reduce y-axis margins
+    plt.gca().margins(y=0.02 * (1000-nrows)/1000)  # Reduce y-axis margins
     plt.savefig(output_path, format="pdf", bbox_inches="tight")
 
 
