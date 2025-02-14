@@ -31,11 +31,11 @@ def read_species(config):
     else:
         sys.exit("species not found in " + fname)
 
-    if 'CleanUpRNAseqQC' in species_config:
-        config['CleanUpRNAseqQC'] = species_config['CleanUpRNAseqQC']
+    if 'CleanUpRNAseqQC' in species_config[SPECIES]:
+        config['CleanUpRNAseqQC'] = species_config[SPECIES]['CleanUpRNAseqQC']
 
-    if 'CleanUpRNAseqCorrection' in species_config:
-        config['CleanUpRNAseqCorrection'] = species_config['CleanUpRNAseqCorrection']
+    if 'CleanUpRNAseqCorrection' in species_config[SPECIES]:
+        config['CleanUpRNAseqCorrection'] = species_config[SPECIES]['CleanUpRNAseqCorrection']
 
     return config
 
