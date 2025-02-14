@@ -105,7 +105,7 @@ def check_and_update_config(config):
             sys.exit("No gsea databases found in " + config['GSEA_DB_PATH'])
         config["GSEA_DB_NAMES"] = gsea_dbs
 
-    config["GSEA_TOPNS"] = [20, 100, 500]
+    config["GSEA_TOPNS"] = [20, 100, 1000]
 
     return config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES
 
