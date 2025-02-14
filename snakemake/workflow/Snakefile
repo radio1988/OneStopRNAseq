@@ -15,6 +15,7 @@ include: 'rules/common.smk'  # common functions
 
 # CONFIGURATION
 config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES = check_and_update_config(config)
+print(config['CleanUpRNAseqQC'], "QC")
 
 # for rMATS
 if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
@@ -117,7 +118,7 @@ rule targets:
         mem_mb=lambda wildcards, attempt: attempt * 1000
 
 
-# subworkflows
+# sub-workflows
 # popular
 include: 'rules/main.smk'
 include: 'rules/trim_qc.smk'
