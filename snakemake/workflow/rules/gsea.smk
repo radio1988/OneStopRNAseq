@@ -70,7 +70,7 @@ rule GSEA:
         cp workflow/envs/GSEA_ReadMe.html gsea/ >> {log} 2>&1;
         """
 
-rule GSEA_compression:
+rule Compress_GSEA_Output:
     input:
         ALL_GSEA_OUTPUT(config)  # todo: even some failed, still compress the successful ones
     output:
@@ -84,7 +84,7 @@ rule GSEA_compression:
     shell:
         "tar cf - -C gsea {wildcards.contrast} | pigz -p {threads} > {output} "
 
-rule GSEA_SingleBubblePlot:
+rule SingleBubblePlot:
     """
     old R version, should update or delete
     """
@@ -120,7 +120,7 @@ if config["GSEA_ANALYSIS"]:
             db=[wildcards.db]  # Use the single {db} wildcard
         )
 
-    rule GSEA_MultiBubblePlot:
+    rule MultiBubblePlot:
         input:
             GSEA_MultiBubblePlot_Input
         output:
@@ -137,7 +137,7 @@ if config["GSEA_ANALYSIS"]:
         shell:
             "python workflow/script/gsea_bubble.py -edbs {input} -output {output} -alpha 0.05 -topn {wildcards.topn} &> {log}"
 
-    rule Compress_GSEA_BubblePlots:
+    rule Compress_BubblePlots:
         input:
             expand('gsea/gsea_bubble/{db}.{topn}.pdf', db=config["GSEA_DB_NAMES"], topn=config["GSEA_TOPNS"])
         output:
