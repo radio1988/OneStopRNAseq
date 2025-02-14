@@ -106,7 +106,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     # Create bubble plot
     nrows = df['GeneSet'].shape[0]
 
-    plt.figure(figsize=(10, nrows * 0.03 + 1))
+    plt.figure(figsize=(10, nrows * 0.05 + 1))
 
     if nrows < 1:
         plt.text(
@@ -176,7 +176,8 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     merged_labels = filtered_labels + size_labels
 
     plt.legend(merged_handles, merged_labels, bbox_to_anchor=(1, 1))
-
+    plt.tight_layout()  # Reduce whitespace automatically
+    plt.gca().margins(y=0.02)  # Reduce y-axis margins
     plt.savefig(output_path, format="pdf", bbox_inches="tight")
 
 
