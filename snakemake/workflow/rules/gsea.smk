@@ -142,9 +142,11 @@ if config["GSEA_ANALYSIS"]:
             expand('gsea/gsea_bubble/{db}.{topn}.pdf', db=config["GSEA_DB_NAMES"], topn=config["GSEA_TOPNS"])
         output:
             "gsea/gsea_bubble.tar.gz"
+        log:
+            "gsea/gsea_bubble/log/gsea_bubble.tar.gz.log"
         resources:
             mem_mb=1000
         threads:
             4
         shell:
-            "tar cf - -C gsea gsea_bubble| pigz -p {threads} > {output} "
+            "tar cf - -C gsea gsea_bubble| pigz -p {threads} > {output} 2> {log}"
