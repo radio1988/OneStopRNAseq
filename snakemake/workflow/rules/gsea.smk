@@ -144,6 +144,8 @@ if config["GSEA_ANALYSIS"]:
             "gsea/gsea_bubble.tar.gz"
         log:
             "gsea/gsea_bubble/log/gsea_bubble.tar.gz.log"
+        benchmark:
+            "gsea/gsea_bubble/log/gsea_bubble.tar.gz.benchmark"
         resources:
             mem_mb=2000
         threads:
