@@ -15,7 +15,6 @@ include: 'rules/common.smk'  # common functions
 
 # CONFIGURATION
 config, SAMPLES, DE_CONTRAST_NAMES, AS_CONTRAST_NAMES = check_and_update_config(config)
-print(config['CleanUpRNAseqQC'], "QC")
 
 # for rMATS
 if config['RMATS_ANALYSIS'] and config['START'] in ["FASTQ", "BAM"]:
