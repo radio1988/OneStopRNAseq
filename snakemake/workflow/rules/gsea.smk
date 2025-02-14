@@ -59,7 +59,7 @@ rule GSEA:
         exit_code=$?  # exit code of last command
         
         if [ $exit_code -ne 0 ]; then
-            #error_m2.cp.wikipathways.v2024.1.Mm.symbols.gmt.GseaPreranked.1739546734303
+            #e.g. error_m2.cp.wikipathways.v2024.1.Mm.symbols.gmt.GseaPreranked.1739546734303
             mv gsea/{wildcards.fname}/error*{wildcards.db}.GseaPreranked.*/ \
             gsea/{wildcards.fname}/{wildcards.db}.GseaPreranked/  >> {log} 2>&1;
         else

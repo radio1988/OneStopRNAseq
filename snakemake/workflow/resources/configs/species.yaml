@@ -15,6 +15,8 @@ hg38_gencode_v34: #(archive)
   GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/archive/hg38_gencode_v34/gencode.v34.primary_assembly.annotation.gtf.gz
   ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/hg38.gencode.v34.te_included.anno.txt
   GSEA_DB_PATH: workflow/resources/gsea_db/homo_sapiens/gsea_db/
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
 
 mm39:  # (ensembl, recommend, 2024)
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm39/Mus_musculus.GRCm39.dna_sm.primary_assembly.fa
@@ -27,8 +29,8 @@ mm10:  #(Gencode, old, popular)
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/mm10/gencode.vM25.primary_assembly.annotation.gtf
   ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/mm10.gencode.vm25.te_included.anno.txt
   GSEA_DB_PATH: workflow/resources/gsea_db/mus_musculus/gsea_db
-
-
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
 
 
 worm:  # c_elegans.PRJNA13758.WS286
@@ -36,12 +38,16 @@ worm:  # c_elegans.PRJNA13758.WS286
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/caenorhabditis_elegans/c_elegans.PRJNA13758.WS286.canonical_geneset.gtf
   ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/c_elegans.PRJNA13758.WS286.canonical_geneset.gtf.anno.txt
   GSEA_DB_PATH: workflow/resources/gsea_db/caenorhabditis_elegans/gsea_db/
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
 
 yeast: # Saccharomyces_cerevisiae.R64-1-1.90
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.dna.toplevel.fa
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.90.gtf
   ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Saccharomyces_cerevisiae.R64-1-1.90.anno.txt
   GSEA_DB_PATH: workflow/resources/gsea_db/saccharomyces_cerevisiae/gsea_db/
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
 
 rat: # Rattus_norvegicus.mRatBN7.2.109
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/rattus_norvegicus/others/ensembl/Rattus_norvegicus.mRatBN7.2.dna_sm.toplevel.fa
@@ -54,27 +60,37 @@ fruit_fly: # Drosophila_melanogaster.BDGP6.22.96
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/drosophila_melanogaster/Drosophila_melanogaster.BDGP6.22.96.gtf
   ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Drosophila_melanogaster.BDGP6.22.96.anno.txt
   GSEA_DB_PATH: workflow/resources/gsea_db/drosophila_melanogaster/gsea_db/
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
 
 zebra_fish: # danRer11.v4.3.2
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/danio_rerio/danRer11.primary.fa
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/danio_rerio/dr.v4.3.2.gtf
   ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/dr.v4.3.2.anno.txt
   GSEA_DB_PATH: workflow/resources/gsea_db/danio_rerio/gsea_db/
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
 
 soybean: # Glycine_max_v2.1.55
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/glycine_max/Glycine_max.Glycine_max_v2.1.dna_sm.toplevel.fa
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/glycine_max/Glycine_max_v2.1.55.gtf
   ANNO_TAB: https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Glycine_max_v2.1.55.anno.txt
   GSEA_DB_PATH: None
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
 
 tomato: # Solanum_lycopersicum.SL3.0.57
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/solanum_lycopersicum/Solanum_lycopersicum.SL3.0.dna_sm.toplevel.fa
   GTF: /pi/mccb-umw/shared/OneStopRNAseq/genome/solanum_lycopersicum/Solanum_lycopersicum.SL3.0.57.gtf
   ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/dev/snakemake/workflow/resources/anno_tables/Solanum_lycopersicum.SL3.0.57.anno.txt  # 6 columns
   GSEA_DB_PATH: None
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
 
 TAIR10:
   GENOME: /pi/mccb-umw/shared/OneStopRNAseq/genome/arabidopsis_thaliana/tair10/Arabidopsis_thaliana.TAIR10.dna_sm.toplevel.fa
   GTF:  /pi/mccb-umw/shared/OneStopRNAseq/genome/arabidopsis_thaliana/tair10/Arabidopsis_thaliana.TAIR10.57.gtf
   ANNO_TAB:  https://raw.githubusercontent.com/radio1988/OneStopRNAseq/master/snakemake/workflow/resources/anno_tables/Arabidopsis_thaliana.TAIR10.57.anno_tab.txt
   GSEA_DB_PATH: None # workflow/resources/gsea_db/arabidopsis_thaliana/gsea_db/ # needs reformatting
+  CleanUpRNAseqQC: False  # not working for non ensembl gtf
+  CleanUpRNAseqCorrection: False
