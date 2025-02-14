@@ -106,8 +106,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     # Create bubble plot
     nrows = df['GeneSet'].shape[0]
 
-    # plt.figure(figsize=(10, nrows * 0.08 + 2))
-    plt.figure()
+    plt.figure(figsize=(10, nrows * 0.06 + 1))
 
     if nrows < 1:
         plt.text(
