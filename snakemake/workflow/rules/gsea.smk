@@ -53,7 +53,7 @@ rule GSEA:
         -gmx {params.gmt_fmted} -rnk {params.rnk_flat_file} -rpt_label {wildcards.db} \
         -norm meandiv -nperm 1000  -scoring_scheme classic \
         -create_svgs {params.svg} -make_sets true  -rnd_seed timestamp -zip_report false \
-        -set_max 15000 -set_min 15 \
+        -set_max 15000 -set_min 0 \
         -plot_top_x {params.nplot} -out ./gsea/{wildcards.fname} >> {log} 2>&1
         
         exit_code=$?  # exit code of last command
@@ -69,7 +69,6 @@ rule GSEA:
     
         cp workflow/envs/GSEA_ReadMe.html gsea/ >> {log} 2>&1;
         """
-    allow_errors=True  # Let Snakemake continue even if the command fails
 
 rule GSEA_compression:
     input:
