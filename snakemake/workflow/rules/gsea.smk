@@ -149,6 +149,7 @@ if config["GSEA_ANALYSIS"]:
         resources:
             mem_mb=2000
         threads:
-            4
+            1
         shell:
-            "tar cf - -C gsea gsea_bubble| pigz -p {threads} > {output} 2> {log}"
+            # "tar czf -C gsea gsea_bubble {output} 2> {log}"
+            "tar cf - -C gsea gsea_bubble | pigz -p {threads} > {output}"
