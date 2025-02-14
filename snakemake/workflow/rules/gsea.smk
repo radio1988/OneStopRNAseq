@@ -69,6 +69,7 @@ rule GSEA:
     
         cp workflow/envs/GSEA_ReadMe.html gsea/ >> {log} 2>&1;
         """
+    allow_errors=True  # Let Snakemake continue even if the command fails
 
 rule GSEA_compression:
     input:
