@@ -149,4 +149,4 @@ if config["GSEA_ANALYSIS"]:
         threads:
             4
         shell:
-            "sleep 2 &&tar cf - -C gsea gsea_bubble| pigz -p {threads} > {output} 2> {log}"
+            "sleep 2 && tar cf - -C gsea gsea_bubble| pigz -p {threads} > {output} 2> {log}"
