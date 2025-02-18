@@ -13,7 +13,7 @@ def read_species(config):
     read config.yaml for species
     read species.yaml for genome, gtf, anno_tab, gsea_db_path
     assume 'workflow/resources/configs/species.yaml'
-    update config with genome, gtf, anno_tab, gsea_db_path
+    update config with genome, gtf, anno_tab, gsea_db_path in species.yaml, ONLY if not specified in config.yaml
     return updated config
     """
     fname = 'workflow/resources/configs/species.yaml'
@@ -22,12 +22,14 @@ def read_species(config):
 
     if config['SPECIES'] in species_config:
         SPECIES = config['SPECIES']
-        config.update({
-            'GENOME': species_config[SPECIES]['GENOME'],
-            'GTF': species_config[SPECIES]['GTF'],
-            'ANNO_TAB': species_config[SPECIES]['ANNO_TAB'],
-            'GSEA_DB_PATH': species_config[SPECIES]['GSEA_DB_PATH']
-        })
+        if 'GSEA_DB_PATH' not in config or not config['GSEA_DB_PATH']:
+            config['GSEA_DB_PATH'] = species_config[SPECIES]['GSEA_DB_PATH']
+        if 'GENOME' not in config or not config['GENOME']:
+            config['GENOME'] = species_config[SPECIES]['GENOME']
+        if 'GTF' not in config or not config['GTF']:
+            config['GTF'] = species_config[SPECIES]['GTF']
+        if 'ANNO_TAB' not in config or not config['ANNO_TAB']:
+            config['ANNO_TAB'] = species_config[SPECIES]['ANNO_TAB']
     else:
         sys.exit("species not found in " + fname)
 
