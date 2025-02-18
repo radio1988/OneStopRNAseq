@@ -16,7 +16,11 @@ def read_species(config):
     update config with genome, gtf, anno_tab, gsea_db_path in species.yaml, ONLY if not specified in config.yaml
     return updated config
     """
-    fname = 'workflow/resources/configs/species.yaml'
+    if 'SPECIES_YAML_FILE' in config:
+        fname = config['SPECIES_YAML_FILE']
+    else:
+        fname = 'workflow/resources/configs/species.yaml'
+
     with open(fname,'r') as file:
         species_config = yaml.safe_load(file)
 

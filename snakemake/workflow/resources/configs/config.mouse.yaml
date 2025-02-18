@@ -1,5 +1,6 @@
 # 250212
 SPECIES: mm10
+SPECIES_YAML_FILE: workflow/resources/configs/species.yaml
 START: FASTQ             # FASTQ/ BAM/ COUNT/ RNK
 
 ## WHEN START is FASTQ
