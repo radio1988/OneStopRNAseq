@@ -23,7 +23,7 @@ if config['PAIR_END']:
         conda:
             "../envs/fastp.yaml"
         params:
-            extra="--adapter_fasta " + config['ADAPTORS'] + " --detect_adapter_for_pe",
+            extra="--adapter_fasta " + config['ADAPTORS'] # + " --detect_adapter_for_pe" gives err when no adaptors found
         resources:
             mem_mb=lambda wildcards, attempt: attempt * 1000
         threads:
