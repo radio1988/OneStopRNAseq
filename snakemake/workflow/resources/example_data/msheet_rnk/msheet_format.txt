@@ -1,0 +1,14 @@
+msheet format:
+1. xlsx file (not xls)
+2. contains multiple sheets (sheet name does not matter)
+3. first row of each sheet must be the header
+4. first column of first row will be the displayed comparison name (no space, no special character in it, except _)
+
+
+2. Excel format
+
+Example file: example_rankfile_multiple_sheet.xlsx
+The xlsx file can have multiple sheets for creating multiple GSEA analysis and multi-bubble plot
+Each sheet must have a header row
+Each sheet must have two columns: “Gene_Symbol”, and “Number for ranking, e.g. LFC, p-value”
+The first cell in the first row will be used as the name displayed in the multi-bubble plot, e.g. "Comparison1" in the example file
