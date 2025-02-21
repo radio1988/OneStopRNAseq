@@ -25,7 +25,7 @@ if config['PAIR_END']:
         params:
             extra="--adapter_fasta " + config['ADAPTORS'] # + " --detect_adapter_for_pe" gives err when no adaptors found
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 1000
+            mem_mb=lambda wildcards, attempt: attempt * 4000
         threads:
             4
         log:
@@ -75,7 +75,7 @@ else:
         params:
             extra="--adapter_fasta " + config['ADAPTORS'],
         resources:
-            mem_mb=lambda wildcards, attempt: attempt * 2000
+            mem_mb=lambda wildcards, attempt: attempt * 4000
         threads:
             4
         conda:
