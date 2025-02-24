@@ -106,7 +106,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     # Create bubble plot
     nrows = df['GeneSet'].shape[0]
     max_gene_set_length = df["GeneSet"].astype(str).apply(len).max()
-    fig_width = max(8, min(5 + max_gene_set_length * 0.1, 20))  # Adjust width based on name length
+    fig_width = max(8, 3 + max_gene_set_length * 0.1)  # Adjust width based on name length
 
     plt.figure(figsize=(fig_width, nrows * 0.1 + 1))
 
