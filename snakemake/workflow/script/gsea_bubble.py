@@ -107,7 +107,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     nrows = df['GeneSet'].shape[0]
     max_gene_set_length = df["GeneSet"].astype(str).apply(len).max()
     fig_width = min(6, max(3 + max_gene_set_length * 0.02, 4))  # Adjust width based on name length
-    plt.figure(figsize=(fig_width, nrows * 0.1 + 1))
+    plt.figure(figsize=(fig_width, nrows * 0.2 + 1))
 
     if nrows < 1:
         plt.text(
@@ -139,7 +139,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     plt.axvline(x=3, linestyle="--", color="grey", alpha=0.6)  # NES=3 line, confident range
 
     # Improve grid visibility
-    plt.grid(axis='y', linestyle='-', linewidth=0.6, alpha=0.7)  # Light horizontal grid
+    plt.grid(axis='y', linestyle='-', linewidth=0.6, alpha=0.5)  # Light horizontal grid
     plt.gca().set_axisbelow(True)  # Ensure grid is behind the scatter points
 
     # Set x-axis limits
@@ -177,7 +177,7 @@ def create_bubble_plot(df, output_path="folder/plot.pdf", alpha='alpha'):
     merged_labels = filtered_labels + size_labels
 
     plt.legend(merged_handles, merged_labels, bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
-    if nrows > 200:
+    if nrows > 50:
         plt.gca().margins(y=0.02)  # Reduce y-axis margins
     plt.savefig(output_path, format="pdf", bbox_inches="tight")
 
