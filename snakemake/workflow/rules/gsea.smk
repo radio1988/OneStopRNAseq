@@ -147,9 +147,9 @@ if config["GSEA_ANALYSIS"]:
         benchmark:
             "gsea/gsea_bubble/log/gsea_bubble.tar.gz.benchmark"
         resources:
-            mem_mb=2000
+            mem_mb=4000
         threads:
-            1
+            2
         shell:
             # "tar czf -C gsea gsea_bubble {output} 2> {log}"
             "tar cf - -C gsea gsea_bubble | pigz -p {threads} > {output}"
