@@ -13,11 +13,12 @@ params:
   indfilter: FALSE
   cookscutoff: FALSE
   
-  countFile: '../CleanUpRNAseqQC/global.corrected.count.csv'
+  countFile: 'input/COUNT.xlsx'
   annoFile: 'https://github.com/radio1988/OneStopRNAseq/raw/dev/snakemake/workflow/resources/anno_tables/mm39.ensembl.111.anno.txt'
-  metaFile: "../meta/meta.csv"
-  contrastFile:  "../meta/contrast.csv"
+  metaFile: "input/example_meta.xlsx"
+  contrastFile:  "input/example_contrastfile_3.xlsx"
   blackSamples: 'NA_AAAAXXskjk, NA_BBBXXXYjkdmf'
+  nclass: 4
 ---
 
 ## User ReadME:
@@ -68,6 +69,7 @@ countFile <- params$countFile
 annoFile <- params$annoFile
 metaFile <- params$metaFile
 contrastFile <-params$contrastFile
+nclass <- params$nclass
 
 blackSamplesStr <- gsub(" " , '', params$blackSamples)
 blackSamples <- unlist(strsplit(blackSamplesStr, ','))
@@ -284,7 +286,7 @@ Heatmap <- function(df, nclass=2, fname="heatmap", main="title"){
 
 
 
-process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='name', anno='anno.df', norm_exp="tpm.df"){
+process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='name', anno='anno.df', norm_exp="tpm.df", nclass=nclass){
     ## Summary
     print(name)
     print("\n>>> Summary using FDR cut-off only (LFC not used)")
@@ -387,7 +389,7 @@ process_deseq_res <- function(res="lfcshrink.res", res2="results.res", name='nam
     rownames(zscore.df) <- resdata.sig[,1]
     colnames(zscore.df) <- gsub (":TPM", "", colnames(zscore.df))
     colnames(zscore.df) <- gsub (":DESeq2NormalizedCount", "", colnames(zscore.df))
-    Heatmap(zscore.df, nclass = 2,
+    Heatmap(zscore.df, nclass = nclass,
             fname = paste(name, "heatmap", sep="."),
             main = paste(name, "LFC >", min_lfc, "FDR <", max_fdr ))
 }
@@ -892,7 +894,7 @@ for (i in 1:dim(contrast.df)[2]){
   res2 <- results(dds, contrast = contrast, 
                   independentFilter=indfilter, cooksCutoff=cookscutoff)
 
-  process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = normalized_counts)
+  process_deseq_res(res = res, res2=res2, name = name, anno = anno, norm_exp = normalized_counts, nclass = nclass)
 
 } 
 ```
