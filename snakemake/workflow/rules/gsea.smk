@@ -20,7 +20,7 @@ rule GSEA:
     conda:
         "../envs/java11.yaml"  # test
     resources:
-        mem_mb=lambda wildcards, attempt: attempt * 8100
+        mem_mb=lambda wildcards, attempt: attempt * 16000
     params:
         svg=config["GSEA_PLOT_SVG"],
         nplot=config["GSEA_NPLOTS"],
